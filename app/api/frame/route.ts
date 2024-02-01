@@ -36,7 +36,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
   } 
 
-  const imageUrl = `https://bookies-frames.vercel.app/api/image`;
+  const imageUrl = `https://bookies-frames.vercel.app/api/frame/image`;
   // <meta property="fc:frame:image" content="https://bookies-frames.vercel.app/${buttonIndex === 1 ? "49ers.gif" : "chiefs.gif"}" />
 
   return new NextResponse(`<!DOCTYPE html><html><head>
