@@ -10,8 +10,6 @@ let fontData = fs.readFileSync(fontPath)
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
-        const pollOptions = ['49ers', 'Chiefs']
-            
         // Get the poll data from database
         const count49ers: number = await kv.get('49ers') || 0
         const countCheifs: number = await kv.get('Chiefs') || 0
@@ -20,6 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const percent49ers = totalVotes ? Math.round(count49ers / totalVotes * 100) : 0
         const percentCheifs = totalVotes ? Math.round(countCheifs / totalVotes * 100) : 0
+        
         const pollData = {
             question: 'Who will win Super Bowl LVIII?',
             options: [{votes: countCheifs, 
