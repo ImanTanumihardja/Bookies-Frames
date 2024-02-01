@@ -15,7 +15,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   return new NextResponse(`<!DOCTYPE html><html><head>
     <meta property="fc:frame" content="vNext" />
-    <meta property="fc:frame:image" content="https://zizzamia.xyz/park-2.png" />
+    <meta property="fc:frame:image" content="https://bookies-frames.vercel.app/49ers.gif" />
   </head></html>`);
 }
 
