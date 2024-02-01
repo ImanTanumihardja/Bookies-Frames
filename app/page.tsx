@@ -4,11 +4,11 @@ import type { Metadata } from 'next';
 const frameMetadata = getFrameMetadata({
   buttons: [
     {
-      label: '49ers',
-    },
-    {
       label: 'Chiefs',
     },
+    {
+      label: '49ers',
+    }
   ],
   image: 'https://bookies-frames.vercel.app/superbowl.webp',
   post_url: 'https://bookies-frames.vercel.app/api/frame',

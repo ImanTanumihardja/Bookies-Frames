@@ -29,17 +29,19 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       }
       else if (buttonIndex === 2) {
         // Increment value for Chiefs in kv database
-        multi.incr('chiefs');
+        multi.incr('Chiefs');
       }
       multi.sadd(`voted`, fid);
       await multi.exec();
     }
-
   } 
+
+  const imageUrl = `https://bookies-frames.vercel.app/api/image`;
+  // <meta property="fc:frame:image" content="https://bookies-frames.vercel.app/${buttonIndex === 1 ? "49ers.gif" : "chiefs.gif"}" />
 
   return new NextResponse(`<!DOCTYPE html><html><head>
     <meta property="fc:frame" content="vNext" />
-    <meta property="fc:frame:image" content="https://bookies-frames.vercel.app/${buttonIndex === 1 ? "49ers.gif" : "chiefs.gif"}" />
+    <meta name="fc:frame:image" content="${imageUrl}">
   </head></html>`);
 }
 
