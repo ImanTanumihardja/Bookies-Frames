@@ -11,7 +11,7 @@ const frameMetadata = getFrameMetadata({
     },
   ],
   image: 'https://bookies-frames.vercel.app/superbowl.webp',
-  post_url: 'https://bookies-frames.vercel.app/api/vote',
+  post_url: 'https://bookies-frames.vercel.app/api/frame',
 });
 
 export const metadata: Metadata = {
