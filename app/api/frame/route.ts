@@ -1,5 +1,6 @@
 import { FrameRequest, getFrameAccountAddress, getFrameMessage } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
+import {kv} from "@vercel/kv";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // let accountAddress: string | undefined = '';
@@ -14,7 +15,23 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   //   }
   // }
 
-  const buttonIndex = message?.buttonIndex as number;
+  const buttonIndex = message?.buttonIndex || 0;
+  const fid = message?.fid || 0;
+
+  // Check if voted before
+  const voteExists = await kv.sismember(`voted`, fid)
+  if (!voteExists) {
+    let multi = kv.multi();
+    if (buttonIndex === 1) {
+      // Increment value for 49ers in kv database
+      multi.incr('49ers');
+    }
+    else if (buttonIndex === 2) {
+      // Increment value for Chiefs in kv database
+      multi.incr('chiefs');
+    }
+    multi.sadd(`voted`, fid);
+  }
 
   return new NextResponse(`<!DOCTYPE html><html><head>
     <meta property="fc:frame" content="vNext" />
