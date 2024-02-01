@@ -4,7 +4,10 @@ import type { Metadata } from 'next';
 const frameMetadata = getFrameMetadata({
   buttons: [
     {
-      label: 'We love BOAT',
+      label: '49ers',
+    },
+    {
+      label: 'Chiefs',
     },
   ],
   image: 'https://zizzamia.xyz/park-1.png',
