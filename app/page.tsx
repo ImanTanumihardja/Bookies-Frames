@@ -3,12 +3,12 @@ import type { Metadata } from 'next';
 
 const frameMetadata = getFrameMetadata({
   buttons: [
-    {
-      label: '49ers',
-    },
-    {
-      label: 'Chiefs',
-    },
+    // {
+    //   label: '49ers',
+    // },
+    // {
+    //   label: 'Chiefs',
+    // },
   ],
   image: 'https://zizzamia.xyz/park-1.png',
   post_url: 'https://zizzamia.xyz/api/frame',
