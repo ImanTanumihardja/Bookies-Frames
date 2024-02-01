@@ -41,13 +41,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   return new NextResponse(`<!DOCTYPE html><html><head>
     <meta property="fc:frame" content="vNext" />
-    <meta name="fc:frame:post_url" content="https://bookies-frames.vercel.app/api/frame">
+    <meta name="fc:frame:post_url" content="https://bookies-frames.vercel.app/api/vote">
     <meta name="fc:frame:image" content="${imageUrl}">
     <meta property="og:image" content="${imageUrl}">
   </head></html>`);
 }
 
-export async function POST(req: NextRequest): Promise<Response> {
+export default async function POST(req: NextRequest): Promise<Response> {
   return getResponse(req);
 }
 
