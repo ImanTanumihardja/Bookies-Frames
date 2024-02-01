@@ -1,4 +1,4 @@
-import { FrameRequest, getFrameAccountAddress, getFrameMessage, getFrameMetadata } from '@coinbase/onchainkit';
+import { FrameRequest, getFrameAccountAddress, getFrameMessage } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
@@ -13,16 +13,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
   }
 
-  const frameMetadata = getFrameMetadata({
-    image: 'https://zizzamia.xyz/park-2.png',
-    post_url: 'https://zizzamia.xyz/api/frame',
-  });
-
-  return new NextResponse(frameMetadata,
-    {
-      status: 200,
-      headers: { 'Content-Type': 'text/html' },
-    },);
+  return new NextResponse(`<!DOCTYPE html><html><head>
+    <meta property="fc:frame" content="vNext" />
+    <meta property="fc:frame:image" content="https://zizzamia.xyz/park-2.png" />
+  </head></html>`);
 }
 
 export async function POST(req: NextRequest): Promise<Response> {

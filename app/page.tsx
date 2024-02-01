@@ -11,7 +11,7 @@ const frameMetadata = getFrameMetadata({
     },
   ],
   image: 'https://zizzamia.xyz/park-1.png',
-  post_url: 'https://zizzamia.xyz/api/frame',
+  post_url: 'https://bookies-frames.vercel.app/api/frame',
 });
 
 export const metadata: Metadata = {
