@@ -1,11 +1,13 @@
 import { FrameRequest, getFrameAccountAddress, getFrameMessage } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { kv } from "@vercel/kv";
 
-async function getResponse(req: NextRequest): Promise<NextResponse> {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   let accountAddress: string | undefined = '';
   let buttonIndex: number = 0;
-  const body: FrameRequest = await req.json();
+
+  const body = req?.body as FrameRequest;
   const { isValid, message } = await getFrameMessage(body);
 
   if (isValid) {
@@ -39,16 +41,21 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const imageUrl = `https://bookies-frames.vercel.app/api/image?buttonIndex=${buttonIndex}`;
   // <meta property="fc:frame:image" content="https://bookies-frames.vercel.app/${buttonIndex === 1 ? "49ers.gif" : "chiefs.gif"}" />
 
-  return new NextResponse(`<!DOCTYPE html><html><head>
+  res.setHeader('Content-Type', 'text/html');
+  res.status(200).send(`<!DOCTYPE html><html><head>
     <meta property="fc:frame" content="vNext" />
     <meta name="fc:frame:post_url" content="https://bookies-frames.vercel.app/api/vote">
     <meta name="fc:frame:image" content="${imageUrl}">
     <meta property="og:image" content="${imageUrl}">
-  </head></html>`);
+  </head></html>`)
+
+  // return new NextResponse(`<!DOCTYPE html><html><head>
+  //   <meta property="fc:frame" content="vNext" />
+  //   <meta name="fc:frame:post_url" content="https://bookies-frames.vercel.app/api/vote">
+  //   <meta name="fc:frame:image" content="${imageUrl}">
+  //   <meta property="og:image" content="${imageUrl}">
+  // </head></html>`);
 }
 
-export default async function POST(req: NextRequest): Promise<Response> {
-  return getResponse(req);
-}
 
 export const dynamic = 'force-dynamic';
