@@ -31,6 +31,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       multi.incr('chiefs');
     }
     multi.sadd(`voted`, fid);
+    await multi.exec();
   }
 
   return new NextResponse(`<!DOCTYPE html><html><head>
