@@ -14,7 +14,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   //   }
   // }
 
-  const buttonIndex = message.data.buttonIndex as number;
+  const buttonIndex = message?.buttonIndex as number;
 
   return new NextResponse(`<!DOCTYPE html><html><head>
     <meta property="fc:frame" content="vNext" />
