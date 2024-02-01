@@ -10,7 +10,7 @@ const frameMetadata = getFrameMetadata({
       label: '49ers',
     },
   ],
-  image: 'https://bookies-frames.vercel.app/superbowl.webp',
+  image: 'https://bookies-frames.vercel.app/superbowl.png',
   post_url: 'https://bookies-frames.vercel.app/api/vote',
 });
 
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'bookies.xyz',
     description: 'LFG', 
-    images: ['https://bookies-frames.vercel.app/superbowl.webp'],
+    images: ['https://bookies-frames.vercel.app/superbowl.png'],
   },
   other: {
     ...frameMetadata,

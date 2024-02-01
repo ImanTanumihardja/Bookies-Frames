@@ -37,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 display: 'flex',
                 width: '100%',
                 height: '100%',
-                backgroundColor: 'f4f4f4',
+                backgroundImage: 'url(https://bookies-frames.vercel.app/superbowl.png)',
                 padding: 50,
                 lineHeight: 1.2,
                 fontSize: 24,
@@ -52,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         pollData.options.map((opt, index) => {
                             return (
                                 <div style={{
-                                    backgroundColor: '#007bff',
+                                    backgroundColor: '#000',
                                     color: '#fff',
                                     padding: 10,
                                     marginBottom: 10,
