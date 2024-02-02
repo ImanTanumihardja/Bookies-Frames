@@ -16,10 +16,10 @@ const frameMetadata = getFrameMetadata({
 
 export const metadata: Metadata = {
   title: 'bookies.xyz',
-  description: 'LFG',
+  description: 'The first non-custiodal sports betting exchange with the vision of democratizing the sports betting experience.',
   openGraph: {
     title: 'bookies.xyz',
-    description: 'LFG', 
+    description: 'The first non-custiodal sports betting exchange with the vision of democratizing the sports betting experience.', 
     images: [`${process.env['HOST']}/superbowl.png`],
   },
   other: {

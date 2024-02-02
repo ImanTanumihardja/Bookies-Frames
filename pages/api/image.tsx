@@ -13,18 +13,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const buttonIndex = req.query['buttonIndex']
         // Get the poll data from database
         const count49ers: number = await kv.get('49ers') || 0
-        const countCheifs: number = await kv.get('Chiefs') || 0
+        const countChiefs: number = await kv.get('Chiefs') || 0
 
-        const totalVotes = count49ers + countCheifs
+        const totalVotes = count49ers + countChiefs
 
         const percent49ers = totalVotes ? Math.round(count49ers / totalVotes * 100) : 0
-        const percentCheifs = totalVotes ? Math.round(countCheifs / totalVotes * 100) : 0
+        const percentCheifs = totalVotes ? Math.round(countChiefs / totalVotes * 100) : 0
         
         const pollData = {
             question: 'Who will win Super Bowl LVIII?',
-            options: [{votes: countCheifs, 
+            options: [{votes: countChiefs, 
                       percentOfTotal: percentCheifs,
-                      text: `Chiefs: ${countCheifs} votes`},
+                      text: `Chiefs: ${countChiefs} votes`},
                       {votes: count49ers, 
                        percentOfTotal: percent49ers,
                        text: `49ers: ${count49ers} votes`},
