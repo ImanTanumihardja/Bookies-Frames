@@ -39,7 +39,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 width: '100%',
                 height: '100%',
                 lineHeight: 1.2,
-                padding: 50.
             }}>
                 <div style={{
                     display: 'flex',
@@ -47,9 +46,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     background: 'linear-gradient(to right, purple, orange)',
                     width: '50%',
                     height: '100%',
-                    padding: 20,
+                    padding: 30,
                 }}>
-                    <h2 style={{textAlign: 'center', color: 'white', fontSize: 27, paddingBottom:10}}>{pollData.question}</h2>
+                    <h2 style={{textAlign: 'center', color: 'white', fontSize: 27, paddingBottom:10, paddingTop:50}}>{pollData.question}</h2>
                     {
                         pollData.options.map((opt, index) => {
                             return (
@@ -75,7 +74,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     width: '50%',
                     padding: 20,
                 }} src={`${process.env['HOST']}/${buttonIndex === '1' ? 'CHIEFS' : 'NINERS'}.png`}></img>
-                    
             </div>
             ,
             {
