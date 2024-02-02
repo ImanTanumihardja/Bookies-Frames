@@ -37,13 +37,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } 
 
-  const imageUrl = `https://bookies-frames.vercel.app/api/image?buttonIndex=${buttonIndex}`;
+  const imageUrl = `${process.env['HOST']}/api/image?buttonIndex=${buttonIndex}`;
   // <meta property="fc:frame:image" content="https://bookies-frames.vercel.app/${buttonIndex === 1 ? "49ers.gif" : "chiefs.gif"}" />
 
   res.setHeader('Content-Type', 'text/html');
   res.status(200).send(`<!DOCTYPE html><html><head>
     <meta property="fc:frame" content="vNext" />
-    <meta name="fc:frame:post_url" content="https://bookies-frames.vercel.app/api/vote">
+    <meta name="fc:frame:post_url" content="${process.env['HOST']}/api/vote">
     <meta name="fc:frame:image" content="${imageUrl}">
     <meta property="og:image" content="${imageUrl}">
   </head></html>`)

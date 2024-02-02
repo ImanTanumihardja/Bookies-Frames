@@ -10,6 +10,7 @@ let fontData = fs.readFileSync(fontPath)
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
+        const buttonIndex = req.query['buttonIndex']
         // Get the poll data from database
         const count49ers: number = await kv.get('49ers') || 0
         const countCheifs: number = await kv.get('Chiefs') || 0
@@ -72,7 +73,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     flexDirection: 'column',
                     width: '50%',
                     padding: 20,
-                }} src="https://bookies-frames.vercel.app/CHIEFS.png"></img>
+                }} src={`${process.env['HOST']}/${buttonIndex === '1' ? 'CHIEFS' : '49ers'}.png`}></img>
                     
             </div>
             ,
