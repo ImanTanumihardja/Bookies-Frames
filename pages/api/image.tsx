@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             question: 'Who will win Super Bowl LVIII?',
             options: [{votes: countCheifs, 
                       percentOfTotal: percentCheifs,
-                      text: `49ers: ${countCheifs} votes`},
+                      text: `Chiefs: ${countCheifs} votes`},
                       {votes: count49ers, 
                        percentOfTotal: percent49ers,
                        text: `49ers: ${count49ers} votes`},
@@ -37,9 +37,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 display: 'flex',
                 width: '100%',
                 height: '100%',
-                backgroundImage: 'url(https://bookies-frames.vercel.app/superbowl.png)',
-                backgroundSize: 'contain', // Fit the background image within the container
-                backgroundPosition: 'center', // Center the background image
                 padding: 50,
                 lineHeight: 1.2,
                 fontSize: 24,
@@ -47,15 +44,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 <div style={{
                     display: 'flex',
                     flexDirection: 'column',
+                    background: 'linear-gradient(to right, purple, orange)',
+                    width: '50%',
                     padding: 20,
                 }}>
-                    <h2 style={{textAlign: 'center', color: 'lightgray'}}>{pollData.question}</h2>
+                    <h2 style={{textAlign: 'center', color: 'white'}}>{pollData.question}</h2>
                     {
                         pollData.options.map((opt, index) => {
                             return (
                                 <div style={{
-                                    backgroundColor: '#000',
-                                    color: '#fff',
+                                    backgroundColor: '#fff',
+                                    color: '#000',
                                     padding: 10,
                                     marginBottom: 10,
                                     borderRadius: 4,
@@ -68,6 +67,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                     {/*{showResults ? <h3 style={{color: "darkgray"}}>Total votes: {totalVotes}</h3> : ''}*/}
                 </div>
+                <img style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: '50%',
+                    padding: 20,
+                }} src="https://bookies-frames.vercel.app/CHIEFS.png"></img>
+                    
             </div>
             ,
             {
