@@ -40,6 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 height: '100%',
                 lineHeight: 1.2,
                 fontSize: 24,
+                padding: 50.
             }}>
                 <div style={{
                     display: 'flex',
