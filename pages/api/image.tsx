@@ -38,7 +38,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 display: 'flex',
                 width: '100%',
                 height: '100%',
-                padding: 50,
                 lineHeight: 1.2,
                 fontSize: 24,
             }}>
@@ -47,6 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     flexDirection: 'column',
                     background: 'linear-gradient(to right, purple, orange)',
                     width: '50%',
+                    height: '100%',
                     padding: 20,
                 }}>
                     <h2 style={{textAlign: 'center', color: 'white'}}>{pollData.question}</h2>
@@ -73,7 +73,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     flexDirection: 'column',
                     width: '50%',
                     padding: 20,
-                }} src={`${process.env['HOST']}/${buttonIndex === '1' ? 'CHIEFS' : '49ers'}.png`}></img>
+                }} src={`${process.env['HOST']}/${buttonIndex === '1' ? 'CHIEFS' : 'NINERS'}.png`}></img>
                     
             </div>
             ,
