@@ -38,6 +38,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 width: '100%',
                 height: '100%',
                 backgroundImage: 'url(https://bookies-frames.vercel.app/superbowl.png)',
+                backgroundSize: 'contain', // Fit the background image within the container
+                backgroundPosition: 'center', // Center the background image
                 padding: 50,
                 lineHeight: 1.2,
                 fontSize: 24,
