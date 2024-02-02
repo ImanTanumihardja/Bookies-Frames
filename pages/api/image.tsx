@@ -39,7 +39,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 width: '100%',
                 height: '100%',
                 lineHeight: 1.2,
-                fontSize: 24,
                 padding: 50.
             }}>
                 <div style={{
@@ -50,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     height: '100%',
                     padding: 20,
                 }}>
-                    <h2 style={{textAlign: 'center', color: 'white'}}>{pollData.question}</h2>
+                    <h2 style={{textAlign: 'center', color: 'white', fontSize: 27, paddingBottom:10}}>{pollData.question}</h2>
                     {
                         pollData.options.map((opt, index) => {
                             return (
@@ -63,6 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                     width: `${opt.percentOfTotal}%`,
                                     whiteSpace: 'nowrap',
                                     overflow: 'visible',
+                                    fontSize: 20,
                                 }}>{opt.text}</div>
                             )
                         })
