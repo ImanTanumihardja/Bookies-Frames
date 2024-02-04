@@ -74,7 +74,7 @@ export async function GET(req: NextRequest) {
                     width: '50%',
                     height: '100%',
                     display: 'flex'
-                }} src={`${process.env['HOST']}/${buttonIndex === "1" ? 'chiefs' : 'niners'}.png`}/>
+                }} src={`${process.env['HOST']}/${buttonIndex === "1" ? 'chiefs1' : 'niners1'}.png`}/>
             </div>
             ,
             {
