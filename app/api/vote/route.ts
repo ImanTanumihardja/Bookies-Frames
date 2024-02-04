@@ -10,8 +10,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const { isValid, message } = await getFrameMessage(body);
 
    // Get the poll data from database
-   const stringPoll = await kv.get('SBLVIII');
-   let poll = stringPoll ? JSON.parse(stringPoll) : {niners: 0, chiefs: 0, voted : [] as number[]}
+   let poll: { niners: number; chiefs: number; voted: number[] } = await kv.get('SBLVIII') || {niners: 0, chiefs: 0, voted : [] as number[]}
    
   //  let niners: number = await kv.get('Niners') || 0
   //  let chiefs: number = await kv.get('Chiefs') || 0
