@@ -77,7 +77,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
                     flexDirection: 'column',
                     width: '50%',
                     padding: 20,
-                }} src={`${process.env['HOST']}/${buttonIndex === '1' ? 'CHIEFS' : 'NINERS'}.png`}></img>
+                }} src={`${process.env['HOST']}/${buttonIndex === 1 ? 'CHIEFS' : 'NINERS'}.png`}></img>
             </div>
             ,
             {
