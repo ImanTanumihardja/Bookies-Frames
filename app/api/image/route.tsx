@@ -35,8 +35,9 @@ export async function GET(req: NextRequest) {
 
         return new ImageResponse(
             <div style={{
-                justifyContent: 'flex-start',
+                justifyContent: 'space-between',
                 alignItems: 'center',
+                backgroundColor: 'white',
                 display: 'flex',
                 width: '100%',
                 height: '100%',
@@ -54,7 +55,7 @@ export async function GET(req: NextRequest) {
                     {
                         pollData.options.map((opt, index) => {
                             return (
-                                <div style={{
+                                <div key={index} style={{
                                     backgroundColor: '#fff',
                                     color: '#000',
                                     padding: 10,
@@ -68,13 +69,11 @@ export async function GET(req: NextRequest) {
                             )
                         })
                     }
-                    {/*{showResults ? <h3 style={{color: "darkgray"}}>Total votes: {totalVotes}</h3> : ''}*/}
                 </div>
                 <img style={{
-                    display: 'flex',
-                    flexDirection: 'column',
                     width: '50%',
                     padding: 20,
+                    display: 'flex'
                 }} src={`${process.env['HOST']}/${buttonIndex === "1" ? 'CHIEFS' : 'NINERS'}.png`}></img>
             </div>
             ,
