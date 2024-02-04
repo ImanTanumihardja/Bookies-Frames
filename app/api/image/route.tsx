@@ -73,8 +73,9 @@ export async function GET(req: NextRequest) {
                 <img style={{
                     width: '50%',
                     height: '100%',
-                    display: 'flex'
-                }} src={`${process.env['HOST']}/${buttonIndex === "1" ? 'chiefs1' : 'niners1'}.png`}/>
+                    display: 'flex',
+                    padding: 25,
+                }} src={`${process.env['HOST']}/${buttonIndex === "1" ? 'chiefs' : 'niners'}.png`}/>
             </div>
             ,
             {
