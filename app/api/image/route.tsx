@@ -1,5 +1,4 @@
 import { ImageResponse, NextRequest, NextResponse } from 'next/server';
-import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import { kv } from "@vercel/kv";
 
 export async function GET(req: NextRequest) {
@@ -11,14 +10,9 @@ export async function GET(req: NextRequest) {
             ),
           ).then((res) => res.arrayBuffer());
         
-        const body: FrameRequest = await req.json();
-        const { isValid, message } = await getFrameMessage(body);
-
-        if (!isValid) {
-            return new NextResponse('Invalid request', { status: 400 });
-        }
         
-        const buttonIndex = message?.button || 0;
+        const buttonIndex = req.nextUrl.searchParams.get("buttonIndex") || "0"
+        
         // Get the poll data from database
         const count49ers: number = await kv.get('49ers') || 0
         const countChiefs: number = await kv.get('Chiefs') || 0
@@ -81,7 +75,7 @@ export async function GET(req: NextRequest) {
                     flexDirection: 'column',
                     width: '50%',
                     padding: 20,
-                }} src={`${process.env['HOST']}/${buttonIndex === 1 ? 'CHIEFS' : 'NINERS'}.png`}></img>
+                }} src={`${process.env['HOST']}/${buttonIndex === "1" ? 'CHIEFS' : 'NINERS'}.png`}></img>
             </div>
             ,
             {
