@@ -36,7 +36,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
   } 
 
-  const imageUrl = `${process.env['HOST']}/api/image?buttonIndex=${buttonIndex}&count49ers=${count49ers}&countChiefs=${countChiefs}`;
+  const imageUrl = `${process.env['HOST']}/api/image?buttonIndex=${buttonIndex}&49ers=${count49ers}&Chiefs=${countChiefs}`;
 
   return new NextResponse(
     getFrameHtmlResponse({
