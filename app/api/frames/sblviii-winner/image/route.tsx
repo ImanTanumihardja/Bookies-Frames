@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
                     height: '100%',
                     padding: 30,
                 }}>
-                    <h2 style={{textAlign: 'center', color: 'white', fontSize: 27, paddingBottom:10, paddingTop:50}}>{pollData.question}</h2>
+                    <h2 style={{textAlign: 'center', color: 'white', fontSize: 27, paddingBottom:10, paddingTop:30}}>{pollData.question}</h2>
                     {
                         pollData.options.map((opt, index) => {
                             return (
@@ -71,9 +71,8 @@ export async function GET(req: NextRequest) {
                 </div>
                 <img style={{
                     width: '50%',
-                    height: '100%',
+                    height: '80%',
                     display: 'flex',
-                    padding: 30,
                 }} src={`${process.env['HOST']}/${buttonIndex === "1" ? 'chiefs' : 'niners'}.png`}/>
             </div>
             ,
