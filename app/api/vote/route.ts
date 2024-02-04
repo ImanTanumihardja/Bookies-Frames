@@ -9,11 +9,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const body: FrameRequest = await req.json();
   const { isValid, message } = await getFrameMessage(body);
 
-   // Get the poll data from database
-   let poll: { niners: number; chiefs: number; voted: number[] } = await kv.get('SBLVIII') || {niners: 0, chiefs: 0, voted : [] as number[]}
-   
-  //  let niners: number = await kv.get('Niners') || 0
-  //  let chiefs: number = await kv.get('Chiefs') || 0
+  // Get the poll data from database
+  let poll: { niners: number; chiefs: number; voted: number[] } = await kv.get('SBLVIII') || {niners: 0, chiefs: 0, voted : [] as number[]}
 
   if (isValid) {
     buttonIndex = message?.button || 0;
