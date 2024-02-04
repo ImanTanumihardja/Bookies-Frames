@@ -9,6 +9,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const body: FrameRequest = await req.json();
   const { isValid, message } = await getFrameMessage(body);
 
+   // Get the poll data from database
+   let count49ers: number = await kv.get('49ers') || 0
+   let countChiefs: number = await kv.get('Chiefs') || 0
+
   if (isValid) {
     buttonIndex = message?.button || 0;
     const fid = message?.interactor.fid || 0;
@@ -20,17 +24,19 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       if (buttonIndex === 2) {
         // Increment value for 49ers in kv database
         multi.incr('49ers');
+        count49ers++
       }
       else if (buttonIndex === 1) {
         // Increment value for Chiefs in kv database
         multi.incr('Chiefs');
+        countChiefs++
       }
       multi.sadd(`voted`, fid);
       await multi.exec();
     }
   } 
 
-  const imageUrl = `${process.env['HOST']}/api/image?buttonIndex=${buttonIndex}`;
+  const imageUrl = `${process.env['HOST']}/api/image?buttonIndex=${buttonIndex}&count49ers=${count49ers}&countChiefs=${countChiefs}`;
 
   return new NextResponse(
     getFrameHtmlResponse({
