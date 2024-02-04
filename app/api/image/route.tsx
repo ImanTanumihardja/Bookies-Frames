@@ -1,14 +1,16 @@
 import { ImageResponse, NextRequest, NextResponse } from 'next/server';
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import { kv } from "@vercel/kv";
-import { join } from 'path';
-import * as fs from "fs";
 
-const fontPath = join(process.cwd(), 'Roboto-Regular.ttf')
-let fontData = fs.readFileSync(fontPath)
-
-async function getResponse(req: NextRequest) {
+export async function GET(req: NextRequest) {
     try {
+        const robotoMono400 = fetch(
+            new URL(
+              '../../../node_modules/@fontsource/roboto-mono/files/roboto-mono-latin-400-normal.woff',
+              import.meta.url,
+            ),
+          ).then((res) => res.arrayBuffer());
+        
         const body: FrameRequest = await req.json();
         const { isValid, message } = await getFrameMessage(body);
 
@@ -83,33 +85,14 @@ async function getResponse(req: NextRequest) {
             </div>
             ,
             {
-                width: 600, height: 400, fonts: [{
-                    data: fontData,
-                    name: 'Roboto',
-                    style: 'normal',
-                    weight: 400
-                }]
+                width: 600, 
+                height: 400, 
+                fonts: [{ name: 'Roboto_Mono_400', data: await robotoMono400, weight: 400 }],
             })
-
-        // // Convert SVG to PNG using Sharp
-        // const pngBuffer = await sharp(Buffer.from(svg))
-        //     .toFormat('png')
-        //     .toBuffer();
-
-        // return new NextResponse(pngBuffer, {
-        //     headers: {
-        //         'Content-Type': 'image/png',
-        //         'Cache-Control': 'max-age=10'
-        //     }
-        // });
     } catch (error) {
         console.error(error);
         return new NextResponse('Could not generate image', { status: 500 });
     }
-}
-
-export async function Get(req: NextRequest) {
-    return getResponse(req);
 }
 
 export const runtime = 'edge';
