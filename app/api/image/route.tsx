@@ -1,23 +1,19 @@
 import { ImageResponse, NextRequest, NextResponse } from 'next/server';
-import { kv } from "@vercel/kv";
 
 export async function GET(req: NextRequest) {
     try {
         const robotoMono400 = fetch(
             new URL(
-              '../../../node_modules/@fontsource/roboto-mono/files/roboto-mono-latin-400-normal.woff',
+              '../../../node_modules/@fontsource/roboto-mono/files/roboto-mono-latin-700-normal.woff',
               import.meta.url,
             ),
           ).then((res) => res.arrayBuffer());
         
-        // Get poll data from database
-        let poll: { niners: number; chiefs: number; voted: number[] } = await kv.get('SBLVIII') || {niners: 0, chiefs: 0, voted : [] as number[]}
-        
         const buttonIndex = req.nextUrl.searchParams.get("buttonIndex") || "0"
 
         // Get the poll data from database
-        const niners: number = poll.niners //req.nextUrl.searchParams.get("niners") ? parseInt(req.nextUrl.searchParams.get("niners") as string) : 0 
-        const chiefs: number = poll.chiefs //req.nextUrl.searchParams.get("chiefs") ? parseInt(req.nextUrl.searchParams.get("chiefs") as string) : 0
+        const niners: number = req.nextUrl.searchParams.get("niners") ? parseInt(req.nextUrl.searchParams.get("niners") as string) : 0 
+        const chiefs: number = req.nextUrl.searchParams.get("chiefs") ? parseInt(req.nextUrl.searchParams.get("chiefs") as string) : 0
     
 
         const totalVotes = niners + chiefs
@@ -77,7 +73,7 @@ export async function GET(req: NextRequest) {
                     width: '50%',
                     height: '100%',
                     display: 'flex',
-                    padding: 25,
+                    padding: 30,
                 }} src={`${process.env['HOST']}/${buttonIndex === "1" ? 'chiefs' : 'niners'}.png`}/>
             </div>
             ,
