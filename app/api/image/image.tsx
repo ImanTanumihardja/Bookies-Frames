@@ -1,6 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
+import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import sharp from 'sharp';
-import {kv} from "@vercel/kv";
+import { kv } from "@vercel/kv";
 import satori from "satori";
 import { join } from 'path';
 import * as fs from "fs";
@@ -8,9 +9,12 @@ import * as fs from "fs";
 const fontPath = join(process.cwd(), 'Roboto-Regular.ttf')
 let fontData = fs.readFileSync(fontPath)
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+async function getResponse(req: NextRequest): Promise<NextResponse> {
     try {
-        const buttonIndex = req.query['buttonIndex']
+        const body: FrameRequest = await req.json();
+        const { isValid, message } = await getFrameMessage(body);
+
+        const buttonIndex = message?.buttonIndex || 0;
         // Get the poll data from database
         const count49ers: number = await kv.get('49ers') || 0
         const countChiefs: number = await kv.get('Chiefs') || 0
@@ -90,12 +94,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             .toFormat('png')
             .toBuffer();
 
-        // Set the content type to PNG and send the response
-        res.setHeader('Content-Type', 'image/png');
-        res.setHeader('Cache-Control', 'max-age=10');
-        res.send(pngBuffer);
+        return new NextResponse(pngBuffer, {
+            headers: {
+                'Content-Type': 'image/png',
+                'Cache-Control': 'max-age=10'
+            }
+        });
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error generating image');
+        return new NextResponse('Could not generate image', { status: 500 });
     }
 }
+
+export async function POST(req: NextRequest): Promise<Response> {
+    return getResponse(req);
+}
+
+export const dynamic = 'force-dynamic';
