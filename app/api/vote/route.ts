@@ -10,8 +10,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const { isValid, message } = await getFrameMessage(body);
 
   if (isValid) {
-    buttonIndex = message?.buttonIndex || 0;
-    const fid = message?.fid || 0;
+    buttonIndex = message?.button || 0;
+    const fid = message?.interactor.fid || 0;
 
     // Check if voted before
     const voteExists = await kv.sismember(`voted`, fid)

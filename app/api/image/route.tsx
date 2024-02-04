@@ -14,7 +14,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         const body: FrameRequest = await req.json();
         const { isValid, message } = await getFrameMessage(body);
 
-        const buttonIndex = message?.buttonIndex || 0;
+        const buttonIndex = message?.button || 0;
         // Get the poll data from database
         const count49ers: number = await kv.get('49ers') || 0
         const countChiefs: number = await kv.get('Chiefs') || 0
