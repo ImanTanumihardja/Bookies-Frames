@@ -10,7 +10,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const { isValid, message } = await getFrameMessage(body);
 
    // Get the poll data from database
-   let poll = JSON.parse(await kv.get('SBLVIII')) || {niners: 0, chiefs: 0, voted: []}
+   const stringPoll = await kv.get('SBLVIII');
+   let poll = await kv.get('SBLVIII') || {niners: 0, chiefs: 0, voted: []}
    
   //  let niners: number = await kv.get('Niners') || 0
   //  let chiefs: number = await kv.get('Chiefs') || 0
@@ -32,7 +33,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       }
       poll.voted.push(fid);
       const votedAsString = JSON.stringify(poll.voted);
-      await kv.hmset("SBLVIII", 'niners', poll.niners, 'chiefs', poll.chiefs, 'voted', votedAsString);
+      await kv.hset("SBLVIII", 'niners', poll.niners, 'chiefs', poll.chiefs, 'voted', votedAsString);
     }
   } 
 
