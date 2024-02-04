@@ -10,8 +10,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const { isValid, message } = await getFrameMessage(body);
 
    // Get the poll data from database
-   const stringPoll = await kv.get('SBLVIII');
-   let poll = await kv.get('SBLVIII') || {niners: 0, chiefs: 0, voted: []}
+   let poll = await kv.hgetall('SBLVIII') || {niners: 0, chiefs: 0, voted: []}
    
   //  let niners: number = await kv.get('Niners') || 0
   //  let chiefs: number = await kv.get('Chiefs') || 0
@@ -25,13 +24,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     if (!voteExists) {
       if (buttonIndex === 2) {
         // Increment value for 49ers
-        poll.niners++
+        poll['niners']++
       }
       else if (buttonIndex === 1) {
         // Increment value for Chiefs
-        poll.chiefs++
+        poll['niners']++
       }
-      poll.voted.push(fid);
+      poll['voted'].push(fid);
       const votedAsString = JSON.stringify(poll.voted);
       await kv.hset("SBLVIII", 'niners', poll.niners, 'chiefs', poll.chiefs, 'voted', votedAsString);
     }
