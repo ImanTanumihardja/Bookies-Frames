@@ -13,23 +13,23 @@ export async function GET(req: NextRequest) {
         const buttonIndex = req.nextUrl.searchParams.get("buttonIndex") || "0"
 
         // Get the poll data from database
-        const count49ers: number = req.nextUrl.searchParams.get("49ers") ? parseInt(req.nextUrl.searchParams.get("49ers") as string) : 0 
-        const countChiefs: number = req.nextUrl.searchParams.get("Chiefs") ? parseInt(req.nextUrl.searchParams.get("Chiefs") as string) : 0
+        const niners: number = req.nextUrl.searchParams.get("niners") ? parseInt(req.nextUrl.searchParams.get("niners") as string) : 0 
+        const chiefs: number = req.nextUrl.searchParams.get("chiefs") ? parseInt(req.nextUrl.searchParams.get("chiefs") as string) : 0
     
 
-        const totalVotes = count49ers + countChiefs
+        const totalVotes = niners + chiefs
 
-        const percent49ers = totalVotes ? Math.round(count49ers / totalVotes * 100) : 0
-        const percentCheifs = totalVotes ? Math.round(countChiefs / totalVotes * 100) : 0
+        const ninersPercent = totalVotes ? Math.round(niners / totalVotes * 100) : 0
+        const chiefsPercent = totalVotes ? Math.round(chiefs / totalVotes * 100) : 0
         
         const pollData = {
             question: 'Who will win Super Bowl LVIII?',
-            options: [{votes: countChiefs, 
-                      percentOfTotal: percentCheifs,
-                      text: `Chiefs: ${countChiefs} votes`},
-                      {votes: count49ers, 
-                       percentOfTotal: percent49ers,
-                       text: `49ers: ${count49ers} votes`},
+            options: [{votes: chiefs, 
+                      percentOfTotal: chiefsPercent,
+                      text: `Chiefs: ${chiefs} votes`},
+                      {votes: niners, 
+                       percentOfTotal: ninersPercent,
+                       text: `49ers: ${niners} votes`},
                     ]
         }
 

@@ -10,33 +10,33 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const { isValid, message } = await getFrameMessage(body);
 
    // Get the poll data from database
-   let count49ers: number = await kv.get('49ers') || 0
-   let countChiefs: number = await kv.get('Chiefs') || 0
+   let poll = JSON.parse(await kv.get('SBLVIII')) || {niners: 0, chiefs: 0, voted: []}
+   
+  //  let niners: number = await kv.get('Niners') || 0
+  //  let chiefs: number = await kv.get('Chiefs') || 0
 
   if (isValid) {
     buttonIndex = message?.button || 0;
     const fid = message?.interactor.fid || 0;
 
     // Check if voted before
-    const voteExists = await kv.sismember(`voted`, fid)
+    const voteExists = poll.voted.includes(fid);
     if (!voteExists) {
-      let multi = kv.multi();
       if (buttonIndex === 2) {
-        // Increment value for 49ers in kv database
-        multi.incr('49ers');
-        count49ers++
+        // Increment value for 49ers
+        poll.niners++
       }
       else if (buttonIndex === 1) {
-        // Increment value for Chiefs in kv database
-        multi.incr('Chiefs');
-        countChiefs++
+        // Increment value for Chiefs
+        poll.chiefs++
       }
-      multi.sadd(`voted`, fid);
-      await multi.exec();
+      poll.voted.push(fid);
+      const votedAsString = JSON.stringify(poll.voted);
+      await kv.hmset("SBLVIII", 'niners', poll.niners, 'chiefs', poll.chiefs, 'voted', votedAsString);
     }
   } 
 
-  const imageUrl = `${process.env['HOST']}/api/image?buttonIndex=${buttonIndex}&49ers=${count49ers}&Chiefs=${countChiefs}`;
+  const imageUrl = `${process.env['HOST']}/api/image?buttonIndex=${buttonIndex}&niners=${poll.niners}&chiefs=${poll.chiefs}`;
 
   return new NextResponse(
     getFrameHtmlResponse({
