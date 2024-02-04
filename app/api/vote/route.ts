@@ -32,7 +32,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
   } 
 
-  const imageUrl = `${process.env['HOST']}/api/image?buttonIndex=${buttonIndex}&niners=${poll.niners}&chiefs=${poll.chiefs}`;
+  const imageUrl = `${process.env['HOST']}/api/frames/sblviii-winner/image?buttonIndex=${buttonIndex}&niners=${poll.niners}&chiefs=${poll.chiefs}`;
 
   return new NextResponse(
     getFrameHtmlResponse({
