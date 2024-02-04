@@ -32,13 +32,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
   } 
 
-  const imageUrl = `${process.env['HOST']}/api/frames/sblviii-winner/image?buttonIndex=${buttonIndex}&niners=${poll.niners}&chiefs=${poll.chiefs}`;
+  const imageUrl = `${process.env['HOST']}/api/frames/sblviii-winner/image?buttonIndex=${buttonIndex}&niners=${poll.niners}&chiefs=${poll.chiefs}&timestamp=${new Date().getTime()}`;
 
   return new NextResponse(
     getFrameHtmlResponse({
       image: `${imageUrl}`,
       post_url: `${process.env['HOST']}/api/frames/sblviii-winner/vote`,
-      refresh_period: 60,
     }),
   );
 }
