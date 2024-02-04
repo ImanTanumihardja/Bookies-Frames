@@ -1,4 +1,5 @@
 import { ImageResponse, NextRequest, NextResponse } from 'next/server';
+import { kv } from "@vercel/kv";
 
 export async function GET(req: NextRequest) {
     try {
@@ -9,12 +10,14 @@ export async function GET(req: NextRequest) {
             ),
           ).then((res) => res.arrayBuffer());
         
+        // Get poll data from database
+        let poll: { niners: number; chiefs: number; voted: number[] } = await kv.get('SBLVIII') || {niners: 0, chiefs: 0, voted : [] as number[]}
         
         const buttonIndex = req.nextUrl.searchParams.get("buttonIndex") || "0"
 
         // Get the poll data from database
-        const niners: number = req.nextUrl.searchParams.get("niners") ? parseInt(req.nextUrl.searchParams.get("niners") as string) : 0 
-        const chiefs: number = req.nextUrl.searchParams.get("chiefs") ? parseInt(req.nextUrl.searchParams.get("chiefs") as string) : 0
+        const niners: number = poll.niners //req.nextUrl.searchParams.get("niners") ? parseInt(req.nextUrl.searchParams.get("niners") as string) : 0 
+        const chiefs: number = poll.chiefs //req.nextUrl.searchParams.get("chiefs") ? parseInt(req.nextUrl.searchParams.get("chiefs") as string) : 0
     
 
         const totalVotes = niners + chiefs
