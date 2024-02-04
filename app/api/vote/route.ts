@@ -10,7 +10,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const { isValid, message } = await getFrameMessage(body);
 
   if (isValid) {
-
     buttonIndex = message?.buttonIndex || 0;
     const fid = message?.fid || 0;
 
