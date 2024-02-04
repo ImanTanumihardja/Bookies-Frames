@@ -37,7 +37,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   return new NextResponse(
     getFrameHtmlResponse({
       image: `${imageUrl}`,
-      post_url: `${process.env['HOST']}/api/vote`,
+      post_url: `${process.env['HOST']}/api/frames/sblviii-winner/vote`,
     }),
   );
 }
