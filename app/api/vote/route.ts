@@ -20,7 +20,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const fid = message?.interactor.fid || 0;
 
     // Check if voted before
-    const voteExists = poll.voted.includes(fid);
+    const voteExists = poll["voted"].includes(fid);
     if (!voteExists) {
       if (buttonIndex === 2) {
         // Increment value for 49ers
