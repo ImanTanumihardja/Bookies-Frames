@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { ImageResponse, NextRequest, NextResponse } from 'next/server';
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import sharp from 'sharp';
 import { kv } from "@vercel/kv";
@@ -9,11 +9,15 @@ import * as fs from "fs";
 const fontPath = join(process.cwd(), 'Roboto-Regular.ttf')
 let fontData = fs.readFileSync(fontPath)
 
-async function getResponse(req: NextRequest): Promise<NextResponse> {
+async function getResponse(req: NextRequest) {
     try {
         const body: FrameRequest = await req.json();
         const { isValid, message } = await getFrameMessage(body);
 
+        if (!isValid) {
+            return new NextResponse('Invalid request', { status: 400 });
+        }
+        
         const buttonIndex = message?.button || 0;
         // Get the poll data from database
         const count49ers: number = await kv.get('49ers') || 0
@@ -35,7 +39,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
                     ]
         }
 
-        const svg = await satori(
+        return new ImageResponse(
             <div style={{
                 justifyContent: 'flex-start',
                 alignItems: 'center',
@@ -89,25 +93,25 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
                 }]
             })
 
-        // Convert SVG to PNG using Sharp
-        const pngBuffer = await sharp(Buffer.from(svg))
-            .toFormat('png')
-            .toBuffer();
+        // // Convert SVG to PNG using Sharp
+        // const pngBuffer = await sharp(Buffer.from(svg))
+        //     .toFormat('png')
+        //     .toBuffer();
 
-        return new NextResponse(pngBuffer, {
-            headers: {
-                'Content-Type': 'image/png',
-                'Cache-Control': 'max-age=10'
-            }
-        });
+        // return new NextResponse(pngBuffer, {
+        //     headers: {
+        //         'Content-Type': 'image/png',
+        //         'Cache-Control': 'max-age=10'
+        //     }
+        // });
     } catch (error) {
         console.error(error);
         return new NextResponse('Could not generate image', { status: 500 });
     }
 }
 
-export async function POST(req: NextRequest): Promise<Response> {
+export async function Get(req: NextRequest) {
     return getResponse(req);
 }
 
-export const dynamic = 'force-dynamic';
+export const runtime = 'edge';
