@@ -1,8 +1,6 @@
 import { ImageResponse, NextRequest, NextResponse } from 'next/server';
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
-import sharp from 'sharp';
 import { kv } from "@vercel/kv";
-import satori from "satori";
 import { join } from 'path';
 import * as fs from "fs";
 
