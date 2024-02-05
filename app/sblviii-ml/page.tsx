@@ -17,7 +17,7 @@ const frameMetadata = getFrameMetadata({
     },
   ],
   image: `${process.env['HOST']}/superbowl.png`,
-  post_url: `${process.env['HOST']}/api/frames/${eventName}/vote?event=${eventName}`
+  post_url: `${process.env['HOST']}/api/frames/${eventName}/vote?eventName=${eventName}`
 });
 
 export const metadata: Metadata = {

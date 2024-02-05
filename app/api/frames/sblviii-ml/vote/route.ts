@@ -54,8 +54,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       event.bets[fid] = {wagerAmount: wagerAmount, prediction:prediction, timeStamp: now};
       await multi.hset(eventName, event);
 
-      // user.points -= wagerAmount;
-      // await multi.hset(accountAddress, user);
+      user.points -= wagerAmount;
+      await multi.hset(accountAddress, user);
 
       await multi.exec();
     } 
@@ -66,11 +66,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       prediction = -1
     }
 
-    // const imageUrl = `${process.env['HOST']}/api/frames/${eventName}/image?chiefs=${event.poll[0]}&niners=${event.poll[1]}&result=${event.result}&prediction=${prediction}&timestamp=${now}`;
+    const imageUrl = `${process.env['HOST']}/api/frames/${eventName}/image?chiefs=${event.poll[0]}&niners=${event.poll[1]}&result=${event.result}&prediction=${prediction}&timestamp=${now}`;
 
     return new NextResponse(
       getFrameHtmlResponse({
-        image: `${process.env['HOST']}/superbowl.png`, //`${imageUrl}`,
+        image: `${imageUrl}`,
         post_url: `${process.env['HOST']}/api/frames/${eventName}/vote`,
       }),
     );
