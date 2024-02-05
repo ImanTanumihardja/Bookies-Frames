@@ -1,5 +1,5 @@
 export type Event = { 
     startDate: number;
-    poll: Map<string, number>; 
-    voted: Map<number, number>; 
+    poll: {niners: number; chiefs: number;}; 
+    voted: number[]; 
     result: number }

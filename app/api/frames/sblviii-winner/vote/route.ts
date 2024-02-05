@@ -13,31 +13,26 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const fid = message?.interactor.fid || 0;
 
     // Get the poll data from database or init if not exists
-    let event: Event | null = await kv.hgetall('SBLVIII')
-    if (!event) {
-      event = {startDate: 1707694200000, poll: new Map<string, number>(), voted: new Map<number, number>(), result: 0} as Event
-      event.poll.set('niners', 0);
-      event.poll.set('chiefs', 0);
-    }
+    let event : Event = await kv.hgetall('SBLVIII') || {startDate: 1707694200000, poll: { niners: 0, chiefs: 0 }, voted: [] as number[], result: 0}
 
     const now = new Date().getTime();
 
     // Check if voted before and if the event is closed
-    const voteExists = event.voted.has(fid);
-    if (!voteExists && now < event.startDate) {
+    const voteExists = event?.voted.includes(fid);
+    if (!voteExists && now < event?.startDate) {
       if (buttonIndex === 2) {
         // Increment value for 49ers
-        event.poll.set('niners', (event.poll.get('niners') || 0) + 1)
+        event.poll.niners++;
       }
       else if (buttonIndex === 1) {
         // Increment value for Chiefs
-        event.poll.set('chiefs', (event.poll.get('chiefs') || 0) + 1)
+        event.poll.chiefs++;
       }
-      event.voted.set(fid, buttonIndex);
+      event.voted.push(fid);
       await kv.hset("SBLVIII", event);
     }
 
-    const imageUrl = `${process.env['HOST']}/api/frames/sblviii-winner/image?buttonIndex=${buttonIndex}&niners=${event.poll.get('niners')}&chiefs=${(event.poll.get('chiefs'))}&result=${event.result}&timestamp=${now}`;
+    const imageUrl = `${process.env['HOST']}/api/frames/sblviii-winner/image?buttonIndex=${buttonIndex}&niners=${event.poll["niners"]}&chiefs=${event.poll["chiefs"]}&result=${event.result}&timestamp=${now}`;
 
     return new NextResponse(
       getFrameHtmlResponse({
