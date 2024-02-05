@@ -1,7 +1,7 @@
 import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
-import { Event, User, Bet } from '../../../../types';
+import { Event, User, Bet } from '../../../types';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -14,7 +14,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const fid: number = message?.interactor.fid || 0;
     const accountAddress: string = message?.interactor.verified_accounts[0] || "";
     const eventName: string = req.nextUrl.searchParams.get("eventName") || "";
-    let user : User = await kv.hgetall(accountAddress) || {fid: fid, points: 0};
+    let user : User = await kv.hgetall(accountAddress) || {fid: fid, points: 0, streak: 0};
 
     // Check if I can parse the amount as integer
     let wagerAmount;
@@ -71,7 +71,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     return new NextResponse(
       getFrameHtmlResponse({
         image: `${imageUrl}`,
-        post_url: `${process.env['HOST']}/api/frames/${eventName}/vote`,
+        post_url: `${process.env['HOST']}/api/frames/${eventName}`,
       }),
     );
   } 

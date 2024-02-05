@@ -8,6 +8,7 @@ export type Event = {
 export type User = {
     fid: number;
     points: number;
+    streak: number;
 }
 
 export type Bet = {

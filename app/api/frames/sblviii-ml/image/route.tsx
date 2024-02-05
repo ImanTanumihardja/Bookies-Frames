@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
             ),
           ).then((res) => res.arrayBuffer());
 
-        // Get the poll data from database
+        // Get the event data
         const niners: number = req.nextUrl.searchParams.get("niners") ? parseInt(req.nextUrl.searchParams.get("niners") as string) : 0 
         const chiefs: number = req.nextUrl.searchParams.get("chiefs") ? parseInt(req.nextUrl.searchParams.get("chiefs") as string) : 0
         const result = req.nextUrl.searchParams.get("result") ? parseInt(req.nextUrl.searchParams.get("result") as string) : 0
