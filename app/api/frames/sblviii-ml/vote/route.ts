@@ -40,10 +40,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // // Get the poll data from database or init if not exists
-    // let event : Event = await kv.hgetall(eventName) || {startDate: 1707694200000, poll: [0, 0], bets: {} as Record<number, Bet>, result: -1};
+    // Get the poll data from database or init if not exists
+    let event : Event = await kv.hgetall(eventName) || {startDate: 1707694200000, poll: [0, 0], bets: {} as Record<number, Bet>, result: -1};
 
-    // const now = new Date().getTime();
+    const now = new Date().getTime();
 
     // // Check if voted before and if the event is closed
     // const voteExists = event?.bets.hasOwnProperty(fid);
