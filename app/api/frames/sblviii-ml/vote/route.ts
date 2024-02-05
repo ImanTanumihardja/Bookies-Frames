@@ -12,7 +12,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const buttonIndex: number = message?.button || 0;
     let prediction: number = buttonIndex - 1; // zero indexed
     const fid: number = message?.interactor.fid || 0;
-    const accountAddress = message?.interactor.verified_accounts[0] || "";
+    const accountAddress: string = message?.interactor.verified_accounts[0] || "";
     const eventName: string = req.nextUrl.searchParams.get("eventName") || "";
     let user : User = await kv.hgetall(accountAddress) || {fid: fid, points: 0};
 
@@ -54,8 +54,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       event.bets[fid] = {wagerAmount: wagerAmount, prediction:prediction, timeStamp: now};
       await multi.hset(eventName, event);
 
-      user.points -= wagerAmount;
-      await multi.hset(accountAddress, user);
+      // user.points -= wagerAmount;
+      // await multi.hset(accountAddress, user);
 
       await multi.exec();
     } 
