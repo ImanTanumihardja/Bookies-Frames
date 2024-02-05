@@ -40,37 +40,37 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Get the poll data from database or init if not exists
-    let event : Event = await kv.hgetall(eventName) || {startDate: 1707694200000, poll: [0, 0], bets: {} as Record<number, Bet>, result: -1};
+    // // Get the poll data from database or init if not exists
+    // let event : Event = await kv.hgetall(eventName) || {startDate: 1707694200000, poll: [0, 0], bets: {} as Record<number, Bet>, result: -1};
 
-    const now = new Date().getTime();
+    // const now = new Date().getTime();
 
-    // Check if voted before and if the event is closed
-    const voteExists = event?.bets.hasOwnProperty(fid);
-    if (!voteExists && now < event?.startDate) {
-      const multi = kv.multi();
+    // // Check if voted before and if the event is closed
+    // const voteExists = event?.bets.hasOwnProperty(fid);
+    // if (!voteExists && now < event?.startDate) {
+    //   const multi = kv.multi();
 
-      event.poll[prediction]++;
-      event.bets[fid] = {wagerAmount: wagerAmount, prediction:prediction, timeStamp: now};
-      await multi.hset(eventName, event);
+    //   event.poll[prediction]++;
+    //   event.bets[fid] = {wagerAmount: wagerAmount, prediction:prediction, timeStamp: now};
+    //   await multi.hset(eventName, event);
 
-      user.points -= wagerAmount;
-      await multi.hset(accountAddress, user);
+    //   user.points -= wagerAmount;
+    //   await multi.hset(accountAddress, user);
 
-      await multi.exec();
-    } 
-    else if (event.startDate >= now) {
-      prediction = event.bets[fid].prediction;
-    }
-    else {
-      prediction = -1
-    }
+    //   await multi.exec();
+    // } 
+    // else if (event.startDate >= now) {
+    //   prediction = event.bets[fid].prediction;
+    // }
+    // else {
+    //   prediction = -1
+    // }
 
-    const imageUrl = `${process.env['HOST']}/superbowl.png` //`${process.env['HOST']}/api/frames/${eventName}/image?chiefs=${event.poll[0]}&niners=${event.poll[1]}&result=${event.result}&prediction=${prediction}&timestamp=${now}`;
+    // const imageUrl = `${process.env['HOST']}/api/frames/${eventName}/image?chiefs=${event.poll[0]}&niners=${event.poll[1]}&result=${event.result}&prediction=${prediction}&timestamp=${now}`;
 
     return new NextResponse(
       getFrameHtmlResponse({
-        image: `${imageUrl}`,
+        image: `${process.env['HOST']}/superbowl.png`, //`${imageUrl}`,
         post_url: `${process.env['HOST']}/api/frames/${eventName}/vote`,
       }),
     );
