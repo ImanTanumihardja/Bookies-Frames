@@ -30,7 +30,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
 
     // Check if the amount is valid
-    let user : User = await kv.hgetall(accountAddress) || {fid: fid, points: 100};
+    let user : User = await kv.hgetall(accountAddress) || {fid: fid, points: 0};
     if (wagerAmount > user.points) {
       return new NextResponse(
         // Return a response with a error message
@@ -66,12 +66,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       prediction = -1
     }
 
-    const imageUrl = `${process.env['HOST']}/api/frames/sblviii-ml/image?chiefs=${event.poll[0]}&niners=${event.poll[1]}&result=${event.result}&prediction=${prediction}&timestamp=${now}`;
+    const imageUrl = `${process.env['HOST']}/superbowl.png` //`${process.env['HOST']}/api/frames/${eventName}/image?chiefs=${event.poll[0]}&niners=${event.poll[1]}&result=${event.result}&prediction=${prediction}&timestamp=${now}`;
 
     return new NextResponse(
       getFrameHtmlResponse({
         image: `${imageUrl}`,
-        post_url: `${process.env['HOST']}/api/frames/sblviii-ml/vote`,
+        post_url: `${process.env['HOST']}/api/frames/${eventName}/vote`,
       }),
     );
   } 

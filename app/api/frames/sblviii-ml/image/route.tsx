@@ -80,7 +80,7 @@ export async function GET(req: NextRequest) {
                     textAlign: 'center'
                 }}>
                     <h2 >{result === -1 ? 'Event has not settled' : result === 0 ? 'Chiefs Won!' : '49ers Won!'}</h2>
-                    {result !== -1 && <h3 >Your prediction was {prediction === result ?  'correct' : 'wrong'} </h3>}
+                    {result !== -1 && <h3>Your prediction was {prediction === result ?  'correct' : 'wrong'} </h3>}
                 </div>
             </div>
             ,
