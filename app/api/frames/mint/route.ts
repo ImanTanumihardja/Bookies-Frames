@@ -22,6 +22,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       const multi = kv.multi();
       await multi.sadd('users', accountAddress);
       await multi.hset(accountAddress, user);
+      await multi.exec();
     }
 
     const imageUrl = `${process.env['HOST']}/api/frames/${eventName}/image?hasMinted=${hasMinted}`;
