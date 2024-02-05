@@ -12,20 +12,18 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (isValid) {
     const fid: number = message?.interactor.fid || 0;
     const accountAddress: string = message?.interactor.verified_accounts[0] || "";
-    const hasMinted = null !== (await kv.zscore('users', accountAddress));
+    const hasMinted: boolean = null !== (await kv.zscore('users', accountAddress));
 
     if (!hasMinted) {
-      let user : User = await kv.hgetall(accountAddress) as User || {fid: fid, points: 0, streak: 0};
-      user.fid = fid;
-      user.points = user.points as number + 100 as number;
+      let user : User = {fid: fid, points: 100, streak: 0};
 
       const multi = kv.multi();
-      await multi.zadd('users', {score: user.points, member: accountAddress});
+      await multi.zadd('users', {score: 100, member: accountAddress});
       await multi.hset(accountAddress, user);
       await multi.exec();
     }
 
-    const imageUrl = `${process.env['HOST']}/api/frames/${eventName}/image?hasMinted=${hasMinted}`;
+    const imageUrl = `${process.env['HOST']}/api/frames/${eventName}/image?hasMinted=${hasMinted}&timestamp=${new Date().getTime()}`;
 
     return new NextResponse(
       getFrameHtmlResponse({
