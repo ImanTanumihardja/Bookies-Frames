@@ -14,6 +14,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const fid: number = message?.interactor.fid || 0;
     const accountAddress = message?.interactor.verified_accounts[0] || "";
     const eventName: string = req.nextUrl.searchParams.get("eventName") || "";
+    let user : User = await kv.hgetall(accountAddress) || {fid: fid, points: 0};
 
     // Check if I can parse the amount as integer
     let wagerAmount;
@@ -30,7 +31,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
 
     // Check if the amount is valid
-    let user : User = await kv.hgetall(accountAddress) || {fid: fid, points: 0};
     if (wagerAmount > user.points) {
       return new NextResponse(
         // Return a response with a error message
@@ -45,26 +45,26 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     const now = new Date().getTime();
 
-    // // Check if voted before and if the event is closed
-    // const voteExists = event?.bets.hasOwnProperty(fid);
-    // if (!voteExists && now < event?.startDate) {
-    //   const multi = kv.multi();
+    // Check if voted before and if the event is closed
+    const voteExists = event?.bets.hasOwnProperty(fid);
+    if (!voteExists && now < event?.startDate) {
+      const multi = kv.multi();
 
-    //   event.poll[prediction]++;
-    //   event.bets[fid] = {wagerAmount: wagerAmount, prediction:prediction, timeStamp: now};
-    //   await multi.hset(eventName, event);
+      event.poll[prediction]++;
+      event.bets[fid] = {wagerAmount: wagerAmount, prediction:prediction, timeStamp: now};
+      await multi.hset(eventName, event);
 
-    //   user.points -= wagerAmount;
-    //   await multi.hset(accountAddress, user);
+      user.points -= wagerAmount;
+      await multi.hset(accountAddress, user);
 
-    //   await multi.exec();
-    // } 
-    // else if (event.startDate >= now) {
-    //   prediction = event.bets[fid].prediction;
-    // }
-    // else {
-    //   prediction = -1
-    // }
+      await multi.exec();
+    } 
+    else if (event.startDate >= now) {
+      prediction = event.bets[fid].prediction;
+    }
+    else {
+      prediction = -1
+    }
 
     // const imageUrl = `${process.env['HOST']}/api/frames/${eventName}/image?chiefs=${event.poll[0]}&niners=${event.poll[1]}&result=${event.result}&prediction=${prediction}&timestamp=${now}`;
 
