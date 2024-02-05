@@ -15,14 +15,16 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     // Get the poll data from database or init if not exists
     let event: Event = await kv.hget('SBLVIII')
     if (!event) {
-      event = {poll: new Map(), voted: new Map<number, number>(), result: 0}
+      event = {startDate: 1707694200000, poll: new Map(), voted: new Map<number, number>(), result: 0}
       event.poll.set('niners', 0);
       event.poll.set('chiefs', 0);
     }
 
-    // Check if voted before
+    const now = new Date().getTime();
+
+    // Check if voted before and if the event is closed
     const voteExists = event.voted.has(fid);
-    if (!voteExists) {
+    if (!voteExists && now < event.startDate) {
       if (buttonIndex === 2) {
         // Increment value for 49ers
         event.poll.set('niners', (event.poll.get('niners') || 0) + 1)
@@ -35,7 +37,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       await kv.hset("SBLVIII", event);
     }
 
-    const imageUrl = `${process.env['HOST']}/api/frames/sblviii-winner/image?buttonIndex=${buttonIndex}&niners=${event.poll.get('niners')}&chiefs=${(event.poll.get('chiefs'))}&timestamp=${new Date().getTime()}`;
+    const imageUrl = `${process.env['HOST']}/api/frames/sblviii-winner/image?buttonIndex=${buttonIndex}&niners=${event.poll.get('niners')}&chiefs=${(event.poll.get('chiefs'))}&timestamp=${now}`;
 
     return new NextResponse(
       getFrameHtmlResponse({
