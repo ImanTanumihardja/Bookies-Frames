@@ -30,7 +30,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
 
     // Check if the amount is valid
-    let user : User = await kv.hgetall(accountAddress) || {fid: fid, points:100};
+    let user : User = await kv.hgetall(accountAddress) || {fid: fid, points: 100};
     if (wagerAmount > user.points) {
       return new NextResponse(
         // Return a response with a error message

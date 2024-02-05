@@ -6,7 +6,7 @@ const eventName = 'sblviii:ml'
 
 const frameMetadata = getFrameMetadata({
   input: {
-    text: 'How many Dice do you want to wager?',
+    text: 'Wager Amount',
   },
   buttons: [
     {
