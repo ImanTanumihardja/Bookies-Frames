@@ -8,7 +8,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const body: FrameRequest = await req.json();
   const { isValid, message } = await getFrameMessage(body, { neynarApiKey: 'NEYNAR_ONCHAIN_KIT' });
 
-  if (isValid && message.following) {
+  if (isValid) {
     const buttonIndex: number = message?.button || 0;
     let prediction: number = buttonIndex - 1; // zero indexed
     const fid: number = message?.interactor.fid || 0;
@@ -30,7 +30,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
 
     // Check if the amount is valid
-    let user : User = await kv.hgetall('points', accountAddress) || {balance: 0, address: accountAddress};
+    let user : User = await kv.hgetall(accountAddress) || {fid: fid, points:0};
     if (wagerAmount > user.points) {
       return new NextResponse(
         // Return a response with a error message
@@ -55,7 +55,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       await multi.hset(eventName, event);
 
       user.points -= wagerAmount;
-      await multi.hset("accountAddress", user);
+      await multi.hset(accountAddress, user);
 
       await multi.exec();
     } 
