@@ -8,13 +8,12 @@ export async function GET(req: NextRequest) {
               import.meta.url,
             ),
           ).then((res) => res.arrayBuffer());
-        
-        const buttonIndex = req.nextUrl.searchParams.get("buttonIndex") || "0"
 
         // Get the poll data from database
         const niners: number = req.nextUrl.searchParams.get("niners") ? parseInt(req.nextUrl.searchParams.get("niners") as string) : 0 
         const chiefs: number = req.nextUrl.searchParams.get("chiefs") ? parseInt(req.nextUrl.searchParams.get("chiefs") as string) : 0
-    
+        const result = req.nextUrl.searchParams.get("result") ? parseInt(req.nextUrl.searchParams.get("result") as string) : 0
+        const prediction = req.nextUrl.searchParams.get("prediction") ? parseInt(req.nextUrl.searchParams.get("prediction") as string) : 0
 
         const totalVotes = niners + chiefs
 
@@ -46,11 +45,12 @@ export async function GET(req: NextRequest) {
                     display: 'flex',
                     flexDirection: 'column',
                     background: 'linear-gradient(to right, purple, orange)',
+                    justifyContent: 'center',
                     width: '50%',
                     height: '100%',
                     padding: 30,
                 }}>
-                    <h2 style={{textAlign: 'center', color: 'white', fontSize: 27, paddingBottom:10, paddingTop:30}}>{pollData.question}</h2>
+                    <h2 style={{textAlign: 'center', color: 'white', fontSize: 27, paddingBottom:10}}>{pollData.question}</h2>
                     {
                         pollData.options.map((opt, index) => {
                             return (
@@ -69,11 +69,19 @@ export async function GET(req: NextRequest) {
                         })
                     }
                 </div>
-                <img style={{
-                    width: '50%',
-                    height: '80%',
+                <div style={{
                     display: 'flex',
-                }} src={`${process.env['HOST']}/${buttonIndex === "1" ? 'chiefs' : 'niners'}.png`}/>
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '50%',
+                    height: '100%',
+                    padding: 30,
+                    textAlign: 'center'
+                }}>
+                    <h2 >{result === -1 ? 'Event has not settled' : result === 0 ? 'Chiefs Won' : '49ers Won'}</h2>
+                    {result !== -1 && <h3 >Your prediction was {prediction === result ?  'correct' : 'wrong'} </h3>}
+                </div>
             </div>
             ,
             {
