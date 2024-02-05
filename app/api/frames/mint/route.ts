@@ -17,7 +17,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     if (!hasMinted) {
       let user : User = await kv.hgetall(accountAddress) as User || {fid: fid, points: 0, streak: 0};
       user.fid = fid;
-      user.points += 100;
+      user.points = user.points as number + 100 as number;
 
       const multi = kv.multi();
       await multi.zadd('users', {score: user.points, member: accountAddress});
