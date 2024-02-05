@@ -3,6 +3,9 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 const frameMetadata = getFrameMetadata({
+  input: {
+    text: 'Amount',
+  },
   buttons: [
     {
       label: 'Chiefs',
@@ -17,10 +20,10 @@ const frameMetadata = getFrameMetadata({
 
 export const metadata: Metadata = {
   title: 'Superbowl LVIII Poll',
-  description: 'The first non-custiodal sports betting exchange with the vision of democratizing the sports betting experience.',
+  description: 'Who will win Superbowl LVIII?',
   openGraph: {
     title: 'Superbowl LVIII Poll',
-    description: 'The first non-custiodal sports betting exchange with the vision of democratizing the sports betting experience.', 
+    description: 'Who will win Superbowl LVIII?', 
     images: [`${process.env['HOST']}/superbowl.png`],
   },
   other: {
