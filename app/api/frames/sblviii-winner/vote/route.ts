@@ -13,7 +13,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const fid = message?.interactor.fid || 0;
 
     // Get the poll data from database or init if not exists
-    let event : Event = await kv.hgetall('SBLVIII') || {startDate: 1707694200000, poll: { niners: 0, chiefs: 0 }, voted: [] as number[], result: 0}
+    let event = await kv.hgetall('SBLVIII') || {startDate: 1707694200000, poll: { niners: 0, chiefs: 0 }, voted: [] as number[], result: 0}
 
     const now = new Date().getTime();
 
