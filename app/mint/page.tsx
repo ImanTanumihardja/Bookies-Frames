@@ -7,7 +7,7 @@ const eventName = 'mint'
 const frameMetadata = getFrameMetadata({
   buttons: [
     {
-      label: 'Get 100 Dice',
+      label: 'Get 100 free Dice!',
     },
   ],
   image: `${process.env['HOST']}/superbowl.png`,

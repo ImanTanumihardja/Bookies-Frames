@@ -12,15 +12,15 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (isValid) {
     const fid: number = message?.interactor.fid || 0;
     const accountAddress: string = message?.interactor.verified_accounts[0] || "";
-    const hasMinted = await kv.sismember('users', accountAddress);
+    const hasMinted = null !== (await kv.zscore('users', accountAddress));
 
     if (!hasMinted) {
-      let user : User = await kv.hgetall(accountAddress) || {fid: fid, points: 0, streak: 0};
+      let user : User = {fid: fid, points: 10, streak: 0};
       user.fid = fid;
-      user.points += 100;
+      user.points += 100 as number;
 
       const multi = kv.multi();
-      await multi.sadd('users', accountAddress);
+      await multi.zadd('users', {score: user.points, member: accountAddress});
       await multi.hset(accountAddress, user);
       await multi.exec();
     }
