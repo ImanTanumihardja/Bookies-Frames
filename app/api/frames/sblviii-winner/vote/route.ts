@@ -8,7 +8,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const body: FrameRequest = await req.json();
   const { isValid, message } = await getFrameMessage(body);
 
-  if (isValid && message.following) {
+  if (isValid /*&& message.following*/) {
     const buttonIndex = message?.button || 0;
     const fid = message?.interactor.fid || 0;
 
@@ -37,7 +37,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       await kv.hset("SBLVIII", event);
     }
 
-    const imageUrl = `${process.env['HOST']}/api/frames/sblviii-winner/image?buttonIndex=${buttonIndex}&niners=${event.poll.get('niners')}&chiefs=${(event.poll.get('chiefs'))}&timestamp=${now}`;
+    const imageUrl = `${process.env['HOST']}/api/frames/sblviii-winner/image?buttonIndex=${buttonIndex}&niners=${event.poll.get('niners')}&chiefs=${(event.poll.get('chiefs'))}&result=${event.result}&timestamp=${now}`;
 
     return new NextResponse(
       getFrameHtmlResponse({
