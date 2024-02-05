@@ -30,7 +30,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
 
     // Check if the amount is valid
-    let user : User = await kv.hget('points', accountAddress) || {balance: 0, address: accountAddress};
+    let user : User = await kv.hgetall('points', accountAddress) || {balance: 0, address: accountAddress};
     if (wagerAmount > user.points) {
       return new NextResponse(
         // Return a response with a error message
@@ -56,7 +56,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
       user.points -= wagerAmount;
       await multi.hset("accountAddress", user);
-      
+
       await multi.exec();
     } 
     else if (event.startDate >= now) {
