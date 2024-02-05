@@ -10,18 +10,19 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (isValid /*&& message.following*/) {
     const buttonIndex = message?.button || 0;
+    const vote = buttonIndex - 1; // zero indexed
     const fid = message?.interactor.fid || 0;
 
     // Get the poll data from database or init if not exists
-    let event : Event = await kv.hgetall('SBLVIII') || {startDate: 1707694200000, poll: [0, 0], voted: [] as number[], result: 0}
+    let event : Event = await kv.hgetall('SBLVIII') || {startDate: 1707694200000, poll: [0, 0], voted: {} as Record<string, any>, result: 0}
 
     const now = new Date().getTime();
 
     // Check if voted before and if the event is closed
-    const voteExists = event?.voted.includes(fid);
+    const voteExists = event?.voted.hasOwnProperty(fid);
     if (!voteExists && now < event?.startDate) {
-      event.poll[buttonIndex-1]++;
-      event.voted.push(fid);
+      event.poll[vote]++;
+      event.voted[fid] = vote;
       await kv.hset("SBLVIII", event);
     }
 
