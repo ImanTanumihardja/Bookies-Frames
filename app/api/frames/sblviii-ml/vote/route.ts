@@ -66,12 +66,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       prediction = -1
     }
 
-    const imageUrl = `${process.env['HOST']}/api/frames/sblviii-winner/image?chiefs=${event.poll[0]}&niners=${event.poll[1]}&result=${event.result}&prediction=${prediction}&timestamp=${now}`;
+    const imageUrl = `${process.env['HOST']}/api/frames/sblviii-ml/image?chiefs=${event.poll[0]}&niners=${event.poll[1]}&result=${event.result}&prediction=${prediction}&timestamp=${now}`;
 
     return new NextResponse(
       getFrameHtmlResponse({
         image: `${imageUrl}`,
-        post_url: `${process.env['HOST']}/api/frames/sblviii-winner/vote`,
+        post_url: `${process.env['HOST']}/api/frames/sblviii-ml/vote`,
       }),
     );
   } 
