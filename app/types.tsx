@@ -2,10 +2,16 @@
 export type Event = { 
     startDate: number;
     poll: number[]; 
-    voted: Record<number, {prediction: number, timeStamp: number}>; 
+    bets: Record<number, Bet>; 
     result: number }
 
 export type User = {
     fid: number;
     points: number;
+}
+
+export type Bet = {
+    wagerAmount: number
+    prediction: number
+    timeStamp: number
 }

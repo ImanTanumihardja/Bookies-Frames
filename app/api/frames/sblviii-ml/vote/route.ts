@@ -1,7 +1,7 @@
 import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
-import { Event, User } from '../../../../types';
+import { Event, User, Bet } from '../../../../types';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -30,7 +30,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
 
     // Check if the amount is valid
-    let user : User = await kv.hgetall(accountAddress) || {fid: fid, points:0};
+    let user : User = await kv.hgetall(accountAddress) || {fid: fid, points:100};
     if (wagerAmount > user.points) {
       return new NextResponse(
         // Return a response with a error message
@@ -41,17 +41,17 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
 
     // Get the poll data from database or init if not exists
-    let event : Event = await kv.hgetall(eventName) || {startDate: 1707694200000, poll: [0, 0], voted: {} as Record<number, {prediction: number, timeStamp: number}>, result: -1};
+    let event : Event = await kv.hgetall(eventName) || {startDate: 1707694200000, poll: [0, 0], bets: {} as Record<number, Bet>, result: -1};
 
     const now = new Date().getTime();
 
     // Check if voted before and if the event is closed
-    const voteExists = event?.voted.hasOwnProperty(fid);
+    const voteExists = event?.bets.hasOwnProperty(fid);
     if (!voteExists && now < event?.startDate) {
       const multi = kv.multi();
 
       event.poll[prediction]++;
-      event.voted[fid] = { prediction, timeStamp: now};
+      event.bets[fid] = {wagerAmount: wagerAmount, prediction:prediction, timeStamp: now};
       await multi.hset(eventName, event);
 
       user.points -= wagerAmount;
@@ -60,7 +60,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       await multi.exec();
     } 
     else if (event.startDate >= now) {
-      prediction = event.voted[fid].prediction;
+      prediction = event.bets[fid].prediction;
     }
     else {
       prediction = -1
