@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
             ),
           ).then((res) => res.arrayBuffer());
 
-        const hasMinted: boolean = req.nextUrl.searchParams.get("hasMinted") ? Boolean(req.nextUrl.searchParams.get("hasMinted")) : false
+        const hasMinted: boolean = req.nextUrl.searchParams.get("hasMinted") ? "true" == req.nextUrl.searchParams.get("hasMinted") : false
 
         return new ImageResponse(
             <div style={{

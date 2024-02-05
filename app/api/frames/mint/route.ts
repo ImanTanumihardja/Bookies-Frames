@@ -15,9 +15,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const hasMinted = null !== (await kv.zscore('users', accountAddress));
 
     if (!hasMinted) {
-      let user : User = {fid: fid, points: 10, streak: 0};
+      let user : User = await kv.hgetall(accountAddress) as User || {fid: fid, points: 0, streak: 0};
       user.fid = fid;
-      user.points += 100 as number;
+      user.points += 100;
 
       const multi = kv.multi();
       await multi.zadd('users', {score: user.points, member: accountAddress});
