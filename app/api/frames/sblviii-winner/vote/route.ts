@@ -13,7 +13,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const fid = message?.interactor.fid || 0;
 
     // Get the poll data from database or init if not exists
-    let event: Event = await kv.hget('SBLVIII')
+    let event: Event = await kv.hget('SBLVIII') || undefined
     if (!event) {
       event = {startDate: 1707694200000, poll: new Map(), voted: new Map<number, number>(), result: 0}
       event.poll.set('niners', 0);
