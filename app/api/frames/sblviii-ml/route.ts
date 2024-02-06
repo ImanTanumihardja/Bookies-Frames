@@ -12,7 +12,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const buttonIndex: number = message?.button || 0;
     let prediction: number = buttonIndex - 1; // zero indexed
     const fid: number = message?.interactor.fid || 0;
-    const accountAddress: string = message?.interactor.verified_accounts[0] || "";
+    const accountAddress: string = message?.interactor.custody_address || "";
     const eventName: string = req.nextUrl.searchParams.get("eventName") || "";
     let user : User = await kv.hgetall(accountAddress) || {fid: fid, points: 0, streak: 0};
 

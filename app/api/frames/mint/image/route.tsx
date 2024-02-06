@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
                 width: '100%',
                 height: '100%',
                 lineHeight: 1.2,
-                background: 'linear-gradient(to right, purple, orange)',
+                background: 'linear-gradient(to top right, orange, purple, orange)',
                 justifyContent: 'center',
             }}>
                 {!hasMinted ? 
@@ -29,11 +29,11 @@ export async function GET(req: NextRequest) {
                         flexDirection: 'column',
                         alignItems: 'center',
                     }}>
-                        <h2 style={{color: 'white', fontSize: 27}}> You recieved 100 free Dice!</h2>
-                        <h3 style={{color: 'white', }}> Go forth and multiply</h3>
+                        <h2 style={{color: 'white', fontSize: 27}}> You received 100 free 🎲!</h2>
+                        
                     </div>
                 :   
-                    <h2 style={{color: 'white', fontSize: 27}}> You already claimed your 100 free Dice!</h2>
+                    <h2 style={{color: 'white', fontSize: 27, padding: 100}}> You already claimed your 100 free 🎲!</h2>
                 }
             </div>
             ,

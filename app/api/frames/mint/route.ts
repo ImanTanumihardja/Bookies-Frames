@@ -11,7 +11,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (isValid) {
     const fid: number = message?.interactor.fid || 0;
-    const accountAddress: string = message?.interactor.verified_accounts[0] || "";
+    const accountAddress: string = message?.interactor.custody_address || "";
     const hasMinted: boolean = null !== (await kv.zscore('users', accountAddress));
 
     if (!hasMinted) {
