@@ -30,11 +30,18 @@ export async function GET(req: NextRequest) {
                         flexDirection: 'column',
                         alignItems: 'center',
                     }}>
-                        <h2 style={{color: 'white', fontSize:40}}> You received 100 free 🎲!</h2>
+                        <h2 style={{color: 'white', fontSize:40}}> You received 100 <img style={{width: 50, height: 50, marginLeft:10, marginRight:10}}src={`http://localhost:3000//dice.png`}/>!</h2>
                         
                     </div>
                 :   
-                    <h2 style={{color: 'white', fontSize: 40, padding: 100}}> You already claimed your 100 free 🎲!</h2>
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}>
+                    <h2 style={{color: 'white', fontSize: 40, margin:-10}}> You already claimed your </h2>
+                    <h2 style={{color: 'white', fontSize: 40}}> 100 <img style={{width: 50, height: 50, marginLeft:10, marginRight:10}}src={`http://localhost:3000//dice.png`}/>!</h2>
+                </div>
                 }
             </div>
             ,

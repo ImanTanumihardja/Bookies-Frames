@@ -2,7 +2,7 @@ import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
-const eventName = 'mint'
+const eventName = 'claim-dice'
 
 const frameMetadata = getFrameMetadata({
   buttons: [
