@@ -10,7 +10,7 @@ const frameMetadata = getFrameMetadata({
       label: 'Claim 100 free Dice!',
     },
   ],
-  image: `${process.env['HOST']}/dice.gif?time`,
+  image: `${process.env['HOST']}/dice.gif`,
   post_url: `${process.env['HOST']}/api/frames/${eventName}?eventName=${eventName}`
 });
 

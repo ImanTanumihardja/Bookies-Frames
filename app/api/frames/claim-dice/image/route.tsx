@@ -10,7 +10,7 @@ const plusJakartaSans = fetch(
 export async function GET(req: NextRequest) {
     try {
 
-        const hasMinted: boolean = req.nextUrl.searchParams.get("hasMinted") ? "true" === req.nextUrl.searchParams.get("hasMinted") : false
+        const hasClaimed: boolean = req.nextUrl.searchParams.get("hasClaimed") ? "true" === req.nextUrl.searchParams.get("hasClaimed") : false
 
         return new ImageResponse(
             <div style={{
@@ -24,13 +24,13 @@ export async function GET(req: NextRequest) {
                 background: 'linear-gradient(to top right, orange, purple, orange)',
                 justifyContent: 'center',
             }}>
-                {!hasMinted ? 
+                {!hasClaimed ? 
                     <div style={{
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                     }}>
-                        <h2 style={{color: 'white', fontSize:40}}> You received 100 <img style={{width: 50, height: 50, marginLeft:10, marginRight:10}}src={`http://localhost:3000//dice.png`}/>!</h2>
+                        <h2 style={{color: 'white', fontSize:40}}> You received 100 <img style={{width: 50, height: 50, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h2>
                         
                     </div>
                 :   
@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
                     alignItems: 'center',
                 }}>
                     <h2 style={{color: 'white', fontSize: 40, margin:-10}}> You already claimed your </h2>
-                    <h2 style={{color: 'white', fontSize: 40}}> 100 <img style={{width: 50, height: 50, marginLeft:10, marginRight:10}}src={`http://localhost:3000//dice.png`}/>!</h2>
+                    <h2 style={{color: 'white', fontSize: 40}}> 100 <img style={{width: 50, height: 50, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h2>
                 </div>
                 }
             </div>

@@ -12,9 +12,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (isValid) {
     const fid: number = message?.interactor.fid || 0;
     const accountAddress: string = message?.interactor.custody_address || "";
-    const hasMinted: boolean = null !== (await kv.zscore('users', accountAddress));
+    const hasClaimed: boolean = null !== (await kv.zscore('users', accountAddress));
 
-    if (!hasMinted) {
+    if (!hasClaimed) {
       let user : User = {fid: fid, points: 100, streak: 0};
 
       const multi = kv.multi();
@@ -23,7 +23,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       await multi.exec();
     }
 
-    const imageUrl = `${process.env['HOST']}/api/frames/${eventName}/image?hasMinted=${hasMinted}&timestamp=${new Date().getTime()}`;
+    const imageUrl = `${process.env['HOST']}/api/frames/${eventName}/image?hasClaimed=${hasClaimed}&timestamp=${new Date().getTime()}`;
 
     return new NextResponse(
       getFrameHtmlResponse({
