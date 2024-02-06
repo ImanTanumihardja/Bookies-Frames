@@ -1,13 +1,14 @@
 import { ImageResponse, NextRequest, NextResponse } from 'next/server';
 
+const plusJakartaSans = fetch(
+    new URL(
+      '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
+      import.meta.url,
+    ),
+  ).then((res) => res.arrayBuffer());
+
 export async function GET(req: NextRequest) {
     try {
-        const robotoMono400 = fetch(
-            new URL(
-              '@fontsource/roboto-mono/files/roboto-mono-latin-700-normal.woff',
-              import.meta.url,
-            ),
-          ).then((res) => res.arrayBuffer());
 
         // Get the event data
         const niners: number = req.nextUrl.searchParams.get("niners") ? parseInt(req.nextUrl.searchParams.get("niners") as string) : 0 
@@ -87,7 +88,7 @@ export async function GET(req: NextRequest) {
             {
                 width: 600, 
                 height: 400, 
-                fonts: [{ name: 'Roboto_Mono_400', data: await robotoMono400, weight: 400 }],
+                fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
             })
     } catch (error) {
         console.error(error);
