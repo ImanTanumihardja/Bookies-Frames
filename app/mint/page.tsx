@@ -10,7 +10,7 @@ const frameMetadata = getFrameMetadata({
       label: 'Claim 100 free Dice!',
     },
   ],
-  image: `${process.env['HOST']}/dice.gif?time=${Date.now()}`,
+  image: `${process.env['HOST']}/dice.gif?time`,
   post_url: `${process.env['HOST']}/api/frames/${eventName}?eventName=${eventName}`
 });
 
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: eventName,
     description: 'Claim 100 free Dice if you follow!', 
-    images: [`${process.env['HOST']}/dice.gif?time=${Date.now()}`],
+    images: [`${process.env['HOST']}/dice.gif`],
   },
   other: {
     ...frameMetadata,
