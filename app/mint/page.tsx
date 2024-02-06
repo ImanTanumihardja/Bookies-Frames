@@ -16,10 +16,10 @@ const frameMetadata = getFrameMetadata({
 
 export const metadata: Metadata = {
   title: eventName,
-  description: 'Claim 100 Dice free if you follow!',
+  description: 'Claim 100 free Dice if you follow!',
   openGraph: {
     title: eventName,
-    description: 'Claim 100 Dice free if you follow!', 
+    description: 'Claim 100 free Dice if you follow!', 
     images: [`${process.env['HOST']}/dice.gif`],
   },
   other: {
