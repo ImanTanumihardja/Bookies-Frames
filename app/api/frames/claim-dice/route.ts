@@ -20,7 +20,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const isNewUser: boolean = null === (await kv.zscore('users', accountAddress));
   const isFollowing: boolean = message?.following;
 
-  if (isFollowing) {
+  if (!isFollowing) {
     if (!hasClaimed) {
       user.lastClaimed = timestamp;
 

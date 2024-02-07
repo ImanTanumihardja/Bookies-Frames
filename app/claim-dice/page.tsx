@@ -7,7 +7,7 @@ const frameName = 'claim-dice'
 const frameMetadata = getFrameMetadata({
   buttons: [
     {
-      label: 'Claim 100 free Dice!',
+      label: 'Claim free Dice!',
     },
   ],
   image: `${process.env['HOST']}/dice.gif`,
@@ -16,7 +16,7 @@ const frameMetadata = getFrameMetadata({
 
 export const metadata: Metadata = {
   title: frameName,
-  description: 'Claim 100 free Dice if you follow!',
+  description: 'Claim free Dice if you follow!',
   openGraph: {
     title: frameName,
     description: 'Claim 100 free Dice if you follow!', 
