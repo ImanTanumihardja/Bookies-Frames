@@ -17,25 +17,25 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const timestamp = new Date().getTime();
   const hasClaimed = timestamp - user.lastClaimed < 86400000;
-  const isNewUser: boolean = null === (await kv.zscore('users', fid));
-  const isFollowing: boolean = message?.following; //TODO: remove negation when not testing
+  const isNewUser: boolean = user.lastClaimed == 0;
+  const isFollowing: boolean = true; //TODO: remove negation when not testing
 
   if (isFollowing) {
     if (!hasClaimed) {
-      user.lastClaimed = timestamp;
-
       const multi = kv.multi();
       if (isNewUser) {
         // New user
         user.points = 100;
         await multi.zadd('users', {score: 100, member: fid});
+        await multi.hset(fid.toString(), user);
       }
       else {
         // Get daily 10 dice for old user
         await multi.hincrby(fid.toString(), 'points', 10);
-        await multi.zadd('users', {score: user.points + 10, member: fid});
+        await multi.zincrby('users', 10, fid);
       }
-      await multi.hset(fid.toString(), user);
+
+      await multi.hset(fid.toString(), {'lastClaimed': timestamp});
       await multi.exec();
     }
   }
@@ -46,7 +46,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   return new NextResponse(
     getFrameHtmlResponse({
-      buttons: isFollowing ? [{ label: "View Profile" }] : [{ label: "Follow", action: 'link', target: 'https://warpcast.com/bookies'}],
+      buttons: /*isFollowing ? [{ label: "View Profile" }] :*/ [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
       image: `${imageUrl}`,
       post_url: `${process.env['HOST']}/api/frames/profile`
     }),

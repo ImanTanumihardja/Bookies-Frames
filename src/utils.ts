@@ -48,13 +48,7 @@ export function generateImageUrl(frameName: string, params: Record<string, any>)
 
     // Loop through each param
     for (const key in params) {
-        if (!url.includes('?')) {
-            url += '?'
-        } else {
-            url += '&'
-        }
-
-        url += `${key}=${params[key]}`
+        url += `&${key}=${params[key]}`
     }
     return url
 }
