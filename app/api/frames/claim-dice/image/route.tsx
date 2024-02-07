@@ -1,13 +1,6 @@
 import { ImageResponse, NextRequest, NextResponse } from 'next/server';
 import FrameBase from '../../../../../src/components/FrameBase'
-import { RequestProps, getRequestProps } from '../../../../../src/utils';
-
-const plusJakartaSans = fetch(
-    new URL(
-      '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
-      import.meta.url,
-    ),
-  ).then((res) => res.arrayBuffer());
+import { RequestProps, getRequestProps, plusJakartaSans } from '../../../../../src/utils';
 
 export async function GET(req: NextRequest) {
     try {
