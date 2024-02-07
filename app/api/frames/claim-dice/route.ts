@@ -31,9 +31,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     return new NextResponse(
       getFrameHtmlResponse({
-        buttons: [ { label: "View Profile" } ],
+        buttons: isFollowing ? [{ label: "View Profile" }] : [{ label: "Follow" }],
         image: `${imageUrl}`,
-        post_url: `${process.env['HOST']}/api/frames/${frameName}`,
+        post_url: isFollowing ? `${process.env['HOST']}/api/frames/${frameName}` : 'https://warpcast.com/bookies'
       }),
     );
   } 
