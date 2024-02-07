@@ -13,8 +13,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
   const accountAddress: string = message?.interactor.custody_address || "";
+  const isFollowing: boolean = message?.following;
   const hasClaimed: boolean = null !== (await kv.zscore('users', accountAddress));
-  const isFollowing: boolean = message.following;
+
 
   if (isFollowing) {
     if (!hasClaimed) {
@@ -27,7 +28,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
   }
 
-  const imageUrl = `${process.env['HOST']}/dice.gif` // generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed});
+  const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed});
 
   return new NextResponse(
     getFrameHtmlResponse({

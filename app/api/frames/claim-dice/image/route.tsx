@@ -1,13 +1,6 @@
 import { ImageResponse, NextRequest, NextResponse } from 'next/server';
 import FrameBase from '../../../../../src/components/FrameBase'
-import { RequestProps, getRequestProps } from '../../../../../src/utils';
-
-const plusJakartaSans = fetch(
-    new URL(
-      '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
-      import.meta.url,
-    ),
-  ).then((res) => res.arrayBuffer());
+import { RequestProps, getRequestProps, plusJakartaSans } from '../../../../../src/utils';
 
 export async function GET(req: NextRequest) {
     try {
@@ -22,6 +15,7 @@ export async function GET(req: NextRequest) {
                     <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                         <h1 style={{color: 'white'}}> You already claimed </h1>
                         <h1 style={{color: 'white', marginTop:-10}}> your free <img style={{width: 50, height: 50, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
+                        <h2 style={{color: 'white', marginTop:-10}}> Come back tommorow for 10 more!</h2>
                     </div>
                     :
                     <h2 style={{color: 'white', fontSize:40}}> You are not following Bookies</h2>
