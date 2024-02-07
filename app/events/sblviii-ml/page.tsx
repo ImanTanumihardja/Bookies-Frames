@@ -2,7 +2,7 @@ import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
-const eventName = 'sblviii-ml'
+const frameName = 'sblviii-ml'
 
 const frameMetadata = getFrameMetadata({
   input: {
@@ -17,14 +17,14 @@ const frameMetadata = getFrameMetadata({
     },
   ],
   image: `${process.env['HOST']}/superbowl.png`,
-  post_url: `${process.env['HOST']}/api/frames/${eventName}?eventName=${eventName}`
+  post_url: `${process.env['HOST']}/api/frames/events/${frameName}`
 });
 
 export const metadata: Metadata = {
-  title: eventName,
+  title: frameName,
   description: 'Who will win Superbowl LVIII?',
   openGraph: {
-    title: eventName,
+    title: frameName,
     description: 'Who will win Superbowl LVIII?', 
     images: [`${process.env['HOST']}/superbowl.png`],
   },

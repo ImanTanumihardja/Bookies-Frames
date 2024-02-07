@@ -2,32 +2,38 @@ import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/o
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { User} from '../../../types';
+import { FrameButtonMetadata } from '@coinbase/onchainkit/dist/types/core/types';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
   const body: FrameRequest = await req.json();
-  const eventName: string = req.nextUrl.searchParams.get("eventName") || "";
+  const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
   const { isValid, message } = await getFrameMessage(body, { neynarApiKey: 'NEYNAR_ONCHAIN_KIT' });
 
   if (isValid) {
     const fid: number = message?.interactor.fid || 0;
     const accountAddress: string = message?.interactor.custody_address || "";
     const hasClaimed: boolean = null !== (await kv.zscore('users', accountAddress));
+    const isFollowing: boolean = message.following;
 
-    if (!hasClaimed) {
-      let user : User = {fid: fid, points: 100, streak: 0};
+    if (isFollowing) {
+      if (!hasClaimed) {
+        let user : User = {fid: fid, points: 100, streak: 0, latestBet: {eventName: "", prediction: -1, wagerAmount: 0, timeStamp: 0}};
 
-      const multi = kv.multi();
-      await multi.zadd('users', {score: 100, member: accountAddress});
-      await multi.hset(accountAddress, user);
-      await multi.exec();
+        const multi = kv.multi();
+        await multi.zadd('users', {score: 100, member: accountAddress});
+        await multi.hset(accountAddress, user);
+        await multi.exec();
+      }
     }
 
-    const imageUrl = `${process.env['HOST']}/api/frames/${eventName}/image?hasClaimed=${hasClaimed}&timestamp=${new Date().getTime()}`;
+    const imageUrl = `${process.env['HOST']}/api/frames/${frameName}/image?hasClaimed=${hasClaimed}&isFollowing=${isFollowing}&timestamp=${new Date().getTime()}`;
 
     return new NextResponse(
       getFrameHtmlResponse({
+        buttons: [ { label: "View Profile" } ],
         image: `${imageUrl}`,
+        post_url: `${process.env['HOST']}/api/frames/${frameName}`,
       }),
     );
   } 
