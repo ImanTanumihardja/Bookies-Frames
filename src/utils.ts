@@ -1,14 +1,14 @@
 import { NextRequest } from 'next/server'
 
 export enum RequestProps {
-    ACCOUNT_ADDRESS = 'accountAddress',
+    FID = 'FID',
     IS_FOLLOWING = 'isFollowing',
     HAS_CLAIMED = 'hasClaimed',
     AMOUNT = 'amount',
 }
 
 export const RequestPropsTypes = {
-    [RequestProps.ACCOUNT_ADDRESS]: "string",
+    [RequestProps.FID]: 0,
     [RequestProps.IS_FOLLOWING]: true,
     [RequestProps.HAS_CLAIMED]: true,
     [RequestProps.AMOUNT]: 0,

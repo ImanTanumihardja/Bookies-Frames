@@ -12,12 +12,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (!isValid) throw new Error('Invalid frame message');
 
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
-  const accountAddress: string = message?.interactor.custody_address || "";
-  let user : User = await kv.hgetall(accountAddress) || DEFAULT_USER
+  const fid: number = message?.interactor.fid || 0;
+  let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER
 
   const timestamp = new Date().getTime();
   const hasClaimed = timestamp - user.lastClaimed < 86400000;
-  const isNewUser: boolean = null === (await kv.zscore('users', accountAddress));
+  const isNewUser: boolean = null === (await kv.zscore('users', fid));
   const isFollowing: boolean = message?.following; //TODO: remove negation when not testing
 
   if (isFollowing) {
@@ -28,14 +28,14 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       if (isNewUser) {
         // New user
         user.points = 100;
-        await multi.zadd('users', {score: 100, member: accountAddress});
+        await multi.zadd('users', {score: 100, member: fid});
       }
       else {
         // Get daily 10 dice for old user
-        await multi.hincrby(accountAddress, 'points', 10);
-        await multi.zadd('users', {score: user.points + 10, member: accountAddress});
+        await multi.hincrby(fid.toString(), 'points', 10);
+        await multi.zadd('users', {score: user.points + 10, member: fid});
       }
-      await multi.hset(accountAddress, user);
+      await multi.hset(fid.toString(), user);
       await multi.exec();
     }
   }
