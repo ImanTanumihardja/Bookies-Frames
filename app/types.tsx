@@ -6,9 +6,10 @@ export type Event = {
     result: number }
 
 export type User = {
-    fid: number;
     points: number;
     streak: number;
+    wins: number;
+    losses: number;
     latestBet: Bet
 }
 

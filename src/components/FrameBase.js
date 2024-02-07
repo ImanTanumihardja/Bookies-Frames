@@ -1,11 +1,10 @@
 // YourComponent.js
 import React from 'react';
 
-const BaseFrame = ({ children }) => {
+const FrameBase = ({ children }) => {
     return (
         <div style={{
             display: 'flex',
-            flexDirection: 'column',
             alignItems: 'center',
             textAlign: 'center',
             width: '100%',
@@ -27,8 +26,8 @@ const BaseFrame = ({ children }) => {
             <div style={{
                     display: 'flex',
                     alignItems: 'center',
-                    border: '5px solid white',
                     justifyContent: 'center',
+                    border: '5px solid white',
                     padding: 50,
                     height: '70%',
                     width: '90%'
@@ -40,4 +39,4 @@ const BaseFrame = ({ children }) => {
     );
 }
 
-export default BaseFrame;
+export default FrameBase;
