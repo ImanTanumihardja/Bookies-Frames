@@ -14,6 +14,8 @@ export async function GET(req: NextRequest) {
     try {
         const {isFollowing, hasClaimed, amount} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.HAS_CLAIMED, RequestProps.AMOUNT]);
 
+        console.log(isFollowing)
+
         return new ImageResponse(
             <FrameBase>
                     {isFollowing ?
