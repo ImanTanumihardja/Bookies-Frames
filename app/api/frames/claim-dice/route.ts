@@ -1,4 +1,3 @@
-import { getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { User, DEFAULT_USER} from '../../../types';
@@ -16,11 +15,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER
 
   const timestamp = new Date().getTime();
-  const hasClaimed = timestamp - user.lastClaimed < 86400000;
-  const isNewUser: boolean = user.lastClaimed == 0;
+  const isNewUser: boolean = await kv.zscore('users', fid) === null;
 
   if (isFollowing) {
-    if (!hasClaimed) {
+    if (!user.hasClaimed) {
       const multi = kv.multi();
       if (isNewUser) {
         // New user
@@ -34,19 +32,18 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         await multi.zincrby('users', 10, fid);
       }
 
-      await multi.hset(fid.toString(), {'lastClaimed': timestamp});
+      await multi.hset(fid.toString(), {'hasClaimed': true});
       await multi.exec();
     }
   }
 
-  const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed, [RequestProps.AMOUNT]: isNewUser ? 100 : 10});
+  const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: user.hasClaimed, [RequestProps.AMOUNT]: isNewUser ? 100 : 10});
 
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
     buttons: /*isFollowing ? [{ label: "View Profile" }] :*/ [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
     postUrl: `${process.env['HOST']}/api/frames/${frameName}`,
-    ogImage: `${process.env['HOST']}/logo_transparent.png`,
   };
 
   return new NextResponse(
