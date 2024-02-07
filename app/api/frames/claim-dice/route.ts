@@ -1,27 +1,22 @@
-import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { User, DEFAULT_USER} from '../../../types';
 import { RequestProps, generateImageUrl } from '../../../../src/utils';
+import { getFrameMessage, getFrameHtml, Frame} from "frames.js";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
-  const body: FrameRequest = await req.json();
-  const { isValid, message } = await getFrameMessage(body, { neynarApiKey: 'NEYNAR_ONCHAIN_KIT' });
+  const body = await req.json();
+  const { isValid, requesterFollowsCaster: isFollowing, requesterFid: fid}  = await getFrameMessage(body, { fetchHubContext: true });
 
   if (!isValid) throw new Error('Invalid frame message');
 
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
-  const fid: number = message?.interactor.fid || 0;
   let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER
-
-  const timestamp = new Date().getTime();
-  const hasClaimed = timestamp - user.lastClaimed < 86400000;
-  const isNewUser: boolean = user.lastClaimed == 0;
-  const isFollowing: boolean = true; //TODO: remove negation when not testing
+  const isNewUser: boolean = await kv.zscore('users', fid) === null;
 
   if (isFollowing) {
-    if (!hasClaimed) {
+    if (!user.hasClaimed) {
       const multi = kv.multi();
       if (isNewUser) {
         // New user
@@ -35,21 +30,22 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         await multi.zincrby('users', 10, fid);
       }
 
-      await multi.hset(fid.toString(), {'lastClaimed': timestamp});
+      await multi.hset(fid.toString(), {'hasClaimed': true});
       await multi.exec();
     }
   }
 
-  const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed, [RequestProps.AMOUNT]: isNewUser ? 100 : 10});
+  const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: user.hasClaimed, [RequestProps.AMOUNT]: isNewUser ? 100 : 10});
 
-  console.log('imageUrl', imageUrl);
+  const frame: Frame = {
+    version: "vNext",
+    image: imageUrl,
+    buttons: /*isFollowing ? [{ label: "View Profile" }] :*/ [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
+    postUrl: `${process.env['HOST']}/api/frames/${frameName}`,
+  };
 
   return new NextResponse(
-    getFrameHtmlResponse({
-      buttons: /*isFollowing ? [{ label: "View Profile" }] :*/ [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
-      image: `${imageUrl}`,
-      post_url: `${process.env['HOST']}/api/frames/profile`
-    }),
+    getFrameHtml(frame),
   );
 }
 

@@ -11,7 +11,7 @@ export type User = {
     wins: number;
     losses: number;
     numBets: number;
-    lastClaimed: number;
+    hasClaimed: boolean;
 }
 
 export const DEFAULT_USER: User = {
@@ -20,7 +20,7 @@ export const DEFAULT_USER: User = {
     wins: 0,
     losses: 0,
     numBets: 0,
-    lastClaimed: 0,
+    hasClaimed: false,
 }
 
 export type Bet = {

@@ -1,4 +1,5 @@
-import { ImageResponse, NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { ImageResponse } from 'next/og';
 
 const plusJakartaSans = fetch(
     new URL(
