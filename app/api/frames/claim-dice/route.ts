@@ -1,7 +1,7 @@
 import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
-import { User} from '../../../types';
+import { User, DEFAULT_USER} from '../../../types';
 import { RequestProps, generateImageUrl } from '../../../../src/utils';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
@@ -13,7 +13,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
   const accountAddress: string = message?.interactor.custody_address || "";
-  let user : User = await kv.hgetall(accountAddress) || {} as User
+  let user : User = await kv.hgetall(accountAddress) || DEFAULT_USER
 
   const timestamp = new Date().getTime();
   const hasClaimed = timestamp > user.lastClaimed;
