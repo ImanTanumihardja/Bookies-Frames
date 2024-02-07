@@ -14,7 +14,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const fid: number = message?.interactor.fid || 0;
     const accountAddress: string = message?.interactor.custody_address || "";
     const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
-    let user : User = await kv.hgetall(accountAddress) || {points: 0, streak: 0, wins: 0, losses: 0, latestBet: {eventName: "", prediction: -1, wagerAmount: 0, timeStamp: 0}};
+    let user : User = await kv.hgetall(accountAddress) || {} as User
 
     // Check if I can parse the amount as integer
     let wagerAmount;
