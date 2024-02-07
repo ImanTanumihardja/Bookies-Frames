@@ -17,8 +17,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const timestamp = new Date().getTime();
   const hasClaimed = timestamp - user.lastClaimed < 86400000;
-  const isNewUser: boolean = null === (await kv.zscore('users', fid));
-  const isFollowing: boolean = true //message?.following; //TODO: remove negation when not testing
+  const isNewUser: boolean = user.lastClaimed === 0;
+  const isFollowing: boolean = message?.following; //TODO: remove negation when not testing
 
   if (isFollowing) {
     if (!hasClaimed) {
