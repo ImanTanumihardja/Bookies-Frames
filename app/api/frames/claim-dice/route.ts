@@ -17,7 +17,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const timestamp = new Date().getTime();
   const hasClaimed = timestamp - user.lastClaimed < 86400000;
-  const isNewUser: boolean = user.lastClaimed === 0;
+  const isNewUser: boolean = user.lastClaimed == 0;
   const isFollowing: boolean = message?.following; //TODO: remove negation when not testing
 
   if (isFollowing) {
@@ -34,7 +34,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         await multi.hincrby(fid.toString(), 'points', 10);
         await multi.zincrby('users', 10, fid);
       }
-      
+
       await multi.hset(fid.toString(), {'lastClaimed': timestamp});
       await multi.exec();
     }
