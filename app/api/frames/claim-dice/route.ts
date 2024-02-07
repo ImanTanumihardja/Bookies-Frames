@@ -18,7 +18,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (isFollowing) {
     if (!hasClaimed) {
-      let user : User = {points: 0, streak: 0, wins: 0, losses: 0, latestBet: {eventName: "", prediction: -1, wagerAmount: 0, timeStamp: 0}};;
+      let user : User = {points: 0, streak: 0, wins: 0, losses: 0, latestBet: {eventName: "", prediction: -1, wagerAmount: 0, timeStamp: 0}};
 
       const multi = kv.multi();
       await multi.zadd('users', {score: 100, member: accountAddress});
