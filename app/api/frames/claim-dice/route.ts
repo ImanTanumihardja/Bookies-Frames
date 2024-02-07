@@ -33,7 +33,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       else {
         // Get daily 10 dice for old user
         await multi.hincrby(fid.toString(), 'points', 10);
-        await multi.zadd('users', {score: user.points + 10, member: fid});
+        await multi.zincrby('users', 10, fid);
       }
       await multi.hset(fid.toString(), user);
       await multi.exec();
