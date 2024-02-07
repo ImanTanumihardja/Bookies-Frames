@@ -1,26 +1,23 @@
-import { FrameRequest, getFrameHtmlResponse } from '@coinbase/onchainkit';
+import { getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { User, DEFAULT_USER} from '../../../types';
 import { RequestProps, generateImageUrl } from '../../../../src/utils';
-import { getFrameMessage } from "frames.js";
+import { getFrameMessage, getFrameHtml, Frame} from "frames.js";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
   const body = await req.json();
-  const frameMessage  = await getFrameMessage(body, { fetchHubContext: true });
-  const { isValid, requesterFollowsCaster: isFollowing, requesterFid: fid } = frameMessage;
+  const { isValid, requesterFollowsCaster: isFollowing, requesterFid: fid}  = await getFrameMessage(body, { fetchHubContext: true });
 
   if (!isValid) throw new Error('Invalid frame message');
 
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
-  // const fid: number = message?.interactor.fid || 0;
   let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER
 
   const timestamp = new Date().getTime();
   const hasClaimed = timestamp - user.lastClaimed < 86400000;
   const isNewUser: boolean = user.lastClaimed == 0;
-  // const isFollowing: boolean = message?.following; //TODO: remove negation when not testing
 
   if (isFollowing) {
     if (!hasClaimed) {
@@ -44,14 +41,16 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed, [RequestProps.AMOUNT]: isNewUser ? 100 : 10});
 
-  console.log('imageUrl', imageUrl);
+  const frame: Frame = {
+    version: "vNext",
+    image: imageUrl,
+    buttons: /*isFollowing ? [{ label: "View Profile" }] :*/ [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
+    postUrl: `${process.env['HOST']}/api/frames/${frameName}`,
+    ogImage: `${process.env['HOST']}/logo_transparent.png`,
+  };
 
   return new NextResponse(
-    getFrameHtmlResponse({
-      buttons: /*isFollowing ? [{ label: "View Profile" }] :*/ [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
-      image: `${imageUrl}`,
-      post_url: `${process.env['HOST']}/api/frames/profile`
-    }),
+    getFrameHtml(frame),
   );
 }
 
