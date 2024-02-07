@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
         const isFollowing: boolean = req.nextUrl.searchParams.get("isFollowing") ? "true" === req.nextUrl.searchParams.get("isFollowing") : false
 
         const profile = await (await fetch(`https://searchcaster.xyz/api/profiles?address=${accountAddress}`)).json().then((data) => data[0].body)
-        const user : User = await kv.hgetall(accountAddress) || {points: 0, streak: 0, wins:0, losses:0, latestBet: {eventName: "", prediction: -1, wagerAmount: 0, timeStamp: 0}};
+        const user : User | null = await kv.hgetall(accountAddress) || null
 
         return new ImageResponse(
             <FrameBase>
@@ -28,10 +28,10 @@ export async function GET(req: NextRequest) {
                             </thead>
                            <tbody>
                                 <tr>
-                                    <td style={{color: 'white', fontSize:20, padding: 15}}> {user.points} </td>
-                                    <td style={{color: 'white', fontSize:20, padding: 15}}> {user.wins} </td>
-                                    <td style={{color: 'white', fontSize:20, padding: 15}}> {user.losses} </td>
-                                    <td style={{color: 'white', fontSize:20, padding: 15}}> {user.streak} </td>
+                                    <td style={{color: 'white', fontSize:20, padding: 15}}> {user?.points} </td>
+                                    <td style={{color: 'white', fontSize:20, padding: 15}}> {user?.wins} </td>
+                                    <td style={{color: 'white', fontSize:20, padding: 15}}> {user?.losses} </td>
+                                    <td style={{color: 'white', fontSize:20, padding: 15}}> {user?.streak} </td>
                                 </tr>
                            </tbody>
                             
