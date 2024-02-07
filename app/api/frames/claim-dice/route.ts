@@ -40,7 +40,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: /*isFollowing ? [{ label: "View Profile" }] :*/ [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
+    buttons: isFollowing ? [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, { label: "Refresh", action: 'post'}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}, { label: "Refresh", action: 'post'}],
     postUrl: `${process.env['HOST']}/api/frames/${frameName}`,
   };
 
