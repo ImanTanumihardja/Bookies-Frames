@@ -13,23 +13,34 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
   const accountAddress: string = message?.interactor.custody_address || "";
-  const isFollowing: boolean = message?.following;
-  const hasClaimed: boolean = null !== (await kv.zscore('users', accountAddress));
+  let user : User = await kv.hgetall(accountAddress) || {} as User
 
+  const timestamp = new Date().getTime();
+  const hasClaimed = timestamp > user.lastClaimed;
+  const isNewUser: boolean = null === (await kv.zscore('users', accountAddress));
+  const isFollowing: boolean = message?.following;
 
   if (isFollowing) {
     if (!hasClaimed) {
-      let user : User = {} as User;
-      user.lastClaimed = new Date().getTime();
+      user.lastClaimed = timestamp;
 
       const multi = kv.multi();
-      await multi.zadd('users', {score: 100, member: accountAddress});
+      if (isNewUser) {
+        // New user
+        user.points = 100;
+        await multi.zadd('users', {score: 100, member: accountAddress});
+      }
+      else {
+        // Get daily 10 dice for old user
+        await multi.hincrby(accountAddress, 'points', 10);
+        await multi.zadd('users', {score: user.points + 10, member: accountAddress});
+      }
       await multi.hset(accountAddress, user);
       await multi.exec();
     }
   }
 
-  const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed});
+  const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed, [RequestProps.AMOUNT]: isNewUser ? 100 : 10});
 
   console.log('imageUrl', imageUrl);
 
