@@ -10,6 +10,7 @@ export type User = {
     streak: number;
     wins: number;
     losses: number;
+    numBets: number;
     latestBet: Bet
 }
 

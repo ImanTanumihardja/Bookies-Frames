@@ -27,13 +27,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
   }
 
-  const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed});
+  const imageUrl = `${process.env['HOST']}/dice.gif` // generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed});
 
   return new NextResponse(
     getFrameHtmlResponse({
       buttons: isFollowing ? [{ label: "View Profile" }] : [{ label: "Follow", action: 'link', target: 'https://warpcast.com/bookies'}],
       image: `${imageUrl}`,
-      post_url: `${process.env['HOST']}/api/frames/${frameName}`
+      post_url: `${process.env['HOST']}/api/frames/profile`
     }),
   );
 }
