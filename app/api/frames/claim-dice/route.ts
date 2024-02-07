@@ -18,7 +18,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const timestamp = new Date().getTime();
   const hasClaimed = timestamp - user.lastClaimed < 86400000;
   const isNewUser: boolean = user.lastClaimed == 0;
-  const isFollowing: boolean = message?.following; //TODO: remove negation when not testing
+  const isFollowing: boolean = message?.following == true; //TODO: remove negation when not testing
 
   if (isFollowing) {
     if (!hasClaimed) {
