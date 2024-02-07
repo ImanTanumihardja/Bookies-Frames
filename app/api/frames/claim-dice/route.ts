@@ -22,20 +22,20 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (isFollowing) {
     if (!hasClaimed) {
-      user.lastClaimed = timestamp;
-
       const multi = kv.multi();
       if (isNewUser) {
         // New user
         user.points = 100;
         await multi.zadd('users', {score: 100, member: fid});
+        await multi.hset(fid.toString(), user);
       }
       else {
         // Get daily 10 dice for old user
         await multi.hincrby(fid.toString(), 'points', 10);
         await multi.zincrby('users', 10, fid);
       }
-      await multi.hset(fid.toString(), user);
+      
+      await multi.hset(fid.toString(), {'lastClaimed': timestamp});
       await multi.exec();
     }
   }
