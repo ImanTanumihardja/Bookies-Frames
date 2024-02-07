@@ -12,7 +12,6 @@ export type User = {
     losses: number;
     numBets: number;
     lastClaimed: number;
-    latestBet: Bet
 }
 
 export const DEFAULT_USER: User = {
@@ -22,12 +21,6 @@ export const DEFAULT_USER: User = {
     losses: 0,
     numBets: 0,
     lastClaimed: 0,
-    latestBet: {
-        eventName: "",
-        wagerAmount: 0,
-        prediction: -1,
-        timeStamp: 0
-    }
 }
 
 export type Bet = {
