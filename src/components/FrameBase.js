@@ -16,7 +16,7 @@ const FrameBase = ({ children }) => {
             <div style={{
                 display: 'flex',
                 position: 'absolute',
-                top: 35,
+                top: 40,
                 left: 10,
                 alignItems: 'center',
             }}>
@@ -29,8 +29,9 @@ const FrameBase = ({ children }) => {
                     justifyContent: 'center',
                     border: '5px solid white',
                     padding: 50,
-                    height: '50%',
-                    width: '90%'
+                    height: '60%',
+                    width: '90%',
+                    top:20
             }}>
                 {/* Render the children components or content */}
                 {children}

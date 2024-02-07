@@ -22,17 +22,20 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
             // Throw error if required param is missing
             throw new Error(`Missing required param: ${key}`)
         }
-        console.log(key)
+
         const value = req.nextUrl.searchParams.get(key) || ''
 
         // Parse Props
         switch (typeof RequestPropsTypes[key]) {
             case 'string':
                 returnParams[key] = value
+                break;
             case 'number':
                 returnParams[key] = parseInt(value)
+                break;
             case 'boolean':
                 returnParams[key] = value.toLowerCase() === 'true';
+                break;
         }
     }
 
