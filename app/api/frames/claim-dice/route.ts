@@ -31,6 +31,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed});
 
+  console.log('imageUrl', imageUrl);
+
   return new NextResponse(
     getFrameHtmlResponse({
       buttons: isFollowing ? [{ label: "View Profile" }] : [{ label: "Follow", action: 'link', target: 'https://warpcast.com/bookies'}],

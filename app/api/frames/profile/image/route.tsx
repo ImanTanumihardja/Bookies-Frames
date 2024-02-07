@@ -4,7 +4,7 @@ import { kv } from "@vercel/kv";
 import { User } from '../../../../types';
 
 // Fonts
-export const plusJakartaSans = fetch(
+const plusJakartaSans = fetch(
     new URL(
       '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
       import.meta.url,
