@@ -1,24 +1,26 @@
-import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit';
+import { FrameRequest, getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { User, DEFAULT_USER} from '../../../types';
 import { RequestProps, generateImageUrl } from '../../../../src/utils';
+import { getFrameMessage } from "frames.js";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
-  const body: FrameRequest = await req.json();
-  const { isValid, message } = await getFrameMessage(body, { neynarApiKey: 'NEYNAR_ONCHAIN_KIT' });
+  const body = await req.json();
+  const frameMessage  = await getFrameMessage(body, { fetchHubContext: true });
+  const { isValid, requesterFollowsCaster: isFollowing, requesterFid: fid } = frameMessage;
 
   if (!isValid) throw new Error('Invalid frame message');
 
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
-  const fid: number = message?.interactor.fid || 0;
+  // const fid: number = message?.interactor.fid || 0;
   let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER
 
   const timestamp = new Date().getTime();
   const hasClaimed = timestamp - user.lastClaimed < 86400000;
   const isNewUser: boolean = user.lastClaimed == 0;
-  const isFollowing: boolean = true; //TODO: remove negation when not testing
+  // const isFollowing: boolean = message?.following; //TODO: remove negation when not testing
 
   if (isFollowing) {
     if (!hasClaimed) {

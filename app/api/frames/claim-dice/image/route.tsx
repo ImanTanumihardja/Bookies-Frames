@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
                     <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                         <h1 style={{color: 'white'}}> You already claimed </h1>
                         <h1 style={{color: 'white', marginTop:-10}}> your free <img style={{width: 50, height: 50, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
-                        <h2 style={{color: 'white', marginTop:-10}}> Come back tommorow for 10 more!</h2>
+                        <h2 style={{color: 'white', marginTop:-10}}> Come back tomorrow for 10 more!</h2>
                     </div>
                     :
                     <h2 style={{color: 'white', fontSize:40}}> Please follow Bookies and try again</h2>
