@@ -18,7 +18,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const timestamp = new Date().getTime();
   const hasClaimed = timestamp - user.lastClaimed < 86400000;
   const isNewUser: boolean = null === (await kv.zscore('users', fid));
-  const isFollowing: boolean = message?.following; //TODO: remove negation when not testing
+  const isFollowing: boolean = true //message?.following; //TODO: remove negation when not testing
 
   if (isFollowing) {
     if (!hasClaimed) {
@@ -46,7 +46,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   return new NextResponse(
     getFrameHtmlResponse({
-      buttons: isFollowing ? [{ label: "View Profile" }] : [{ label: "Follow", action: 'link', target: 'https://warpcast.com/bookies'}],
+      buttons: /*isFollowing ? [{ label: "View Profile" }] :*/ [{ label: "Follow", action: 'link', target: 'https://warpcast.com/bookies'}],
       image: `${imageUrl}`,
       post_url: `${process.env['HOST']}/api/frames/profile`
     }),

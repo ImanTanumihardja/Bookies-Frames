@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
                         <h2 style={{color: 'white', marginTop:-10}}> Come back tommorow for 10 more!</h2>
                     </div>
                     :
-                    <h2 style={{color: 'white', fontSize:40}}> You are not following Bookies</h2>
+                    <h2 style={{color: 'white', fontSize:40}}> Please follow Bookies and try again</h2>
                     }
             </FrameBase>
             ,
