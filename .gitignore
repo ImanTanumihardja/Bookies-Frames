@@ -2,5 +2,4 @@ node_modules
 .DS_STORE
 .next/
 .vercel
-.env
-.env.development.local
+.env*
