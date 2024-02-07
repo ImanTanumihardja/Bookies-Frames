@@ -42,7 +42,7 @@ export function generateImageUrl(frameName: string, params: Record<string, any>)
     let url = `${process.env['HOST']}/api/frames/${frameName}/image?timestamp=${timestamp}`
 
     // Loop through each param
-    for (const key of params.keys()) {
+    for (const key in params) {
         if (!url.includes('?')) {
             url += '?'
         } else {
