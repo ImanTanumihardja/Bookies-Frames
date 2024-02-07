@@ -13,8 +13,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
   let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER
-
-  const timestamp = new Date().getTime();
   const isNewUser: boolean = await kv.zscore('users', fid) === null;
 
   if (isFollowing) {
