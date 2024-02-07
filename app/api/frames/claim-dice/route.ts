@@ -16,7 +16,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let user : User = await kv.hgetall(accountAddress) || DEFAULT_USER
 
   const timestamp = new Date().getTime();
-  const hasClaimed = timestamp > user.lastClaimed;
+  const hasClaimed = timestamp - user.lastClaimed < 86400000;
   const isNewUser: boolean = null === (await kv.zscore('users', accountAddress));
   const isFollowing: boolean = !message?.following;
 
