@@ -12,7 +12,6 @@ export const RequestPropsTypes = {
     [RequestProps.HAS_CLAIMED]: true,
 }
 
-
 export function getRequestProps(req: NextRequest, params: RequestProps[]): Record<string, any> {
     // Loop throug each RequestParams
     let returnParams: Record<string, any> = {}
@@ -54,11 +53,3 @@ export function generateImageUrl(frameName: string, params: Record<string, any>)
     }
     return url
 }
-
-// Fonts
-export const plusJakartaSans = fetch(
-    new URL(
-      '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
-      import.meta.url,
-    ),
-  ).then((res) => res.arrayBuffer());

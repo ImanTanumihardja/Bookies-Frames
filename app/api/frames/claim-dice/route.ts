@@ -20,6 +20,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (isFollowing) {
     if (!hasClaimed) {
       let user : User = {} as User;
+      user.lastClaimed = new Date().getTime();
 
       const multi = kv.multi();
       await multi.zadd('users', {score: 100, member: accountAddress});

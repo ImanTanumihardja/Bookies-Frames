@@ -2,7 +2,14 @@ import { ImageResponse, NextRequest, NextResponse } from 'next/server';
 import FrameBase from '../../../../../src/components/FrameBase'
 import { kv } from "@vercel/kv";
 import { User } from '../../../../types';
-import { plusJakartaSans } from '../../../../../src/utils';
+
+// Fonts
+export const plusJakartaSans = fetch(
+    new URL(
+      '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
+      import.meta.url,
+    ),
+  ).then((res) => res.arrayBuffer());
 
 export async function GET(req: NextRequest) {
     try {

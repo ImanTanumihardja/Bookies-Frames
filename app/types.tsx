@@ -11,6 +11,7 @@ export type User = {
     wins: number;
     losses: number;
     numBets: number;
+    lastClaimed: number;
     latestBet: Bet
 }
 
