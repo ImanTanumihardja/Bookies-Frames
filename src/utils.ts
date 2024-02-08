@@ -81,7 +81,7 @@ export function generateImageUrl(frameName: string, params: Record<string, any>,
     let url = `${process.env['HOST']}/api/frames/${frameName}/image?`
 
     if (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging')) {
-        url += `?timestamp=${new Date().getTime()}`
+        url += `timestamp=${new Date().getTime()}`
     }
 
     // Loop through each param
