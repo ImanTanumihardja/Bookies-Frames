@@ -13,16 +13,30 @@ async function resetHasClaimed() {
 
     const count = await kv.zcount("users", 0, 'inf')
     console.log(`Total users: ${count}`)
-    
-    const users = (await kv.zscan("users", 0, { count: count }))[1]
 
-    
+    let users = (await kv.zscan("users", 0, { count: count }))[1]
 
-    // for (let i = 0; i < users.length; i += 2) {
-    //     console.log(users[i])
+    // Filter out every other element
+    users = users.filter((_, index) => index % 2 === 0)
+    
+    // Go through array and figure out how many unique users we have
+    let uniqueUsers = []
+    users.forEach(user => {
+        if (!uniqueUsers.includes(user)) {
+            uniqueUsers.push(user)
+        }
+    })
+
+    // Check if we have any duplicate users
+    if (uniqueUsers.length !== users.length) {
+        console.log(`Have duplicate user: ${uniqueUsers.length} !== ${users.length}`)
+    }
+
+    // // Reset the hasClaimed value for each user
+    // for (const user in uniqueUsers) {
+    //     const user = uniqueUsers[i]
+    //     await kv.hset(user.toString(), {'hasClaimed': false});
     // }
-
-
 }   
 
 if (require.main === module) {
