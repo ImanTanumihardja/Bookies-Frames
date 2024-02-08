@@ -8,7 +8,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
   const {isValid, message} = await validateFrameMessage(req);
 
-  const {following: isFollowing , fid} = message;
+  const {followingBookies: isFollowing , fid} = message;
 
   if (!isValid) throw new Error('Invalid frame message');
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
