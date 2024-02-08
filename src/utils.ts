@@ -62,10 +62,10 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
     return returnParams
 }
 
-export function generateImageUrl(frameName: string, params: Record<string, any>): string {
+export function generateImageUrl(frameName: string, params: Record<string, any>, addTimestamp: boolean = false): string {
     let url = `${process.env['HOST']}/api/frames/${frameName}/image?`
 
-    if (process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging')) {
+    if (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging')) {
         url += `?timestamp=${new Date().getTime()}`
     }
 
@@ -78,7 +78,6 @@ export function generateImageUrl(frameName: string, params: Record<string, any>)
 
 // don't have an API key yet? get one at neynar.com
 const client = new NeynarAPIClient(process.env['NEYNAR_API_KEY'] || "");
-
 
 export async function getIsFollowing(fid: number): Promise<boolean> {
     let cursor: string | null = "";

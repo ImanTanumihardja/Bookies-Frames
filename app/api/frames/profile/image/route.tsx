@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%'}}>
                         <h1 style={{color: 'white', alignItems:'center', left:-30}}> 
                             {profile.avatarUrl && <img style={{width: 40, height: 40, marginRight:10, borderRadius: 50}} src={profile.avatarUrl}/>} 
-                            {profile.displayName || ""} (#{rank})
+                            {profile.username || ""} (#{rank})
                         </h1>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start', alignSelf:'center', top:-30}}>
                             <h2 style={{color: 'white', marginBottom:-10}}> 🎲 Dice: {user.points} </h2>
