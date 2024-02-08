@@ -13,7 +13,7 @@ const plusJakartaSans = fetch(
 
 export async function GET(req: NextRequest) {
     try {
-        const {isFollowing, hasClaimed, amount} = {isFollowing: true, hasClaimed: true, amount: 0}; //getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.HAS_CLAIMED, RequestProps.AMOUNT]);
+        const {isFollowing, hasClaimed, amount} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.HAS_CLAIMED, RequestProps.AMOUNT]);
 
         return new ImageResponse(
             <FrameBase>

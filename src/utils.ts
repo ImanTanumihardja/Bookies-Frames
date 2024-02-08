@@ -120,112 +120,49 @@ export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
     return isFollowing;
 }
 
+
 export async function validateFrameMessage(req: NextRequest) {
     const body = await req.json();
+
     let isValid: boolean;
-    let message: FrameValidationData = DEFAULT_FRAME_VALIDATION_DATA;
-  
+    let message: FrameValidationData = DEFAULT_FRAME_VALIDATION_DATA
+
     try {
-      const { isValid: onchainIsValid, message: onchainMessage } = await getFrameMessageOnchain(
-        body,
-        { neynarApiKey: process.env['NEYNAR_API_KEY'] }
-      );
-  
-      isValid = onchainIsValid;
-  
-    const {
-        button,
-        following,
-        input,
-        interactor: { fid = 0, custody_address = "", verified_accounts = [] } = {},
-        liked,
-        recasted,
-    } = onchainMessage || {};
-  
-      message = {
-        ...message,
-        button: button || 0,
-        following: following || false,
-        input: input || "",
-        fid: fid || 0,
-        custody_address: custody_address || "",
-        verified_accounts: verified_accounts || [],
-        liked: liked || false,
-        recasted: recasted || false,
-        followingBookies: await checkIsFollowingBookies(fid || 0),
-      };
-    } catch (error) {
-      const data = await getFrameMessageFrameJS(body, { fetchHubContext: true });
-  
-      isValid = data.isValid;
-  
-      const {
-        buttonIndex,
-        requesterFollowsCaster: following,
-        inputText: input,
-        requesterFid: fid,
-        requesterVerifiedAddresses: verified_accounts,
-        likedCast: liked,
-        recastedCast: recasted,
-      } = data || {};
-  
-      message = {
-        ...message,
-        button: buttonIndex || 0,
-        following: following || false,
-        input: input || "",
-        fid: fid || 0,
-        verified_accounts: verified_accounts || [],
-        liked: liked || false,
-        recasted: recasted || false,
-      };
+        // Use onchainkit to validate the frame message
+        const data = await getFrameMessageOnchain(body, { neynarApiKey: process.env['NEYNAR_API_KEY'] });
+
+        isValid = data.isValid;
+
+        message.button = data?.message?.button || 0
+        message.following = data?.message?.following || false
+        message.input = data?.message?.input || ""
+        message.fid = data?.message?.interactor.fid || 0
+        message.custody_address = data?.message?.interactor.custody_address || ""
+        message.verified_accounts = data?.message?.interactor.verified_accounts || []
+        message.liked = data?.message?.liked || false
+        message.recasted = data?.message?.recasted || false
+
+        message.followingBookies = await checkIsFollowingBookies(message.fid)
+
     }
-  
-    return { isValid, message };
-  }
+    catch (error) {
+        throw new Error(`Error validating frame message: ${error}`)
 
-// export async function validateFrameMessage(req: NextRequest) {
-//     const body = await req.json();
+        // TODO: Recue function size so can uncomment this
+        // // Use framesjs to validate the frame message
+        // let data = await getFrameMessageFrameJS(body, { fetchHubContext: true }); // frames.js
 
-//     let isValid: boolean;
-//     let message: FrameValidationData = DEFAULT_FRAME_VALIDATION_DATA
-
-//     try {
-//         // Use onchainkit to validate the frame message
-//         const data = await getFrameMessageOnchain(body, { neynarApiKey: process.env['NEYNAR_API_KEY'] });
-
-//         isValid = data.isValid;
-
-//         message.button = data?.message?.button || 0
-//         message.following = data?.message?.following || false
-//         message.input = data?.message?.input || ""
-//         message.fid = data?.message?.interactor.fid || 0
-//         message.custody_address = data?.message?.interactor.custody_address || ""
-//         message.verified_accounts = data?.message?.interactor.verified_accounts || []
-//         message.liked = data?.message?.liked || false
-//         message.recasted = data?.message?.recasted || false
-
-//         message.followingBookies = await checkIsFollowingBookies(message.fid)
-
-//     }
-//     catch (error) {
-//         // throw new Error(`Error validating frame message: ${error}`)
-
-//         // TODO: Recue function size so can uncomment this
-//         // Use framesjs to validate the frame message
-//         let data = await getFrameMessageFrameJS(body, { fetchHubContext: true }); // frames.js
-
-//         isValid = data.isValid;
+        // isValid = data.isValid;
         
-//         message.button = data?.buttonIndex || 0
-//         message.following = data?.requesterFollowsCaster || false
-//         message.input = data?.inputText || ""
-//         message.fid = data?.requesterFid || 0
-//         // message.custody_address = data?.castId?.hash || "" // no custody address in frames.js
-//         message.verified_accounts = data?.requesterVerifiedAddresses || []
-//         message.liked = data.likedCast || false
-//         message.recasted = data?.recastedCast || false
-//     }
+        // message.button = data?.buttonIndex || 0
+        // message.following = data?.requesterFollowsCaster || false
+        // message.input = data?.inputText || ""
+        // message.fid = data?.requesterFid || 0
+        // // message.custody_address = data?.castId?.hash || "" // no custody address in frames.js
+        // message.verified_accounts = data?.requesterVerifiedAddresses || []
+        // message.liked = data.likedCast || false
+        // message.recasted = data?.recastedCast || false
+    }
 
-//     return {isValid, message}
-// }
+    return {isValid, message}
+}
