@@ -1,5 +1,4 @@
 // YourComponent.js
-import React from 'react';
 
 const FrameBase = ({ children }) => {
     return (
