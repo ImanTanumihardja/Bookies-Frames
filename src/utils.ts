@@ -145,20 +145,19 @@ export async function validateFrameMessage(req: NextRequest) {
 
     }
     catch (error) {
-        throw new Error(`Error validating frame message: ${error}`)
-        // // Use framesjs to validate the frame message
-        // let data = await getFrameMessageFrameJS(body, { fetchHubContext: true }); // frames.js
+        // Use framesjs to validate the frame message
+        let data = await getFrameMessageFrameJS(body, { fetchHubContext: true }); // frames.js
 
-        // isValid = data.isValid;
+        isValid = data.isValid;
         
-        // message.button = data?.buttonIndex || 0
-        // message.following = data?.requesterFollowsCaster || false
-        // message.input = data?.inputText || ""
-        // message.fid = data?.requesterFid || 0
-        // // message.custody_address = data?.castId?.hash || "" // no custody address in frames.js
-        // message.verified_accounts = data?.requesterVerifiedAddresses || []
-        // message.liked = data.likedCast || false
-        // message.recasted = data?.recastedCast || false
+        message.button = data?.buttonIndex || 0
+        message.following = data?.requesterFollowsCaster || false
+        message.input = data?.inputText || ""
+        message.fid = data?.requesterFid || 0
+        // message.custody_address = data?.castId?.hash || "" // no custody address in frames.js
+        message.verified_accounts = data?.requesterVerifiedAddresses || []
+        message.liked = data.likedCast || false
+        message.recasted = data?.recastedCast || false
     }
 
     return {isValid, message}
