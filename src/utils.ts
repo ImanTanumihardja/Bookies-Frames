@@ -42,11 +42,9 @@ export const DEFAULT_FRAME_VALIDATION_DATA: FrameValidationData = {
     following: false,
     followingBookies: false,
     input: "",
-    interactor: {
-      fid: 0,
-      custody_address: "",
-      verified_accounts: [],
-    },
+    fid: 0,
+    custody_address: "",
+    verified_accounts: [],
     liked: false,
     recasted: false,
   };
