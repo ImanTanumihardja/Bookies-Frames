@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { User} from '../../../types';
-import { RequestProps, generateImageUrl, getIsFollowing as checkIsFollowing, DEFAULT_USER } from '../../../../src/utils';
-import { getFrameMessage, getFrameHtml, Frame} from "frames.js";
-// import {getFrameMessage} from '@coinbase/onchainkit'
+import { RequestProps, generateImageUrl, checkIsFollowing, DEFAULT_USER } from '../../../../src/utils';
+import { getFrameMessage as validateFrameMessage, getFrameHtml, Frame} from "frames.js";
+import { getFrameMessage } from '@coinbase/onchainkit'
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -11,7 +11,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // const { isValid, message}  = await getFrameMessage(body, { neynarApiKey: process.env['NEYNAR_API_KEY'] });
   // const fid = message?.interactor.fid || 0;
 
-  const { isValid, requesterFollowsCaster: isFollowing, requesterFid: fid}  = await getFrameMessage(body, { fetchHubContext: true });
+  const { isValid, requesterFollowsCaster: isFollowing, requesterFid: fid}  = await validateFrameMessage(body, { fetchHubContext: true }); // frames.js
 
   if (!isValid) throw new Error('Invalid frame message');
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
