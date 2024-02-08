@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
             <FrameBase>
                 {isFollowing ?
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%'}}>
-                        <h2 style={{color: 'white', alignItems:'center', paddingTop: 20, left:-30}}> {profile.avatarUrl && <img style={{width: 40, height: 40, marginRight:10, borderRadius: 50}} src={profile.avatarUrl}/>} {profile.username} (#{rank})</h2>
+                        <h2 style={{color: 'white', alignItems:'center', paddingTop: 20, left:-30}}> {profile.avatarUrl && <img style={{width: 40, height: 40, marginRight:10, borderRadius: 50}} src={profile.avatarUrl}/>} {profile.username || ""} (#{rank})</h2>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start', alignSelf:'center', top:-30}}>
                             <h3 style={{color: 'white'}}> 🎲 Dice: {user.points} </h3>
                             <h3 style={{color: 'white'}}> 🔥 Streak: {user.streak} </h3>
