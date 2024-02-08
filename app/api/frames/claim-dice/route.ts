@@ -12,6 +12,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const isFollowing = message?.following;
   const fid = message?.interactor.fid || 0;
 
+  if (isFollowing === undefined || fid === 0) {
+    throw new Error('Invalid frame message');
+  } 
+
   if (!isValid) throw new Error('Invalid frame message');
 
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
