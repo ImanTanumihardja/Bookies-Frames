@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
                         <h1 style={{color: 'white', fontSize:40, marginTop:-10}}> your free <img style={{width: 50, height: 50, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
                     </div>
                     :
-                    <h2 style={{color: 'white', fontSize:40, textAlign:'center'}}> Please follow Bookies and try again</h2>
+                    <h2 style={{color: 'white', fontSize:40, textAlign:'center'}}> Please follow @bookies and try again</h2>
                     }
             </FrameBase>
             ,
