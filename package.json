@@ -12,7 +12,7 @@
   "author": "Emmaniii",
   "license": "MIT",
   "dependencies": {
-    "@coinbase/onchainkit": "^0.5.1",
+    "@coinbase/onchainkit": "^0.5.2",
     "@fontsource/plus-jakarta-sans": "^5.0.18",
     "@vercel/kv": "^1.0.1",
     "dotenv": "^16.4.1",
