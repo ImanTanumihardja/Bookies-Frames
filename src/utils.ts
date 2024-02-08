@@ -1,4 +1,6 @@
 import { NextRequest } from 'next/server'
+import { NeynarAPIClient } from "@neynar/nodejs-sdk";
+import { FarcasterProfile, User, Bet} from '../app/types';
 
 export enum RequestProps {
     FID = 'fid',
@@ -12,6 +14,24 @@ export const RequestPropsTypes = {
     [RequestProps.IS_FOLLOWING]: true,
     [RequestProps.HAS_CLAIMED]: true,
     [RequestProps.AMOUNT]: 0,
+}
+
+export const BOOKIES_FID = 244367;
+
+export const DEFAULT_USER: User = {
+    points: 0,
+    streak: 0,
+    wins: 0,
+    losses: 0,
+    numBets: 0,
+    hasClaimed: false,
+}
+
+export const DEFAULT_BET: Bet = {
+    eventName: "",
+    wagerAmount: 0,
+    prediction: -1,
+    timeStamp: 0
 }
 
 export function getRequestProps(req: NextRequest, params: RequestProps[]): Record<string, any> {
@@ -54,4 +74,34 @@ export function generateImageUrl(frameName: string, params: Record<string, any>)
         url += `&${key}=${params[key]}`
     }
     return url
+}
+
+// don't have an API key yet? get one at neynar.com
+const client = new NeynarAPIClient(process.env['NEYNAR_API_KEY'] || "");
+
+
+export async function getIsFollowing(fid: number): Promise<boolean> {
+    let cursor: string | null = "";
+    let users: unknown[] = [];
+    do {
+      const result = await client.fetchUserFollowing(fid, {
+        limit: 150,
+        cursor,
+      });
+      users = users.concat(result.result.users);
+      cursor = result.result.next.cursor;
+      console.log(cursor);
+    } while (cursor !== "" && cursor !== null);
+
+    const following = users as FarcasterProfile[];
+    // Lopp through each user and check if the user is following bookie
+    let isFollowing = false;
+    for (const account of following) {
+      if (account.fid === BOOKIES_FID) {
+        isFollowing = true;
+        break;
+      }
+    }
+
+    return isFollowing;
 }

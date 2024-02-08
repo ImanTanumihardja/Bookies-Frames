@@ -19,14 +19,14 @@ export async function GET(req: NextRequest) {
             <FrameBase>
                     {isFollowing ?
                     !hasClaimed ? 
-                    <h1 style={{color: 'white', fontSize:40}}> You received {amount} <img style={{width: 50, height: 50, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
+                    <h1 style={{color: 'white', fontSize:40, justifyContent:'center'}}> You received {amount} <img style={{width: 50, height: 50, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
                     :
-                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                    <div style={{display: 'flex', flexDirection: 'column', alignItems:'center'}}>
                         <h1 style={{color: 'white'}}> You already claimed </h1>
                         <h1 style={{color: 'white', marginTop:-10}}> your free <img style={{width: 50, height: 50, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
                     </div>
                     :
-                    <h2 style={{color: 'white', fontSize:40}}> Please follow Bookies and try again</h2>
+                    <h2 style={{color: 'white', fontSize:40, textAlign:'center'}}> Please follow Bookies and try again</h2>
                     }
             </FrameBase>
             ,
