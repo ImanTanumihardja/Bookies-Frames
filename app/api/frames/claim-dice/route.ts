@@ -4,7 +4,6 @@ import { User} from '../../../types';
 import { RequestProps, generateImageUrl, DEFAULT_USER, validateFrameMessage } from '../../../../src/utils';
 import { getFrameHtml, Frame} from "frames.js";
 
-
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
   const {isValid, message} = await validateFrameMessage(req);
