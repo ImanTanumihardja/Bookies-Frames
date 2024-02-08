@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
-import { User, FarcasterProfile} from '../../../types';
-import { RequestProps, generateImageUrl,fetchAllFollowing, BOOKIES_FID, DEFAULT_USER } from '../../../../src/utils';
+import { User} from '../../../types';
+import { RequestProps, generateImageUrl, getIsFollowing as checkIsFollowing, DEFAULT_USER } from '../../../../src/utils';
 import { getFrameHtml, Frame} from "frames.js";
 import {getFrameMessage} from '@coinbase/onchainkit'
 
@@ -16,16 +16,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
   const isNewUser: boolean = await kv.zscore('users', fid) === null;
 
-  const following : FarcasterProfile[] = await fetchAllFollowing(fid);
-
-  // Lopp through each user and check if the user is following bookie
-  let isFollowing = false;
-  for (const account of following) {
-    if (account.fid === BOOKIES_FID) {
-      isFollowing = true;
-      break;
-    }
-  }
+  const isFollowing = await checkIsFollowing(fid);
 
   if (isFollowing) {
     if (!user.hasClaimed) {

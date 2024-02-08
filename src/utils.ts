@@ -79,7 +79,8 @@ export function generateImageUrl(frameName: string, params: Record<string, any>)
 // don't have an API key yet? get one at neynar.com
 const client = new NeynarAPIClient(process.env['NEYNAR_API_KEY'] || "");
 
-export const fetchAllFollowing = async (fid: number) => {
+
+export async function getIsFollowing(fid: number): Promise<boolean> {
     let cursor: string | null = "";
     let users: unknown[] = [];
     do {
@@ -91,6 +92,16 @@ export const fetchAllFollowing = async (fid: number) => {
       cursor = result.result.next.cursor;
       console.log(cursor);
     } while (cursor !== "" && cursor !== null);
-  
-    return users as FarcasterProfile[];
-  };
+
+    const following = users as FarcasterProfile[];
+    // Lopp through each user and check if the user is following bookie
+    let isFollowing = false;
+    for (const account of following) {
+      if (account.fid === BOOKIES_FID) {
+        isFollowing = true;
+        break;
+      }
+    }
+
+    return isFollowing;
+}
