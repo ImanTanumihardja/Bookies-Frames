@@ -14,15 +14,6 @@ export type User = {
     hasClaimed: boolean;
 }
 
-export const DEFAULT_USER: User = {
-    points: 0,
-    streak: 0,
-    wins: 0,
-    losses: 0,
-    numBets: 0,
-    hasClaimed: false,
-}
-
 export type Bet = {
     eventName: string
     wagerAmount: number
@@ -30,9 +21,21 @@ export type Bet = {
     timeStamp: number
 }
 
-export const DEFAULT_BET: Bet = {
-    eventName: "",
-    wagerAmount: 0,
-    prediction: -1,
-    timeStamp: 0
-}
+export type FarcasterProfile = {
+    fid: number;
+    custodyAddress: string;
+    username: string;
+    displayName: string;
+    pfp: {
+      url: string;
+    };
+    profile: {
+      bio: object[]; // Adjust the type accordingly
+      // Add other properties if needed
+    };
+    followerCount: number;
+    followingCount: number;
+    verifications: string[];
+    activeStatus: "active" | "inactive"; // Assuming activeStatus can be one of these values
+    timestamp: string;
+  };

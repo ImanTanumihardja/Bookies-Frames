@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
 import { kv } from "@vercel/kv";
-import { User, DEFAULT_USER } from '../../../../types';
-import { RequestProps, getRequestProps } from '../../../../../src/utils';
+import { User } from '../../../../types';
+import { RequestProps, getRequestProps, DEFAULT_USER } from '../../../../../src/utils';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%'}}>
                         <h1 style={{color: 'white', alignItems:'center', left:-30}}> 
                             {profile.avatarUrl && <img style={{width: 40, height: 40, marginRight:10, borderRadius: 50}} src={profile.avatarUrl}/>} 
-                            {profile.username || ""} (#{rank})
+                            {profile.displayName || ""} (#{rank})
                         </h1>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start', alignSelf:'center', top:-30}}>
                             <h2 style={{color: 'white', marginBottom:-10}}> 🎲 Dice: {user.points} </h2>

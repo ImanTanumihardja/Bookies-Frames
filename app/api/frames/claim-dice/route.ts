@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
-import { User, DEFAULT_USER} from '../../../types';
-import { RequestProps, generateImageUrl } from '../../../../src/utils';
+import { User, FarcasterProfile} from '../../../types';
+import { RequestProps, generateImageUrl,fetchAllFollowing, BOOKIES_FID, DEFAULT_USER } from '../../../../src/utils';
 import { getFrameHtml, Frame} from "frames.js";
 import {getFrameMessage} from '@coinbase/onchainkit'
 
@@ -9,18 +9,23 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
   const body = await req.json();
   const { isValid, message}  = await getFrameMessage(body, { neynarApiKey: process.env['NEYNAR_API_KEY'] });
-  const isFollowing = message?.following;
   const fid = message?.interactor.fid || 0;
 
-  if (isFollowing === undefined || fid === 0) {
-    throw new Error('Invalid frame message');
-  } 
-
   if (!isValid) throw new Error('Invalid frame message');
-
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
   let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
   const isNewUser: boolean = await kv.zscore('users', fid) === null;
+
+  const following : FarcasterProfile[] = await fetchAllFollowing(fid);
+
+  // Lopp through each user and check if the user is following bookie
+  let isFollowing = false;
+  for (const account of following) {
+    if (account.fid === BOOKIES_FID) {
+      isFollowing = true;
+      break;
+    }
+  }
 
   if (isFollowing) {
     if (!user.hasClaimed) {
