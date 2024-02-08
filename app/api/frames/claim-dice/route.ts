@@ -12,7 +12,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (!isValid) throw new Error('Invalid frame message');
 
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
-  let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER
+  let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
   const isNewUser: boolean = await kv.zscore('users', fid) === null;
 
   if (isFollowing) {
@@ -40,7 +40,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: isFollowing ? [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, { label: "Refresh", action: 'post'}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}, { label: "Refresh", action: 'post'}],
+    buttons: isFollowing ? [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
     postUrl: `${process.env['HOST']}/api/frames/${frameName}`,
   };
 

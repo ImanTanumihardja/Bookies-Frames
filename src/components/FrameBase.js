@@ -6,10 +6,8 @@ const FrameBase = ({ children }) => {
         <div style={{
             display: 'flex',
             alignItems: 'center',
-            textAlign: 'center',
             width: '100%',
             height: '100%',
-            lineHeight: 1.2,
             background: 'linear-gradient(to top right, orange, purple, orange)',
             justifyContent: 'center'
         }}>

@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 
 export enum RequestProps {
-    FID = 'FID',
+    FID = 'fid',
     IS_FOLLOWING = 'isFollowing',
     HAS_CLAIMED = 'hasClaimed',
     AMOUNT = 'amount',
@@ -43,8 +43,11 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
 }
 
 export function generateImageUrl(frameName: string, params: Record<string, any>): string {
-    const timestamp = new Date().getTime()
-    let url = `${process.env['HOST']}/api/frames/${frameName}/image?timestamp=${timestamp}`
+    let url = `${process.env['HOST']}/api/frames/${frameName}/image?`
+
+    if (process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging')) {
+        url += `?timestamp=${new Date().getTime()}`
+    }
 
     // Loop through each param
     for (const key in params) {
