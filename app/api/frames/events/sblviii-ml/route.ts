@@ -3,6 +3,7 @@ import { kv } from "@vercel/kv";
 import { User, DEFAULT_USER} from '../../../../types';
 import { RequestProps, generateImageUrl } from '../../../../../src/utils';
 import { getFrameMessage, getFrameHtml, Frame} from "frames.js";
+import { getFrameHtmlResponse } from '@coinbase/onchainkit';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -60,17 +61,14 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     //   prediction = -1
     // }
 
-  const imageUrl = `${process.env['HOST']}/superbowl.png`//`${process.env['HOST']}/api/frames/${frameName}/image?chiefs=${event.poll[0]}&niners=${event.poll[1]}&result=${event.result}&prediction=${prediction}&timestamp=${now}`;
+    const imageUrl = `${process.env['HOST']}/superbowl.png`//`${process.env['HOST']}/api/frames/${frameName}/image?chiefs=${event.poll[0]}&niners=${event.poll[1]}&result=${event.result}&prediction=${prediction}&timestamp=${now}`;
 
-  const frame: Frame = {
-    version: "vNext",
-    image: imageUrl,
-    postUrl: `${process.env['HOST']}/api/frames/$`,
-  };
-
-  return new NextResponse(
-    getFrameHtml(frame),
-  );
+    return new NextResponse(
+      getFrameHtmlResponse({
+        image: `${imageUrl}`,
+        post_url: `${process.env['HOST']}/api/frames/`,
+      }),
+    );
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
