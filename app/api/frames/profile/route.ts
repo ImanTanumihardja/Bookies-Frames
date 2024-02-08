@@ -1,33 +1,28 @@
-import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
+import { getFrameMessage, Frame, getFrameHtml } from "frames.js";
+import { generateImageUrl, RequestProps} from '../../../../src/utils';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
-  const body: FrameRequest = await req.json();
+  const body = await req.json();
+  const { isValid, requesterFollowsCaster: isFollowing, requesterFid: fid}  = await getFrameMessage(body, { fetchHubContext: true });
+
+  if (!isValid) throw new Error('Invalid frame message');
+
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
-  const { isValid, message } = await getFrameMessage(body, { neynarApiKey: 'NEYNAR_ONCHAIN_KIT' });
 
-  if (isValid) {
-    const accountAddress: string = req.nextUrl.searchParams.get('accountAddress') || message?.interactor.custody_address || "";
-    const isFollowing: boolean = message.following;
+  const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid});
 
-    const imageUrl = `${process.env['HOST']}/api/frames/${frameName}/image?isFollowing=${isFollowing}&accountAddress=${accountAddress}&timestamp=${new Date().getTime()}`;
+  const frame: Frame = {
+    version: "vNext",
+    image: imageUrl,
+    buttons: isFollowing ? [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, { label: "Refresh", action: 'post'}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}, { label: "Refresh", action: 'post'}],
+    postUrl: `${process.env['HOST']}/api/frames/${frameName}`,
+  };
 
-    return new NextResponse(
-      getFrameHtmlResponse({
-        buttons: isFollowing ? [{ label: "View Profile" }] : [{ label: "Follow", action: 'link', target: 'https://warpcast.com/bookies'}],
-        image: `${imageUrl}`,
-        post_url: `${process.env['HOST']}/api/frames/${frameName}`
-      }),
-    );
-  } 
-  else {
-    return new NextResponse(
-      getFrameHtmlResponse({
-        image: `${process.env['HOST']}/superbowl.png`,
-      }),
-    );
-  }
+  return new NextResponse(
+    getFrameHtml(frame),
+  );
 }
 
 export async function POST(req: NextRequest): Promise<Response> {

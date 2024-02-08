@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 
 export enum RequestProps {
-    FID = 'FID',
+    FID = 'fid',
     IS_FOLLOWING = 'isFollowing',
     HAS_CLAIMED = 'hasClaimed',
     AMOUNT = 'amount',

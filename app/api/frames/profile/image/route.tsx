@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
 import { kv } from "@vercel/kv";
-import { User } from '../../../../types';
+import { User, DEFAULT_USER } from '../../../../types';
+import { RequestProps, getRequestProps } from '../../../../../src/utils';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -14,40 +15,26 @@ const plusJakartaSans = fetch(
 
 export async function GET(req: NextRequest) {
     try {
-        const accountAddress: string = req.nextUrl.searchParams.get("accountAddress") || ""
-        const isFollowing: boolean = req.nextUrl.searchParams.get("isFollowing") ? "true" === req.nextUrl.searchParams.get("isFollowing") : false
+        const {isFollowing, fid} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.FID]);
 
-        const profile = await (await fetch(`https://searchcaster.xyz/api/profiles?address=${accountAddress}`)).json().then((data) => data[0].body)
-        const user : User | null = await kv.hgetall(accountAddress) || null
+        const profile = await (await fetch(`https://searchcaster.xyz/api/profiles?fid=${fid}`)).json().then((data) => data[0].body)
+        const user : User | null = await kv.hgetall(fid) || DEFAULT_USER
+        const rank : number | null = await kv.zrank('users', fid) 
 
         return new ImageResponse(
             <FrameBase>
-                    {isFollowing ?
-                    <div style={{display: 'flex', flexDirection: 'column', width:'100%',}}>
-                        <h1 style={{color: 'white'}}> <img style={{width: 50, height: 50, marginRight:10, borderRadius: 50}} src={profile.avatarUrl}/> {profile.username} </h1>
-                        <table style={{}}>
-                            <thead>
-                                <tr>
-                                    <th style={{color: 'white', fontSize:20, padding: 15}}> Dice </th>
-                                    <th style={{color: 'white', fontSize:20, padding: 15}}> Wins </th>
-                                    <th style={{color: 'white', fontSize:20, padding: 15}}> Losses </th>
-                                    <th style={{color: 'white', fontSize:20, padding: 15}}> Streak </th>
-                                </tr>
-                            </thead>
-                           <tbody>
-                                <tr>
-                                    <td style={{color: 'white', fontSize:20, padding: 15}}> {user?.points} </td>
-                                    <td style={{color: 'white', fontSize:20, padding: 15}}> {user?.wins} </td>
-                                    <td style={{color: 'white', fontSize:20, padding: 15}}> {user?.losses} </td>
-                                    <td style={{color: 'white', fontSize:20, padding: 15}}> {user?.streak} </td>
-                                </tr>
-                           </tbody>
-                            
-                        </table>
+                {isFollowing ?
+                    <div style={{display: 'flex', flexDirection: 'column', width:'100%'}}>
+                        <h2 style={{color: 'white', alignItems:'center', paddingTop: 20, left:-30}}> {profile.avatarUrl && <img style={{width: 40, height: 40, marginRight:10, borderRadius: 50}} src={profile.avatarUrl}/>} {profile.username} (#{rank})</h2>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start', alignSelf:'center', top:-30}}>
+                            <h3 style={{color: 'white'}}> 🎲 Dice: {user.points} </h3>
+                            <h3 style={{color: 'white'}}> 🔥 Streak: {user.streak} </h3>
+                            <h3 style={{color: 'white'}}> 🎰 Total Bets: {user.numBets} ({user.wins}W - {user.wins}L)</h3>
+                        </div>
                     </div>
                     :
                     <h2 style={{color: 'white', fontSize:40}}> You are not following Bookies</h2>
-                    }
+                }
             </FrameBase>
             ,
             {
