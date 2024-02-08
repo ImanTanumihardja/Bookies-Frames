@@ -1,19 +1,13 @@
-import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
-import { Event, User, Bet } from '../../../../types';
+import { User, DEFAULT_USER} from '../../../../types';
+import { RequestProps, generateImageUrl } from '../../../../../src/utils';
+import { getFrameMessage, getFrameHtml, Frame} from "frames.js";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
-  const body: FrameRequest = await req.json();
-  const { isValid, message } = await getFrameMessage(body, { neynarApiKey: 'NEYNAR_ONCHAIN_KIT' });
-
-  if (isValid) {
-    const buttonIndex: number = message?.button || 0;
-    let prediction: number = buttonIndex - 1; // zero indexed
-    const fid: number = message?.interactor.fid || 0;
-    const accountAddress: string = message?.interactor.custody_address || "";
-    const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
+  const body = await req.json();
+  const { isValid, requesterFollowsCaster: isFollowing, requesterFid: fid}  = await getFrameMessage(body, { fetchHubContext: true });
     // let user : User = await kv.hgetall(accountAddress) || {} as User
 
     // // Check if I can parse the amount as integer
@@ -66,22 +60,17 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     //   prediction = -1
     // }
 
-    const imageUrl = `${process.env['HOST']}/superbowl.png`//`${process.env['HOST']}/api/frames/${frameName}/image?chiefs=${event.poll[0]}&niners=${event.poll[1]}&result=${event.result}&prediction=${prediction}&timestamp=${now}`;
+  const imageUrl = `${process.env['HOST']}/superbowl.png`//`${process.env['HOST']}/api/frames/${frameName}/image?chiefs=${event.poll[0]}&niners=${event.poll[1]}&result=${event.result}&prediction=${prediction}&timestamp=${now}`;
 
-    return new NextResponse(
-      getFrameHtmlResponse({
-        image: `${imageUrl}`,
-        post_url: `${process.env['HOST']}/api/frames/${frameName}`,
-      }),
-    );
-  } 
-  else {
-    return new NextResponse(
-      getFrameHtmlResponse({
-        image: `${process.env['HOST']}/superbowl.png`,
-      }),
-    );
-  }
+  const frame: Frame = {
+    version: "vNext",
+    image: imageUrl,
+    postUrl: `${process.env['HOST']}/api/frames/$`,
+  };
+
+  return new NextResponse(
+    getFrameHtml(frame),
+  );
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
