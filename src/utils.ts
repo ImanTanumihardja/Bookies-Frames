@@ -1,6 +1,9 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { NeynarAPIClient } from "@neynar/nodejs-sdk";
 import { FarcasterProfile, User, Bet} from '../app/types';
+import { Frame, getFrameMessage as getFrameMessageFrameJS } from 'frames.js';
+import { getFrameMessage as getFrameMessageOnchain } from '@coinbase/onchainkit'
+import { FrameValidationData } from '../app/types';
 
 export enum RequestProps {
     FID = 'fid',
@@ -33,6 +36,20 @@ export const DEFAULT_BET: Bet = {
     prediction: -1,
     timeStamp: 0
 }
+
+export const DEFAULT_FRAME_VALIDATION_DATA: FrameValidationData = {
+    button: 0,
+    following: false,
+    followingBookies: false,
+    input: "",
+    interactor: {
+      fid: 0,
+      custody_address: "",
+      verified_accounts: [],
+    },
+    liked: false,
+    recasted: false,
+  };
 
 export function getRequestProps(req: NextRequest, params: RequestProps[]): Record<string, any> {
     // Loop throug each RequestParams
@@ -79,7 +96,7 @@ export function generateImageUrl(frameName: string, params: Record<string, any>,
 // don't have an API key yet? get one at neynar.com
 const client = new NeynarAPIClient(process.env['NEYNAR_API_KEY'] || "");
 
-export async function checkIsFollowing(fid: number): Promise<boolean> {
+export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
     let cursor: string | null = "";
     let users: unknown[] = [];
     do {
@@ -103,4 +120,47 @@ export async function checkIsFollowing(fid: number): Promise<boolean> {
     }
 
     return isFollowing;
+}
+
+export async function validateFrameMessage(req: NextRequest) {
+    const body = await req.json();
+
+    let isValid: boolean;
+    let message: FrameValidationData = DEFAULT_FRAME_VALIDATION_DATA
+
+    try {
+        // Use onchainkit to validate the frame message
+        const data = await getFrameMessageOnchain(body, { neynarApiKey: process.env['NEYNAR_API_KEY'] });
+
+        isValid = data.isValid;
+
+        message.button = data?.message?.button || 0
+        message.following = data?.message?.following || false
+        message.input = data?.message?.input || ""
+        message.fid = data?.message?.interactor.fid || 0
+        message.custody_address = data?.message?.interactor.custody_address || ""
+        message.verified_accounts = data?.message?.interactor.verified_accounts || []
+        message.liked = data?.message?.liked || false
+        message.recasted = data?.message?.recasted || false
+
+        message.followingBookies = await checkIsFollowingBookies(message.fid)
+
+    }
+    catch (error) {
+        // Use framesjs to validate the frame message
+        let data = await getFrameMessageFrameJS(body, { fetchHubContext: true }); // frames.js
+
+        isValid = data.isValid;
+        
+        message.button = data?.buttonIndex || 0
+        message.following = data?.requesterFollowsCaster || false
+        message.input = data?.inputText || ""
+        message.fid = data?.requesterFid || 0
+        // message.custody_address = data?.castId?.hash || "" // no custody address in frames.js
+        message.verified_accounts = data?.requesterVerifiedAddresses || []
+        message.liked = data.likedCast || false
+        message.recasted = data?.recastedCast || false
+    }
+
+    return {isValid, message}
 }

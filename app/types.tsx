@@ -39,3 +39,15 @@ export type FarcasterProfile = {
     activeStatus: "active" | "inactive"; // Assuming activeStatus can be one of these values
     timestamp: string;
   };
+
+  export type FrameValidationData = {
+    button: number;
+    following: boolean;
+    followingBookies: boolean; // Check if following Bookies
+    input: string;
+    fid: number;
+    custody_address: string;
+    verified_accounts: string[];
+    liked: boolean;
+    recasted: boolean;
+}
