@@ -8,7 +8,7 @@ import {getFrameMessage} from '@coinbase/onchainkit'
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
   const body = await req.json();
-  const { isValid, message}  = await getFrameMessage(body, { neynarApiKey: 'NEYNAR_ONCHAIN_KIT' });
+  const { isValid, message}  = await getFrameMessage(body, { neynarApiKey: process.env['NEYNAR_API_KEY'] });
   const isFollowing = message?.following;
   const fid = message?.interactor.fid || 0;
 
