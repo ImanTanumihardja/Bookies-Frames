@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { User, DEFAULT_USER} from '../../../../types';
 import { RequestProps, generateImageUrl } from '../../../../../src/utils';
-import { getFrameMessage, getFrameHtml, Frame} from "frames.js";
-import { getFrameHtmlResponse } from '@coinbase/onchainkit';
+// import { getFrameMessage, getFrameHtml, Frame} from "frames.js";
+import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
   const body = await req.json();
-  const { isValid, requesterFollowsCaster: isFollowing, requesterFid: fid}  = await getFrameMessage(body, { fetchHubContext: true });
+  const { isValid, message } = await getFrameMessage(body, { neynarApiKey: 'NEYNAR_ONCHAIN_KIT' });
     // let user : User = await kv.hgetall(accountAddress) || {} as User
 
     // // Check if I can parse the amount as integer
