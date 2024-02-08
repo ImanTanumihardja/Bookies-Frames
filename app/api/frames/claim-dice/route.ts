@@ -9,7 +9,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const body = await req.json();
   const { isValid, requesterFollowsCaster: isFollowing, requesterFid: fid}  = await getFrameMessage(body, { fetchHubContext: true });
 
-  if (isValid) throw new Error('Invalid frame message');
+  if (!isValid) throw new Error('Invalid frame message');
 
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
   let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER
