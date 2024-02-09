@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { NeynarAPIClient } from "@neynar/nodejs-sdk";
-import { FarcasterProfileV2, User, Bet} from '../app/types';
+import { User, Bet} from '../app/types';
 import { getFrameMessage as getFrameMessageFrameJS } from 'frames.js';
 import { getFrameMessage as getFrameMessageOnchain } from '@coinbase/onchainkit'
 import { FrameValidationData } from '../app/types';
