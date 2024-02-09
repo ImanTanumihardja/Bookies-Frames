@@ -16,7 +16,7 @@ const frameMetadata = getFrameMetadata({
     },
   ],
   image: `${process.env['HOST']}/thumbnails/${frameName}.gif`,
-  post_url: `${process.env['HOST']}/api/frames/${frameName}/search`
+  post_url: `${process.env['HOST']}/api/frames/${frameName}/router`
 });
 
 export const metadata: Metadata = {
