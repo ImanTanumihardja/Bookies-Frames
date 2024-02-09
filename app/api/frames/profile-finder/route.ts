@@ -1,20 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DEFAULT_USER, generateImageUrl, RequestProps, validateFrameMessage, neynarClient, BOOKIES_FID } from '../../../../src/utils';
-import { User } from '../../../types';
-import { kv } from '@vercel/kv';
+import { validateFrameMessage, neynarClient, BOOKIES_FID } from '../../../../src/utils';
+
 
 export async function POST(req: NextRequest): Promise<Response> {
     // Verify the frame request
-    const message = await validateFrameMessage(req);
+    // const message = await validateFrameMessage(req);
 
-    const { fid, button } = message;
+    // const { fid, button } = message;
+
+    const button = 2
+    const fid = 3
   
     const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
   
 
     // Submit post request to /profile-finder/search
     if (button === 2) {
-      return await fetch(`${process.env['HOST']}/api/frames/${frameName}}/search`, req)
+      return await fetch(`${process.env['HOST']}/api/frames/${frameName}}/search`, req);
     }
     // Submit post request to /profile-finder/profile-page
     else if (button === 1) {
@@ -22,6 +24,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       const username : string = await neynarClient.fetchBulkUsers([fid], {viewerFid: BOOKIES_FID}).then(response => {
         return response?.users[0]?.username || "";
       })
+      
       return await fetch(`${process.env['HOST']}/api/frames/${frameName}}/profile-page?username=${encodeURIComponent(username)}`, req);
     }
     else {
