@@ -29,13 +29,13 @@ export async function GET(req: NextRequest) {
         return new ImageResponse(
             <FrameBase>
                 {isFollowing ?
-                    (rank === -1 && username === "") ?
+                    (rank === -1 && username) ?
                     <h2 style={{color: 'white', fontSize:40, textAlign:'center'}}> No profile found</h2>
                     :
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%'}}>
                         <h1 style={{color: 'white', alignItems:'center', left:-30}}> 
-                            {avatarUrl && <img style={{width: 40, height: 40, marginRight:10, borderRadius: 50}} src={avatarUrl}/>} 
-                            username {rank !== -1 ? `(#${rank})` : ''}
+                            <img style={{width: 40, height: 40, marginRight:10, borderRadius: 50}} src={avatarUrl}/>
+                            {username} {rank !== -1 ? `(#${rank})` : ''}
                         </h1>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start', alignSelf:'center', top:-30}}>
                             <h2 style={{color: 'white', marginBottom:-10}}> 🎲 Dice: {points} </h2>
