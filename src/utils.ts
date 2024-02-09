@@ -20,6 +20,7 @@ export enum RequestProps {
     BUTTON_INDEX = 'buttonIndex',
     INPUT_TEXT = 'inputText',
     STREAK = 'streak',
+    HAS_PROFILE = 'hasProfile'
 }
 
 export const RequestPropsTypes = {
@@ -37,6 +38,7 @@ export const RequestPropsTypes = {
     [RequestProps.BUTTON_INDEX]: 0,
     [RequestProps.INPUT_TEXT]: "",
     [RequestProps.STREAK]: 0,
+    [RequestProps.HAS_PROFILE] : true
 }
 
 export const BOOKIES_FID = 244367;

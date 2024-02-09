@@ -16,7 +16,7 @@ const plusJakartaSans = fetch(
 
 export async function GET(req: NextRequest) {
     try {
-        const {isFollowing, rank, username, avatarUrl, wins, losses, points, streak, numBets} = getRequestProps(req, [RequestProps.IS_FOLLOWING, 
+        const {isFollowing, rank, username, avatarUrl, wins, losses, points, streak, numBets, hasProfile} = getRequestProps(req, [RequestProps.IS_FOLLOWING, 
                                                                                                                         RequestProps.RANK, 
                                                                                                                         RequestProps.USERNAME, 
                                                                                                                         RequestProps.AVATAR_URL, 
@@ -24,12 +24,14 @@ export async function GET(req: NextRequest) {
                                                                                                                         RequestProps.LOSSES, 
                                                                                                                         RequestProps.POINTS, 
                                                                                                                         RequestProps.STREAK,
-                                                                                                                        RequestProps.NUM_BETS]);
+                                                                                                                        RequestProps.NUM_BETS,
+                                                                                                                        RequestProps.HAS_PROFILE
+                                                                                                                    ]);
 
         return new ImageResponse(
             <FrameBase>
                 {isFollowing ?
-                    (rank === -1 && username) ?
+                    (rank === -1 && hasProfile) ?
                     <h2 style={{color: 'white', fontSize:40, textAlign:'center'}}> No profile found</h2>
                     :
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%'}}>
