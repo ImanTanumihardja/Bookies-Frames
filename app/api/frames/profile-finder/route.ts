@@ -16,20 +16,36 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const username : string = (req.nextUrl.searchParams.get("username") || message.input).toLowerCase();
 
   let profile: any;
+  let fid: number;
   let imageUrl: string = "";
+  let user : User = DEFAULT_USER;
+  let rank : number = -1;
 
   await neynarClient.lookupUserByUsername(username).then( (res) => {
     profile = res.result?.user;
+    fid = profile?.fid;
   })
   .catch ( (error) => {
-    profile = {username: "", pfp: {url: ""}};
+    console.error(error);
+    profile = null;
   })
   .finally(async () => {
-    const user : User = await kv.hgetall(profile?.fid.toString() || "") || DEFAULT_USER;
-    const rank : number = await kv.zrank('users', profile?.fid || "") || -1
+    
+      if (profile !== null) {
+        user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
+        rank = await kv.zrank('users', profile?.fid || "") || -1
+      }
   
-    imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.USERNAME]: profile?.username, [RequestProps.AVATAR_URL]: profile?.pfp.url, [RequestProps.RANK]: rank, [RequestProps.WINS]: user.wins, [RequestProps.LOSSES]: user.losses, [RequestProps.POINTS]: user.points, [RequestProps.STREAK]: user.streak, [RequestProps.NUM_BETS]: user.numBets});
-  });
+    imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, 
+                                            [RequestProps.USERNAME]: profile?.username, 
+                                            [RequestProps.AVATAR_URL]: profile?.pfp.url, 
+                                            [RequestProps.RANK]: rank, 
+                                            [RequestProps.WINS]: user.wins, 
+                                            [RequestProps.LOSSES]: user.losses, 
+                                            [RequestProps.POINTS]: user.points, 
+                                            [RequestProps.STREAK]: user.streak, 
+                                            [RequestProps.NUM_BETS]: user.numBets});
+   });
 
   const frame: Frame = {
     version: "vNext",

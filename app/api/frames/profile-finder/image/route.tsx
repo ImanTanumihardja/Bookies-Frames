@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
         return new ImageResponse(
             <FrameBase>
                 {isFollowing ?
-                    rank === -1 && username === "" ?
+                    rank === -1 && !username ?
                     <h2 style={{color: 'white', fontSize:40, textAlign:'center'}}> No profile found</h2>
                     :
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%'}}>
