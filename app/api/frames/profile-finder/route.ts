@@ -27,7 +27,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   })
   .catch ( (error) => {
     console.error(error);
-    profile = null;
+    profile = {username: "", pfp: {url: ""}};
   })
   .finally(async () => {
       if (profile !== null) {
