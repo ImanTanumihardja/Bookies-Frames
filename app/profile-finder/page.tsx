@@ -10,7 +10,7 @@ const frameMetadata = getFrameMetadata({
       label: 'Find Profile!',
     },
   ],
-  image: `${process.env['HOST']}/api/frames/${frameName}/thumbnail`,
+  image: `${process.env['HOST']}/thumbnail/${frameName}.gif`,
   post_url: `${process.env['HOST']}/api/frames/${frameName}`
 });
 
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: frameName,
     description: 'Search for a profile!', 
-    images: [`${process.env['HOST']}/api/frames/${frameName}/thumbnail`],
+    images: [`${process.env['HOST']}/thumbnail/${frameName}.gif`],
   },
   other: {
     ...frameMetadata,
