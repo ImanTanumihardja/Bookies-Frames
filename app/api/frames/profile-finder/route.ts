@@ -16,7 +16,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
     // Submit post request to /profile-finder/search
     if (button === 2) {
-      return (await fetch(`${process.env['HOST']}/api/frames/${frameName}}/search`, req));
+      return (await (await fetch(`${process.env['HOST']}/api/frames/${frameName}}/search`, req)).json());
     }
     // Submit post request to /profile-finder/profile-page
     else if (button === 1) {
