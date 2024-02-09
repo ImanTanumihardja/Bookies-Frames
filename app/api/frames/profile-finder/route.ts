@@ -15,6 +15,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Check for fid prop in url and if there use that as fid
   const username : string = (req.nextUrl.searchParams.get("username") || message.input).toLowerCase();
 
+  if (!username || username === "") {
+    return new NextResponse('No username provided', { status: 400 });
+  }
+
   let profile: any = null;
   let imageUrl: string = "";
   let user : User = DEFAULT_USER;
@@ -37,8 +41,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       }
   
     imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, 
-                                            [RequestProps.USERNAME]: profile?.username, 
-                                            [RequestProps.AVATAR_URL]: profile?.pfp.url, 
+                                            [RequestProps.USERNAME]: profile?.username || null, 
+                                            [RequestProps.AVATAR_URL]: profile?.pfp.url || null, 
                                             [RequestProps.RANK]: rank, 
                                             [RequestProps.WINS]: user.wins, 
                                             [RequestProps.LOSSES]: user.losses, 
