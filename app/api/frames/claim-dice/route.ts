@@ -22,6 +22,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         user.points = 100;
         await multi.zadd('users', {score: 100, member: fid});
         await multi.hset(fid.toString(), user);
+
+        const profile = await (await fetch(`https://searchcaster.xyz/api/profiles?fid=${fid}`)).json().then((data) => data[0].body) || {}
+        await multi.hset(profile.username, {fid: fid});
       }
       else {
         // Get daily 10 dice for old user
