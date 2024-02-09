@@ -78,7 +78,7 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
             throw new Error(`Missing required param: ${key}`)
         }
 
-        const value = req.nextUrl.searchParams.get(key) || undefined
+        const value = decodeURIComponent(req.nextUrl.searchParams.get(key) || "")
 
         // Parse Props
         switch (typeof RequestPropsTypes[key]) {
