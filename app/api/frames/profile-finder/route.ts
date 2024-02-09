@@ -13,7 +13,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
 
   // Check for fid prop in url and if there use that as fid
-  const username : string = (req.nextUrl.searchParams.get("username") || message.input).toLowerCase();
+  const username : string = (req.nextUrl.searchParams.get("username") || message?.input).toLowerCase();
 
   if (!username || username === "") {
     return new NextResponse('No username provided', { status: 400 });
@@ -55,7 +55,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     version: "vNext",
     image: imageUrl,
     buttons: isFollowing ? [{label: "Back", action: "post"}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
-    postUrl: `${process.env['HOST']}/api/frames/${frameName}?username=${'0xcloud'}`,
+    postUrl: `${process.env['HOST']}/${frameName}}`,
   };
 
   return new NextResponse(
