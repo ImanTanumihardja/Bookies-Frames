@@ -21,8 +21,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let rank : number = -1;
 
   await neynarClient.searchUser(username, BOOKIES_FID).then( (res) => {
-    const users = res.result?.users;
-    profile = users.length != 0 ? users[0] : null; // Grap first user
+    const users = res?.result?.users;
+    profile = users.length != 0 ? null : null; // Grap first user
   })
   .catch ( (error) => {
     console.error(error);
