@@ -25,8 +25,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     profile = null;
   })
   .finally(async () => {
-    const user : User = await kv.hgetall(profile?.fid.toString()) || DEFAULT_USER;
-    const rank : number = await kv.zrank('users', profile?.fid) || -1
+    const user : User = await kv.hgetall(profile?.fid.toString() || "") || DEFAULT_USER;
+    const rank : number = await kv.zrank('users', profile?.fid || "") || -1
   
     imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.USERNAME]: profile?.username, [RequestProps.AVATAR_URL]: profile?.pfp.url, [RequestProps.RANK]: rank, [RequestProps.WINS]: user.wins, [RequestProps.LOSSES]: user.losses, [RequestProps.POINTS]: user.points, [RequestProps.STREAK]: user.streak, [RequestProps.NUM_BETS]: user.numBets});
   });
