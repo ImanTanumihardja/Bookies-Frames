@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { NeynarAPIClient } from "@neynar/nodejs-sdk";
-import { FarcasterProfile, User, Bet} from '../app/types';
+import { FarcasterProfileV2, User, Bet} from '../app/types';
 import { getFrameMessage as getFrameMessageFrameJS } from 'frames.js';
 import { getFrameMessage as getFrameMessageOnchain } from '@coinbase/onchainkit'
 import { FrameValidationData } from '../app/types';
@@ -118,29 +118,9 @@ export function generateImageUrl(frameName: string, params: Record<string, any>,
 export const neynarClient = new NeynarAPIClient(process.env['NEYNAR_API_KEY'] || "");
 
 export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
-    let cursor: string | null = "";
-    let users: unknown[] = [];
-    do {
-      const result = await neynarClient.fetchUserFollowing(fid, {
-        limit: 150,
-        cursor,
-      });
-      users = users.concat(result.result.users);
-      cursor = result.result.next.cursor;
-      console.log(cursor);
-    } while (cursor !== "" && cursor !== null);
-
-    const following = users as FarcasterProfile[];
-    // Lopp through each user and check if the user is following bookie
-    let isFollowing = false;
-    for (const account of following) {
-      if (account.fid === BOOKIES_FID) {
-        isFollowing = true;
-        break;
-      }
-    }
-
-    return isFollowing;
+    const isFollowing = (await neynarClient.lookupUserByFid(fid, BOOKIES_FID)).result?.user?.viewerContext?.followedBy || false;
+    
+    return isFollowing
 }
 
 
@@ -170,7 +150,7 @@ export async function validateFrameMessage(req: NextRequest) {
 
     }
     catch (error) {
-        throw new Error(`Error validating frame message: ${error}`)
+        throw new Error(`${error}`)
 
         // TODO: Recue function size so can uncomment this
         // // Use framesjs to validate the frame message

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Frame, getFrameHtml } from "frames.js";
-import { DEFAULT_USER, generateImageUrl, RequestProps, validateFrameMessage, neynarClient, BOOKIES_FID } from '../../../../src/utils';
+import { DEFAULT_USER, generateImageUrl, RequestProps, validateFrameMessage, neynarClient } from '../../../../src/utils';
 import { User } from '../../../types';
 import { kv } from '@vercel/kv';
 
@@ -14,12 +14,22 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   // Check for fid prop in url and if there use that as fid
   const username : string = req.nextUrl.searchParams.get("username") || message.input;
-  const profile = (await neynarClient.lookupUserByUsername(username)).result.user
-  const fid = profile.fid;
-  const user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
-  const rank : number = await kv.zrank('users', fid) || -1
 
-  const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.USERNAME]: profile.username, [RequestProps.AVATAR_URL]: profile.pfp.url, [RequestProps.RANK]: rank, [RequestProps.WINS]: user.wins, [RequestProps.LOSSES]: user.losses, [RequestProps.POINTS]: user.points, [RequestProps.STREAK]: user.streak, [RequestProps.NUM_BETS]: user.numBets});
+  let profile: any;
+  let imageUrl: string = "";
+
+  await neynarClient.lookupUserByUsername(username).then( (res) => {
+    profile = res.result?.user;
+  })
+  .catch ( (error) => {
+    profile = null;
+  })
+  .finally(async () => {
+    const user : User = await kv.hgetall(profile?.fid.toString()) || DEFAULT_USER;
+    const rank : number = await kv.zrank('users', profile?.fid) || -1
+  
+    imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.USERNAME]: profile.username, [RequestProps.AVATAR_URL]: profile.pfp.url, [RequestProps.RANK]: rank, [RequestProps.WINS]: user.wins, [RequestProps.LOSSES]: user.losses, [RequestProps.POINTS]: user.points, [RequestProps.STREAK]: user.streak, [RequestProps.NUM_BETS]: user.numBets});
+  });
 
   const frame: Frame = {
     version: "vNext",
@@ -31,6 +41,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   return new NextResponse(
     getFrameHtml(frame),
   );
+
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
