@@ -120,7 +120,7 @@ export function generateImageUrl(frameName: string, params: Record<string, any>,
 export const neynarClient = new NeynarAPIClient(process.env['NEYNAR_API_KEY'] || "");
 
 export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
-    let isFollowing = false; // TEMPORARY FIX
+    let isFollowing = true; // TEMPORARY FIX
 
     await neynarClient.fetchBulkUsers([fid], {viewerFid: BOOKIES_FID})
     .then(response => {
