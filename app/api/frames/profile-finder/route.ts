@@ -16,14 +16,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const username : string = (req.nextUrl.searchParams.get("username") || message.input).toLowerCase();
 
   let profile: any;
-  let fid: number;
   let imageUrl: string = "";
   let user : User = DEFAULT_USER;
   let rank : number = -1;
 
   await neynarClient.searchUser(username, BOOKIES_FID).then( (res) => {
-    profile = res.result?.users ? res.result?.users[0] : null; // Grap first user
-    fid = profile?.fid;
+    const users = res.result?.users;
+    profile = users.length !== 0 ? users[0] : null; // Grap first user
   })
   .catch ( (error) => {
     console.error(error);
