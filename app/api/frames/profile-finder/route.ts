@@ -22,7 +22,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     profile = res.result?.user;
   })
   .catch ( (error) => {
-    profile = null;
+    profile = {username: "", pfp: {url: ""}};
   })
   .finally(async () => {
     const user : User = await kv.hgetall(profile?.fid.toString() || "") || DEFAULT_USER;
