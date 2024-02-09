@@ -7,7 +7,7 @@ const frameName = 'claim-dice'
 const frameMetadata = getFrameMetadata({
   buttons: [
     {
-      label: 'Claim free Dice!',
+      label: 'Claim Dice',
     },
   ],
   image: `${process.env['HOST']}/thumbnails/${frameName}.gif`,

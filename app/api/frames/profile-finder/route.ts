@@ -54,7 +54,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: isFollowing ? [{label: "Back", action: "post"}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
+    buttons: isFollowing ? [{label: "Back", action: "post"}] : [{ label: "Follow Us", action: 'link', target: 'https://warpcast.com/bookies'}],
     postUrl: `${process.env['HOST']}/${frameName}}`,
   };
 
