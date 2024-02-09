@@ -26,7 +26,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   await neynarClient.searchUser(username, BOOKIES_FID).then( (res) => {
     const users = res?.result?.users;
-    profile = null; // Grap first user
+    profile = users?.length > 0 ? users[0] : null;
   })
   .catch ( (error) => {
     console.error(error);
@@ -41,8 +41,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       }
   
     imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, 
-                                            [RequestProps.USERNAME]: profile?.username || null, 
-                                            [RequestProps.AVATAR_URL]: profile?.pfp.url || null, 
+                                            [RequestProps.USERNAME]: profile?.username || "", 
+                                            [RequestProps.AVATAR_URL]: profile?.pfp.url || "", 
                                             [RequestProps.RANK]: rank, 
                                             [RequestProps.WINS]: user.wins, 
                                             [RequestProps.LOSSES]: user.losses, 

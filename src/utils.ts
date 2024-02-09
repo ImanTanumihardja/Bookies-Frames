@@ -109,7 +109,7 @@ export function generateImageUrl(frameName: string, params: Record<string, any>,
 
     // Loop through each param
     for (const key in params) {
-        url += `&${key}=${params[key]}`
+        url += `&${key}=${encodeURIComponent(params[key])}`
     }
     return url
 }
