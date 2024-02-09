@@ -10,12 +10,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const {followingBookies: isFollowing } = message;
 
-    // Check for fid prop in url and if there use that as fid
-  const fidString :string = req.nextUrl.searchParams.get("fid") || message.input;
-
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
 
+  // Check for fid prop in url and if there use that as fid
+  const fidString :string = req.nextUrl.searchParams.get("fid") || message.input;
   const fid: number = parseInt(fidString);
+
   const profile = await (await fetch(`https://searchcaster.xyz/api/profiles?fid=${fid}`)).json().then((data) => data[0].body) || {}
   const user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
   const rank : number = await kv.zrank('users', fid) || -1
@@ -25,7 +25,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: isFollowing ? [{ label: "Refresh", action: 'post_redirect'}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
+    buttons: isFollowing ? [{ label: "Refresh", action: 'post'}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
     postUrl: `${process.env['HOST']}/api/frames/${frameName}?fid=${fid}`,
   };
 
