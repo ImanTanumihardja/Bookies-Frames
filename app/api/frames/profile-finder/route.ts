@@ -22,7 +22,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let rank : number = -1;
 
   await neynarClient.searchUser(username, BOOKIES_FID).then( (res) => {
-    profile = res.result?.users[0]; // Grap first user
+    profile = res.result?.users ? res.result?.users[0] : null; // Grap first user
     fid = profile?.fid;
   })
   .catch ( (error) => {
@@ -33,7 +33,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       if (profile !== null) {
         rank = await kv.zrank('users', profile?.fid || "") || -1
         
-        // Can skip if not found in db
+        // Can skip if not found in kv
         if (rank !== -1) user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
       }
   
@@ -51,7 +51,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: isFollowing ? undefined : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
+    buttons: isFollowing ? [{label: "Back", action: "post"}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
     postUrl: `${process.env['HOST']}/${frameName}`,
   };
 
