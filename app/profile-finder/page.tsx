@@ -10,6 +10,9 @@ const frameMetadata = getFrameMetadata({
       label: 'Find Profile!',
     },
   ],
+  input: {
+    text: 'FID',
+  },
   image: `${process.env['HOST']}/thumbnails/${frameName}.gif`,
   post_url: `${process.env['HOST']}/api/frames/${frameName}`
 });

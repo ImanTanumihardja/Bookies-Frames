@@ -8,10 +8,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
   const message = await validateFrameMessage(req);
 
-  const {followingBookies: isFollowing , fid} = message;
+  const {followingBookies: isFollowing , input} = message;
 
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
 
+  const fid = parseInt(input);
   const profile = await (await fetch(`https://searchcaster.xyz/api/profiles?fid=${fid}`)).json().then((data) => data[0].body) || {}
   const user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
   const rank : number = await kv.zrank('users', fid) || -1
