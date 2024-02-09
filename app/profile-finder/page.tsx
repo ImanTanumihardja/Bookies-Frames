@@ -7,14 +7,14 @@ const frameName = 'profile-finder'
 const frameMetadata = getFrameMetadata({
   buttons: [
     {
-      label: 'Find Profile!',
+      label: 'Find Profile',
       action: 'post',
     },
   ],
   input: {
     text: 'Username',
   },
-  image: `${process.env['HOST']}/thumbnails/${frameName}2.gif`,
+  image: `${process.env['HOST']}/thumbnails/${frameName}.gif`,
   post_url: `${process.env['HOST']}/api/frames/${frameName}`
 });
 
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: frameName,
     description: 'Search for a profile!', 
-    images: [`${process.env['HOST']}/thumbnails/${frameName}2.gif`],
+    images: [`${process.env['HOST']}/thumbnails/${frameName}.gif`],
   },
   other: {
     ...frameMetadata,
