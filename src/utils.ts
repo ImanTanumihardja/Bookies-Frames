@@ -118,18 +118,21 @@ export function generateImageUrl(frameName: string, params: Record<string, any>,
 export const neynarClient = new NeynarAPIClient(process.env['NEYNAR_API_KEY'] || "");
 
 export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
-    let isFollowing = false;
-
-    await neynarClient.lookupUserByFid(fid, BOOKIES_FID)
-    .then(response => {
-        isFollowing = response.result?.user?.viewerContext?.followedBy || false;
-    })
-    .catch(error => {
-        console.error('Error fetching user by fid:', error);
-        // Handle the error or perform additional actions
-    });
+    const isFollowing = (await neynarClient.lookupUserByFid(fid, BOOKIES_FID)).result?.user?.viewerContext?.followedBy || false;
     
     return isFollowing
+
+    // await neynarClient.lookupUserByFid(fid, BOOKIES_FID)
+    // .then(response => {
+    //     isFollowing = response.result?.user?.viewerContext?.followedBy || false;
+
+    // })
+    // .catch(error => {
+    //     console.error('Error fetching user by fid:', error);
+    //     // Handle the error or perform additional actions
+    // });
+    
+    // return isFollowing
 }
 
 

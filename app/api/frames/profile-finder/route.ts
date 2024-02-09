@@ -19,7 +19,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   // Get username from neynar
   await neynarClient.lookupUserByUsername(username).then( (res) => {
-    profile = res.result?.user;
+    profile = res?.result?.user;
   })
   .catch ( (error) => {
     console.error('Error fetching user by fid:', error);
