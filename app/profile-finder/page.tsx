@@ -7,7 +7,11 @@ const frameName = 'profile-finder'
 const frameMetadata = getFrameMetadata({
   buttons: [
     {
-      label: 'Find Profile',
+      label: 'My Profile',
+      action: 'post',
+    },
+    {
+      label: 'Profile Search',
       action: 'post',
     },
   ],
