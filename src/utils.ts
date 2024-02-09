@@ -126,9 +126,9 @@ export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
 
     let isFollowing = false;
 
-    await neynarClient.lookupUserByFid(fid, BOOKIES_FID)
+    await neynarClient.fetchBulkUsers([fid], {viewerFid: BOOKIES_FID})
     .then(response => {
-        isFollowing = response.result?.user?.viewerContext?.followedBy || false;
+        isFollowing = response?.users[0]?.viewer_context?.followed_by || false;
 
     })
     .catch(error => {
