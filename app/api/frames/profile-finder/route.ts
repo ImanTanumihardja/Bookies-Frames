@@ -13,10 +13,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
 
   // Check for fid prop in url and if there use that as fid
-  const username : string = req.nextUrl.searchParams.get("username") || message.input;
+  const username : string = (req.nextUrl.searchParams.get("username") || message.input).toLowerCase();
 
   let profile: any;
-  let imageUrl: string = "";
 
   await neynarClient.lookupUserByUsername(username).then( (res) => {
     profile = res.result?.user;
@@ -25,23 +24,30 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     profile = null;
   })
   .finally(async () => {
-    const user : User = await kv.hgetall(profile?.fid.toString()) || DEFAULT_USER;
-    const rank : number = await kv.zrank('users', profile?.fid) || -1
-  
-    imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.USERNAME]: profile.username, [RequestProps.AVATAR_URL]: profile.pfp.url, [RequestProps.RANK]: rank, [RequestProps.WINS]: user.wins, [RequestProps.LOSSES]: user.losses, [RequestProps.POINTS]: user.points, [RequestProps.STREAK]: user.streak, [RequestProps.NUM_BETS]: user.numBets});
+    let user : User = DEFAULT_USER;
+    let rank : number = -1
+
+    if (profile) {
+      user = await kv.hgetall(profile?.fid.toString()) || DEFAULT_USER;
+      rank = await kv.zrank('users', profile?.fid) || -1
+    }
+
+    const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.USERNAME]: profile.username, [RequestProps.AVATAR_URL]: profile.pfp.url, [RequestProps.RANK]: rank, [RequestProps.WINS]: user.wins, [RequestProps.LOSSES]: user.losses, [RequestProps.POINTS]: user.points, [RequestProps.STREAK]: user.streak, [RequestProps.NUM_BETS]: user.numBets});
+
+    const frame: Frame = {
+      version: "vNext",
+      image: imageUrl,
+      buttons: isFollowing ? [{ label: "Back", action: 'post'}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
+      postUrl: `${process.env['HOST']}/${frameName}`,
+    };
+    
+    return new NextResponse(
+      getFrameHtml(frame),
+    );
   });
 
-  const frame: Frame = {
-    version: "vNext",
-    image: imageUrl,
-    buttons: isFollowing ? [{ label: "Back", action: 'post'}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
-    postUrl: `${process.env['HOST']}/${frameName}`,
-  };
-
-  return new NextResponse(
-    getFrameHtml(frame),
-  );
-
+  // Catch errors
+  return new NextResponse(`Error: Could not POST profile-finder`, { status: 500 });
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
