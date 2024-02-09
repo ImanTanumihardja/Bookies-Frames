@@ -37,12 +37,12 @@ export async function GET(req: NextRequest) {
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%'}}>
                         <h1 style={{color: 'white', alignItems:'center', left:-30}}> 
                             <img style={{width: 40, height: 40, marginRight:10, borderRadius: 50}} src={avatarUrl}/>
-                            {username} {rank !== -1 ? `(#${rank})` : ''}
+                            {username} {rank !== -1 ? `(#${1})` : ''}
                         </h1>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start', alignSelf:'center', top:-30}}>
-                            <h2 style={{color: 'white', marginBottom:-10}}> 🎲 Dice: {points} </h2>
-                            <h2 style={{color: 'white', marginBottom:-10}}> 🔥 Streak: {streak} </h2>
-                            <h2 style={{color: 'white'}}> 🎰 Total Bets: {numBets} ({wins}W - {losses}L)</h2>
+                            <h2 style={{color: 'white', marginBottom:-10}}> 🎲 Dice: {1523} </h2>
+                            <h2 style={{color: 'white', marginBottom:-10}}> 🔥 Streak: {7} </h2>
+                            <h2 style={{color: 'white'}}> 🎰 Total Bets: {numBets} ({14}W - {2}L)</h2>
                         </div>
                     </div>
                     :
