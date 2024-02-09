@@ -51,15 +51,17 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   //                                           [RequestProps.NUM_BETS]: user.numBets});
   //  });
 
-  const frame: Frame = {
-    version: "vNext",
-    image: `${process.env['HOST']}/thumbnails/profile-finder.gif`,
-    buttons: [{label: "Back", action: "post"}],
-    postUrl: `${process.env['HOST']}/profile-finder.gif}`,
-  };
+  // const frame: Frame = {
+  //   version: "vNext",
+  //   image: `${process.env['HOST']}/thumbnails/profile-finder.gif`,
+  //   buttons: [{label: "Back", action: "post"}],
+  //   postUrl: `${process.env['HOST']}/profile-finder.gif}`,
+  // };
+
+  console.log("TEST")
 
   return new NextResponse(
-    getFrameHtml(frame),
+    // getFrameHtml(frame),
   );
 
 }
