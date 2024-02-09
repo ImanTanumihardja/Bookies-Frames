@@ -8,9 +8,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
   const message = await validateFrameMessage(req);
 
-  const {followingBookies, fid} = message;
-
-  const isFollowing: boolean = true; // TEMPORARY FIX
+  const {followingBookies: isFollowing, fid} = message;
 
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
   let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
