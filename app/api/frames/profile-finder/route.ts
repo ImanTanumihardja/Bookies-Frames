@@ -17,17 +17,21 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   let profile: any;
 
+  // Get username from neynar
   await neynarClient.lookupUserByUsername(username).then( (res) => {
     profile = res.result?.user;
   })
   .catch ( (error) => {
-    profile = null;
+    console.error('Error fetching user by fid:', error);
+    // Set default profile
+    profile = {username: "", pfp: {url: ""}}
   })
   .finally(async () => {
     let user : User = DEFAULT_USER;
     let rank : number = -1
 
     if (profile) {
+      // Check our database if farcasts profile exists
       user = await kv.hgetall(profile?.fid.toString()) || DEFAULT_USER;
       rank = await kv.zrank('users', profile?.fid) || -1
     }
