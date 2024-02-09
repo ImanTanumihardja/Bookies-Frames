@@ -2,9 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
 import NotFollowing from '../../../../../src/components/NotFollowing';
-import { kv } from "@vercel/kv";
-import { User } from '../../../../types';
-import { RequestProps, getRequestProps, DEFAULT_USER } from '../../../../../src/utils';
+import { RequestProps, getRequestProps } from '../../../../../src/utils';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -16,7 +14,7 @@ const plusJakartaSans = fetch(
 
 export async function GET(req: NextRequest) {
     try {
-        const {isFollowing, rank, username, avatarUrl, wins, losses, points, streak, numBets, hasProfile} = getRequestProps(req, [RequestProps.IS_FOLLOWING, 
+        const {isFollowing, rank, username, avatarUrl, wins, losses, points, streak, numBets} = getRequestProps(req, [RequestProps.IS_FOLLOWING, 
                                                                                                                         RequestProps.RANK, 
                                                                                                                         RequestProps.USERNAME, 
                                                                                                                         RequestProps.AVATAR_URL, 
@@ -24,25 +22,23 @@ export async function GET(req: NextRequest) {
                                                                                                                         RequestProps.LOSSES, 
                                                                                                                         RequestProps.POINTS, 
                                                                                                                         RequestProps.STREAK,
-                                                                                                                        RequestProps.NUM_BETS,
-                                                                                                                        RequestProps.HAS_PROFILE
-                                                                                                                    ]);
+                                                                                                                        RequestProps.NUM_BETS]);
 
         return new ImageResponse(
             <FrameBase>
                 {isFollowing ?
-                    (rank === -1 && !hasProfile) ?
+                    (rank === -1 && !username) ?
                     <h2 style={{color: 'white', fontSize:40, textAlign:'center'}}> No profile found</h2>
                     :
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%'}}>
                         <h1 style={{color: 'white', alignItems:'center', left:-30}}> 
                             <img style={{width: 40, height: 40, marginRight:10, borderRadius: 50}} src={avatarUrl}/>
-                            {username} {rank !== -1 ? `(#${1})` : ''}
+                            {username} {rank !== -1 ? `(#${rank})` : ''}
                         </h1>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start', alignSelf:'center', top:-30}}>
-                            <h2 style={{color: 'white', marginBottom:-10}}> 🎲 Dice: {1523} </h2>
-                            <h2 style={{color: 'white', marginBottom:-10}}> 🔥 Streak: {7} </h2>
-                            <h2 style={{color: 'white'}}> 🎰 Total Bets: {numBets} ({14}W - {2}L)</h2>
+                            <h2 style={{color: 'white', marginBottom:-10}}> 🎲 Dice: {points} </h2>
+                            <h2 style={{color: 'white', marginBottom:-10}}> 🔥 Streak: {streak} </h2>
+                            <h2 style={{color: 'white'}}> 🎰 Total Bets: {numBets} ({wins}W - {losses}L)</h2>
                         </div>
                     </div>
                     :

@@ -46,8 +46,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
                                             [RequestProps.LOSSES]: user.losses, 
                                             [RequestProps.POINTS]: user.points, 
                                             [RequestProps.STREAK]: user.streak, 
-                                            [RequestProps.NUM_BETS]: user.numBets,
-                                            [RequestProps.HAS_PROFILE]: profile !== null});
+                                            [RequestProps.NUM_BETS]: user.numBets});
    });
 
   const frame: Frame = {
