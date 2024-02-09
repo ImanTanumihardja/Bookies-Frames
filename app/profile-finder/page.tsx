@@ -8,7 +8,7 @@ const frameMetadata = getFrameMetadata({
   buttons: [
     {
       label: 'Find Profile!',
-      action: 'post',
+      action: 'post_redirect',
     },
   ],
   input: {

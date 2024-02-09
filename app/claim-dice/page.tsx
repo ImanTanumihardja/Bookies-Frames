@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   description: 'Claim free Dice if you follow!',
   openGraph: {
     title: frameName,
-    description: 'Claim 100 free Dice if you follow!', 
+    description: 'Claim free Dice if you follow!', 
     images: [`${process.env['HOST']}/thumbnails/${frameName}.gif`],
   },
   other: {
