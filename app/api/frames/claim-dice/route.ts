@@ -6,11 +6,10 @@ import { getFrameHtml, Frame} from "frames.js";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
-  const {isValid, message} = await validateFrameMessage(req);
+  const message = await validateFrameMessage(req);
 
   const {followingBookies: isFollowing , fid} = message;
 
-  if (!isValid) throw new Error('Invalid frame message');
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
   let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
   const isNewUser: boolean = await kv.zscore('users', fid) === null;

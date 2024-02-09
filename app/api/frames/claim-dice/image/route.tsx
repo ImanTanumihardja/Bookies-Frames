@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
 import { RequestProps, getRequestProps } from '../../../../../src/utils';
+import NotFollowing from '../../../../../src/components/NotFollowing';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -26,7 +27,7 @@ export async function GET(req: NextRequest) {
                         <h1 style={{color: 'white', fontSize:40, marginTop:-10}}> your free <img style={{width: 50, height: 50, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
                     </div>
                     :
-                    <h2 style={{color: 'white', fontSize:40, textAlign:'center'}}> Please follow @bookies and try again</h2>
+                        <NotFollowing/>
                     }
             </FrameBase>
             ,

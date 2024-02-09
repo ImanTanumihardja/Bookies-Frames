@@ -1,22 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFrameMessage, Frame, getFrameHtml } from "frames.js";
-import { generateImageUrl, RequestProps} from '../../../../src/utils';
+import { DEFAULT_USER, generateImageUrl, RequestProps, validateFrameMessage} from '../../../../src/utils';
+import { User } from '../../../types';
+import { kv } from '@vercel/kv';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
-  const body = await req.json();
-  const { isValid, requesterFollowsCaster: isFollowing, requesterFid: fid}  = await getFrameMessage(body, { fetchHubContext: true });
+  const message = await validateFrameMessage(req);
 
-  if (!isValid) throw new Error('Invalid frame message');
+  const {followingBookies: isFollowing , fid} = message;
 
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
 
-  const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid});
+  const profile = await (await fetch(`https://searchcaster.xyz/api/profiles?fid=${fid}`)).json().then((data) => data[0].body) || {}
+  const user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
+  const rank : number = await kv.zrank('users', fid) || -1
+
+  const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.USERNAME]: profile.username, [RequestProps.AVATAR_URL]: profile.avatarUrl, [RequestProps.RANK]: rank, [RequestProps.WINS]: user.wins, [RequestProps.LOSSES]: user.losses, [RequestProps.POINTS]: user.points, [RequestProps.STREAK]: user.streak, [RequestProps.NUM_BETS]: user.numBets});
 
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: isFollowing ? [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, { label: "Refresh", action: 'post'}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}, { label: "Refresh", action: 'post'}],
+    buttons: isFollowing ? [{ label: "Refresh", action: 'post'}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
     postUrl: `${process.env['HOST']}/api/frames/${frameName}`,
   };
 

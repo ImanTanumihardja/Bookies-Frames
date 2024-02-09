@@ -10,6 +10,16 @@ export enum RequestProps {
     IS_FOLLOWING = 'isFollowing',
     HAS_CLAIMED = 'hasClaimed',
     AMOUNT = 'amount',
+    AVATAR_URL = 'avatarUrl',
+    USERNAME = 'username',
+    RANK = 'rank',
+    WINS = 'wins',
+    LOSSES = 'losses',
+    POINTS = 'points',
+    NUM_BETS = 'numBets',
+    BUTTON_INDEX = 'buttonIndex',
+    INPUT_TEXT = 'inputText',
+    STREAK = 'streak',
 }
 
 export const RequestPropsTypes = {
@@ -17,6 +27,16 @@ export const RequestPropsTypes = {
     [RequestProps.IS_FOLLOWING]: true,
     [RequestProps.HAS_CLAIMED]: true,
     [RequestProps.AMOUNT]: 0,
+    [RequestProps.AVATAR_URL]: "",
+    [RequestProps.USERNAME]: "",
+    [RequestProps.RANK]: 0,
+    [RequestProps.WINS]: 0,
+    [RequestProps.LOSSES]: 0,
+    [RequestProps.POINTS]: 0,
+    [RequestProps.NUM_BETS]: 0,
+    [RequestProps.BUTTON_INDEX]: 0,
+    [RequestProps.INPUT_TEXT]: "",
+    [RequestProps.STREAK]: 0,
 }
 
 export const BOOKIES_FID = 244367;
@@ -58,7 +78,7 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
             throw new Error(`Missing required param: ${key}`)
         }
 
-        const value = req.nextUrl.searchParams.get(key) || ''
+        const value = req.nextUrl.searchParams.get(key) || undefined
 
         // Parse Props
         switch (typeof RequestPropsTypes[key]) {
@@ -66,10 +86,13 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
                 returnParams[key] = value
                 break;
             case 'number':
-                returnParams[key] = parseInt(value)
+                returnParams[key] = parseInt(value || "0")
                 break;
             case 'boolean':
-                returnParams[key] = value.toLowerCase() === 'true';
+                returnParams[key] = value === 'true';
+                break;
+            default: // Should be undefined (Error)
+                returnParams[key] = undefined
                 break;
         }
     }
@@ -124,14 +147,15 @@ export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
 export async function validateFrameMessage(req: NextRequest) {
     const body = await req.json();
 
-    let isValid: boolean;
     let message: FrameValidationData = DEFAULT_FRAME_VALIDATION_DATA
 
     try {
         // Use onchainkit to validate the frame message
         const data = await getFrameMessageOnchain(body, { neynarApiKey: process.env['NEYNAR_API_KEY'] });
 
-        isValid = data.isValid;
+        if (!data.isValid) {
+            throw new Error('Invalid frame message');
+        }
 
         message.button = data?.message?.button || 0
         message.following = data?.message?.following || false
@@ -164,5 +188,5 @@ export async function validateFrameMessage(req: NextRequest) {
         // message.recasted = data?.recastedCast || false
     }
 
-    return {isValid, message}
+    return message
 }
