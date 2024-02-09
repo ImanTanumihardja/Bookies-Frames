@@ -115,13 +115,13 @@ export function generateImageUrl(frameName: string, params: Record<string, any>,
 }
 
 // don't have an API key yet? get one at neynar.com
-const client = new NeynarAPIClient(process.env['NEYNAR_API_KEY'] || "");
+export const neynarClient = new NeynarAPIClient(process.env['NEYNAR_API_KEY'] || "");
 
 export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
     let cursor: string | null = "";
     let users: unknown[] = [];
     do {
-      const result = await client.fetchUserFollowing(fid, {
+      const result = await neynarClient.fetchUserFollowing(fid, {
         limit: 150,
         cursor,
       });

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Frame, getFrameHtml } from "frames.js";
-import { DEFAULT_USER, generateImageUrl, RequestProps, validateFrameMessage} from '../../../../src/utils';
+import { DEFAULT_USER, generateImageUrl, RequestProps, validateFrameMessage, neynarClient, BOOKIES_FID } from '../../../../src/utils';
 import { User } from '../../../types';
 import { kv } from '@vercel/kv';
 
@@ -14,13 +14,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   // Check for fid prop in url and if there use that as fid
   const username : string = req.nextUrl.searchParams.get("username") || message.input;
-  const fid : number | null = await kv.hget(username, 'fid') || -1
-
-  const profile = await (await fetch(`https://searchcaster.xyz/api/profiles?fid=${fid}`)).json().then((data) => data[0].body) || {}
+  const profile = (await neynarClient.lookupUserByUsername(username)).result.user
+  const fid = profile.fid;
   const user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
   const rank : number = await kv.zrank('users', fid) || -1
 
-  const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.USERNAME]: profile.username, [RequestProps.AVATAR_URL]: profile.avatarUrl, [RequestProps.RANK]: rank, [RequestProps.WINS]: user.wins, [RequestProps.LOSSES]: user.losses, [RequestProps.POINTS]: user.points, [RequestProps.STREAK]: user.streak, [RequestProps.NUM_BETS]: user.numBets});
+  const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.USERNAME]: profile.username, [RequestProps.AVATAR_URL]: profile.pfp.url, [RequestProps.RANK]: rank, [RequestProps.WINS]: user.wins, [RequestProps.LOSSES]: user.losses, [RequestProps.POINTS]: user.points, [RequestProps.STREAK]: user.streak, [RequestProps.NUM_BETS]: user.numBets});
 
   const frame: Frame = {
     version: "vNext",

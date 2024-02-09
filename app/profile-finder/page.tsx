@@ -11,7 +11,7 @@ const frameMetadata = getFrameMetadata({
     },
   ],
   input: {
-    text: 'FID',
+    text: 'Username',
   },
   image: `${process.env['HOST']}/thumbnails/${frameName}.gif`,
   post_url: `${process.env['HOST']}/api/frames/${frameName}`
