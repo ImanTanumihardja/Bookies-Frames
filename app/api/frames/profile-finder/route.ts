@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateFrameMessage, neynarClient, BOOKIES_FID } from '../../../../src/utils';
-import { POST as POSTNext, PreviousFrame } from "frames.js/next/server";
 
 
 export async function POST(req: NextRequest): Promise<Response> {
