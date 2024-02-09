@@ -15,7 +15,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Check for fid prop in url and if there use that as fid
   const username : string = (req.nextUrl.searchParams.get("username") || message.input).toLowerCase();
 
-  let profile: any;
+  let profile: any = null;
   let imageUrl: string = "";
   let user : User = DEFAULT_USER;
   let rank : number = -1;
