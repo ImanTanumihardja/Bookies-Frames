@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateFrameMessage, neynarClient, BOOKIES_FID } from '../../../../src/utils';
-import { Frame, getFrameHtml } from 'frames.js';
 
 
 export async function POST(req: NextRequest): Promise<Response> {
@@ -17,18 +16,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
     // Submit post request to /profile-finder/search
     if (button === 1) {
-      const frame: Frame = {
-        version: "vNext",
-        image: `${process.env['HOST']}/thumbnails/profile-finder.gif`,
-        buttons: [{label: "Back", action: "post"}],
-        postUrl: `${process.env['HOST']}/api/frames/`,
-      };
-    
-      return new NextResponse(
-        getFrameHtml(frame),
-      );
-      
-      // return (await fetch(`${process.env['HOST']}/api/frames/profile-finder`, req));
+      return (await fetch(`${process.env['HOST']}/api/frames/profile-finder`, req));
     }
     // Submit post request to /profile-finder/profile-page
     else if (button === 2) {
