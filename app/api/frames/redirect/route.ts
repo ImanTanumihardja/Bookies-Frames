@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { validateFrameMessage, neynarClient, BOOKIES_FID } from '../../../../../src/utils';
+import { validateFrameMessage, neynarClient, BOOKIES_FID } from '../../../../src/utils';
 
 
 export async function POST(req: NextRequest): Promise<Response> {
@@ -11,13 +11,13 @@ export async function POST(req: NextRequest): Promise<Response> {
     const button = 2
     const fid = 3
   
-    const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
+    // const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
   
 
     // Submit post request to /profile-finder/search
     if (button === 2) {
       console.log(req)
-      const res = (await fetch(`${process.env['HOST']}/api/frames/${frameName}}/search`, {method: "POST"}));
+      const res = (await fetch(`${process.env['HOST']}/api/frames/profile-finder}/search`, {method: "POST"}));
       console.log(res)
       return res
     }
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         return response?.users[0]?.username || "";
       })
       
-      return await fetch(`${process.env['HOST']}/api/frames/${frameName}}/profile-page?username=${encodeURIComponent(username)}`, req);
+      return await fetch(`${process.env['HOST']}/api/frames/profile-finder/profile-page?username=${encodeURIComponent(username)}`, req);
     }
     else {
       return new NextResponse('Invalid button', { status: 400 });
