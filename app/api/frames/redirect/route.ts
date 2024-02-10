@@ -19,7 +19,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     if (button === 1) {
       const frame: Frame = {
         version: "vNext",
-        image: `${process.env['HOST']}/thumbnails/profile-finder.png`,
+        image: `${process.env['HOST']}/thumbnails/profile-finder.gif`,
         buttons: [{label: "Back", action: "post"}],
         postUrl: `${process.env['HOST']}/api/frames/`,
       };
