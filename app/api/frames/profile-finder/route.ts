@@ -55,7 +55,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     version: "vNext",
     image: imageUrl,
     buttons: [{label: "Back", action: "post"}],
-    postUrl: `${process.env['HOST']}/}`,
+    postUrl: `${process.env['HOST']}/api/frames/${frameName}`,
   };
 
   return new NextResponse(

@@ -8,24 +8,24 @@ export async function POST(req: NextRequest): Promise<Response> {
 
     // const { fid, button } = message;
 
-    const button = 2
+    const button = 1
     const fid = 3
   
     // const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
   
 
     // Submit post request to /profile-finder/search
-    if (button === 2) {
-      return (await fetch(`${process.env['HOST']}/api/frames/profile-finder`, req));
-    }
-    // Submit post request to /profile-finder/profile-page
-    else if (button === 1) {
-      // Get username from fid
-      const username : string = await neynarClient.fetchBulkUsers([fid], {viewerFid: BOOKIES_FID}).then(response => {
+    if (button === 1) {
+        // Get username from fid
+        const username : string = await neynarClient.fetchBulkUsers([fid], {viewerFid: BOOKIES_FID}).then(response => {
         return response?.users[0]?.username || "";
       })
       
       return await fetch(`${process.env['HOST']}/api/frames/profile-finder?username=${encodeURIComponent(username)}`, req);
+    }
+    // Submit post request to /profile-finder/profile-page
+    else if (button === 2) {
+      return (await fetch(`${process.env['HOST']}/api/frames/profile-finder`, req));
     }
     else {
       return new NextResponse('Invalid button', { status: 400 });
