@@ -16,7 +16,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const username : string = (req.nextUrl.searchParams.get("username") || message?.input).toLowerCase();
 
   if (!username || username === "") {
-    return new NextResponse('No username provided', { status: 400 });
+    throw new NextResponse('No username provided', { status: 400 });
   }
 
   let profile: any = null;

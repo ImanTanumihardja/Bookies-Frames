@@ -15,9 +15,8 @@ const frameMetadata = getFrameMetadata({
       action: 'post',
     },
   ],
-  input: {text: 'Search for a profile!'},
   image: `${process.env['HOST']}/thumbnails/${frameName}.gif`,
-  post_url: `${process.env['HOST']}/api/frames/profile-finder`,
+  post_url: `${process.env['HOST']}/api/frames/router`
 });
 
 export const metadata: Metadata = {
