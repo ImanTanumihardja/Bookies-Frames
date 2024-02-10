@@ -44,7 +44,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
 
   // Check for fid prop in url and if there use that as fid
-  const username : string = (req.nextUrl.searchParams.get("username") || message?.input).toLowerCase();
+  const username : string = (req.nextUrl.searchParams.get("username") || message?.input || "emmaniii").toLowerCase();
 
   if (!username || username === "") {
     return new NextResponse('No username provided', { status: 400 });
