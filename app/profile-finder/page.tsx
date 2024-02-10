@@ -7,7 +7,7 @@ const frameName = 'profile-finder'
 const frameMetadata = getFrameMetadata({
   buttons: [
     {
-      label: 'Search for a profile!',
+      label: 'Search',
       action: 'post',
     },
   ],
