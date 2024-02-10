@@ -2,7 +2,7 @@ import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
-const frameName = 'profile-finder'
+export const FRAME_NAME = 'profile-finder'
 
 const frameMetadata = getFrameMetadata({
   buttons: [
@@ -12,17 +12,17 @@ const frameMetadata = getFrameMetadata({
     },
   ],
   input: {text: 'Enter a username'},
-  image: `${process.env['HOST']}/thumbnails/${frameName}.gif`,
+  image: `${process.env['HOST']}/thumbnails/${FRAME_NAME}.gif`,
   post_url: `${process.env['HOST']}/api/frames/profile-finder`,
 });
 
 export const metadata: Metadata = {
-  title: frameName,
+  title: FRAME_NAME,
   description: 'Search for a profile!',
   openGraph: {
-    title: frameName,
+    title: FRAME_NAME,
     description: 'Search for a profile!', 
-    images: [`${process.env['HOST']}/thumbnails/${frameName}.gif`],
+    images: [`${process.env['HOST']}/thumbnails/${FRAME_NAME}.gif`],
   },
   other: {
     ...frameMetadata,

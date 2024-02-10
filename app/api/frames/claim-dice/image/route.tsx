@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
             </FrameBase>
             ,
             {
-                width: 600, 
+                width: 764, 
                 height: 400, 
                 fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
             })

@@ -7,18 +7,17 @@ const FrameBase = ({ children }) => {
             alignItems: 'center',
             width: '100%',
             height: '100%',
-            background: 'linear-gradient(to top right, orange, purple, orange)',
+            background: 'linear-gradient(to right, orange, purple)',
             justifyContent: 'center'
         }}>
             <div style={{
                 display: 'flex',
                 position: 'absolute',
-                top: 40,
-                left: 10,
+                top: 47,
+                left: 15,
                 alignItems: 'center',
             }}>
-                <h3 style={{ color: 'white' }}>Bookies</h3>
-                <img src={`${process.env['HOST']}/logo_transparent.png`} style={{ width: 40, height: 40 }} alt="Logo" />
+                <img src={`${process.env['HOST']}/Full_logo.png`} style={{ width: 120, height: 40 }}/>
             </div>
             <div style={{
                     display: 'flex',

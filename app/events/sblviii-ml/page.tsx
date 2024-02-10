@@ -1,22 +1,25 @@
 import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
+import { generateImageUrl } from '../../../src/utils';
 
 const frameName = 'sblviii-ml'
+const prompt = 'Who will win Superbowl LVIII?'
+const options = ['Chiefs', '49ers']
 
 const frameMetadata = getFrameMetadata({
   input: {
-    text: 'Wager Amount',
+    text: 'How much do you want to bet?',
   },
   buttons: [
     {
-      label: 'Chiefs',
+      label: options[0],
     },
     {
-      label: '49ers',
+      label: options[1],
     },
   ],
-  image: `${process.env['HOST']}/superbowl.png`,
+  image: `${process.env['HOST']}/events/${frameName}.png`,
   post_url: `${process.env['HOST']}/api/frames/events/${frameName}`
 });
 
@@ -26,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: frameName,
     description: 'Who will win Superbowl LVIII?', 
-    images: [`${process.env['HOST']}/superbowl.png`],
+    images: [`${process.env['HOST']}/events/${frameName}.png`],
   },
   other: {
     ...frameMetadata,

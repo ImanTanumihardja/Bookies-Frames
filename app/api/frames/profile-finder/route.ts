@@ -3,14 +3,13 @@ import { Frame, getFrameHtml } from "frames.js";
 import { DEFAULT_USER, generateImageUrl, RequestProps, validateFrameMessage, neynarClient, BOOKIES_FID } from '../../../../src/utils';
 import { User } from '../../../types';
 import { kv } from '@vercel/kv';
+import { FRAME_NAME } from '../../../profile-finder/page'; 
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
   const message = await validateFrameMessage(req);
 
   const {followingBookies: isFollowing } = message;
-
-  const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
 
   // Check for fid prop in url and if there use that as fid
   const username : string = (req.nextUrl.searchParams.get("username") || message?.input || "")?.toLowerCase();
@@ -39,7 +38,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           if (rank !== -1) user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
         }
     
-      imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, 
+      imageUrl = generateImageUrl(FRAME_NAME, {[RequestProps.IS_FOLLOWING]: isFollowing, 
                                               [RequestProps.USERNAME]: profile?.username || "", 
                                               [RequestProps.AVATAR_URL]: profile?.pfp.url || "", 
                                               [RequestProps.RANK]: rank, 
@@ -51,7 +50,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     });
   }
   else {
-    imageUrl = `${process.env['HOST']}/thumbnails/${frameName}.gif`
+    imageUrl = `${process.env['HOST']}/thumbnails/FRAME_NAME.gif`
     input_text = "Enter a username";
   }
 
@@ -65,7 +64,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
     ],
     inputText: input_text,
-    postUrl: `${process.env['HOST']}/api/frames/${frameName}`,
+    postUrl: `${process.env['HOST']}/api/frames/FRAME_NAME`,
   };
 
   return new NextResponse(

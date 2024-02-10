@@ -20,6 +20,8 @@ export enum RequestProps {
     BUTTON_INDEX = 'buttonIndex',
     INPUT_TEXT = 'inputText',
     STREAK = 'streak',
+    OPTIONS = 'options',
+    PROMPT = 'prompt',
 }
 
 export const RequestPropsTypes = {
@@ -36,6 +38,8 @@ export const RequestPropsTypes = {
     [RequestProps.NUM_BETS]: 0,
     [RequestProps.BUTTON_INDEX]: 0,
     [RequestProps.INPUT_TEXT]: "",
+    [RequestProps.OPTIONS]: [],
+    [RequestProps.PROMPT]: "",
     [RequestProps.STREAK]: 0,
 }
 
