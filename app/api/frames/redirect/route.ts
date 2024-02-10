@@ -17,7 +17,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     // Submit post request to /profile-finder/search
     if (button === 2) {
       console.log(req)
-      const res = (await fetch(`${process.env['HOST']}/api/frames/profile-finder}/search`, {method: "POST"}));
+      const res = (await fetch(`${process.env['HOST']}/api/frames/profile-finder`, {method: "POST"}));
       console.log(res)
       return res
     }
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         return response?.users[0]?.username || "";
       })
       
-      return await fetch(`${process.env['HOST']}/api/frames/profile-finder/profile-page?username=${encodeURIComponent(username)}`, req);
+      return await fetch(`${process.env['HOST']}/api/frames/profile-finder?username=${encodeURIComponent(username)}`, req);
     }
     else {
       return new NextResponse('Invalid button', { status: 400 });

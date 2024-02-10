@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Frame, getFrameHtml } from "frames.js";
-import { DEFAULT_USER, generateImageUrl, RequestProps, validateFrameMessage, neynarClient, BOOKIES_FID } from '../../../../../src/utils';
-import { User } from '../../../../types';
+import { DEFAULT_USER, generateImageUrl, RequestProps, validateFrameMessage, neynarClient, BOOKIES_FID } from '../../../../src/utils';
+import { User } from '../../../types';
 import { kv } from '@vercel/kv';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
