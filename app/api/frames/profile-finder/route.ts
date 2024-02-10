@@ -53,7 +53,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const frame: Frame = {
     version: "vNext",
-    image: "imageUrl",
+    image: `${process.env['HOST']}/thumbnails/profile-finder.png`,
     buttons: [{label: "Back", action: "post"}],
     postUrl: `${process.env['HOST']}/api/frames/`,
   };
