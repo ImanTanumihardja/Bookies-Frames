@@ -13,9 +13,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
 
   // Check for fid prop in url and if there use that as fid
-  const username : string = (req.nextUrl.searchParams.get("username") || message?.input).toLowerCase();
+  const username : string = (req.nextUrl.searchParams.get("username") || message?.input || "")?.toLowerCase();
 
-  if (!username || username === "") {
+  if (username === "") {
     throw new NextResponse('No username provided', { status: 400 });
   }
 
@@ -54,7 +54,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: [{label: "Back", action: "post"}],
+    buttons: [
+      {
+        label: 'Search for a profile!',
+        action: 'post',
+      },
+    ],
+    inputText: 'Enter a username',
     postUrl: `${process.env['HOST']}/api/frames/${frameName}`,
   };
 

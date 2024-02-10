@@ -7,16 +7,13 @@ const frameName = 'profile-finder'
 const frameMetadata = getFrameMetadata({
   buttons: [
     {
-      label: 'My Profile',
-      action: 'post',
-    },
-    {
-      label: 'Profile Search',
+      label: 'Search for a profile!',
       action: 'post',
     },
   ],
+  input: {text: 'Enter a username'},
   image: `${process.env['HOST']}/thumbnails/${frameName}.gif`,
-  post_url: `${process.env['HOST']}/api/frames/redirect`
+  post_url: `${process.env['HOST']}/api/frames/profile-finder`,
 });
 
 export const metadata: Metadata = {
