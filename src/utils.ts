@@ -160,7 +160,7 @@ export async function validateFrameMessage(req: NextRequest) {
 
     }
     catch (error) {
-        throw new Error(`${error}`)
+        throw new Error(`Error validating: ${error}`)
 
         // TODO: Recue function size so can uncomment this
         // // Use framesjs to validate the frame message
