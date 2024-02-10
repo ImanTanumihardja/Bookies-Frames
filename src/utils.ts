@@ -118,11 +118,11 @@ export function generateImageUrl(frameName: string, params: Record<string, any>,
 export const neynarClient = new NeynarAPIClient(process.env['NEYNAR_API_KEY'] || "");
 
 export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
-    let isFollowing = true; // TEMPORARY FIX
+    let isFollowing = false; // TEMPORARY FIX
 
     await neynarClient.fetchBulkUsers([fid], {viewerFid: BOOKIES_FID})
     .then(response => {
-        // isFollowing = response?.users[0]?.viewer_context?.followed_by || false; // TEMPORARY FIX
+        isFollowing = response?.users[0]?.viewer_context?.followed_by || false; // TEMPORARY FIX
 
     })
     .catch(error => {
@@ -156,7 +156,7 @@ export async function validateFrameMessage(req: NextRequest) {
         message.liked = data?.message?.liked || false
         message.recasted = data?.message?.recasted || false
 
-        message.followingBookies = await checkIsFollowingBookies(message.fid)
+        message.followingBookies = true //await checkIsFollowingBookies(message.fid) // TEMPORARY FIX
 
     }
     catch (error) {

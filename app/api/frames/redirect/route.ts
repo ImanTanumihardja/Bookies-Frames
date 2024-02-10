@@ -65,6 +65,8 @@ export async function POST(req: NextRequest): Promise<Response> {
                                                 [RequestProps.NUM_BETS]: user.numBets});
       });
 
+      console.log(imageUrl)
+
       const frame: Frame = {
         version: "vNext",
         image: imageUrl,
