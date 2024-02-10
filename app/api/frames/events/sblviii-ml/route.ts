@@ -2,6 +2,7 @@ import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/o
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { Event, User, Bet } from '../../../../types';
+import { FrameNames } from '../../../../../src/utils';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -13,7 +14,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     let prediction: number = buttonIndex - 1; // zero indexed
     const fid: number = message?.interactor.fid || 0;
     const accountAddress: string = message?.interactor.custody_address || "";
-    const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
     let user : User = await kv.hgetall(accountAddress) || {} as User
 
     // Check if I can parse the amount as integer
@@ -41,7 +41,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
 
     // Get the poll data from database or init if not exists
-    let event : Event = await kv.hgetall(frameName) || {startDate: 1707694200000, poll: [0, 0], bets: {} as Record<number, Bet>, result: -1};
+    let event : Event = await kv.hgetall(FrameNames.SBLVIII_ML) || {startDate: 1707694200000, poll: [0, 0], bets: {} as Record<number, Bet>, result: -1};
 
     const now = new Date().getTime();
 
@@ -51,8 +51,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       const multi = kv.multi();
 
       event.poll[prediction]++;
-      event.bets[fid] = {eventName: frameName, wagerAmount: wagerAmount, prediction:prediction, timeStamp: now};
-      await multi.hset(frameName, event);
+      event.bets[fid] = {eventName: FrameNames.SBLVIII_ML, wagerAmount: wagerAmount, prediction:prediction, timeStamp: now};
+      await multi.hset(FrameNames.SBLVIII_ML, event);
 
       user.points -= wagerAmount;
       await multi.hset(accountAddress, user);
@@ -66,12 +66,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       prediction = -1
     }
 
-    const imageUrl = `${process.env['HOST']}/api/frames/${frameName}/image?chiefs=${event.poll[0]}&niners=${event.poll[1]}&result=${event.result}&prediction=${prediction}&timestamp=${now}`;
+    const imageUrl = `${process.env['HOST']}/api/frames/${FrameNames.SBLVIII_ML}/image?chiefs=${event.poll[0]}&niners=${event.poll[1]}&result=${event.result}&prediction=${prediction}&timestamp=${now}`;
 
     return new NextResponse(
       getFrameHtmlResponse({
         image: `${imageUrl}`,
-        post_url: `${process.env['HOST']}/api/frames/${frameName}`,
+        post_url: `${process.env['HOST']}/api/frames/${FrameNames.SBLVIII_ML}`,
       }),
     );
   } 

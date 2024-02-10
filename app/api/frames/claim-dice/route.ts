@@ -3,6 +3,7 @@ import { kv } from "@vercel/kv";
 import { User} from '../../../types';
 import { RequestProps, generateImageUrl, DEFAULT_USER, validateFrameMessage } from '../../../../src/utils';
 import { getFrameHtml, Frame} from "frames.js";
+import { FrameNames } from '../../../../src/utils';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -10,7 +11,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const {followingBookies: isFollowing, fid} = message;
 
-  const frameName: string = req.nextUrl.pathname.split('/').pop() || "";
   let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
   const isNewUser: boolean = await kv.zscore('users', fid) === null;
 
@@ -34,13 +34,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
   }
 
-  const imageUrl = generateImageUrl(frameName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: user.hasClaimed, [RequestProps.AMOUNT]: isNewUser ? 100 : 10});
+  const imageUrl = generateImageUrl(FrameNames.CLAIM_DICE, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: user.hasClaimed, [RequestProps.AMOUNT]: isNewUser ? 100 : 10});
 
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
     buttons: isFollowing ? [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
-    postUrl: `${process.env['HOST']}/api/frames/${frameName}`,
+    postUrl: `${process.env['HOST']}/api/frames/${FrameNames.CLAIM_DICE}`,
   };
 
   return new NextResponse(

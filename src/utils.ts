@@ -24,6 +24,12 @@ export enum RequestProps {
     PROMPT = 'prompt',
 }
 
+export enum FrameNames {
+    CLAIM_DICE = 'claim-dice',
+    PROFILE_FINDER = 'profile-finder',
+    SBLVIII_ML = 'sblviii-ml',
+}
+
 export const RequestPropsTypes = {
     [RequestProps.FID]: 0,
     [RequestProps.IS_FOLLOWING]: true,

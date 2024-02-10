@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Frame, getFrameHtml } from "frames.js";
-import { DEFAULT_USER, generateImageUrl, RequestProps, validateFrameMessage, neynarClient, BOOKIES_FID } from '../../../../src/utils';
+import { DEFAULT_USER, generateImageUrl, RequestProps, validateFrameMessage, neynarClient, BOOKIES_FID, FrameNames } from '../../../../src/utils';
 import { User } from '../../../types';
 import { kv } from '@vercel/kv';
-import { FRAME_NAME } from '../../../profile-finder/page'; 
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -38,7 +37,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           if (rank !== -1) user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
         }
     
-      imageUrl = generateImageUrl(FRAME_NAME, {[RequestProps.IS_FOLLOWING]: isFollowing, 
+      imageUrl = generateImageUrl(FrameNames.PROFILE_FINDER, {[RequestProps.IS_FOLLOWING]: isFollowing, 
                                               [RequestProps.USERNAME]: profile?.username || "", 
                                               [RequestProps.AVATAR_URL]: profile?.pfp.url || "", 
                                               [RequestProps.RANK]: rank, 

@@ -7,7 +7,7 @@ const FrameBase = ({ children }) => {
             alignItems: 'center',
             width: '100%',
             height: '100%',
-            background: 'linear-gradient(to right, orange, purple)',
+            background: 'linear-gradient(to right, orange, #aa3855, purple)',
             justifyContent: 'center'
         }}>
             <div style={{

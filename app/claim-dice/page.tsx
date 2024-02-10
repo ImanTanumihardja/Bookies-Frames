@@ -1,8 +1,7 @@
 import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-
-const frameName = 'claim-dice'
+import { FrameNames } from '../../src/utils';
 
 const frameMetadata = getFrameMetadata({
   buttons: [
@@ -10,17 +9,17 @@ const frameMetadata = getFrameMetadata({
       label: 'Claim Dice',
     },
   ],
-  image: `${process.env['HOST']}/thumbnails/${frameName}.gif`,
-  post_url: `${process.env['HOST']}/api/frames/${frameName}`
+  image: `${process.env['HOST']}/thumbnails/${FrameNames.CLAIM_DICE}.gif`,
+  post_url: `${process.env['HOST']}/api/frames/${FrameNames.CLAIM_DICE}`
 });
 
 export const metadata: Metadata = {
-  title: frameName,
+  title: FrameNames.CLAIM_DICE,
   description: 'Claim free Dice if you follow!',
   openGraph: {
-    title: frameName,
+    title: FrameNames.CLAIM_DICE,
     description: 'Claim free Dice if you follow!', 
-    images: [`${process.env['HOST']}/thumbnails/${frameName}.gif`],
+    images: [`${process.env['HOST']}/thumbnails/${FrameNames.CLAIM_DICE}.gif`],
   },
   other: {
     ...frameMetadata,
