@@ -20,7 +20,8 @@ export async function GET(req: NextRequest) {
         const impliedProbability = parseFloat(odds[prediction])
         const odd = convertImpliedProbabilityToAmerican(impliedProbability)
 
-        console.log('Implied Probability:', odd)
+        
+        console.log('Implied Probability:', impliedProbability)
 
         let pollData = [];
         // Get total votes
@@ -93,7 +94,7 @@ export async function GET(req: NextRequest) {
                                         overflow: 'visible',
                                         fontSize: 20,
                                     }}>
-                                        <h3 style={{top:10, transform: 'rotate(90deg) scaleY(-1)'}}>{opt.text} {opt.percent}%</h3>
+                                        <h3 style={{top:10, transform: 'rotate(90deg) scaleY(-1)'}}>{opt.text + ' ' + opt.percent}%</h3>
                                     </div>
                                 )
                             })

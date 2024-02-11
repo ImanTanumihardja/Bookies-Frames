@@ -204,9 +204,8 @@ export function convertImpliedProbabilityToAmerican(impliedProbability: number) 
       throw new Error('Implied probability must be between 0 and 1 (exclusive).');
     }
   
-    const americanOdds = impliedProbability === 0
-      ? Infinity  // Represents infinite odds for a probability of 0
-      : Math.round((10000 - ((impliedProbability * 100) * 100))/(impliedProbability * 100));
+    const americanOdds =
+      Math.round((10000 - ((impliedProbability * 100) * 100))/(impliedProbability * 100));
   
     return americanOdds;
   }
