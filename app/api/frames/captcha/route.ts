@@ -6,7 +6,7 @@ import { FrameNames } from '../../../../src/utils';
 import { getFrameHtmlResponse } from '@coinbase/onchainkit';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
-  const images = ['🎩', '🎲', '🤑', '🏇'] 
+  const images = ['🎩', '🏆', '🤑', '🏇'] 
 
   // Generate random number between 0 and 3
   const randomIndex = Math.floor(Math.random() * 4);
@@ -16,7 +16,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   return new NextResponse(
     getFrameHtmlResponse({
       image: imageUrl,
-      buttons: [{label:'🎩'}, {label:'🎲'}, {label:'🤑'}, {label:'🏇'}],
+      buttons: [{label:'🎩'}, {label:'🏆'}, {label:'🤑'}, {label:'🏇'}],
       postUrl: `${process.env['HOST']}/api/frames/${FrameNames.CLAIM_DICE}?captcha=${randomIndex}`,
     }),
   );
