@@ -25,7 +25,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
     hasClaimed = user?.hasClaimed || false;
     if (!user.hasClaimed) {
-      const isNewUser: boolean = await kv.zscore('users', fid) === null;
+      isNewUser = await kv.zscore('users', fid) === null;
       const multi = kv.multi();
       if (isNewUser) {
         // New user
