@@ -34,6 +34,7 @@ export enum FrameNames {
     CLAIM_DICE = 'claim-dice',
     PROFILE_FINDER = 'profile-finder',
     SBLVIII_ML = 'sblviii-ml',
+    CAPTCHA = 'captcha',
 }
 
 export const RequestPropsTypes = {
@@ -166,7 +167,7 @@ export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
 }
 
 
-export async function validateFrameMessage(req: NextRequest) {
+export async function validateFrameMessage(req: NextRequest, checkFollowingBookies=true) {
     const body = await req.json();
 
     let message: FrameValidationData = DEFAULT_FRAME_VALIDATION_DATA
@@ -188,7 +189,9 @@ export async function validateFrameMessage(req: NextRequest) {
         message.liked = data?.message?.liked || false
         message.recasted = data?.message?.recasted || false
 
-        message.followingBookies = true //await checkIsFollowingBookies(message.fid) // TEMPORARY FIX
+        if (checkFollowingBookies){
+            message.followingBookies = true //await checkIsFollowingBookies(message.fid)
+        }
 
     }
     catch (error) {

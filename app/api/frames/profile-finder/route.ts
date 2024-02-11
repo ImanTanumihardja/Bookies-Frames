@@ -37,7 +37,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           
           // Can skip if not found in kv
           if (rank !== -1) user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
-          console.log(user);
         }
     
       imageUrl = generateImageUrl(FrameNames.PROFILE_FINDER, {[RequestProps.IS_FOLLOWING]: isFollowing, 

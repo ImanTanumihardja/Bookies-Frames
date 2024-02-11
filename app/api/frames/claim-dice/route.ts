@@ -6,10 +6,13 @@ import { getFrameHtml, Frame} from "frames.js";
 import { FrameNames } from '../../../../src/utils';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
+  
   // Verify the frame request
   const message = await validateFrameMessage(req);
 
-  const {followingBookies: isFollowing, fid} = message;
+  const {followingBookies: isFollowing, fid, button} = message;
+
+  if (parseInt(req.nextUrl.searchParams.get('captcha') || "") != (button - 1)) throw new Error('Invalid captcha');
 
   let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
   const isNewUser: boolean = await kv.zscore('users', fid) === null;
