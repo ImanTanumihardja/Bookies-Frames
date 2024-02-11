@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     let html;
     try {
         const {isFollowing, amount, prediction, streak, multiplier, timestamp, odds, options, balance, poll, prompt} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.AMOUNT, RequestProps.PREDICTION, RequestProps.STREAK, RequestProps.MULTIPLIER, RequestProps.TIMESTAMP, RequestProps.ODDS, RequestProps.OPTIONS, RequestProps.BALANCE, RequestProps.POLL, RequestProps.PROMPT]);
-        const impliedProbability = odds[prediction]
+        const impliedProbability = parseFloat(odds[prediction])
         const odd = convertImpliedProbabilityToAmerican(impliedProbability)
 
         console.log('Implied Probability:', odd)

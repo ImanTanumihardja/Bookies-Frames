@@ -115,7 +115,16 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
                 returnParams[key] = value === 'true';
                 break;
             default: // array (Error)
-                returnParams[key] = value.split(',')
+                const array = value.split(',')
+                const floatArray = array.map((item: string) => parseFloat(item))
+                if (!floatArray.some(isNaN)) {
+                    returnParams[key] = floatArray
+                    console.log('floatArray:', key)
+                }
+                else {
+                    returnParams[key] = array // Just return normal
+                }
+                console.log(returnParams[key])
                 break;
         }
     }
@@ -197,7 +206,7 @@ export function convertImpliedProbabilityToAmerican(impliedProbability: number) 
   
     const americanOdds = impliedProbability === 0
       ? Infinity  // Represents infinite odds for a probability of 0
-      : Math.round((10000 - (impliedProbability * 100 * 100))/(impliedProbability * 100));
+      : Math.round((10000 - ((impliedProbability * 100) * 100))/(impliedProbability * 100));
   
     return americanOdds;
   }
