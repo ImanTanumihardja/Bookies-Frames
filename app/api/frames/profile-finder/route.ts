@@ -42,7 +42,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       imageUrl = generateImageUrl(FrameNames.PROFILE_FINDER, {[RequestProps.IS_FOLLOWING]: isFollowing, 
                                               [RequestProps.USERNAME]: profile?.username || "", 
                                               [RequestProps.AVATAR_URL]: profile?.pfp.url || "", 
-                                              [RequestProps.RANK]: rank + 1, 
+                                              [RequestProps.RANK]: rank, 
                                               [RequestProps.WINS]: user.wins, 
                                               [RequestProps.LOSSES]: user.losses, 
                                               [RequestProps.POINTS]: user.points, 
