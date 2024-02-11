@@ -13,11 +13,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (user === null) throw new Error('User not found');
   
-  let stake = parseInt(message?.input);
+  let wagerAmount = parseInt(message?.input);
   
   // Check if the amount is valid
-  if (stake < 0 && stake > user.points) {
-    stake = -1;
+  if (wagerAmount < 0 && wagerAmount > user.points) {
+    wagerAmount = -1;
   }
 
   // Get eventName from req
@@ -36,14 +36,14 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const multi = kv.multi();
 
     event.poll[prediction]++;
-    event.bets[fid] = {eventName: eventName, prediction:prediction, stake:stake, timeStamp: now} as Bet;
+    event.bets[fid] = {eventName: eventName, wagerAmount: wagerAmount, prediction:prediction, timeStamp: now} as Bet;
 
     let sendEvent : any = {}
     sendEvent[eventName] = event;
 
     await multi.hset('events', sendEvent);
 
-    user.points -= stake;
+    user.points -= wagerAmount;
     await multi.hset(fid.toString(), user);
 
     await multi.exec();
@@ -56,7 +56,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     prediction = -1
   }
 
-  const imageUrl = generateImageUrl('betslip', {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: stake, [RequestProps.PREDICTION]: prediction, [RequestProps.STREAK]: user.streak, [RequestProps.MULTIPLIER]: event.multiplier, [RequestProps.TIMESTAMP]: now, [RequestProps.ODDS]: event.odds, [RequestProps.OPTIONS]: event.options, [RequestProps.BALANCE]: user.points, [RequestProps.POLL]: event.poll, [RequestProps.PROMPT]: event.prompt});
+  const imageUrl = generateImageUrl('betslip', {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: wagerAmount, [RequestProps.PREDICTION]: prediction, [RequestProps.STREAK]: user.streak, [RequestProps.MULTIPLIER]: event.multiplier, [RequestProps.TIMESTAMP]: now, [RequestProps.ODDS]: event.odds, [RequestProps.OPTIONS]: event.options, [RequestProps.BALANCE]: user.points, [RequestProps.POLL]: event.poll, [RequestProps.PROMPT]: event.prompt});
 
   return new NextResponse(
     getFrameHtmlResponse({

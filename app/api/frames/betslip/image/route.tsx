@@ -3,6 +3,8 @@ import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
 import NotFollowing from '../../../../../src/components/NotFollowing';
 import { RequestProps, getRequestProps, convertImpliedProbabilityToAmerican } from '../../../../../src/utils';
+import { User, Event } from '../../../../types';
+import { kv } from '@vercel/kv';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -14,46 +16,38 @@ const plusJakartaSans = fetch(
 
 
 export async function GET(req: NextRequest) {
-    let html;
-    try {
-        const {isFollowing, amount, prediction, streak, multiplier, timestamp, odds, options, balance, poll, prompt} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.AMOUNT, RequestProps.PREDICTION, RequestProps.STREAK, RequestProps.MULTIPLIER, RequestProps.TIMESTAMP, RequestProps.ODDS, RequestProps.OPTIONS, RequestProps.BALANCE, RequestProps.POLL, RequestProps.PROMPT]);
-        const impliedProbability = odds[prediction]
-        const odd = convertImpliedProbabilityToAmerican(impliedProbability)
 
-        console.log(isFollowing, amount, prediction, streak, multiplier, timestamp, odds, options, balance, poll, prompt)   
-        console.log('Implied Probability:', impliedProbability)
+    try {
+        let {isFollowing, fid, prediction, eventName, stake, amount} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.FID, RequestProps.PREDICTION, RequestProps.EVENT_NAME, RequestProps.STAKE]);
+        
+        let user : User | null = await kv.hgetall(fid.toString())
+
+        if (user === null) throw new Error('User not found');
+        
+        // Check if the amount is valid
+        if (stake < 0 && stake > user.points) {
+            stake = -1;
+        }
+
+        let event : Event | null = await kv.hget('events', eventName)
+        if (event === null) throw new Error('Event not found');
+        
+        const impliedProbability = event.odds[prediction]
+        const odd = convertImpliedProbabilityToAmerican(impliedProbability)
 
         let pollData = [];
         // Get total votes
-        let totalVotes : number = poll.reduce((a:string, b:string) => parseInt(a) + parseInt(b), 0); 
+        let totalVotes : number = event.poll.reduce((a, b) => a + b, 0); 
         if (totalVotes === 0) totalVotes = 1;
 
-        for (let i = 0; i < odds.length; i++) {
-            if (odds[i] === 0) continue;
+        for (let i = 0; i < event.odds.length; i++) {
+            if (event.odds[i] === 0) continue;
 
-            const percent = Math.round(Math.min((poll[i] / totalVotes) * 100, 100));
-            pollData.push({votes: poll[i], percent:percent, text: `${options[i]}`})
+            const percent = Math.round(Math.min((event.poll[i] / totalVotes) * 100, 100));
+            pollData.push({votes: event.poll[i], percent:percent, text: `${event.options[i]}`})
         }
 
-        if (!isFollowing) 
-        { 
-            html = <NotFollowing/>
-        }
-        else if (amount <= -1){
-            html = 
-            (<FrameBase>
-                <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> You don't have enough dice!</h1>
-            </FrameBase>)
-                
-        }
-        else if (timestamp > new Date().getTime()){
-            html = 
-            <FrameBase>
-                <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> Event no longer taking bets!</h1>
-            </FrameBase>
-        } else {
-            html =
-            (
+        return new ImageResponse((
             <div style={{display: 'flex', flexDirection:'row', height:'100%', width:'100%'}}>
                 <div style={{
                         display: 'flex',
@@ -65,13 +59,13 @@ export async function GET(req: NextRequest) {
                 }}>
                     <img src={`${process.env['HOST']}/Full_logo.png`} style={{ width: 120, height: 40, position: 'absolute', bottom:10, left:10}}/>
                     <h1 style={{color: 'white', fontSize:55, position:'absolute', top:-10, textDecoration:"underline" }}>Betslip</h1>
-                    <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:5, textAlign:'start'}}>Balance: {balance} <img style={{width: 22, height: 22, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/> </h1>
+                    <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:5, textAlign:'start'}}>Balance: {user.points} <img style={{width: 22, height: 22, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/> </h1>
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%', alignItems:'center', justifyItems:"center"}}>
                         <div style={{display: 'flex', flexDirection: 'column', alignItems:'flex-start', justifyItems:"center", padding:10}}> 
-                            <h1 style={{color: 'white', fontSize:30, margin:10}}> {options[prediction]}</h1>
-                            <h1 style={{color: 'white', fontSize:30, margin:10}}> Stake: {amount} <img style={{width: 35, height: 35, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
+                            <h1 style={{color: 'white', fontSize:30, margin:10}}> {event.options[prediction]}</h1>
+                            <h1 style={{color: 'white', fontSize:30, margin:10}}> Stake: {stake} <img style={{width: 35, height: 35, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
                             <h1 style={{color: 'white', fontSize:30, margin:10}}> Odds: +{odd}</h1>
-                            <h1 style={{color: 'white', fontSize:30, margin:10}}> Payout: {multiplier * (1 / impliedProbability) * (amount + streak)} <img style={{width: 35, height: 35, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
+                            <h1 style={{color: 'white', fontSize:30, margin:10}}> Payout: {event.multiplier * (1 / impliedProbability) * (amount + user.streak)} <img style={{width: 35, height: 35, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
                         </div>
                     </div>
                 </div>
@@ -100,16 +94,10 @@ export async function GET(req: NextRequest) {
                             })
                         }
                     </div>
-                    <h2 style={{display: 'flex', justifyContent: 'center', textAlign: 'center', color: 'black', fontSize: 27, width:'100%', position:'absolute'}}>{prompt}</h2>
+                    <h2 style={{display: 'flex', justifyContent: 'center', textAlign: 'center', color: 'black', fontSize: 27, width:'100%', position:'absolute'}}>{event.prompt}</h2>
                 </div>
             </div>
-            
-            )
-
-
-        }
-
-        return new ImageResponse(html, {
+        ), {
             width: 764, 
             height: 400, 
             fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],

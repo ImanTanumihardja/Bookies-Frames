@@ -8,7 +8,7 @@ export enum RequestProps {
     FID = 'fid',
     IS_FOLLOWING = 'isFollowing',
     HAS_CLAIMED = 'hasClaimed',
-    AMOUNT = 'amount',
+    STAKE = 'stake',
     AVATAR_URL = 'avatarUrl',
     USERNAME = 'username',
     RANK = 'rank',
@@ -40,7 +40,7 @@ export const RequestPropsTypes = {
     [RequestProps.FID]: 0,
     [RequestProps.IS_FOLLOWING]: true,
     [RequestProps.HAS_CLAIMED]: true,
-    [RequestProps.AMOUNT]: 0,
+    [RequestProps.STAKE]: 0,
     [RequestProps.AVATAR_URL]: "",
     [RequestProps.USERNAME]: "",
     [RequestProps.RANK]: 0,
@@ -75,7 +75,7 @@ export const DEFAULT_USER: User = {
 
 export const DEFAULT_BET: Bet = {
     eventName: "",
-    wagerAmount: 0,
+    stake: 0,
     prediction: -1,
     timeStamp: 0
 }
