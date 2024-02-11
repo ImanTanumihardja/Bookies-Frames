@@ -20,7 +20,6 @@ export type User = {
 }
 
 export type Bet = {
-    eventName: string
     stake: number
     prediction: number
     timeStamp: number

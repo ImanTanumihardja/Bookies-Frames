@@ -33,7 +33,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const multi = kv.multi();
 
     event.poll[prediction]++;
-    event.bets[fid] = {eventName: eventName, prediction:prediction, stake:stake, timeStamp: now} as Bet;
+    event.bets[fid] = {prediction:prediction, stake:stake, timeStamp: now} as Bet;
 
     let sendEvent : any = {}
     sendEvent[eventName] = event;
@@ -61,6 +61,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   return new NextResponse(
     getFrameHtmlResponse({
       image: `${imageUrl}`,
+      buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}]
     }),
   );
 }
