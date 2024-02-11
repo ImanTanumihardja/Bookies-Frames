@@ -50,7 +50,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     });
   }
   else {
-    imageUrl = `${process.env['HOST']}/thumbnails/FRAME_NAME.gif`
+    imageUrl = `${process.env['HOST']}/thumbnails/${FrameNames.PROFILE_FINDER}.gif`
     input_text = "Enter a username";
   }
 
@@ -64,7 +64,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
     ],
     inputText: input_text,
-    postUrl: `${process.env['HOST']}/api/frames/FRAME_NAME`,
+    postUrl: `${process.env['HOST']}/api/frames/${FrameNames.PROFILE_FINDER}`,
   };
 
   return new NextResponse(
