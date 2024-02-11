@@ -1,9 +1,9 @@
 import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { FrameNames, generateImageUrl } from '../../src/utils';
+import { FrameNames, generateUrl } from '../../src/utils';
 
-const imageUrl = generateImageUrl(`thumbnails/${FrameNames.CLAIM_DICE}.gif`, [])
+const imageUrl = generateUrl(`thumbnails/${FrameNames.CLAIM_DICE}.gif`, [])
 
 const frameMetadata = getFrameMetadata({
   buttons: [

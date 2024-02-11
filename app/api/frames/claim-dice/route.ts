@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { User} from '../../../types';
-import { RequestProps, generateImageUrl, DEFAULT_USER, validateFrameMessage } from '../../../../src/utils';
+import { RequestProps, generateUrl, DEFAULT_USER, validateFrameMessage } from '../../../../src/utils';
 import { getFrameHtml, Frame} from "frames.js";
 import { FrameNames } from '../../../../src/utils';
 
@@ -37,7 +37,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
   }
 
-  const imageUrl = generateImageUrl(`api/frames/${FrameNames.CLAIM_DICE}`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: user.hasClaimed, [RequestProps.POINTS]: isNewUser ? 100 : 10});
+  const imageUrl = generateUrl(`api/frames/${FrameNames.CLAIM_DICE}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: user.hasClaimed, [RequestProps.POINTS]: isNewUser ? 100 : 10}, false, true);
 
   const frame: Frame = {
     version: "vNext",

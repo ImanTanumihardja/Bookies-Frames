@@ -1,6 +1,6 @@
 import { getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, RequestProps, generateImageUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
+import { FrameNames, RequestProps, generateUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -16,7 +16,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Get eventName from req
   const {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
 
-  const imageUrl = generateImageUrl(`api/frames/${FrameNames.BETSLIP}`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid, [RequestProps.PREDICTION]: button-1, [RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake});
+  const imageUrl = generateUrl(`api/frames/${FrameNames.BETSLIP}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid, [RequestProps.PREDICTION]: button-1, [RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake}, false, true);
 
   return new NextResponse(
     getFrameHtmlResponse({

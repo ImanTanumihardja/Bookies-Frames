@@ -135,15 +135,19 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
     return returnParams
 }
 
-export function generateImageUrl(extension: string, props: Record<string, any>, addTimestamp: boolean = false): string {
-    let url = `${process.env['HOST']}/${extension}/?`
+export function generateUrl(extension: string, props: Record<string, any>, addTimestamp: boolean = false, isImageURL: boolean = false): string {
+    let url = `${process.env['HOST']}/${extension}`;
 
-    if (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging')) {
-        url += `timestamp=${new Date().getTime()}`
+    if(isImageURL && (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging'))){
+        url += `?version=${process.env['VERSION']}`
+        url += `&timestamp=${new Date().getTime()}`
     }
-
-    url += `&v=${process.env['VERSION']}`
-
+    else if (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging')) {
+        url += `?timestamp=${new Date().getTime()}`
+    }
+    else{
+        url += `?version=${process.env['VERSION']}`
+    }
     // Loop through each param
     for (const key in props) {
         url += `&${key}=${encodeURIComponent(props[key])}`

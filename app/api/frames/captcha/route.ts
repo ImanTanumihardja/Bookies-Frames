@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { User} from '../../../types';
-import { RequestProps, generateImageUrl, DEFAULT_USER, validateFrameMessage } from '../../../../src/utils';
+import { RequestProps, generateUrl, DEFAULT_USER, validateFrameMessage } from '../../../../src/utils';
 import { FrameNames } from '../../../../src/utils';
 import { getFrameHtmlResponse } from '@coinbase/onchainkit';
 

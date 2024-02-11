@@ -1,11 +1,11 @@
 import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { FrameNames, generateImageUrl } from '../../../src/utils';
+import { FrameNames, generateUrl } from '../../../src/utils';
 
 const frameName = 'sblviii-ml'
 const options = ['Chiefs', '49ers']
-const imageUrl = generateImageUrl(`thumbnails/events/${FrameNames.SBLVIII_ML}.png`, [])
+const imageUrl = generateUrl(`thumbnails/events/${FrameNames.SBLVIII_ML}.png`, [])
 
 const frameMetadata = getFrameMetadata({
   input: {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Frame, getFrameHtml } from "frames.js";
-import { DEFAULT_USER, generateImageUrl, RequestProps, validateFrameMessage, neynarClient, BOOKIES_FID, FrameNames } from '../../../../src/utils';
+import { DEFAULT_USER, generateUrl, RequestProps, validateFrameMessage, neynarClient, BOOKIES_FID, FrameNames } from '../../../../src/utils';
 import { User } from '../../../types';
 import { kv } from '@vercel/kv';
 
@@ -39,7 +39,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           if (rank !== -1) user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
         }
     
-      imageUrl = generateImageUrl(`api/frames/${FrameNames.PROFILE_FINDER}`, {[RequestProps.IS_FOLLOWING]: isFollowing, 
+      imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, 
                                               [RequestProps.USERNAME]: profile?.username || "", 
                                               [RequestProps.AVATAR_URL]: profile?.pfp.url || "", 
                                               [RequestProps.RANK]: rank, 
@@ -47,7 +47,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
                                               [RequestProps.LOSSES]: user.losses, 
                                               [RequestProps.POINTS]: user.points, 
                                               [RequestProps.STREAK]: user.streak, 
-                                              [RequestProps.NUM_BETS]: user.numBets});
+                                              [RequestProps.NUM_BETS]: user.numBets}, false, true);
     });
   }
   else {
