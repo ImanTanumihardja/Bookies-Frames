@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
                             src={avatarUrl}
                             alt={`${process.env['HOST']}/generic_pfp.png`}
                             onError={(e) => {
-                                (e.target as HTMLImageElement).src = `${process.env['HOST']}/generic_pfp.png`; // Change to the URL of your fallback image
+                                console.log('error'); // Change to the URL of your fallback image
                             }}
                         />
                             {username} {rank !== -1 ? `(#${rank + 1})` : ''}
