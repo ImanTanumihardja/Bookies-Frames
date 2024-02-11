@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
                     {!validCaptcha ?
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center'}}>CAPTCHA failed!</h1>
                     :
-                    isFollowing ?
+                    (isFollowing ?
                     (!hasClaimed ? 
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center'}}> You received {points} <img style={{width: 65, height: 65, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
                     :
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
                     </div>)
                     :
                         <NotFollowing/>
-                    }
+                    )}
             </FrameBase>
             ,
             {
