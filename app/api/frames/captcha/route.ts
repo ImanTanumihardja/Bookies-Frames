@@ -8,7 +8,6 @@ import { getFrameHtmlResponse } from '@coinbase/onchainkit';
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   const images = ['🎩', '🎲', '🤑', '🏇'] 
 
-
   // Generate random number between 0 and 3
   const randomIndex = Math.floor(Math.random() * 4);
 

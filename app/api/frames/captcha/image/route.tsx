@@ -18,8 +18,9 @@ export async function GET(req: NextRequest) {
         return new ImageResponse(
             <FrameBase>
                 <div style={{display:'flex', flexDirection:'column'}}>
-                    <h2 style={{color: 'white', fontSize:50, justifyContent:'center', alignItems:'center', textAlign:'center'}}>Select the matching image</h2>
+                    <h2 style={{color: 'white', fontSize:50, justifyContent:'center', alignItems:'center', textAlign:'center'}}>Click the matching image</h2>
                     <h1 style={{color: 'white', fontSize:100, justifyContent:'center', alignItems:'center', }}>{image}</h1>
+                    <h2 style={{color: 'white', fontSize:25, justifyContent:'center', alignItems:'center', textAlign:'center'}}>Need to make sure your not a bot!</h2>
                 </div>
             </FrameBase>
             ,

@@ -10,7 +10,7 @@ const frameMetadata = getFrameMetadata({
     },
   ],
   image: `${process.env['HOST']}/thumbnails/${FrameNames.CLAIM_DICE}.gif`,
-  post_url: `${process.env['HOST']}/api/frames/${FrameNames.CLAIM_DICE}`
+  post_url: `${process.env['HOST']}/api/frames/${FrameNames.CAPTCHA}`
 });
 
 export const metadata: Metadata = {
