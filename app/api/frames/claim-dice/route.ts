@@ -12,22 +12,18 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const {followingBookies: isFollowing, fid, button} = message;
 
-  let validCaptcha = true;
+  var validCaptcha = true;
   if (parseInt(req.nextUrl.searchParams.get('captcha') || "-1") != (button - 1)) {
     validCaptcha = false;
   }
 
-  let user : User =  DEFAULT_USER;
-  let isNewUser: boolean = false;
-  let hasClaimed: boolean = false;
+  var user : User =  DEFAULT_USER;
+  var isNewUser: boolean = false;
+  var hasClaimed: boolean = false;
 
   if (isFollowing && validCaptcha) {
-    console.log(hasClaimed)
     user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
-    console.log(user)
-    hasClaimed = user?.hasClaimed
-    console.log(hasClaimed)
-    if (hasClaimed) {
+    if (!hasClaimed) {
       isNewUser = await kv.zscore('users', fid) === null;
       const multi = kv.multi();
       if (isNewUser) {

@@ -149,6 +149,7 @@ export function generateUrl(extension: string, props: Record<string, any>, addTi
     else{
         url += `?version=${process.env['VERSION']}`
     }
+    
     // Loop through each param
     for (const key in props) {
         url += `&${key}=${encodeURIComponent(props[key])}`
