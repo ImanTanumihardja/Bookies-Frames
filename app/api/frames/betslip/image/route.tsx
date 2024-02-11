@@ -83,7 +83,7 @@ export async function GET(req: NextRequest) {
                                         color: 'black',
                                         borderRadius: 4,
                                         width:'20%',
-                                        height: `${opt.percent}%`,
+                                        height: `${opt.percent + 5}%`,
                                         whiteSpace: 'nowrap',
                                         overflow: 'visible',
                                         fontSize: 20,
