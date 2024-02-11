@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
 
         return new ImageResponse(
             <FrameBase>
-                    {validCaptcha ?
+                    {!validCaptcha ?
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center'}}>CAPTCHA failed!</h1>
                     :
                     isFollowing ?

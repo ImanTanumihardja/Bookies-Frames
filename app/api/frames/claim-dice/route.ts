@@ -13,14 +13,16 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const {followingBookies: isFollowing, fid, button} = message;
 
   let validCaptcha = true;
-  if (parseInt(req.nextUrl.searchParams.get('captcha') || "") != (button - 1)) {
+  if (parseInt(req.nextUrl.searchParams.get('captcha') || "-1") !== (button - 1)) {
     validCaptcha = false;
   }
 
-  let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
-  const isNewUser: boolean = await kv.zscore('users', fid) === null;
+  let user : User =  DEFAULT_USER;
+  let isNewUser: boolean = false;
 
-  if (isFollowing || validCaptcha) {
+  if (isFollowing && validCaptcha) {
+    let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
+    const isNewUser: boolean = await kv.zscore('users', fid) === null;
     if (!user.hasClaimed) {
       const multi = kv.multi();
       if (isNewUser) {
