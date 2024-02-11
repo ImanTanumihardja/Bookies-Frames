@@ -30,8 +30,8 @@ async function settleEvent(eventName="sblviii-ml", result=-1) {
       let bet = eventData.bets[fid]
       if (bet.prediction === result) {  
         // Pay out the user
-        console.log(`Paying out user: ${bet.fid} with wager: ${bet.stake}`)
-        const user = await kv.hgetall(bet.fid);
+        console.log(`Paying out user: ${fid} with wager: ${bet.stake}`)
+        const user = await kv.hgetall(fid);
         const payout = calculatePayout(eventData.multiplier, eventData.odds[result], bet.stake, parseInt(user.streak.toString()));
         user.points = parseInt(user.points.toString()) + payout;
         user.streak = parseInt(user.streak.toString()) + 1;
@@ -39,13 +39,13 @@ async function settleEvent(eventName="sblviii-ml", result=-1) {
         user.wins = parseInt(user.wins.toString()) + 1;
 
         await multi.hset(fid.toString(), user);
-        await multi.zincrby('users', payout, bet.fid);
+        await multi.zincrby('users', payout, fid);
         await multi.exec();
       }
       else {
         // User lost
-        console.log(`User: ${bet.fid} lost with wager: ${bet.stake}`)
-        const user = await kv.hgetall(bet.fid);
+        // console.log(`User: ${fid} lost with wager: ${bet.stake}`)
+        const user = await kv.hgetall(fid);
         user.streak = 0;
         user.numBets = parseInt(user.streak.toString()) + 1;
         user.losses = parseInt(user.losses.toString()) + 1;

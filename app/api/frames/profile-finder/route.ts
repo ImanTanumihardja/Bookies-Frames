@@ -52,8 +52,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     });
   }
   else {
-    imageUrl = `${process.env['HOST']}/thumbnails/${FrameNames.PROFILE_FINDER}.gif`
-    input_text = "Enter a username";
+    throw new Error('Invalid username');
   }
 
   const frame: Frame = {
