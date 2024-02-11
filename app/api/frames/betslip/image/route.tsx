@@ -16,7 +16,6 @@ const plusJakartaSans = fetch(
 
 
 export async function GET(req: NextRequest) {
-
     try {
         let {isFollowing, fid, prediction, eventName, stake} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.FID, RequestProps.PREDICTION, RequestProps.EVENT_NAME, RequestProps.STAKE]);
         
@@ -34,6 +33,8 @@ export async function GET(req: NextRequest) {
         
         const impliedProbability = event.odds[prediction]
         const odd = convertImpliedProbabilityToAmerican(impliedProbability)
+
+        const payout = event.multiplier * (1 / impliedProbability) * (stake + user.streak)
 
         let pollData = [];
         // Get total votes
@@ -65,7 +66,7 @@ export async function GET(req: NextRequest) {
                             <h1 style={{color: 'white', fontSize:30, margin:10}}> {event.options[prediction]}</h1>
                             <h1 style={{color: 'white', fontSize:30, margin:10}}> Stake: {stake} <img style={{width: 35, height: 35, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
                             <h1 style={{color: 'white', fontSize:30, margin:10}}> Odds: +{odd}</h1>
-                            <h1 style={{color: 'white', fontSize:30, margin:10}}> Payout: {event.multiplier * (1 / impliedProbability) * (stake + user.streak)} <img style={{width: 35, height: 35, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
+                            <h1 style={{color: 'white', fontSize:30, margin:10}}> Payout: {payout} <img style={{width: 35, height: 35, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
                         </div>
                     </div>
                 </div>
