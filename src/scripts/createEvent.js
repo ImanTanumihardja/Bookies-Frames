@@ -12,7 +12,7 @@ async function createEvent(eventName='sblviii-ml', startDate=1707780600, odds=[0
     console.log(`Total users: ${count}`)
 
     let event = {}
-    event[eventName] = {startDate: startDate, poll: [0, 0, 0, 0], bets: {}, result: -1, odds: odds, multiplier: multiplier, options: options, prompt: prompt};
+    event[eventName] = {startDate: startDate, poll: [0, 0], bets: {}, result: -1, odds: odds, multiplier: multiplier, options: options, prompt: prompt};
     await kv.hset(`events`, event);
 
     event = await kv.hget(`events`, `${eventName}`)

@@ -20,11 +20,13 @@ export async function GET(req: NextRequest) {
         const impliedProbability = odds[prediction]
         const odd = convertImpliedProbabilityToAmerican(impliedProbability)
 
+        console.log('Implied Probability:', odd)
+
         let pollData = [];
         // Get total votes
         let totalVotes : number = poll.reduce((a:string, b:string) => parseInt(a) + parseInt(b), 0); 
         if (totalVotes === 0) totalVotes = 1;
-        
+
         for (let i = 0; i < odds.length; i++) {
             if (odds[i] === 0) continue;
 

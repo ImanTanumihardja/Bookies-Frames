@@ -103,8 +103,6 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
 
         const value = decodeURIComponent(req.nextUrl.searchParams.get(key) || "")
 
-        console.log(value)
-
         // Parse Props
         switch (typeof RequestPropsTypes[key]) {
             case 'string':
