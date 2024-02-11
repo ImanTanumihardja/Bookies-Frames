@@ -21,7 +21,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   return new NextResponse(
     getFrameHtmlResponse({
       image: `${imageUrl}`,
-      post_url: `${process.env['HOST']}/api/frames/${FrameNames.BET_CONFIRMATION}}?eventName=${eventName}&stake=${stake}&prediction=${button-1}`,
+      post_url: `${process.env['HOST']}/api/frames/${FrameNames.BET_CONFIRMATION}?eventName=${eventName}&stake=${stake}&prediction=${button-1}`,
       buttons: [{label: "Confirm"}, {label: "Reject"}]
     }),
   );

@@ -1,7 +1,7 @@
 import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { FrameNames } from '../../../src/utils';
+import { FrameNames, generateImageUrl } from '../../../src/utils';
 
 const frameName = 'sblviii-ml'
 const options = ['Chiefs', '49ers']
@@ -18,7 +18,7 @@ const frameMetadata = getFrameMetadata({
       label: options[1],
     },
   ],
-  image: `${process.env['HOST']}/thumbnails/events/${FrameNames.SBLVIII_ML}.png`,
+  image: generateImageUrl(`thumbnails/events/${FrameNames.SBLVIII_ML}`, []),
   post_url: `${process.env['HOST']}/api/frames/${FrameNames.BETSLIP}?eventName=${FrameNames.SBLVIII_ML}`
 });
 

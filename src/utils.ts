@@ -142,6 +142,8 @@ export function generateImageUrl(frameName: string, params: Record<string, any>,
         url += `timestamp=${new Date().getTime()}`
     }
 
+    url += `&version=${process.env['VERSION']}`
+
     // Loop through each param
     for (const key in params) {
         url += `&${key}=${encodeURIComponent(params[key])}`
