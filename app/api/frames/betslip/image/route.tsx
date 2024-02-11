@@ -22,11 +22,6 @@ export async function GET(req: NextRequest) {
         let user : User | null = await kv.hgetall(fid.toString())
 
         if (user === null) throw new Error('User not found');
-        
-        // Check if the amount is valid
-        if (stake < 0 && stake > user.points) {
-            stake = -1;
-        }
 
         let event : Event | null = await kv.hget('events', eventName)
         if (event === null) throw new Error('Event not found');
@@ -34,7 +29,7 @@ export async function GET(req: NextRequest) {
         const impliedProbability = event.odds[prediction]
         const odd = convertImpliedProbabilityToAmerican(impliedProbability)
 
-        const payout = event.multiplier * (1 / impliedProbability) * (stake)
+        const payout = event.multiplier * (1 / impliedProbability) * (parseInt(stake) + user.streak)
         console.log(payout)
 
         let pollData = [];
