@@ -29,8 +29,7 @@ export async function GET(req: NextRequest) {
         const impliedProbability = event.odds[prediction]
         const odd = convertImpliedProbabilityToAmerican(impliedProbability)
 
-        const payout = event.multiplier * (1 / impliedProbability) * (parseInt(stake) + user.streak)
-        console.log(payout)
+        const payout = event.multiplier * (1 / impliedProbability) * (parseInt(stake) + parseInt(user.streak.toString()))
 
         let pollData = [];
         // Get total votes

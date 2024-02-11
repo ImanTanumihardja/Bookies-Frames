@@ -14,11 +14,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (user === null) throw new Error('User not found');
   
   let stake = parseInt(message?.input);
-  
-  // Check if the amount is valid
-  if (stake < 0 && stake > user.points) {
-    stake = -1;
-  }
 
   // Get eventName from req
   const {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
