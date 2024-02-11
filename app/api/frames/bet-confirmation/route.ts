@@ -73,3 +73,4 @@ export async function POST(req: NextRequest): Promise<Response> {
 
 export const revalidate = 0;
 export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
