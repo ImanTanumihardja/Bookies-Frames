@@ -28,6 +28,7 @@ export enum RequestProps {
     ODDS = 'odds',
     BALANCE = 'balance',
     POLL = 'poll',
+    VALID_CAPTCHA = 'valid_captcha',
 }
 
 export enum FrameNames {
@@ -63,6 +64,7 @@ export const RequestPropsTypes = {
     [RequestProps.ODDS]: [],
     [RequestProps.BALANCE]: 0,
     [RequestProps.POLL]: [],
+    [RequestProps.VALID_CAPTCHA]: true,
 }
 
 export const BOOKIES_FID = 244367;

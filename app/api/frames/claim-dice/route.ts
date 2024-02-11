@@ -12,12 +12,15 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const {followingBookies: isFollowing, fid, button} = message;
 
-  if (parseInt(req.nextUrl.searchParams.get('captcha') || "") != (button - 1)) throw new Error('Invalid captcha');
+  let validCaptcha = true;
+  if (parseInt(req.nextUrl.searchParams.get('captcha') || "") != (button - 1)) {
+    validCaptcha = false;
+  }
 
   let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
   const isNewUser: boolean = await kv.zscore('users', fid) === null;
 
-  if (isFollowing) {
+  if (isFollowing && validCaptcha) {
     if (!user.hasClaimed) {
       const multi = kv.multi();
       if (isNewUser) {
@@ -37,7 +40,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
   }
 
-  const imageUrl = generateUrl(`api/frames/${FrameNames.CLAIM_DICE}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: user.hasClaimed, [RequestProps.POINTS]: isNewUser ? 100 : 10}, false, true);
+  const imageUrl = generateUrl(`api/frames/${FrameNames.CLAIM_DICE}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: user.hasClaimed, [RequestProps.POINTS]: isNewUser ? 100 : 10, [RequestProps.VALID_CAPTCHA]: validCaptcha}, false, true);
 
   const frame: Frame = {
     version: "vNext",

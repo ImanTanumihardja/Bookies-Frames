@@ -17,8 +17,6 @@ async function resetHasClaimed() {
     // Filter out every other element
     users = users.filter((_, index) => index % 2 === 0)
     
-    // Go through array and figure out how many unique users we have
-    let uniqueUsers = []
     users.forEach(user => {
         if (!uniqueUsers.includes(user)) {
             uniqueUsers.push(user)

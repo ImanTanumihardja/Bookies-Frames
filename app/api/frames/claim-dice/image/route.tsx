@@ -14,11 +14,14 @@ const plusJakartaSans = fetch(
 
 export async function GET(req: NextRequest) {
     try {
-        const {isFollowing, hasClaimed, points} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.HAS_CLAIMED, RequestProps.POINTS]);
+        const {isFollowing, hasClaimed, points, validCaptcha} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.HAS_CLAIMED, RequestProps.POINTS, RequestProps.VALID_CAPTCHA]);
 
         return new ImageResponse(
             <FrameBase>
-                    {isFollowing ?
+                    {validCaptcha ?
+                    <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center'}}>CAPTCHA failed!</h1>
+                    :
+                    isFollowing ?
                     !hasClaimed ? 
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center'}}> You received {points} <img style={{width: 65, height: 65, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
                     :
