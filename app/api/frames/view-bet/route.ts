@@ -2,8 +2,7 @@ import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/o
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { Event, User, Bet } from '../../../types';
-import { FrameNames, RequestProps, generateImageUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
-import { send } from 'process';
+import { RequestProps, generateImageUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
