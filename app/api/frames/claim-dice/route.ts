@@ -21,7 +21,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let isNewUser: boolean = false;
 
   if (isFollowing && validCaptcha) {
-    let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
+    user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
     if (!user.hasClaimed) {
       const isNewUser: boolean = await kv.zscore('users', fid) === null;
       const multi = kv.multi();
@@ -41,7 +41,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       await multi.exec();
     }
   }
-  console.log(user.hasClaimed)
 
   const imageUrl = generateUrl(`api/frames/${FrameNames.CLAIM_DICE}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: user.hasClaimed, [RequestProps.POINTS]: isNewUser ? 100 : 10, [RequestProps.VALID_CAPTCHA]: validCaptcha}, false, true);
 
