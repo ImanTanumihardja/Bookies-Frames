@@ -24,6 +24,8 @@ export async function GET(req: NextRequest) {
                                                                                                                         RequestProps.STREAK,
                                                                                                                         RequestProps.NUM_BETS]);
 
+        const pfpURL = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(avatarUrl)}`                                                                                            
+
         return new ImageResponse(
             <FrameBase>
                 {isFollowing ?
@@ -33,12 +35,9 @@ export async function GET(req: NextRequest) {
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%'}}>
                         <h1 style={{color: 'white', top:-50, left: 20, fontSize: 56, alignItems:'center'}}> 
                         <img
-                            style={{ width: 65, height: 65, marginRight: 10, borderRadius: 50 }}
-                            src={avatarUrl}
+                            style={{ width: 65, maxHeight: 65, marginRight: 10, borderRadius: 50 }}
+                            src={pfpURL}
                             alt={`${process.env['HOST']}/generic_pfp.png`}
-                            onError={(e) => {
-                                console.log('error'); // Change to the URL of your fallback image
-                            }}
                         />
                             {username} {rank !== -1 ? `(#${rank + 1})` : ''}
                         </h1>
