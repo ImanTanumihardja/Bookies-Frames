@@ -7,12 +7,12 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
   });
 
-async function createEvent(eventName="sblviii-ml") {
+async function createEvent(eventName='sblviii-ml', startDate=1707780600, odds=[0.5, 0.5, 0, 0], multiplier=1, options=["Team 1", "Team 2", "", ""], prompt="Who will win the Super Bowl?") {
     const count = await kv.zcount("users", 0, 'inf')
     console.log(`Total users: ${count}`)
 
     let event = {}
-    event[eventName] = {startDate: 1707694200000, poll: [0, 0, 0, 0], bets: {}, result: -1, odds: [0.5, 0.5, 0, 0], multiplier: 1, options: ["Team A", "Team B", "", ""], prompt: "Who will win the Super Bowl?"};
+    event[eventName] = {startDate: startDate, poll: [0, 0, 0, 0], bets: {}, result: -1, odds: odds, multiplier: multiplier, options: options, prompt: prompt};
     await kv.hset(`events`, event);
 
     event = await kv.hget(`events`, `${eventName}`)
@@ -37,7 +37,7 @@ async function createEvent(eventName="sblviii-ml") {
 if (require.main === module) {
     // Read in cli arguments
     const args = require('minimist')(process.argv.slice(2), {string: ['e']})
-    createEvent(args['e']).then(() => process.exit(0))
+    createEvent().then(() => process.exit(0))
       .catch(error => {
         console.error(error)
         process.exit(1)
