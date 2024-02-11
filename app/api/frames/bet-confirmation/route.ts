@@ -21,7 +21,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (event === null) throw new Error('Event not found');
 
   if (stake <= 0 || stake > balance) {
-    stake == -1
+    stake = -1
   }
 
   // Check if voted before and if the event is closed

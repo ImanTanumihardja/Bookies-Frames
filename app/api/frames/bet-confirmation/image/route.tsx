@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
 import NotFollowing from '../../../../../src/components/NotFollowing';
-import { RequestProps, getRequestProps, convertImpliedProbabilityToAmerican } from '../../../../../src/utils';
+import { RequestProps, getRequestProps } from '../../../../../src/utils';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -26,17 +26,17 @@ export async function GET(req: NextRequest) {
                 <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> You rejected the bet!</h1>
             </FrameBase>)
         } 
-        else if (stake <= -1){
-            html = 
-            (<FrameBase>
-                <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> You don't have enough dice!</h1>
-            </FrameBase>)
-        }
         else if (stake === 0 ){
             html = 
             <FrameBase>
                 <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> You already placed a bet!</h1>
             </FrameBase>
+        }
+        else if (stake <= -1){
+            html = 
+            (<FrameBase>
+                <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> You don't have enough dice!</h1>
+            </FrameBase>)
         }
         else if (prediction === -1) {
             html = 

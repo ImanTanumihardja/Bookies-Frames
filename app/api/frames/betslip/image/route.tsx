@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import FrameBase from '../../../../../src/components/FrameBase'
-import NotFollowing from '../../../../../src/components/NotFollowing';
 import { RequestProps, getRequestProps, convertImpliedProbabilityToAmerican, DEFAULT_USER } from '../../../../../src/utils';
 import { User, Event } from '../../../../types';
 import { kv } from '@vercel/kv';
