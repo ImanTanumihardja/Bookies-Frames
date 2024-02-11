@@ -32,7 +32,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     })
     .finally(async () => {
         if (profile !== null) {
-          let temp = await kv.zscore('users', profile?.fid || "");
+          let temp = await kv.zrevrank('users', profile?.fid || "");
           if (temp !== null) rank = temp;
           
           // Can skip if not found in kv
