@@ -20,11 +20,11 @@ export async function GET(req: NextRequest) {
             <FrameBase>
                     {isFollowing ?
                     !hasClaimed ? 
-                    <h1 style={{color: 'white', fontSize:40, justifyContent:'center'}}> You received {amount} <img style={{width: 50, height: 50, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
+                    <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center'}}> You received {amount} <img style={{width: 55, height: 55, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
                     :
-                    <div style={{display: 'flex', flexDirection: 'column', alignItems:'center'}}>
-                        <h1 style={{color: 'white', fontSize:40}}> You already claimed </h1>
-                        <h1 style={{color: 'white', fontSize:40, marginTop:-10}}> your free <img style={{width: 50, height: 50, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
+                    <div style={{display: 'flex', flexDirection: 'column', alignItems:'flex-start'}}>
+                        <h1 style={{color: 'white', fontSize:55}}> You already claimed </h1>
+                        <h1 style={{color: 'white', fontSize:55, marginTop:-10, alignItems:'flex-start'}}> your free <img style={{width: 55, height: 55, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
                     </div>
                     :
                         <NotFollowing/>

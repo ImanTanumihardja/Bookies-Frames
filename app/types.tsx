@@ -3,7 +3,12 @@ export type Event = {
     startDate: number;
     poll: number[]; 
     bets: Record<number, Bet>; 
-    result: number }
+    result: number 
+    odds : number[]
+    multiplier: number
+    options: string[]
+    prompt: string
+}
 
 export type User = {
     points: number;

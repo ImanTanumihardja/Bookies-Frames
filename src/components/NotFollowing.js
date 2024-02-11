@@ -2,7 +2,7 @@
 
 const NotFollowing = () => {
     return (
-        <h2 style={{color: 'white', fontSize:35, textAlign:'center'}}> Please follow @bookies and try again</h2>        
+        <h2 style={{color: 'white', margin:120, fontSize:45, textAlign:'center'}}> Please follow @bookies and try again!</h2>        
     );
 }
 

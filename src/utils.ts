@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server'
 import { NeynarAPIClient } from "@neynar/nodejs-sdk";
 import { User, Bet} from '../app/types';
-import { getFrameMessage as getFrameMessageFrameJS } from 'frames.js';
 import { getFrameMessage as getFrameMessageOnchain } from '@coinbase/onchainkit'
 import { FrameValidationData } from '../app/types';
 
@@ -22,6 +21,13 @@ export enum RequestProps {
     STREAK = 'streak',
     OPTIONS = 'options',
     PROMPT = 'prompt',
+    EVENT_NAME = 'eventName',
+    PREDICTION = 'prediction',
+    MULTIPLIER = 'multiplier',
+    TIMESTAMP = 'timestamp',
+    ODDS = 'odds',
+    BALANCE = 'balance',
+    POLL = 'poll',
 }
 
 export enum FrameNames {
@@ -47,6 +53,13 @@ export const RequestPropsTypes = {
     [RequestProps.OPTIONS]: [],
     [RequestProps.PROMPT]: "",
     [RequestProps.STREAK]: 0,
+    [RequestProps.EVENT_NAME]: "",
+    [RequestProps.PREDICTION]: 0,
+    [RequestProps.MULTIPLIER]: 0,
+    [RequestProps.TIMESTAMP]: 0,
+    [RequestProps.ODDS]: [],
+    [RequestProps.BALANCE]: 0,
+    [RequestProps.POLL]: [],
 }
 
 export const BOOKIES_FID = 244367;
@@ -90,19 +103,21 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
 
         const value = decodeURIComponent(req.nextUrl.searchParams.get(key) || "")
 
+        console.log(value)
+
         // Parse Props
         switch (typeof RequestPropsTypes[key]) {
             case 'string':
                 returnParams[key] = value
                 break;
             case 'number':
-                returnParams[key] = parseInt(value || "0")
+                returnParams[key] = parseFloat(value || "0")
                 break;
             case 'boolean':
                 returnParams[key] = value === 'true';
                 break;
-            default: // Should be undefined (Error)
-                returnParams[key] = undefined
+            default: // array (Error)
+                returnParams[key] = value.split(',')
                 break;
         }
     }
@@ -172,21 +187,19 @@ export async function validateFrameMessage(req: NextRequest) {
     catch (error) {
         throw new Error(`Error validating: ${error}`)
 
-        // TODO: Recue function size so can uncomment this
-        // // Use framesjs to validate the frame message
-        // let data = await getFrameMessageFrameJS(body, { fetchHubContext: true }); // frames.js
-
-        // isValid = data.isValid;
-        
-        // message.button = data?.buttonIndex || 0
-        // message.following = data?.requesterFollowsCaster || false
-        // message.input = data?.inputText || ""
-        // message.fid = data?.requesterFid || 0
-        // // message.custody_address = data?.castId?.hash || "" // no custody address in frames.js
-        // message.verified_accounts = data?.requesterVerifiedAddresses || []
-        // message.liked = data.likedCast || false
-        // message.recasted = data?.recastedCast || false
     }
 
     return message
 }
+
+export function convertImpliedProbabilityToAmerican(impliedProbability: number) {
+    if (impliedProbability <= 0 || impliedProbability >= 1) {
+      throw new Error('Implied probability must be between 0 and 1 (exclusive).');
+    }
+  
+    const americanOdds = impliedProbability === 0
+      ? Infinity  // Represents infinite odds for a probability of 0
+      : Math.round((10000 - (impliedProbability * 100 * 100))/(impliedProbability * 100));
+  
+    return americanOdds;
+  }

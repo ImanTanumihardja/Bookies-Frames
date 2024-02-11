@@ -1,11 +1,9 @@
 const { createClient  } = require("@vercel/kv");
 const dotenv = require("dotenv")
-dotenv.config({ path: "../../.env"})
+dotenv.config({ path: ".env"})
 
 // Create a script that access kv storage and reset the hasClaimed value
 async function resetHasClaimed() {
-    console.log("Resetting hasClaimed")
-
     const kv = createClient({
         url: process.env['KV_REST_API_URL'],
         token: process.env['KV_REST_API_TOKEN'],
