@@ -20,7 +20,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let user : User = await kv.hgetall(fid.toString()) || DEFAULT_USER;
   const isNewUser: boolean = await kv.zscore('users', fid) === null;
 
-  if (isFollowing && validCaptcha) {
+  if (isFollowing || validCaptcha) {
     if (!user.hasClaimed) {
       const multi = kv.multi();
       if (isNewUser) {
