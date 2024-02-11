@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
         { 
             html = <NotFollowing/>
         }
-        else if (button === 2) {
+        else if (button == 2) {
             html = (<FrameBase>
                 <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> You rejected the bet!</h1>
             </FrameBase>)
