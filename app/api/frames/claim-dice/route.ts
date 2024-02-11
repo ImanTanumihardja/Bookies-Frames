@@ -6,9 +6,10 @@ import { getFrameHtml, Frame} from "frames.js";
 import { FrameNames } from '../../../../src/utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
+
+export const revalidate = 0;
+
 async function getResponse(req: NextRequest): Promise<NextResponse> {
-  noStore();
-  
   // Verify the frame request
   const message = await validateFrameMessage(req);
 
