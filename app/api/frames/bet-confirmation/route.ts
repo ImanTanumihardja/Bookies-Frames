@@ -47,7 +47,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     await multi.zincrby('users', -stake, fid);
     await multi.exec();
   } 
-  else if (event.startDate >= now && betExists) {
+  else if (betExists) {
     // Event has started
     stake = 0;
     prediction = event.bets[fid].prediction;
