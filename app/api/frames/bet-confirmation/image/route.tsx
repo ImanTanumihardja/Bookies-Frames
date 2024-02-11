@@ -94,7 +94,7 @@ export async function GET(req: NextRequest) {
                                         overflow: 'visible',
                                         fontSize: 20,
                                     }}>
-                                        <h3 style={{top:10, transform: 'rotate(90deg) scaleY(-1)'}}>{`${opt.text + " " + opt.percent}`}%</h3>
+                                        <h3 style={{top:10, right:15, transform: 'rotate(90deg)'}}>{`${opt.text + " " + opt.percent}`}%</h3>
                                     </div>
                                 )
                             })

@@ -1,4 +1,4 @@
-import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit';
+import { getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { Event, User, Bet } from '../../../types';
@@ -13,11 +13,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (user === null) throw new Error('User not found');
   
-  const wagerAmount = parseInt(message?.input || "0");
+  let wagerAmount = parseInt(message?.input);
+  
   // Check if the amount is valid
-  if (wagerAmount > user.points) {
-    throw new Error('Invalid wager amount');
-    // TODO add frame saying invalid wager amount
+  if (wagerAmount < 0 && wagerAmount > user.points) {
+    wagerAmount = -1;
   }
 
   // Get eventName from req
@@ -32,7 +32,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const now = new Date().getTime();
   if (!betExists && now < event?.startDate) {
-  // Can bet
+    // Can bet
     const multi = kv.multi();
 
     event.poll[prediction]++;
@@ -48,7 +48,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     await multi.exec();
   } 
-  else if (event.startDate >= now) {
+  else if (event.startDate >= now && betExists) {
     // Event has started
     prediction = event.bets[fid].prediction;
   }
@@ -56,13 +56,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     prediction = -1
   }
 
-  const imageUrl = generateImageUrl(eventName, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: user.hasClaimed});
+  const imageUrl = generateImageUrl('betslip', {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.AMOUNT]: wagerAmount, [RequestProps.PREDICTION]: prediction, [RequestProps.STREAK]: user.streak, [RequestProps.MULTIPLIER]: event.multiplier, [RequestProps.TIMESTAMP]: now, [RequestProps.ODDS]: event.odds, [RequestProps.OPTIONS]: event.options, [RequestProps.BALANCE]: user.points, [RequestProps.POLL]: event.poll, [RequestProps.PROMPT]: event.prompt});
 
   return new NextResponse(
     getFrameHtmlResponse({
       image: `${imageUrl}`,
       post_url: `${process.env['HOST']}/api/frames/${eventName}`,
-      buttons: [{label:"Reject"}, {label:"Confirm"}]
+      buttons: [{label: "Confirm"}]
     }),
   );
 }

@@ -13,7 +13,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (user === null) throw new Error('User not found');
   
-  let wagerAmount = parseInt(message?.input || "0");
+  let wagerAmount = parseInt(message?.input);
+  
   // Check if the amount is valid
   if (wagerAmount < 0 && wagerAmount > user.points) {
     wagerAmount = -1;
