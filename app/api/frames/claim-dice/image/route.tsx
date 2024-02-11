@@ -22,13 +22,13 @@ export async function GET(req: NextRequest) {
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center'}}>CAPTCHA failed!</h1>
                     :
                     isFollowing ?
-                    !hasClaimed ? 
+                    (!hasClaimed ? 
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center'}}> You received {points} <img style={{width: 65, height: 65, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
                     :
                     <div style={{display: 'flex', flexDirection: 'column', alignItems:'flex-start'}}>
                         <h1 style={{color: 'white', fontSize:55}}> You already claimed </h1>
                         <h1 style={{color: 'white', fontSize:55, marginTop:-10, alignItems:'flex-start'}}> your free <img style={{width: 65, height: 65, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
-                    </div>
+                    </div>)
                     :
                         <NotFollowing/>
                     }

@@ -36,7 +36,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         await multi.hincrby(fid.toString(), 'points', 10);
         await multi.zincrby('users', 10, fid);
       }
-
+      user.hasClaimed = true;
       await multi.hset(fid.toString(), {'hasClaimed': true});
       await multi.exec();
     }

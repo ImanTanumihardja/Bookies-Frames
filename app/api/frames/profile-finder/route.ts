@@ -49,7 +49,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
                                               [RequestProps.LOSSES]: user.losses, 
                                               [RequestProps.POINTS]: user.points, 
                                               [RequestProps.STREAK]: user.streak, 
-                                              [RequestProps.NUM_BETS]: user.numBets}, false, true);
+                                              [RequestProps.NUM_BETS]: user.numBets}, true, true);
     });
   }
   else {
