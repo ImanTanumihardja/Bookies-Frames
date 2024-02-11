@@ -32,7 +32,14 @@ export async function GET(req: NextRequest) {
                     :
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%'}}>
                         <h1 style={{color: 'white', top:-50, left: 20, fontSize: 56, alignItems:'center'}}> 
-                            <img style={{width: 65, height: 65, marginRight:10, borderRadius: 50}} src={`${process.env['HOST']}/generic_pfp.png`}/>
+                        <img
+                            style={{ width: 65, height: 65, marginRight: 10, borderRadius: 50 }}
+                            src={avatarUrl}
+                            alt={`${process.env['HOST']}/generic_pfp.png`}
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).src = `${process.env['HOST']}/generic_pfp.png`; // Change to the URL of your fallback image
+                            }}
+                        />
                             {username} {rank !== -1 ? `(#${rank + 1})` : ''}
                         </h1>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start', alignSelf:'center', top: -40}}>
