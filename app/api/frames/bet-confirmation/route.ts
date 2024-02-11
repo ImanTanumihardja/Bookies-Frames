@@ -2,7 +2,7 @@ import { getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { Event, User, Bet } from '../../../types';
-import { DEFAULT_USER, RequestProps, generateImageUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
+import { DEFAULT_USER, FrameNames, RequestProps, generateImageUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -56,7 +56,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     prediction = -1
   }
 
-  const imageUrl = generateImageUrl('bet-confirmation', {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: stake, [RequestProps.PREDICTION]: prediction, [RequestProps.BUTTON_INDEX]: button});
+  const imageUrl = generateImageUrl(FrameNames.BET_CONFIRMATION, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: stake, [RequestProps.PREDICTION]: prediction, [RequestProps.BUTTON_INDEX]: button});
 
   return new NextResponse(
     getFrameHtmlResponse({

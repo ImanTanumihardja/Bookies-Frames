@@ -19,7 +19,7 @@ const frameMetadata = getFrameMetadata({
     },
   ],
   image: `${process.env['HOST']}/thumbnails/events/${FrameNames.SBLVIII_ML}.png`,
-  post_url: `${process.env['HOST']}/api/frames/betslip?eventName=${FrameNames.SBLVIII_ML}`
+  post_url: `${process.env['HOST']}/api/frames/${FrameNames.BETSLIP}?eventName=${FrameNames.SBLVIII_ML}`
 });
 
 export const metadata: Metadata = {

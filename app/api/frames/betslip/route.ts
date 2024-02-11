@@ -1,6 +1,6 @@
 import { getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
-import { RequestProps, generateImageUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
+import { FrameNames, RequestProps, generateImageUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -16,12 +16,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Get eventName from req
   const {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
 
-  const imageUrl = generateImageUrl('betslip', {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid, [RequestProps.PREDICTION]: button-1, [RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake});
+  const imageUrl = generateImageUrl(FrameNames.BETSLIP, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid, [RequestProps.PREDICTION]: button-1, [RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake});
 
   return new NextResponse(
     getFrameHtmlResponse({
       image: `${imageUrl}`,
-      post_url: `${process.env['HOST']}/api/frames/bet-confirmation?eventName=${eventName}&stake=${stake}&prediction=${button-1}`,
+      post_url: `${process.env['HOST']}/api/frames/${FrameNames.BET_CONFIRMATION}}?eventName=${eventName}&stake=${stake}&prediction=${button-1}`,
       buttons: [{label: "Confirm"}, {label: "Reject"}]
     }),
   );

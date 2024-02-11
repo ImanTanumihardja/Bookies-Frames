@@ -34,6 +34,8 @@ export enum FrameNames {
     CLAIM_DICE = 'claim-dice',
     PROFILE_FINDER = 'profile-finder',
     SBLVIII_ML = 'sblviii-ml',
+    BETSLIP = 'betslip',
+    BET_CONFIRMATION = 'bet-confirmation',
     CAPTCHA = 'captcha',
 }
 
