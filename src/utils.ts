@@ -142,7 +142,7 @@ export function generateImageUrl(extension: string, props: Record<string, any>, 
         url += `timestamp=${new Date().getTime()}`
     }
 
-    url += `&version=${process.env['VERSION']}`
+    url += `&v=${process.env['VERSION']}`
 
     // Loop through each param
     for (const key in props) {
