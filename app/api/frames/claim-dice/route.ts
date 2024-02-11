@@ -4,10 +4,13 @@ import { User} from '../../../types';
 import { RequestProps, generateUrl, DEFAULT_USER, validateFrameMessage } from '../../../../src/utils';
 import { getFrameHtml, Frame} from "frames.js";
 import { FrameNames } from '../../../../src/utils';
+import { unstable_noStore as noStore } from 'next/cache';
+
+
+export const revalidate = 0;
 
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
-  
   // Verify the frame request
   const message = await validateFrameMessage(req);
 
