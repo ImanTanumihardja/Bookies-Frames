@@ -7,7 +7,7 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
   });
 
-async function createEvent(eventName='sblviii-ml', startDate=1707780600, odds=[0.5, 0.5], multiplier=1, options=["Chiefs ML", "49ers ML"], prompt="Who will win the Super Bowl?") {
+async function createEvent(eventName='sblviii-ml', startDate=1707751800000, odds=[0.5, 0.5], multiplier=1, options=["Chiefs ML", "49ers ML"], prompt="Who will win the Super Bowl?") {
     const count = await kv.zcount("users", 0, 'inf')
     console.log(`Total users: ${count}`)
 
