@@ -23,6 +23,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (isFollowing && validCaptcha) {
     user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
+    console.log(fid)
     hasClaimed = user.hasClaimed;
     console.log(user)
     if (!hasClaimed) {
