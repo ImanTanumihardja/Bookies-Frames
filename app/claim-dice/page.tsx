@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { FrameNames, generateUrl } from '../../src/utils';
 
-const imageUrl = generateUrl(`thumbnails/${FrameNames.CLAIM_DICE}.gif`, [])
+const imageUrl = generateUrl(`thumbnails/${FrameNames.CLAIM_DICE}.gif`, [], false, true)
 
 const frameMetadata = getFrameMetadata({
   buttons: [

@@ -5,7 +5,7 @@ import { FrameNames, generateUrl } from '../../../src/utils';
 
 const frameName = 'sblviii-ml'
 const options = ['Chiefs', '49ers']
-const imageUrl = generateUrl(`thumbnails/events/${FrameNames.SBLVIII_ML}.png`, [])
+const imageUrl = generateUrl(`thumbnails/events/${FrameNames.SBLVIII_ML}.png`, [], false, true)
 
 const frameMetadata = getFrameMetadata({
   input: {
