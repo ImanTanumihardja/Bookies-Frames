@@ -7,7 +7,7 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
   });
 
-export function calculatePayout(multiplier, impliedProbability, stake, streak = 0){
+function calculatePayout(multiplier, impliedProbability, stake, streak = 0){
     return multiplier * (1 / impliedProbability) * (stake + streak)
 }
 
@@ -25,20 +25,35 @@ async function settleEvent(eventName="sblviii-ml", result=-1) {
     console.log(`Set result of event: ${eventName} to ${result}`)
 
     // Pay each user
-    for (const bet of event.bets) {
+    const multi = await kv.multi();
+    for (const fid in eventData.bets) {
+      let bet = eventData.bets[fid]
       if (bet.prediction === result) {  
         // Pay out the user
+        console.log(`Paying out user: ${bet.fid} with wager: ${bet.stake}`)
         const user = await kv.hgetall(bet.fid);
-        const payout = calculatePayout(eventData.multiplier, eventData.odds[result], bet.wager, user.streak);
+        const payout = calculatePayout(eventData.multiplier, eventData.odds[result], bet.stake, parseInt(user.streak.toString()));
+        user.points = parseInt(user.points.toString()) + payout;
+        user.streak = parseInt(user.streak.toString()) + 1;
+        user.numBets = parseInt(user.numBets.toString()) + 1;
+        user.wins = parseInt(user.wins.toString()) + 1;
 
-        const userBets = await kv.hget();
-        console.log
+        await multi.hset(fid.toString(), user);
+        await multi.zincrby('users', payout, bet.fid);
+        await multi.exec();
       }
+      else {
+        // User lost
+        console.log(`User: ${bet.fid} lost with wager: ${bet.stake}`)
+        const user = await kv.hgetall(bet.fid);
+        user.streak = 0;
+        user.numBets = parseInt(user.streak.toString()) + 1;
+        user.losses = parseInt(user.losses.toString()) + 1;
+
+        await multi.hset(fid.toString(), user);
+        await multi.exec();
     }
-
-
-    console.log(`\nSettled event: ${eventName} with result: ${result}`)
-    console.log(await kv.hget(`events`,  `${eventName}`))
+  }
 }
 
 if (require.main === module) {

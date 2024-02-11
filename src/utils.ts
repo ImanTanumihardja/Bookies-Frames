@@ -78,7 +78,6 @@ export const DEFAULT_BET: Bet = {
     stake: 0,
     prediction: -1,
     timeStamp: 0,
-    fid: 0,
 }
 
 export const DEFAULT_FRAME_VALIDATION_DATA: FrameValidationData = {

@@ -18,20 +18,6 @@ async function createEvent(eventName='sblviii-ml', startDate=1707751800000, odds
     event = await kv.hget(`events`, `${eventName}`)
     console.log(`Event: ${eventName}`)
     console.log(event)
-
-    // // TESTS
-    // event.poll[0]++
-    // await kv.hset(`events`, {'iman': event})
-
-    // event.bets[22333] = {wager: 1, prediciton: 0, timeStamp: 1707694200000}
-    // await kv.hset(`events`, {'iman': event})
-
-    
-    // event.bets[2121] = {wager: 100, prediciton: 1, timeStamp: 1707694200000}
-    // await kv.hset(`events`, {'iman': event})
-
-    // console.log(await kv.hget(`events`, 'iman'))
-    // console.log(`Created event: ${eventName}`)
 }
 
 if (require.main === module) {

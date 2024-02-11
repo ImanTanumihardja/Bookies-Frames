@@ -32,7 +32,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     })
     .finally(async () => {
         if (profile !== null) {
-          rank = await kv.zrank('users', profile?.fid || "") || -1
+          let temp = await kv.zscore('users', profile?.fid || "");
+          if (temp !== null) rank = temp;
           
           // Can skip if not found in kv
           if (rank !== -1) user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
@@ -41,7 +42,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       imageUrl = generateImageUrl(FrameNames.PROFILE_FINDER, {[RequestProps.IS_FOLLOWING]: isFollowing, 
                                               [RequestProps.USERNAME]: profile?.username || "", 
                                               [RequestProps.AVATAR_URL]: profile?.pfp.url || "", 
-                                              [RequestProps.RANK]: rank, 
+                                              [RequestProps.RANK]: rank + 1, 
                                               [RequestProps.WINS]: user.wins, 
                                               [RequestProps.LOSSES]: user.losses, 
                                               [RequestProps.POINTS]: user.points, 
