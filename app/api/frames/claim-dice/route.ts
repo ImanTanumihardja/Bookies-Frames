@@ -5,6 +5,7 @@ import { RequestProps, generateUrl, DEFAULT_USER, validateFrameMessage } from '.
 import { getFrameHtml, Frame} from "frames.js";
 import { FrameNames } from '../../../../src/utils';
 
+
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   
   // Verify the frame request
@@ -66,3 +67,4 @@ export async function POST(req: NextRequest): Promise<Response> {
 
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
