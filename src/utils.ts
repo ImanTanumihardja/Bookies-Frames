@@ -28,7 +28,7 @@ export enum RequestProps {
     ODDS = 'odds',
     BALANCE = 'balance',
     POLL = 'poll',
-    VALID_CAPTCHA = 'valid_captcha',
+    VALID_CAPTCHA = 'validCaptcha',
 }
 
 export enum FrameNames {
