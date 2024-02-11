@@ -10,8 +10,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const {followingBookies: isFollowing, button, fid} = message;
   
-  let user : User | null = await kv.hgetall(fid.toString())
-  if (user === null) throw new Error('User not found');
+  let user : User | null = await kv.hgetall(fid.toString()) || DEFAULT_USER;
 
   const balance = parseInt(user.points.toString());
 
