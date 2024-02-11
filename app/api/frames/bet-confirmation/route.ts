@@ -40,8 +40,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     await multi.hset('events', sendEvent);
 
+    // Adjust user balance
     user.points = balance - stake;
-    await multi.hset(fid.toString(), user);
+    await multi.hincrby(fid.toString(), 'points', -stake);
+
+    // Adjust score board
+    await multi.zincrby('users', -stake, fid);
 
     await multi.exec();
   } 
