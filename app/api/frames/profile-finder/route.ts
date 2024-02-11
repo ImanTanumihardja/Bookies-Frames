@@ -39,7 +39,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           if (rank !== -1) user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
         }
     
-      imageUrl = generateImageUrl(FrameNames.PROFILE_FINDER, {[RequestProps.IS_FOLLOWING]: isFollowing, 
+      imageUrl = generateImageUrl(`api/frames${FrameNames.PROFILE_FINDER}`, {[RequestProps.IS_FOLLOWING]: isFollowing, 
                                               [RequestProps.USERNAME]: profile?.username || "", 
                                               [RequestProps.AVATAR_URL]: profile?.pfp.url || "", 
                                               [RequestProps.RANK]: rank, 

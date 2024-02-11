@@ -135,8 +135,8 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
     return returnParams
 }
 
-export function generateImageUrl(frameName: string, params: Record<string, any>, addTimestamp: boolean = false): string {
-    let url = `${process.env['HOST']}/api/frames/${frameName}/image?`
+export function generateImageUrl(extension: string, props: Record<string, any>, addTimestamp: boolean = false): string {
+    let url = `${process.env['HOST']}/${extension}/?`
 
     if (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging')) {
         url += `timestamp=${new Date().getTime()}`
@@ -145,8 +145,8 @@ export function generateImageUrl(frameName: string, params: Record<string, any>,
     url += `&version=${process.env['VERSION']}`
 
     // Loop through each param
-    for (const key in params) {
-        url += `&${key}=${encodeURIComponent(params[key])}`
+    for (const key in props) {
+        url += `&${key}=${encodeURIComponent(props[key])}`
     }
     return url
 }

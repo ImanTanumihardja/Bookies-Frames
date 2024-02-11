@@ -5,6 +5,7 @@ import { FrameNames, generateImageUrl } from '../../../src/utils';
 
 const frameName = 'sblviii-ml'
 const options = ['Chiefs', '49ers']
+const imageUrl = generateImageUrl(`thumbnails/events/${FrameNames.SBLVIII_ML}.gif`, [])
 
 const frameMetadata = getFrameMetadata({
   input: {
@@ -18,7 +19,7 @@ const frameMetadata = getFrameMetadata({
       label: options[1],
     },
   ],
-  image: generateImageUrl(`thumbnails/events/${FrameNames.SBLVIII_ML}`, []),
+  image: imageUrl,
   post_url: `${process.env['HOST']}/api/frames/${FrameNames.BETSLIP}?eventName=${FrameNames.SBLVIII_ML}`
 });
 
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: frameName,
     description: 'Who will win Superbowl LVIII?', 
-    images: [`${process.env['HOST']}/thumbnails/events/${FrameNames.SBLVIII_ML}.png`],
+    images: [imageUrl],
   },
   other: {
     ...frameMetadata,

@@ -56,7 +56,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     prediction = -1
   }
 
-  const imageUrl = generateImageUrl(FrameNames.BET_CONFIRMATION, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: stake, [RequestProps.PREDICTION]: prediction, [RequestProps.BUTTON_INDEX]: button});
+  const imageUrl = generateImageUrl(`api/frames${FrameNames.BET_CONFIRMATION}`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: stake, [RequestProps.PREDICTION]: prediction, [RequestProps.BUTTON_INDEX]: button});
 
   return new NextResponse(
     getFrameHtmlResponse({
