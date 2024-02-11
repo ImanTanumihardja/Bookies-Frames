@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%'}}>
                         <h1 style={{color: 'white', top:-50, left: 20, fontSize: 56, alignItems:'center'}}> 
                         <img
-                            style={{ width: 65, maxHeight: 65, marginRight: 10, borderRadius: 50 }}
+                            style={{ width: 65, maxHeight: 65, marginRight: 15, borderRadius: 50 }}
                             src={pfpURL}
                             alt={`${process.env['HOST']}/generic_pfp.png`}
                         />
