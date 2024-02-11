@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
         const impliedProbability = odds[prediction]
         const odd = convertImpliedProbabilityToAmerican(impliedProbability)
 
-        
+        console.log(isFollowing, amount, prediction, streak, multiplier, timestamp, odds, options, balance, poll, prompt)   
         console.log('Implied Probability:', impliedProbability)
 
         let pollData = [];
@@ -94,7 +94,7 @@ export async function GET(req: NextRequest) {
                                         overflow: 'visible',
                                         fontSize: 20,
                                     }}>
-                                        <h3 style={{top:10, right:15, transform: 'rotate(90deg) scaleY(-1)'}}>{opt.text + ' ' + opt.percent}%</h3>
+                                        <h3 style={{top:10, right:15, transform: 'rotate(90deg) scaleY(-1)'}}>{`${opt.text + " " + opt.percent}`}%</h3>
                                     </div>
                                 )
                             })
