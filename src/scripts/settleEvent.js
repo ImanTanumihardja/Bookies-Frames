@@ -8,9 +8,6 @@ const kv = createClient({
   });
 
 async function settleEvent(eventName="sblviii-ml", result=-1) {
-    const count = await kv.zcount("users", 0, 'inf')
-    console.log(`Total users: ${count}`)
-
     let eventData = await kv.hget(`events`, `${eventName}`);
     console.log(`Event: ${eventName}`)
     console.log(eventData)
@@ -21,9 +18,23 @@ async function settleEvent(eventName="sblviii-ml", result=-1) {
     let event = {}
     event[eventName] = eventData;
     await kv.hset(`events`, event);
+    console.log(`Set result of event: ${eventName} to ${result}`)
 
     // Pay out the winners
-    
+
+    const payout = (wager, odds, multiplier) => {
+        return wager * odds * multiplier
+    }
+
+    // Pay each user
+    for (const bet of event.bets) {
+      if (bet.prediction === result) {  
+        // Pay out the user
+        const userBets = await kv.hget();
+        console.log
+      }
+    }
+
 
     console.log(`\nSettled event: ${eventName} with result: ${result}`)
     console.log(await kv.hget(`events`,  `${eventName}`))

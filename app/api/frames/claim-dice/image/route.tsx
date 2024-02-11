@@ -14,13 +14,13 @@ const plusJakartaSans = fetch(
 
 export async function GET(req: NextRequest) {
     try {
-        const {isFollowing, hasClaimed, amount} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.HAS_CLAIMED, RequestProps.STAKE]);
+        const {isFollowing, hasClaimed, points} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.HAS_CLAIMED, RequestProps.POINTS]);
 
         return new ImageResponse(
             <FrameBase>
                     {isFollowing ?
                     !hasClaimed ? 
-                    <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center'}}> You received {amount} <img style={{width: 55, height: 55, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
+                    <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center'}}> You received {points} <img style={{width: 55, height: 55, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
                     :
                     <div style={{display: 'flex', flexDirection: 'column', alignItems:'flex-start'}}>
                         <h1 style={{color: 'white', fontSize:55}}> You already claimed </h1>

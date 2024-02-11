@@ -24,6 +24,7 @@ export type Bet = {
     stake: number
     prediction: number
     timeStamp: number
+    fid: number
 }
 
 export type FrameValidationData = {

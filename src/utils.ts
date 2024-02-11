@@ -77,7 +77,8 @@ export const DEFAULT_BET: Bet = {
     eventName: "",
     stake: 0,
     prediction: -1,
-    timeStamp: 0
+    timeStamp: 0,
+    fid: 0,
 }
 
 export const DEFAULT_FRAME_VALIDATION_DATA: FrameValidationData = {
@@ -209,3 +210,7 @@ export function convertImpliedProbabilityToAmerican(impliedProbability: number) 
   
     return americanOdds;
   }
+
+export function calculatePayout(multiplier: number, impliedProbability: number, stake: number, streak: number = 0){
+    return multiplier * (1 / impliedProbability) * (stake + streak)
+}

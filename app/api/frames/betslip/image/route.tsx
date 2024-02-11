@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import { RequestProps, getRequestProps, convertImpliedProbabilityToAmerican, DEFAULT_USER } from '../../../../../src/utils';
+import { RequestProps, getRequestProps, convertImpliedProbabilityToAmerican, DEFAULT_USER, calculatePayout } from '../../../../../src/utils';
 import { User, Event } from '../../../../types';
 import { kv } from '@vercel/kv';
 
@@ -24,8 +24,8 @@ export async function GET(req: NextRequest) {
         
         const impliedProbability = event.odds[prediction]
         const odd = convertImpliedProbabilityToAmerican(impliedProbability)
-
-        const payout = event.multiplier * (1 / impliedProbability) * (parseInt(stake) + parseInt(user.streak.toString()))
+        
+        const payout = calculatePayout(event.multiplier, impliedProbability, stake, parseInt(user.streak.toString()))
 
         let pollData = [];
         // Get total votes
