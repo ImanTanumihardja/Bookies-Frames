@@ -28,7 +28,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const betExists = event?.bets.hasOwnProperty(fid);
 
   const now = new Date().getTime();
-  if (!betExists && now < event?.startDate && stake >= 1) {
+  if (!betExists && now < event?.startDate && stake >= 1 && button != 2) {
     // Can bet
     const multi = kv.multi();
 
