@@ -22,8 +22,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     let rank : number = -1;
 
     await neynarClient.lookupUserByUsername(username, BOOKIES_FID).then( (res ) => {
-      // const users = res?.result?.users;
-      // profile = users?.length > 0 ? users[0] : null;
       profile = res?.result?.user
     })
     .catch ( (error) => {
