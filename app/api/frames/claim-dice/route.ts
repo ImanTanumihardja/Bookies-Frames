@@ -24,7 +24,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
     hasClaimed = user.hasClaimed;
     console.log(user)
-    
+
     if (!hasClaimed) {
       isNewUser = await kv.zscore('users', fid) === null;
       const multi = kv.multi();
@@ -65,4 +65,4 @@ export async function POST(req: NextRequest): Promise<Response> {
 
 
 export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 1;
