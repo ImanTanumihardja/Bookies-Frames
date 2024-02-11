@@ -23,6 +23,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (isFollowing && validCaptcha) {
     user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
+    hasClaimed = user.hasClaimed;
     if (!hasClaimed) {
       isNewUser = await kv.zscore('users', fid) === null;
       const multi = kv.multi();
