@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
 import NotFollowing from '../../../../../src/components/NotFollowing';
-import { RequestProps, getRequestProps, convertImpliedProbabilityToAmerican } from '../../../../../src/utils';
+import { RequestProps, getRequestProps, convertImpliedProbabilityToAmerican, DEFAULT_USER } from '../../../../../src/utils';
 import { User, Event } from '../../../../types';
 import { kv } from '@vercel/kv';
 
@@ -19,9 +19,7 @@ export async function GET(req: NextRequest) {
     try {
         let {isFollowing, fid, prediction, eventName, stake} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.FID, RequestProps.PREDICTION, RequestProps.EVENT_NAME, RequestProps.STAKE]);
         
-        let user : User | null = await kv.hgetall(fid.toString())
-
-        if (user === null) throw new Error('User not found');
+        let user : User | null = await kv.hgetall(fid.toString()) || DEFAULT_USER
 
         let event : Event | null = await kv.hget('events', eventName)
         if (event === null) throw new Error('Event not found');

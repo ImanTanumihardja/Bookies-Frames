@@ -2,7 +2,7 @@ import { getFrameHtmlResponse } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { Event, User, Bet } from '../../../types';
-import { RequestProps, generateImageUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
+import { DEFAULT_USER, RequestProps, generateImageUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -10,8 +10,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const {followingBookies: isFollowing, button, fid} = message;
   
-  let user : User | null = await kv.hgetall(fid.toString())
-  if (user === null) throw new Error('User not found');
+  let user : User | null = await kv.hgetall(fid.toString()) || DEFAULT_USER
 
   const balance = parseInt(user.points.toString());
 
@@ -60,8 +59,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   return new NextResponse(
     getFrameHtmlResponse({
       image: `${imageUrl}`,
-      post_url: `${process.env['HOST']}/api/frames/${eventName}`,
-      buttons: [{label: "Confirm"}]
     }),
   );
 }
