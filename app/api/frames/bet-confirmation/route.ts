@@ -33,7 +33,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const multi = kv.multi();
 
     event.poll[prediction]++;
-    event.bets[fid] = {eventName: eventName, prediction:prediction, stake:stake, timeStamp: now} as Bet;
+    event.bets[fid] = {eventName: eventName, prediction:prediction, stake:stake, timeStamp: now, fid:fid} as Bet;
 
     let sendEvent : any = {}
     sendEvent[eventName] = event;

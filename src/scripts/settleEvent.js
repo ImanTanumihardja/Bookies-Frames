@@ -7,6 +7,10 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
   });
 
+export function calculatePayout(multiplier, impliedProbability, stake, streak = 0){
+    return multiplier * (1 / impliedProbability) * (stake + streak)
+}
+
 async function settleEvent(eventName="sblviii-ml", result=-1) {
     let eventData = await kv.hget(`events`, `${eventName}`);
     console.log(`Event: ${eventName}`)
@@ -20,16 +24,13 @@ async function settleEvent(eventName="sblviii-ml", result=-1) {
     await kv.hset(`events`, event);
     console.log(`Set result of event: ${eventName} to ${result}`)
 
-    // Pay out the winners
-
-    const payout = (wager, odds, multiplier) => {
-        return wager * odds * multiplier
-    }
-
     // Pay each user
     for (const bet of event.bets) {
       if (bet.prediction === result) {  
         // Pay out the user
+        const user = await kv.hgetall(bet.fid);
+        const payout = calculatePayout(eventData.multiplier, eventData.odds[result], bet.wager, user.streak);
+
         const userBets = await kv.hget();
         console.log
       }

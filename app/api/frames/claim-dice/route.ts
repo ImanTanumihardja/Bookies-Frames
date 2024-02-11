@@ -34,7 +34,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
   }
 
-  const imageUrl = generateImageUrl(FrameNames.CLAIM_DICE, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: user.hasClaimed, [RequestProps.STAKE]: isNewUser ? 100 : 10});
+  const imageUrl = generateImageUrl(FrameNames.CLAIM_DICE, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: user.hasClaimed, [RequestProps.POINTS]: isNewUser ? 100 : 10});
 
   const frame: Frame = {
     version: "vNext",
