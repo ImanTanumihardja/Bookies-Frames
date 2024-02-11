@@ -9,21 +9,21 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const {followingBookies: isFollowing, button, fid} = message;
   
-  let wagerAmount = parseInt(message?.input);
-  if (wagerAmount < 0 || Number.isNaN(wagerAmount) || !wagerAmount) {
+  let stake = parseInt(message?.input);
+  if (stake < 0 || Number.isNaN(stake) || !stake) {
     throw new Error('Invalid wager amount');  
   }
 
   // Get eventName from req
   const {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
 
-  const imageUrl = generateImageUrl('betslip', {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid, [RequestProps.PREDICTION]: button-1, [RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: wagerAmount});
+  const imageUrl = generateImageUrl('betslip', {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid, [RequestProps.PREDICTION]: button-1, [RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake});
 
   return new NextResponse(
     getFrameHtmlResponse({
       image: `${imageUrl}`,
-      post_url: `${process.env['HOST']}/api/frames/bet-confirmation`,
-      buttons: [{label: "Confirm"}]
+      post_url: `${process.env['HOST']}/api/frames/bet-confirmation?eventName=${eventName}&stake=${stake}&prediction=${button-1}`,
+      buttons: [{label: "Confirm"}, {label: "Reject"}]
     }),
   );
 }

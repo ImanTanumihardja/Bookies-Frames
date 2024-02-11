@@ -9,24 +9,27 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const message = await validateFrameMessage(req);
 
   const {followingBookies: isFollowing, button, fid} = message;
-  let user : User | null = await kv.hgetall(fid.toString())
-
-  if (user === null) throw new Error('User not found');
   
-  let stake = parseInt(message?.input);
+  let user : User | null = await kv.hgetall(fid.toString())
+  if (user === null) throw new Error('User not found');
+
+  const balance = parseInt(user.points.toString());
 
   // Get eventName from req
-  const {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
+  let {eventName, stake, prediction} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PREDICTION]);
 
   let event : Event | null = await kv.hget('events', eventName)
   if (event === null) throw new Error('Event not found');
 
+  if (stake <= 0 || stake > balance) {
+    stake == -1
+  }
+
   // Check if voted before and if the event is closed
   const betExists = event?.bets.hasOwnProperty(fid);
-  let prediction: number = button - 1;
 
   const now = new Date().getTime();
-  if (!betExists && now < event?.startDate) {
+  if (!betExists && now < event?.startDate && stake >= 1) {
     // Can bet
     const multi = kv.multi();
 
@@ -38,20 +41,21 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     await multi.hset('events', sendEvent);
 
-    user.points -= stake;
+    user.points = balance - stake;
     await multi.hset(fid.toString(), user);
 
     await multi.exec();
   } 
   else if (event.startDate >= now && betExists) {
     // Event has started
+    stake = 0;
     prediction = event.bets[fid].prediction;
   }
   else {
     prediction = -1
   }
 
-  const imageUrl = generateImageUrl('betslip', {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: stake, [RequestProps.PREDICTION]: prediction, [RequestProps.STREAK]: user.streak, [RequestProps.MULTIPLIER]: event.multiplier, [RequestProps.TIMESTAMP]: now, [RequestProps.ODDS]: event.odds, [RequestProps.OPTIONS]: event.options, [RequestProps.BALANCE]: user.points, [RequestProps.POLL]: event.poll, [RequestProps.PROMPT]: event.prompt});
+  const imageUrl = generateImageUrl('bet-confirmation', {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: stake, [RequestProps.PREDICTION]: prediction, [RequestProps.BUTTON_INDEX]: button});
 
   return new NextResponse(
     getFrameHtmlResponse({
