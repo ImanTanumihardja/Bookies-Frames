@@ -22,6 +22,9 @@ async function settleEvent(eventName="sblviii-ml", result=-1) {
     event[eventName] = eventData;
     await kv.hset(`events`, event);
 
+    // Pay out the winners
+    
+
     console.log(`\nSettled event: ${eventName} with result: ${result}`)
     console.log(await kv.hget(`events`,  `${eventName}`))
 }

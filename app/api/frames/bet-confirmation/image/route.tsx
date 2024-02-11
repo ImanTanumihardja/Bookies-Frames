@@ -16,14 +16,13 @@ const plusJakartaSans = fetch(
 export async function GET(req: NextRequest) {
     try {
         let html = <></>; // Default empty React element
-        const {isFollowing, prediction, stake, button} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.STAKE, RequestProps.PREDICTION, RequestProps.BUTTON_INDEX]);
+        const {isFollowing, prediction, stake, buttonIndex} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.STAKE, RequestProps.PREDICTION, RequestProps.BUTTON_INDEX]);
 
-        console.log(button, typeof button)
         if (!isFollowing) 
         { 
             html = <NotFollowing/>
         }
-        else if (button == 2.0) {
+        else if (buttonIndex == 2) {
             html = (<FrameBase>
                 <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> You rejected the bet!</h1>
             </FrameBase>)
