@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     let html;
     try {
         const {isFollowing, amount, prediction, streak, multiplier, timestamp, odds, options, balance, poll, prompt} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.AMOUNT, RequestProps.PREDICTION, RequestProps.STREAK, RequestProps.MULTIPLIER, RequestProps.TIMESTAMP, RequestProps.ODDS, RequestProps.OPTIONS, RequestProps.BALANCE, RequestProps.POLL, RequestProps.PROMPT]);
-        const impliedProbability = parseFloat(odds[prediction])
+        const impliedProbability = odds[prediction]
         const odd = convertImpliedProbabilityToAmerican(impliedProbability)
 
         
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
         for (let i = 0; i < odds.length; i++) {
             if (odds[i] === 0) continue;
 
-            const percent = Math.round(Math.min((poll[i] / totalVotes) * 100 + 10, 100));
+            const percent = Math.round(Math.min((poll[i] / totalVotes) * 100, 100));
             pollData.push({votes: poll[i], percent:percent, text: `${options[i]}`})
         }
 
@@ -94,7 +94,7 @@ export async function GET(req: NextRequest) {
                                         overflow: 'visible',
                                         fontSize: 20,
                                     }}>
-                                        <h3 style={{top:10, transform: 'rotate(90deg) scaleY(-1)'}}>{opt.text + ' ' + opt.percent}%</h3>
+                                        <h3 style={{top:10, right:15, transform: 'rotate(90deg) scaleY(-1)'}}>{opt.text + ' ' + opt.percent}%</h3>
                                     </div>
                                 )
                             })
