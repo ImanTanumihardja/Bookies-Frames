@@ -24,6 +24,10 @@ async function settleEvent(eventName="sblviii-ml", result=-1) {
     await kv.hset(`events`, event);
     console.log(`Set result of event: ${eventName} to ${result}`)
 
+    if (eventData.startDate > new Date().getTime()) {
+      throw new Error('Event has not started yet')
+    }
+
     // Pay each user
     const multi = await kv.multi();
     for (const fid in eventData.bets) {

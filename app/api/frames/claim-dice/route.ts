@@ -13,7 +13,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const {followingBookies: isFollowing, fid, button} = message;
 
   let validCaptcha = true;
-  if (parseInt(req.nextUrl.searchParams.get('captcha') || "-1") !== (button - 1)) {
+  if (parseInt(req.nextUrl.searchParams.get('captcha') || "-1") != (button - 1)) {
     validCaptcha = false;
   }
 
