@@ -31,3 +31,5 @@ export const metadata: Metadata = {
 export default function Page() {
   redirect('https://bookies-rho.vercel.app/');
 }
+
+export const revalidate = false
