@@ -14,9 +14,9 @@ function calculatePayout(multiplier, impliedProbability, stake, streak = 0){
 async function settleEvent(eventName="sblviii-ml", result=-1) {
     let eventData = await kv.hget(`events`, `${eventName}`);
     
-    // if (eventData.startDate > new Date().getTime()) {
-    //   throw new Error('Event has not started yet')
-    // }
+    if (eventData.startDate > new Date().getTime()) {
+      throw new Error('Event has not started yet')
+    }
 
     console.log(`Event: ${eventName}`)
     console.log(eventData)
