@@ -10,6 +10,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const imageUrl = `${process.env['HOST']}/api/frames/captcha/image/?timestamp=${new Date().getTime()}&image=${images[randomIndex]}`;
 
+  revalidatePath(`${process.env['HOST']}/api/frames/${FrameNames.CLAIM_DICE}`)
+
   return new NextResponse(
     getFrameHtmlResponse({
       image: imageUrl,
