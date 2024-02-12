@@ -4,6 +4,7 @@ import { User} from '../../../types';
 import { RequestProps, generateUrl, DEFAULT_USER, validateFrameMessage } from '../../../../src/utils';
 import { getFrameHtml, Frame} from "frames.js";
 import { FrameNames } from '../../../../src/utils';
+import { revalidatePath } from 'next/cache';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -60,6 +61,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
+  revalidatePath('/', 'layout')
   return getResponse(req);
 } 
 

@@ -3,6 +3,7 @@ import { Frame, getFrameHtml } from "frames.js";
 import { DEFAULT_USER, generateUrl, RequestProps, validateFrameMessage, neynarClient, BOOKIES_FID, FrameNames } from '../../../../src/utils';
 import { User } from '../../../types';
 import { kv } from '@vercel/kv';
+import { revalidatePath } from 'next/cache';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -73,6 +74,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
+  revalidatePath('/', 'layout')
   return getResponse(req);
 } 
 

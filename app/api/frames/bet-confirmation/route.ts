@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { Event, User, Bet } from '../../../types';
 import { DEFAULT_USER, FrameNames, RequestProps, generateUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
+import { revalidatePath } from 'next/cache';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -67,6 +68,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
+  revalidatePath('/', 'layout')
   return getResponse(req);
 } 
 
