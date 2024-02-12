@@ -46,6 +46,4 @@ export async function GET(req: NextRequest) {
 }
 
 export const runtime = 'edge';
-export const dynamic = 'force-dynamic';
-export const revalidate = 1;
-export const fetchCache = 'force-no-store';
+
