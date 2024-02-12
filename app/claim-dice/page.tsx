@@ -32,4 +32,4 @@ export default function Page() {
   redirect('https://bookies-rho.vercel.app/');
 }
 
-export const revalidate = false
+export const revalidate = 0
