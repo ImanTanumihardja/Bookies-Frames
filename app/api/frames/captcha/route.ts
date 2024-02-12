@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FrameNames } from '../../../../src/utils';
 import { getFrameHtmlResponse } from '@coinbase/onchainkit';
+import { revalidatePath } from 'next/cache';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   const images = ['🎩', '🏆', '🤑', '🏇'] 
