@@ -28,6 +28,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const betExists = event?.bets.hasOwnProperty(fid);
 
   const now = new Date().getTime();
+
+  // Need to check bet does not exists, time is not past, and stake >= 1 and not rejected
   if (!betExists && now < event?.startDate && stake >= 1 && button != 2) {
     // Can bet
     const multi = kv.multi();
@@ -43,7 +45,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     // Adjust user balance
     await multi.hincrby(fid.toString(), 'points', -stake);
 
-    // Adjust score board
+    // Adjust score in  leaderboard
     await multi.zincrby('users', -stake, fid);
     await multi.exec();
   } 
