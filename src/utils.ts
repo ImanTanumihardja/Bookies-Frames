@@ -224,5 +224,5 @@ export function convertImpliedProbabilityToAmerican(impliedProbability: number) 
   }
 
 export function calculatePayout(multiplier: number, impliedProbability: number, stake: number, streak: number = 0){
-    return multiplier * (1 / impliedProbability) * (stake + streak)
+    return multiplier * (1 / impliedProbability) * (stake) // TODO add streak
 }
