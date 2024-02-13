@@ -22,8 +22,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (isFollowing && validCaptcha) {
     user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
-    hasClaimed = user.hasClaimed;
+
     console.log(fid, user)
+
+    hasClaimed = user.hasClaimed;
 
     if (!hasClaimed) {
       isNewUser = await kv.zscore('users', fid) === null;
@@ -60,11 +62,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
-  'use server'
   return getResponse(req);
 } 
 
 
-export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';

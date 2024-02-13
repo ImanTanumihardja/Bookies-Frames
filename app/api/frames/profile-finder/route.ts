@@ -25,7 +25,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       profile = res?.result?.user
     })
     .catch ( (error) => {
-      console.error(error);
+      console.error('Profile-finder:', error);
       profile = null;
     })
     .finally(async () => {
@@ -34,10 +34,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           if (temp !== null) rank = temp;
           
           // Can skip if not found in kv
-          if (rank !== -1) user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
-        }
+          if (rank !== -1) 
+          { 
+            user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
+            console.log(profile?.fid.toString(), user)
+          }
 
-      console.log('User:' + user)
+        }
     
       imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, 
                                               [RequestProps.USERNAME]: profile?.username || "", 
