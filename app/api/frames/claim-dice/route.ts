@@ -1,4 +1,3 @@
-'use server'
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { User} from '../../../types';
@@ -61,6 +60,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
+  'use server'
   return getResponse(req);
 } 
 
