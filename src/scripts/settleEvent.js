@@ -44,7 +44,7 @@ async function settleEvent(eventName="sblviii-ml", result=-1) {
         user.wins = parseInt(user.wins.toString()) + 1;
 
         await multi.hset(fid.toString(), user);
-        await multi.zadd('users', {score:(payout + user.points), member:fid});
+        await multi.zadd('users', {score:user.points, member:fid});
         await multi.exec();
       }
       else if (parseInt(fid)) {
@@ -56,7 +56,7 @@ async function settleEvent(eventName="sblviii-ml", result=-1) {
         user.losses = parseInt(user.losses.toString()) + 1;
 
         await multi.hset(fid.toString(), user);
-        await multi.zadd('users', {score:(user.points - bet.stake), member:fid});
+        await multi.zadd('users', {score:user.points, member:fid});
         await multi.exec();
     }
   }
