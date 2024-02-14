@@ -33,6 +33,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     else {
         user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
         console.log(fid, user)
+        hasClaimed = user.hasClaimed;
         if (!user.hasClaimed) {
           // Get daily 10 dice for old user
           await multi.hincrby(fid.toString(), 'points', 10);
@@ -40,16 +41,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         }
       }
 
-      user.hasClaimed = true;
-      await multi.hset(fid.toString(), user);
-      await multi.exec();
-
-
-    hasClaimed = user.hasClaimed;
-
-    if (!hasClaimed) {
-      
-    }
+    user.hasClaimed = true;
+    await multi.hset(fid.toString(), user);
+    await multi.exec();
   }
 
   const imageUrl = generateUrl(`api/frames/${FrameNames.CLAIM_DICE}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed, [RequestProps.POINTS]: isNewUser ? 100 : 10, [RequestProps.VALID_CAPTCHA]: validCaptcha}, true, true);
