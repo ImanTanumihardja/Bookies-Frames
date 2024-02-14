@@ -19,7 +19,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (username !== "") {
     let profile: any = null;
     let user : User = DEFAULT_USER;
-    let rank : number | null = null;
+    let rank : number | null = -1;
 
     await neynarClient.lookupUserByUsername(username, BOOKIES_FID).then( (res ) => {
       profile = res?.result?.user
