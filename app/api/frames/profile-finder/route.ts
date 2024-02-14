@@ -30,10 +30,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     })
     .finally(async () => {
         if (profile !== null) {
-          rank = await kv.zrevrank('users', profile?.fid || "");
+          rank = await kv.zrevrank('users', profile?.fid || "") || -1;
           
           // Can skip if not found in kv
-          if (!null) 
+          if (rank !== -1) 
           { 
             user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
           }
