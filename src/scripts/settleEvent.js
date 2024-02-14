@@ -33,22 +33,22 @@ async function settleEvent(eventName="sblviii-ml", result=-1) {
     const multi = await kv.multi();
     for (const fid in eventData.bets) {
       let bet = eventData.bets[fid]
-      if (bet.prediction === result && parseInt(fid) >= 316027) {  
+      if (bet.prediction === result) {  
         // Pay out the user
         console.log(`Paying out user: ${fid} with wager: ${bet.stake}`)
         const user = await kv.hgetall(fid);
-        const payout = calculatePayout(eventData.multiplier, eventData.odds[result], bet.stake, parseInt(user.streak.toString()));
+        const payout = calculatePayout(eventData.multiplier, eventData.odds[result], bet.stake, user.streak);
         user.points = parseInt(user.points.toString()) + payout;
         user.streak = parseInt(user.streak.toString()) + 1;
         user.numBets = parseInt(user.numBets.toString()) + 1;
         user.wins = parseInt(user.wins.toString()) + 1;
 
         await multi.hset(fid.toString(), user);
-        await multi.zincrby('users', payout, fid);
+        await multi.zadd('users', {score:(payout + user.points), member:fid});
         await multi.exec();
       }
-      else if (parseInt(fid) >= 316027) {
-        // // User lost
+      else if (parseInt(fid)) {
+        // User lost
         console.log(`User: ${fid} lost with wager: ${bet.stake}`)
         const user = await kv.hgetall(fid);
         user.streak = 0;
@@ -56,6 +56,7 @@ async function settleEvent(eventName="sblviii-ml", result=-1) {
         user.losses = parseInt(user.losses.toString()) + 1;
 
         await multi.hset(fid.toString(), user);
+        await multi.zadd('users', {score:(user.points - bet.stake), member:fid});
         await multi.exec();
     }
   }

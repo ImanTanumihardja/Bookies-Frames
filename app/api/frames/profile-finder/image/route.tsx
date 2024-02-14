@@ -24,7 +24,8 @@ export async function GET(req: NextRequest) {
                                                                                                                         RequestProps.STREAK,
                                                                                                                         RequestProps.NUM_BETS]);
 
-        const pfpURL = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(avatarUrl)}`                                                                                            
+        const pfpURL = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(avatarUrl)}`          
+        const shortUsername = username?.length > 10 ? username?.substring(0, 10) + "..." : username;                                                                                  
 
         return new ImageResponse(
             <FrameBase>
@@ -39,7 +40,7 @@ export async function GET(req: NextRequest) {
                             src={pfpURL}
                             alt={`${process.env['HOST']}/generic_pfp.png`}
                         />
-                            {username} {rank !== -1 ? `(#${rank + 1})` : ''}
+                            {shortUsername} {rank !== -1 ? `(#${rank + 1})` : ''}
                         </h1>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start', alignSelf:'center', top: -40}}>
                             <h2 style={{color: 'white', marginBottom:-10, fontSize:30}}> 🎲 Dice: {points} </h2>
