@@ -21,35 +21,34 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   var hasClaimed: boolean = false;
 
   if (isFollowing && validCaptcha) {
-    const isUser = await kv.hexists(fid.toString(), 'hasClaimed') || 0
+    isNewUser = await kv.zscore('users', fid) === null;
 
-    if (isUser)
-    {
-      user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
-    }
+    const multi = kv.multi();
+    if (isNewUser) {
+        // New user
+        user.points = 100;
+        await multi.zadd('users', {score: 100, member: fid});
+        console.log(fid, user)
+      }
+    else {
+        user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
+        console.log(fid, user)
+        if (!user.hasClaimed) {
+          // Get daily 10 dice for old user
+          await multi.hincrby(fid.toString(), 'points', 10);
+          await multi.zincrby('users', 10, fid);
+        }
+      }
 
+      user.hasClaimed = true;
+      await multi.hset(fid.toString(), user);
+      await multi.exec();
 
-    console.log(fid, user)
 
     hasClaimed = user.hasClaimed;
 
     if (!hasClaimed) {
-      isNewUser = await kv.zscore('users', fid) === null;
-      const multi = kv.multi();
-      if (isNewUser) {
-        // New user
-        user.points = 100;
-        await multi.zadd('users', {score: 100, member: fid});
-        await multi.hset(fid.toString(), user);
-      }
-      else {
-        // Get daily 10 dice for old user
-        await multi.hincrby(fid.toString(), 'points', 10);
-        await multi.zincrby('users', 10, fid);
-      }
-      user.hasClaimed = true;
-      await multi.hset(fid.toString(), {'hasClaimed': true});
-      await multi.exec();
+      
     }
   }
 
