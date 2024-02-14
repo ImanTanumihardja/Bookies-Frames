@@ -19,7 +19,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (username !== "") {
     let profile: any = null;
     let user : User = DEFAULT_USER;
-    let rank : number = -1;
+    let rank : number | null = null;
 
     await neynarClient.lookupUserByUsername(username, BOOKIES_FID).then( (res ) => {
       profile = res?.result?.user
@@ -30,16 +30,15 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     })
     .finally(async () => {
         if (profile !== null) {
-          let temp = await kv.zrevrank('users', profile?.fid || "");
-          if (temp !== null) rank = temp;
+          rank = await kv.zrevrank('users', profile?.fid || "");
           
           // Can skip if not found in kv
-          if (rank !== -1) 
+          if (!null) 
           { 
             user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
-            console.log(profile?.fid.toString(), user)
           }
 
+          console.log('USER: ', profile?.fid.toString(), user)
         }
     
       imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, 
