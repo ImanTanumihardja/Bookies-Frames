@@ -17,11 +17,11 @@ const frameMetadata = getFrameMetadata({
 
 export const metadata: Metadata = {
   title: FrameNames.CLAIM_DICE,
-  description: 'Claim free Dice if you follow!',
+  description: 'Claim free Dice!',
   openGraph: {
     title: FrameNames.CLAIM_DICE,
-    description: 'Claim free Dice if you follow!', 
-    images: [imageUrl],
+    description: 'Claim free Dice!', 
+    images: [{url: imageUrl}],
   },
   other: {
     ...frameMetadata,

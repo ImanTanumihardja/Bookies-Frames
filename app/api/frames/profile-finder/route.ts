@@ -15,6 +15,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const username : string = (req.nextUrl.searchParams.get("username") || message?.input || "")?.toLowerCase();
 
   let imageUrl: string = "";
+  let input_text : string = "Enter another username";
+
   if (username !== "") {
     let profile: any = null;
     let user : User = DEFAULT_USER;
@@ -57,8 +59,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   else {
     throw new Error('Invalid username');
   }
-
-  let input_text : string = "Enter another username";
 
   const frame: Frame = {
     version: "vNext",
