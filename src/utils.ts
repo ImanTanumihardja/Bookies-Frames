@@ -97,43 +97,40 @@ export const DEFAULT_FRAME_VALIDATION_DATA: FrameValidationData = {
   };
 
 export function getRequestProps(req: NextRequest, params: RequestProps[]): Record<string, any> {
-    // // Loop throug each RequestParams
-    // let returnParams: Record<string, any> = {}
-    // for (const key of params) {;
-    //     if (!req.nextUrl.searchParams.has(key)) {
-    //         // Throw error if required param is missing
-    //         throw new Error(`Missing required param: ${key}`)
-    //     }
+    // Loop throug each RequestParams
+    let returnParams: Record<string, any> = {}
+    for (const key of params) {;
+        if (!req.nextUrl.searchParams.has(key)) {
+            // Throw error if required param is missing
+            throw new Error(`Missing required param: ${key}`)
+        }
 
-    //     const value = decodeURIComponent(req.nextUrl.searchParams.get(key) || "")
+        const value = decodeURIComponent(req.nextUrl.searchParams.get(key) || "")
 
-    //     // Parse Props
-    //     switch (typeof RequestPropsTypes[key]) {
-    //         case 'string':
-    //             returnParams[key] = value
-    //             break;
-    //         case 'number':
-    //             returnParams[key] = parseFloat(value || "0")
-    //             break;
-    //         case 'boolean':
-    //             returnParams[key] = value === 'true';
-    //             break;
-    //         default: // array (Error)
-    //             const array = value.split(',')
-    //             const floatArray = array.map((item: string) => parseFloat(item))
-    //             if (!floatArray.some(isNaN)) {
-    //                 returnParams[key] = floatArray
-    //                 console.log('floatArray:', key)
-    //             }
-    //             else {
-    //                 returnParams[key] = array // Just return normal
-    //             }
-    //             console.log(returnParams[key])
-    //             break;
-    //     }
-
-        const searchParams = new URLSearchParams(window.location.search);
-        return searchParams
+        // Parse Props
+        switch (typeof RequestPropsTypes[key]) {
+            case 'string':
+                returnParams[key] = value
+                break;
+            case 'number':
+                returnParams[key] = parseFloat(value || "0")
+                break;
+            case 'boolean':
+                returnParams[key] = value === 'true';
+                break;
+            default: // array (Error)
+                const array = value.split(',')
+                const floatArray = array.map((item: string) => parseFloat(item))
+                if (!floatArray.some(isNaN)) {
+                    returnParams[key] = floatArray
+                    console.log('floatArray:', key)
+                }
+                else {
+                    returnParams[key] = array // Just return normal
+                }
+                console.log(returnParams[key])
+                break;
+        }
     }
 
     return returnParams
