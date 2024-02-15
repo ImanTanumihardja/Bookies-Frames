@@ -8,7 +8,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
   const message = await validateFrameMessage(req);
 
-  const {followingBookies: isFollowing } = message;
+  const {followingBookies: isFollowing, fid } = message;
+  console.log('USER FID: ', fid.toString())
 
   // Check for fid prop in url and if there use that as fid
   const username : string = (req.nextUrl.searchParams.get("username") || message?.input || "")?.toLowerCase();
@@ -34,8 +35,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           { 
             user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
           }
-
-          console.log('USER: ', profile?.fid?.toString())
           console.log('Searched for: ', username)
         }
     
