@@ -14,8 +14,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const username : string = (req.nextUrl.searchParams.get("username") || message?.input || "")?.toLowerCase();
 
   let imageUrl: string = "";
-  let input_text : string = "Enter another username";
-
   if (username !== "") {
     let profile: any = null;
     let user : User = DEFAULT_USER;
@@ -25,8 +23,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       profile = res?.result?.user
     })
     .catch ( (error) => {
-      console.error('Profile-finder:', error);
-      profile = null;
+      console.error('Profile-finder Error: Could not find user:', error);
     })
     .finally(async () => {
         if (profile !== null) {
@@ -38,12 +35,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
             user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
           }
 
-          console.log('USER: ', profile?.fid.toString(), user)
+          console.log('USER: ', profile?.fid?.toString())
+          console.log('Searched for: ', username)
         }
     
       imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, 
-                                              [RequestProps.USERNAME]: profile?.username || "", 
-                                              [RequestProps.AVATAR_URL]: profile?.pfp.url || "", 
+                                              [RequestProps.USERNAME]: profile?.username, 
+                                              [RequestProps.AVATAR_URL]: profile?.pfp?.url, 
                                               [RequestProps.RANK]: rank, 
                                               [RequestProps.WINS]: user.wins, 
                                               [RequestProps.LOSSES]: user.losses, 
@@ -55,6 +53,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   else {
     throw new Error('Invalid username');
   }
+
+  let input_text : string = "Enter another username";
 
   const frame: Frame = {
     version: "vNext",
@@ -77,7 +77,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 export async function POST(req: NextRequest): Promise<Response> {
   return getResponse(req);
 } 
-
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;

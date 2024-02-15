@@ -24,8 +24,9 @@ export async function GET(req: NextRequest) {
                                                                                                                         RequestProps.STREAK,
                                                                                                                         RequestProps.NUM_BETS]);
         
-        let pfpURL;
-        let shortUsername;
+        let pfpURL = undefined;
+        let shortUsername = undefined;
+        
         if (rank !== -1 && username && avatarUrl) {
             pfpURL = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(avatarUrl)}`          
             shortUsername = username?.length > 10 ? username?.substring(0, 10) + "..." : username;      
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest) {
         return new ImageResponse(
             <FrameBase>
                 {isFollowing ?
-                    (rank === -1 && !username) ?
+                    (rank === -1 && !shortUsername && !pfpURL) ?
                     <h2 style={{color: 'white', fontSize:50, textAlign:'center'}}> No profile found!</h2>
                     :
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%'}}>
