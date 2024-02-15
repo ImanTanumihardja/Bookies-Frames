@@ -23,9 +23,12 @@ export async function GET(req: NextRequest) {
                                                                                                                         RequestProps.POINTS, 
                                                                                                                         RequestProps.STREAK,
                                                                                                                         RequestProps.NUM_BETS]);
+        
+        let pfpURL;
+        let shortUsername;
         if (rank !== -1 && !username && !avatarUrl) {
-            const pfpURL = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(avatarUrl)}`          
-            const shortUsername = username?.length > 10 ? username?.substring(0, 10) + "..." : username;      
+            pfpURL = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(avatarUrl)}`          
+            shortUsername = username?.length > 10 ? username?.substring(0, 10) + "..." : username;      
         }                                                                            
 
         return new ImageResponse(
