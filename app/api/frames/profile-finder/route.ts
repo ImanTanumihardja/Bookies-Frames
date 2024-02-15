@@ -9,7 +9,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const message = await validateFrameMessage(req);
 
   const {followingBookies: isFollowing, fid } = message;
-  console.log('USER FID: ', fid.toString())
+  console.log('FID: ', fid.toString())
 
   // Check for fid prop in url and if there use that as fid
   const username : string = (req.nextUrl.searchParams.get("username") || message?.input || "")?.toLowerCase();
@@ -21,7 +21,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     let rank : number | null = -1;
 
     await neynarClient.searchUser(username, BOOKIES_FID).then( (res) => {
-      profile = res?.result?.users[0];
+      const profiles = res?.result?.users;
+      if (profiles && profiles.length > 0) {
+        profile = profiles[0]; // Get first profile
+      }else {
+        throw new Error('Profile-finder Error: Could not find user');
+      }
     })
     .catch ( (error) => {
       console.error('Profile-finder Error: Could not find user:', error);

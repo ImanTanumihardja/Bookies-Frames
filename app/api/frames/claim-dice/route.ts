@@ -10,6 +10,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const message = await validateFrameMessage(req);
 
   const {followingBookies: isFollowing, fid, button} = message;
+  console.log('FID: ', fid.toString())
 
   var validCaptcha = true;
   if (parseInt(req.nextUrl.searchParams.get('captcha') || "-1") != (button - 1)) {
@@ -28,11 +29,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         // New user
         user.points = 100;
         await multi.zadd('users', {score: 100, member: fid});
-        console.log('NEW USER: ', fid, user)
+        console.log('NEW USER: ', user)
       }
     else {
         user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
-        console.log('USER: ', fid, user)
+        console.log('USER: ', user)
         hasClaimed = user.hasClaimed;
         if (!hasClaimed) {
           // Get daily 10 dice for old user
