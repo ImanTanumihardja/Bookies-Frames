@@ -44,8 +44,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         }
     
       imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, 
-                                              [RequestProps.USERNAME]: profile?.username, 
-                                              [RequestProps.AVATAR_URL]: profile?.pfp?.url, 
+                                              [RequestProps.USERNAME]: profile?.username || '', 
+                                              [RequestProps.AVATAR_URL]: profile?.pfp?.url || '', 
                                               [RequestProps.RANK]: rank, 
                                               [RequestProps.WINS]: user.wins, 
                                               [RequestProps.LOSSES]: user.losses, 
