@@ -19,8 +19,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     let user : User = DEFAULT_USER;
     let rank : number | null = -1;
 
-    await neynarClient.lookupUserByUsername(username, BOOKIES_FID).then( (res ) => {
-      profile = res?.result?.user
+    await neynarClient.searchUser(username, BOOKIES_FID).then( (res) => {
+      profile = res?.result?.users[0];
     })
     .catch ( (error) => {
       console.error('Profile-finder Error: Could not find user:', error);
