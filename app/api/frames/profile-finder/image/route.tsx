@@ -26,8 +26,8 @@ export async function GET(req: NextRequest) {
         
         let pfpURL = undefined;
         let shortUsername = undefined;
-        
-        if (rank !== -1 && username && avatarUrl) {
+
+        if (username && avatarUrl) {
             pfpURL = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(avatarUrl)}`          
             shortUsername = username?.length > 10 ? username?.substring(0, 10) + "..." : username;      
         }                                                                            
