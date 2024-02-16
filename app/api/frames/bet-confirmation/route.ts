@@ -12,7 +12,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   
   let user : User | null = await kv.hgetall(fid.toString()) || DEFAULT_USER;
 
-  const balance = parseInt(user.points.toString());
+  const currentBalance = parseInt(user.availableBalance.toString());
 
   // Get eventName from req
   let {eventName, stake, prediction} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PREDICTION]);
@@ -20,7 +20,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let event : Event | null = await kv.hget('events', eventName)
   if (event === null) throw new Error('Event not found');
 
-  if (stake <= 0 || stake > balance) {
+  if (stake <= 0 || stake > currentBalance) {
     stake = -1
   }
 
@@ -35,18 +35,22 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const multi = kv.multi();
 
     event.poll[prediction]++;
-    event.bets[fid] = {prediction:prediction, stake:stake, timeStamp:now} as Bet;
+    event.bets[fid] = {prediction:prediction, odd: event.odds[prediction], stake:stake, timeStamp:now} as Bet;
 
     let sendEvent : any = {}
     sendEvent[eventName] = event;
 
     await multi.hset('events', sendEvent);
 
-    // Adjust user balance
-    await multi.hincrby(fid.toString(), 'points', -stake);
+    // Adjust user available balance
+    user.availableBalance = currentBalance - stake;
+    user.bets.push(eventName)
+
+    await multi.hset(fid.toString(), user);
 
     // Adjust score in  leaderboard
-    await multi.zincrby('users', -stake, fid);
+    await multi.zadd('users', {score: user.availableBalance, member: fid});
+
     await multi.exec();
   } 
   else if (betExists) {

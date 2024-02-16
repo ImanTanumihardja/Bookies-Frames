@@ -2,18 +2,21 @@ import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { FrameNames, generateUrl } from '../../src/utils';
+import { getFrameFlattened, Frame } from 'frames.js';import { get } from 'https';
 
 const imageUrl = generateUrl(`thumbnails/${FrameNames.CLAIM_DICE}.gif`, [], false, true)
 
-const frameMetadata = getFrameMetadata({
+const frame : Frame = {
+  version: "vNext",
   buttons: [
     {
       label: 'Claim Dice',
+      action: 'post'
     },
   ],
   image: imageUrl,
-  post_url: `${process.env['HOST']}/api/frames/${FrameNames.CAPTCHA}`
-});
+  postUrl: `${process.env['HOST']}/api/frames/${FrameNames.CAPTCHA}`
+};
 
 export const metadata: Metadata = {
   title: FrameNames.CLAIM_DICE,
@@ -23,11 +26,9 @@ export const metadata: Metadata = {
     description: 'Claim free Dice!', 
     images: [{url: imageUrl}],
   },
-  other: {
-    ...frameMetadata,
-  },
+  other: getFrameFlattened(frame),
 };
 
 export default function Page() {
-  redirect('https://bookies-rho.vercel.app/');
+  // redirect('https://bookies-rho.vercel.app/');
 }

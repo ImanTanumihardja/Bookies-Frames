@@ -10,17 +10,30 @@ export type Event = {
     prompt: string
 }
 
+// Old User type
+// export type User = {
+//     points: number;
+//     streak: number;
+//     wins: number;
+//     losses: number;
+//     numBets: number;
+//     hasClaimed: boolean;
+// }
+
 export type User = {
-    points: number;
+    balance: number;
+    availableBalance: number;
     streak: number;
     wins: number;
     losses: number;
     numBets: number;
     hasClaimed: boolean;
+    bets: string[]
 }
 
 export type Bet = {
     stake: number
+    odd: number
     prediction: number
     timeStamp: number
 }

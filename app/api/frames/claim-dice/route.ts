@@ -27,23 +27,25 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const multi = kv.multi();
     if (isNewUser) {
         // New user
-        user.points = 100;
-        await multi.zadd('users', {score: 100, member: fid});
+        user.balance = 100;
+        user.availableBalance = 100;
         console.log('NEW USER: ', user)
       }
     else {
         user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
         console.log('USER: ', user)
+        
         hasClaimed = user.hasClaimed;
         if (!hasClaimed) {
           // Get daily 10 dice for old user
-          user.points = parseInt(user.points.toString()) + 10;
-          await multi.zincrby('users', 10, fid);
+          user.balance = parseInt(user.balance.toString()) + 10;
+          user.availableBalance = user.balance;
         }
       }
 
     user.hasClaimed = true;
     await multi.hset(fid.toString(), user);
+    await multi.zadd('users', {score: user.balance, member: fid});
     await multi.exec();
   }
 

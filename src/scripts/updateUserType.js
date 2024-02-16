@@ -46,19 +46,69 @@ var kv = createClient({
 // Create a script that access kv storage and reset the hasClaimed value
 function resetHasClaimed() {
     return __awaiter(this, void 0, void 0, function () {
-        var count, users;
+        var eventData, count, result, cursor, users, _i, users_1, fid, user, updatedUser;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, kv.zcount("users", 0, 'inf')];
+                case 0: return [4 /*yield*/, kv.hget("events", "sblviii-ml")];
                 case 1:
+                    eventData = _a.sent();
+                    return [4 /*yield*/, kv.zcount("users", 0, 'inf')];
+                case 2:
                     count = _a.sent();
                     console.log("Total users: ".concat(count));
-                    return [4 /*yield*/, kv.zscan("users", 0, { count: count })];
-                case 2:
-                    users = (_a.sent())[1];
+                    return [4 /*yield*/, kv.zscan("users", 0, { count: 150 })];
+                case 3:
+                    result = (_a.sent());
+                    cursor = result[0];
+                    users = result[1];
+                    _a.label = 4;
+                case 4:
+                    if (!cursor) return [3 /*break*/, 6];
+                    return [4 /*yield*/, kv.zscan("users", cursor, { count: 150 })];
+                case 5:
+                    result = (_a.sent());
+                    cursor = result[0];
+                    users = users.concat(result[1]);
+                    return [3 /*break*/, 4];
+                case 6:
                     // Filter out every other element
-                    users = users.filter(function (_, index) { return index % 2 === 0; });
-                    return [2 /*return*/];
+                    users = users.filter(function (fid, index) { return index % 2 === 0; });
+                    users = users.filter(function (fid) { return fid === 313859; });
+                    _i = 0, users_1 = users;
+                    _a.label = 7;
+                case 7:
+                    if (!(_i < users_1.length)) return [3 /*break*/, 11];
+                    fid = users_1[_i];
+                    console.log("FID: ".concat(fid));
+                    return [4 /*yield*/, kv.hgetall(fid)];
+                case 8:
+                    user = _a.sent();
+                    if (user.balance !== undefined) { // Check if user has already been updated
+                        console.log("User: ".concat(fid, " already updated"));
+                        return [3 /*break*/, 10];
+                    }
+                    updatedUser = {
+                        balance: user.points,
+                        availableBalance: user.points,
+                        hasClaimed: user.hasClaimed,
+                        wins: user.wins,
+                        losses: user.losses,
+                        streak: user.streak,
+                        numBets: user.numBets,
+                        bets: []
+                    };
+                    if (eventData.bets[fid] !== undefined) {
+                        updatedUser.bets.push('sblviii-ml');
+                    }
+                    console.log("Changed User: ".concat(JSON.stringify(updatedUser)));
+                    return [4 /*yield*/, kv.hset(fid.toString(), updatedUser)];
+                case 9:
+                    _a.sent();
+                    return [3 /*break*/, 11];
+                case 10:
+                    _i++;
+                    return [3 /*break*/, 7];
+                case 11: return [2 /*return*/];
             }
         });
     });
