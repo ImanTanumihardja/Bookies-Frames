@@ -48,9 +48,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     await multi.hset(fid.toString(), user);
 
-    // Adjust score in  leaderboard
-    await multi.zadd('users', {score: user.availableBalance, member: fid});
-
     await multi.exec();
   } 
   else if (betExists) {

@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
-import NotFollowing from '../../../../../src/components/NotFollowing';
 import { RequestProps, getRequestProps } from '../../../../../src/utils';
-import { off } from 'process';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -16,13 +14,9 @@ const plusJakartaSans = fetch(
 export async function GET(req: NextRequest) {
     try {
         let html = <></>; // Default empty React element
-        const {isFollowing, prediction, stake, buttonIndex} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.STAKE, RequestProps.PREDICTION, RequestProps.BUTTON_INDEX]);
+        const {prediction, stake, buttonIndex} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.STAKE, RequestProps.PREDICTION, RequestProps.BUTTON_INDEX]);
 
-        if (!isFollowing) 
-        { 
-            html = <NotFollowing/>
-        }
-        else if (buttonIndex == 2) {
+        if (buttonIndex == 2) {
             html = (<FrameBase>
                 <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> You rejected the bet!</h1>
             </FrameBase>)

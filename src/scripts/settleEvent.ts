@@ -43,19 +43,17 @@ async function settleEvent(eventName="", result=-1) {
           // Pay out the user
           console.log(`Paying out user: ${fid} with wager: ${bet.stake}`)
           const payout = calculatePayout(eventData.multiplier, eventData.odds[result], bet.stake, user?.streak);
+
           user.availableBalance = parseInt(user?.availableBalance.toString()) + payout;
           user.balance = parseInt(user?.balance.toString()) + (payout - bet.stake);
           user.streak = parseInt(user?.streak.toString()) + 1;
           user.numBets = parseInt(user?.numBets.toString()) + 1;
           user.wins = parseInt(user?.wins.toString()) + 1;
-
-          await multi.hset(fid.toString(), user);
-          await multi.zadd('users', {score:user.balance, member:fid});
-          await multi.exec();
         }
         else if (parseInt(fid)) {
           // User lost
           console.log(`User: ${fid} lost with wager: ${bet.stake}`)
+
           user.streak = 0;
           user.balance = parseInt(user.balance.toString()) - bet.stake;
           user.numBets = parseInt(user.streak.toString()) + 1;
