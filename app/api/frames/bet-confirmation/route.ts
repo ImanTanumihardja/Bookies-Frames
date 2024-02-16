@@ -30,34 +30,34 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const now = new Date().getTime();
 
   // Need to check bet does not exists, time is not past, and stake >= 1 and not rejected
-  if (!betExists && now < event?.startDate && stake >= 1 && button != 2) {
-    // Can bet
-    const multi = kv.multi();
+  // if (!betExists && now < event?.startDate && stake >= 1 && button != 2) {
+  //   // Can bet
+  //   const multi = kv.multi();
 
-    event.poll[prediction]++;
-    event.bets[fid] = {prediction:prediction, odd: event.odds[prediction], stake:stake, timeStamp:now} as Bet;
+  //   event.poll[prediction]++;
+  //   event.bets[fid] = {prediction:prediction, odd: event.odds[prediction], stake:stake, timeStamp: now} as Bet;
 
-    let sendEvent : any = {}
-    sendEvent[eventName] = event;
+  //   let sendEvent : any = {}
+  //   sendEvent[eventName] = event;
 
-    await multi.hset('events', sendEvent);
+  //   await multi.hset('events', sendEvent);
 
-    // Adjust user available balance
-    user.availableBalance = currentBalance - stake;
-    user.bets.push(eventName)
+  //   // Adjust user available balance
+  //   user.availableBalance = currentBalance - stake;
+  //   user.bets.push(eventName)
 
-    await multi.hset(fid.toString(), user);
+  //   await multi.hset(fid.toString(), user);
 
-    await multi.exec();
-  } 
-  else if (betExists) {
-    // Event has started
-    stake = 0;
-    prediction = event.bets[fid].prediction;
-  }
-  else {
-    prediction = -1
-  }
+  //   await multi.exec();
+  // } 
+  // else if (betExists) {
+  //   // Event has started
+  //   stake = 0;
+  //   prediction = event.bets[fid].prediction;
+  // }
+  // else {
+  //   prediction = -1
+  // }
 
   const imageUrl = generateUrl(`api/frames/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: stake, [RequestProps.PREDICTION]: prediction, [RequestProps.BUTTON_INDEX]: button}, true, true);
 
