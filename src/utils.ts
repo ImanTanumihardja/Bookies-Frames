@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server'
 import { NeynarAPIClient } from "@neynar/nodejs-sdk";
 import { User, Bet} from '../app/types';
-import { getFrameMessage as getFrameMessageOnchain } from '@coinbase/onchainkit'
 import {validateFrameMessage as getFrameMessage} from 'frames.js'
 import { FrameValidationData } from '../app/types';
 
@@ -183,44 +182,23 @@ export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
 
 export async function validateFrameMessage(req: NextRequest, checkFollowingBookies=true) {
     const body = await req.json();
-
-    let message: FrameValidationData = DEFAULT_FRAME_VALIDATION_DATA
-
-    try {
-        // Use onchainkit to validate the frame message
-        const data = await getFrameMessageOnchain(body, {neynarApiKey: process.env['NEYNAR_API_KEY'] || ""});
-
-        if (!data.isValid) {
-            throw new Error('Invalid frame message');
-        }
-
-        message.button = data?.message?.button || 0
-        message.following = data?.message?.following || false
-        message.input = data?.message?.input || ""
-        message.fid = data?.message?.interactor.fid || 0
-        message.custody_address = data?.message?.interactor.custody_address || ""
-        message.verified_accounts = data?.message?.interactor.verified_accounts || []
-        message.liked = data?.message?.liked || false
-        message.recasted = data?.message?.recasted || false
+    const {isValid, message} = await getFrameMessage(body, {hubHttpUrl: 'https://hub-api.neynar.com', hubRequestOptions: {headers: {authorization: `Bearer ${process.env['NEYNAR_API_KEY']}`}}});
+    
+    if (!isValid) {
+        throw new Error('Invalid frame message');
     }
-    catch (error) {
-        throw new Error(`Error validating using onchain: ${error}`)
-        // console.error(`Error validating using onchain: ${error}`)
-        // console.log('Using frames.js')
-        
 
-        // const data = await getFrameMessage(body);
+    let formatedMessage : FrameValidationData = DEFAULT_FRAME_VALIDATION_DATA
 
-        // message.button = data?.message?.data.frameActionBody.buttonIndex || 0
-        // message.input = data?.message?.data.frameActionBody.inputText.toString() || ""
-        // message.fid = data?.message?.data.fid || 0
-    }
+    formatedMessage.button = message?.data.frameActionBody.buttonIndex || 0
+    formatedMessage.input = message?.data.frameActionBody.inputText.toString() || ""
+    formatedMessage.fid = message?.data.fid || 0
 
     if (checkFollowingBookies){
-        message.followingBookies = true //await checkIsFollowingBookies(message.fid)
+        formatedMessage.followingBookies = true //await checkIsFollowingBookies(message.fid)
     }
 
-    return message
+    return formatedMessage
 }
 
 export function convertImpliedProbabilityToAmerican(impliedProbability: number) {
