@@ -158,7 +158,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     // Easy
     let questionIndex : number = questionIndexes[Math.floor(Math.random() * (questionIndexes.length - 1))];
 
-    if (count > 2 && count < 7) {
+    if (count > 3 && count < 7) {
       // Easy
       mode = 'medium';
       if (count === 3) {
