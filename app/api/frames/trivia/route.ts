@@ -177,7 +177,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       questionIndex = questionIndexes[Math.floor(Math.random() * (questionIndexes.length - 1))];
     }
     else if (count >= MAX_QUESTIONS) {
-      user.score = Math.max(count - 1, parseInt(user.score.toString()));
+      user.score = Math.max(count, parseInt(user.score.toString()));
       await kv.hset('trivia', {[fid.toString()]: user});
     }
 
