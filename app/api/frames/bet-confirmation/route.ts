@@ -12,6 +12,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   
   let user : User | null = await kv.hgetall(fid.toString()) || DEFAULT_USER;
 
+  console.log('FID: ', fid.toString())
+
   const currentBalance = parseInt(user.availableBalance.toString());
 
   // Get eventName from req
@@ -49,14 +51,17 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     await multi.hset(fid.toString(), user);
 
     await multi.exec();
+
+    console.log('NEW BET: ', event.bets[fid])
   } 
   else if (betExists) {
-    // Event has started
     stake = 0;
     prediction = event.bets[fid].prediction;
+    console.log('BET EXISTS: ', event.bets[fid])
   }
   else {
     prediction = -1
+    console.log('FAILED TO PLACE BET')
   }
 
   const imageUrl = generateUrl(`api/frames/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: stake, [RequestProps.PREDICTION]: prediction, [RequestProps.BUTTON_INDEX]: button}, true, true);
