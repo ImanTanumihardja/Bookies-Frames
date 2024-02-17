@@ -32,7 +32,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
       {
         question: 'What athlete holds the record for most Olympic medals?',
-        options: ['Michael Phelps', 'Carl Lewis', 'Usain Bolt', 'Paavo Nurmi'],
+        options: ['Michael\nPhelps', 'Carl Lewis', 'Usain Bolt', 'Paavo Nurmi'],
       },
       {
         question: 'In soccer, what does the term hattrick mean?',
@@ -54,7 +54,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
       {
         question: 'Which basketball player hold the record for most points scored in a single game?',
-        options: ['Wilt Chamberlain', 'Michael Jordan', 'Bill Russell', 'Lebron James'],
+        options: ['Wilt\nChamberlain', 'Michael Jordan', 'Bill Russell', 'Lebron James'],
       },
       {
         question: 'What is the name of the trophy given to the winners of the NHL?',
@@ -157,12 +157,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     count++;
     let questionIndex : number = Math.floor(Math.random() * 7);
 
-    if (count > 4 && count <= 7) {
+    if (count > 2 && count < 7) {
       // Easy
       mode = 'medium';
       questionIndex = Math.floor(Math.random() * 9);
     }
-    else if (count > 7) {
+    else if (count >= 7) {
       // Hard
       mode = 'hard';
       questionIndex = Math.floor(Math.random() * 6);

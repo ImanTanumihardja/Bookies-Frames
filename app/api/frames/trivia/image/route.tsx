@@ -20,6 +20,7 @@ export async function GET(req: NextRequest) {
 
         return new ImageResponse(
             <FrameBase>
+                {count !== -1 && <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}> {count}/{MAX_QUESTIONS}</h1>}
                 {isFollowing ?
                     count === -1 ?
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>Incorrect Answer!</h1>
