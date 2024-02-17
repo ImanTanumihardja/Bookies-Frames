@@ -103,7 +103,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
   {
         question: 'Who has the most total assists this season in the NBA?',
-        options: ['Trae Young', 'L. Doncic', 'Nikola Jokic', 'Michael Porter'],
+        options: ['Trae Young', 'L. Doncic', 'Nikola Jokic', 'J. Harden'],
       },
   {
         question: 'Besides the Buffalo Bills, what is the only other team in NFL history to lose in all four of their Super Bowl appearances?',
