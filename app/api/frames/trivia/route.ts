@@ -4,6 +4,7 @@ import { generateUrl, RequestProps, validateFrameMessage, FrameNames } from '../
 import { kv } from '@vercel/kv';
 
 const MAX_QUESTIONS = 10;
+const EASY_QUESTION_INDEXES = encodeURIComponent([0, 1, 2, 3, 4, 5, 6, 7].toString()) // Make sure matchs with the amount of questions in easy category
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   const questions : Record<string, any> = {
@@ -149,9 +150,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     await kv.hset('trivia', {[fid.toString()]: user});
 
     // End quiz
-    user.score = count - 1;
+    user.score = count - 2;
     count = -1;
-    postUrl = `${process.env['HOST']}/api/frames/${FrameNames.TRIVIA}?count=0`
+    postUrl = `${process.env['HOST']}/api/frames/${FrameNames.TRIVIA}?count=0&array=${EASY_QUESTION_INDEXES}`
   }
   else { // Continue game
     console.log('Got the right answer');
