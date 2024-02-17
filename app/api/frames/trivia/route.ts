@@ -158,7 +158,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   }
   else if (prevCorrectIndex !== -1 && prevCorrectIndex !== button - 1) { // Got the wrong answer and not first question or
     // Wrong answer
-    console.log('Wrong answer')
+    console.log('Wrong answer');
     user.strikes = parseInt(user.strikes.toString()) + 1;
     await kv.hset('trivia', {[fid.toString()]: user});
 
@@ -167,7 +167,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     postUrl = `${process.env['HOST']}/api/frames/trivia?count=-1`
   }
   else { // Continue game
-    console.log('Got the right answer')
+    console.log('Got the right answer');
     count++;
     let questionIndex : number = Math.floor(Math.random() * 7);
 
@@ -199,7 +199,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: count !== -1 && count != MAX_QUESTIONS ? [{label:`${options[0]}`, action: 'post'}, {label:`${options[1]}`, action: 'post'}, {label:`${options[2]}`, action: 'post'}, {label:`${options[3]}`, action: 'post'}] : user?.strikes < 3 ? [{label:`Try Again`, action: 'post'}] : count >= MAX_QUESTIONS ? [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}] : undefined,
+    buttons: count !== -1 && count != MAX_QUESTIONS && user?.strikes < 3 ? [{label:`${options[0]}`, action: 'post'}, {label:`${options[1]}`, action: 'post'}, {label:`${options[2]}`, action: 'post'}, {label:`${options[3]}`, action: 'post'}] : 
+              user?.strikes < 3 && count === -1 ? [{label:`Try Again`, action: 'post'}] : 
+              [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}],
     postUrl: postUrl,
   };
 

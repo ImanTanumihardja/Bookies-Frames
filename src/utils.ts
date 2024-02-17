@@ -147,10 +147,10 @@ export function generateUrl(extension: string, props: Record<string, any>, addTi
 
     if(isImageURL && (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging'))){
         url += `?version=${process.env['VERSION']}`
-        url += `&timestamp=${new Date().getTime()}`
+        url += `&time=${new Date().getTime()}`
     }
     else if (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging')) {
-        url += `?timestamp=${new Date().getTime()}`
+        url += `?time=${new Date().getTime()}`
     }
     else{
         url += `?version=${process.env['VERSION']}`
