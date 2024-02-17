@@ -9,17 +9,28 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const message = await validateFrameMessage(req);
 
   const {followingBookies: isFollowing, button, fid} = message;
-  
-  let user : User | null = await kv.hgetall(fid.toString()) || DEFAULT_USER;
+
+  // Get eventName from req
+  let {eventName, stake, prediction} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PREDICTION]);
+
+  // Wait for both user to be found and event to be found
+  let user : User = DEFAULT_USER;
+  let event : Event | null = null;
+
+  await Promise.all([kv.hgetall(fid.toString()), kv.hget('events', eventName)]).then( (res) => {
+    user = res[0] as User || DEFAULT_USER;
+    event = res[1] as Event || null;
+  });
+
+  event = event as unknown as Event || null;
+
+  // let user : User | null = await kv.hgetall(fid.toString()) || DEFAULT_USER;
 
   console.log('FID: ', fid.toString())
 
   const currentBalance = parseInt(user.availableBalance.toString());
 
-  // Get eventName from req
-  let {eventName, stake, prediction} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PREDICTION]);
-
-  let event : Event | null = await kv.hget('events', eventName)
+  // let event : Event | null = await kv.hget('events', eventName)
   if (event === null) throw new Error('Event not found');
 
   if (stake <= 0 || stake > currentBalance) {
