@@ -197,7 +197,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     postUrl = `${process.env['HOST']}/api/frames/${FrameNames.TRIVIA}?count=${count}&index=${correctIndex}&array=${encodeURIComponent(questionIndexes.toString())}`
   }
 
-  const imageUrl = generateUrl(`api/frames/${FrameNames.TRIVIA}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.PROMPT]: question, [RequestProps.WINS]: count, [RequestProps.LOSSES]: user.strikes}, true, true);
+  const imageUrl = generateUrl(`api/frames/${FrameNames.TRIVIA}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.PROMPT]: question, [RequestProps.WINS]: count, [RequestProps.LOSSES]: user.strikes}, false, true);
 
   const frame: Frame = {
     version: "vNext",
