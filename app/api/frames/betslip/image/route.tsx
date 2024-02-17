@@ -5,12 +5,12 @@ import { User, Event } from '../../../../types';
 import { kv } from '@vercel/kv';
 
 // Fonts
-// const plusJakartaSans = fetch(
-//     new URL(
-//       '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
-//       import.meta.url,
-//     ),
-//   ).then((res) => res.arrayBuffer());
+const plusJakartaSans = fetch(
+    new URL(
+      '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
+      import.meta.url,
+    ),
+  ).then((res) => res.arrayBuffer());
 
 
 export async function GET(req: NextRequest) {
@@ -92,7 +92,7 @@ export async function GET(req: NextRequest) {
         ), {
             width: 764, 
             height: 400, 
-            // fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
+            fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
         });
     } catch (error) {
         console.error(error);
