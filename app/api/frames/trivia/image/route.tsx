@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
                     </div>
                     :
                     strikes === 3 ?
-                    <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>You have reached 3 strikes!</h1>
+                    <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', textAlign:'center', margin:35}}>You have reached 3 strikes!</h1>
                     :
                     count === MAX_QUESTIONS ?
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>You got {count}/{MAX_QUESTIONS}!</h1>
