@@ -13,40 +13,31 @@ const plusJakartaSans = fetch(
 
 export async function GET(req: NextRequest) {
     try {
-        let html = <></>; // Default empty React element
+        let text= '' // Default empty React element
         const {prediction, stake, buttonIndex} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.STAKE, RequestProps.PREDICTION, RequestProps.BUTTON_INDEX]);
 
         if (buttonIndex == 2) {
-            html = (<FrameBase>
-                <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> You rejected the bet!</h1>
-            </FrameBase>)
+            text = 'You rejected the bet!'
         } 
         else if (stake <= -1){
-            html = 
-            (<FrameBase>
-                <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> You don't have enough dice!</h1>
-            </FrameBase>)
+            text =  "You don't have enough dice!"
         }
         else if (stake === 0 ){
-            html = 
-            <FrameBase>
-                <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> You already placed a bet!</h1>
-            </FrameBase>
+            text = "You already placed a bet!"
         }
         else if (prediction === -1) {
-            html = 
-            <FrameBase>
-                <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> Event is no longer taking bets!</h1>
-            </FrameBase>
+            text = "Event is no longer taking bets!"
         }
         else {
-            html = 
-            <FrameBase>
-                <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> Bet confirmed!</h1>
-            </FrameBase>
+            text = "Bet confirmed!"
         }
 
-        return new ImageResponse(html, {
+        return new ImageResponse(
+            (
+                <FrameBase>
+                    <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> {text} </h1>
+                </FrameBase>
+            ), {
             width: 764, 
             height: 400, 
             fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
