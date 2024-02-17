@@ -188,7 +188,7 @@ export async function validateFrameMessage(req: NextRequest, checkFollowingBooki
 
     try {
         // Use onchainkit to validate the frame message
-        const data = await getFrameMessage(body);
+        const data = await getFrameMessage(body, {neynarApiKey: process.env['NEYNAR_API_KEY'] || ""});
 
         if (!data.isValid) {
             throw new Error('Invalid frame message');
