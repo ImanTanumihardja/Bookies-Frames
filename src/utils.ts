@@ -30,6 +30,7 @@ export enum RequestProps {
     POLL = 'poll',
     VALID_CAPTCHA = 'validCaptcha',
     INDEX = 'index',
+    ARRAY = 'array',
 }
 
 export enum FrameNames {
@@ -38,7 +39,7 @@ export enum FrameNames {
     SBLVIII_ML = 'sblviii-ml',
     BETSLIP = 'betslip',
     BET_CONFIRMATION = 'bet-confirmation',
-    TEST = 'trivia',
+    TRIVIA = 'trivia',
     CAPTCHA = 'captcha',
 }
 
@@ -68,6 +69,7 @@ export const RequestPropsTypes = {
     [RequestProps.POLL]: [],
     [RequestProps.VALID_CAPTCHA]: true,
     [RequestProps.INDEX] : 0,
+    [RequestProps.ARRAY] : [],
 }
 
 export const BOOKIES_FID = 244367;
@@ -147,10 +149,10 @@ export function generateUrl(extension: string, props: Record<string, any>, addTi
 
     if(isImageURL && (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging'))){
         url += `?version=${process.env['VERSION']}`
-        url += `&time=${new Date().getTime()}`
+        url += `&timestamp=${new Date().getTime()}`
     }
     else if (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging')) {
-        url += `?time=${new Date().getTime()}`
+        url += `?timestamp=${new Date().getTime()}`
     }
     else{
         url += `?version=${process.env['VERSION']}`
@@ -225,3 +227,7 @@ export function convertImpliedProbabilityToAmerican(impliedProbability: number) 
 export function calculatePayout(multiplier: number, impliedProbability: number, stake: number, streak: number = 0){
     return multiplier * (1 / impliedProbability) * (stake) // TODO add streak
 }
+
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';

@@ -20,16 +20,19 @@ export async function GET(req: NextRequest) {
 
         return new ImageResponse(
             <FrameBase>
-                {count !== -1 && <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}> {count}/{MAX_QUESTIONS}</h1>}
+                {(count !== -1 && count !== MAX_QUESTIONS) && <h1 style={{color: 'white', position:'absolute', top: 10, right: 25, fontSize:25}}> {count}/{MAX_QUESTIONS}</h1>}
                 {isFollowing ?
                     count === -1 ?
-                    <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>Incorrect Answer!</h1>
+                    <div style={{color: 'white', justifyContent:'center', alignItems:'center'}}>
+                        <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>Game Over!</h1>
+                        <h1 style={{color: 'white', fontSize:35, justifyContent:'flex-start', alignItems:'center'}}>You have {3 - strikes} strikes left</h1>
+                    </div>
                     :
                     strikes === 3 ?
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>You have reached 3 strikes!</h1>
                     :
                     count === MAX_QUESTIONS ?
-                    <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>You made it to the end!</h1>
+                    <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>{count}/{MAX_QUESTIONS}</h1>
                     :
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>{question}</h1>
                     :

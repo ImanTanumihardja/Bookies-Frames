@@ -5,7 +5,6 @@ import { kv } from '@vercel/kv';
 import { time } from 'console';
 
 const MAX_QUESTIONS = 10;
-const TIME_LIMIT = 15000
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   const questions : Record<string, any> = {
@@ -131,6 +130,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   let count : number = parseInt(req.nextUrl.searchParams.get("count") || '-1')
   const prevCorrectIndex = parseInt(req.nextUrl.searchParams.get("index") || '-1')
+  let questionIndexes : number[] = decodeURIComponent(req.nextUrl.searchParams.get("questionIndexes") || '').split(',').map(Number);
   
   let options : string[] = [];
   let mode : string = 'easy';
@@ -150,22 +150,30 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     // End quiz
     count = -1;
-    postUrl = `${process.env['HOST']}/api/frames/trivia?count=-1`
+    postUrl = `${process.env['HOST']}/api/frames/trivia?count=0`
   }
   else { // Continue game
     console.log('Got the right answer');
     count++;
-    let questionIndex : number = Math.floor(Math.random() * 7);
+
+    // Easy
+    let questionIndex : number = questionIndexes[Math.floor(Math.random() * (questionIndexes.length - 1))];
 
     if (count > 2 && count < 7) {
       // Easy
       mode = 'medium';
-      questionIndex = Math.floor(Math.random() * 9);
+      if (count === 3) {
+        questionIndexes = Array.from({ length: (questions[mode].length - 1) }, (_, index) => index + 1);
+      }
+      questionIndex = questionIndexes[Math.floor(Math.random() * (questionIndexes.length - 1))];
     }
     else if (count >= 7) {
       // Hard
       mode = 'hard';
-      questionIndex = Math.floor(Math.random() * 6);
+      if (count === 7) {
+        questionIndexes = Array.from({ length: (questions[mode].length - 1) }, (_, index) => index + 1);
+      }
+      questionIndex = questionIndexes[Math.floor(Math.random() * (questionIndexes.length - 1))];
     }
 
     options = questions[mode][questionIndex].options;
@@ -176,11 +184,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     options = options.sort(() => Math.random() - 0.5);
     correctIndex = options.indexOf(correctAnswer);
 
+    // Remove question from array
+    questionIndexes.splice(questionIndexes.indexOf(questionIndex), 1);
 
     postUrl = `${process.env['HOST']}/api/frames/trivia?count=${count}&index=${correctIndex}`
   }
 
-  const imageUrl = generateUrl(`api/frames/trivia/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.PROMPT]: question, [RequestProps.WINS]: count, [RequestProps.LOSSES]: user.strikes}, true, true);
+  const imageUrl = generateUrl(`api/frames/trivia/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.PROMPT]: question, [RequestProps.WINS]: count, [RequestProps.LOSSES]: user.strikes, [RequestProps.ARRAY]: questionIndexes}, true, true);
 
   const frame: Frame = {
     version: "vNext",
