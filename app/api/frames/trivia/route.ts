@@ -129,7 +129,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   let count : number = parseInt(req.nextUrl.searchParams.get("count") || '-1')
   const prevCorrectIndex = parseInt(req.nextUrl.searchParams.get("index") || '-1')
-  let questionIndexes : number[] = decodeURIComponent(req.nextUrl.searchParams.get("questionIndexes") || '').split(',').map(Number);
+  let questionIndexes : number[] = decodeURIComponent(req.nextUrl.searchParams.get("array") || '').split(',').map(Number);
   
   let options : string[] = [];
   let mode : string = 'easy';
