@@ -183,6 +183,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     options = options.sort(() => Math.random() - 0.5);
     correctIndex = options.indexOf(correctAnswer);
 
+    console.log(correctAnswer)
+
     // Remove question from array
     questionIndexes.splice(questionIndexes.indexOf(questionIndex), 1);
 
