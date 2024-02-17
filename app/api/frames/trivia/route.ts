@@ -199,7 +199,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: count !== -1 && count != MAX_QUESTIONS ? [{label:`${options[0]}`, action: 'post'}, {label:`${options[1]}`, action: 'post'}, {label:`${options[2]}`, action: 'post'}, {label:`${options[3]}`, action: 'post'}] : user?.strikes < 3 && count === -1 ? [{label:`Try Again`, action: 'post'}] : count >= MAX_QUESTIONS ? [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}] : undefined,
+    buttons: user?.strikes < 3 ? [{label:`Try Again`, action: 'post'}] : count !== -1 && count != MAX_QUESTIONS ? [{label:`${options[0]}`, action: 'post'}, {label:`${options[1]}`, action: 'post'}, {label:`${options[2]}`, action: 'post'}, {label:`${options[3]}`, action: 'post'}] : count >= MAX_QUESTIONS ? [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}] : undefined,
     postUrl: postUrl,
   };
 
