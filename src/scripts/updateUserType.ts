@@ -10,7 +10,7 @@ const kv = createClient({
 });
 
 // Create a script that access kv storage and reset the hasClaimed value
-async function resetHasClaimed() {
+async function updateUserType() {
     // Get event
     const eventData : Event = await kv.hget(`events`, `sblviii-ml`);
 
@@ -66,11 +66,11 @@ async function resetHasClaimed() {
 }   
 
 if (require.main === module) {
-    resetHasClaimed().then(() => process.exit(0))
+    updateUserType().then(() => process.exit(0))
       .catch(error => {
         console.error(error)
         process.exit(1)
       })
   }
 
-  module.exports = resetHasClaimed
+  module.exports = updateUserType

@@ -31,8 +31,16 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         throw new Error('Profile-finder Error: Could not find user');
       }
     })
-    .catch ( (error) => {
-      console.error('Profile-finder Error: Could not find user:', error);
+    .catch ( async (error) => {
+      console.error('Profile-finder Error: Could not find user by username:', error);
+      console.log('Trying to search by fid')
+
+      try {
+        // Try searching by fid
+        profile = (await neynarClient.fetchBulkUsers([parseInt(username)], {viewerFid: BOOKIES_FID})).users[0];
+      } catch (error) {
+        console.log('Profile-finder Error: Could not find user by fid:', error);
+      }
     })
     .finally(async () => {
         if (profile !== null) {
