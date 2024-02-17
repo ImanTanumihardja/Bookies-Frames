@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { NeynarAPIClient } from "@neynar/nodejs-sdk";
 import { User, Bet} from '../app/types';
-import {validateFrameMessage as getFrameMessage} from 'frames.js'
+import { getFrameMessage } from '@coinbase/onchainkit'
 import { FrameValidationData } from '../app/types';
 
 export enum RequestProps {
@@ -182,23 +182,30 @@ export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
 
 export async function validateFrameMessage(req: NextRequest, checkFollowingBookies=true) {
     const body = await req.json();
-    const {isValid, message} = await getFrameMessage(body, {hubHttpUrl: 'https://hub-api.neynar.com', hubRequestOptions: {headers: {authorization: `Bearer ${process.env['NEYNAR_API_KEY']}`}}});
-    
-    if (!isValid) {
+
+    let message: FrameValidationData = DEFAULT_FRAME_VALIDATION_DATA
+
+    // Use onchainkit to validate the frame message
+    const data = await getFrameMessage(body, {neynarApiKey: process.env['NEYNAR_API_KEY'] || ""});
+
+    if (!data.isValid) {
         throw new Error('Invalid frame message');
     }
 
-    let formatedMessage : FrameValidationData = DEFAULT_FRAME_VALIDATION_DATA
-
-    formatedMessage.button = message?.data.frameActionBody.buttonIndex || 0
-    formatedMessage.input = message?.data.frameActionBody.inputText.toString() || ""
-    formatedMessage.fid = message?.data.fid || 0
+    message.button = data?.message?.button || 0
+    message.following = data?.message?.following || false
+    message.input = data?.message?.input || ""
+    message.fid = data?.message?.interactor.fid || 0
+    message.custody_address = data?.message?.interactor.custody_address || ""
+    message.verified_accounts = data?.message?.interactor.verified_accounts || []
+    message.liked = data?.message?.liked || false
+    message.recasted = data?.message?.recasted || false
 
     if (checkFollowingBookies){
-        formatedMessage.followingBookies = true //await checkIsFollowingBookies(message.fid)
+        message.followingBookies = true //await checkIsFollowingBookies(message.fid)
     }
 
-    return formatedMessage
+    return message
 }
 
 export function convertImpliedProbabilityToAmerican(impliedProbability: number) {
