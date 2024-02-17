@@ -30,11 +30,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
       {
         question: 'What athlete holds the record for most Olympic medals?',
-        options: ['Michael Phelps', 'Carl Lewis', 'Usain Bolt', 'Paavo Nurmi'],
+        options: ['M. Phelps', 'Carl Lewis', 'Usain Bolt', 'Paavo Nurmi'],
       },
       {
         question: 'In soccer, what does the term hattrick mean?',
-        options: ['3 goals', '2 redcards', '2 goals', 'Hitting the post twice'],
+        options: ['3 goals', '2 redcards', '2 goals', '3 assists'],
       },
       {
         question: 'How many NBA championships did Michael Jordan win with the Chicago Bulls?',
@@ -44,7 +44,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     'medium': [
       {
         question: 'Who is the oldest active player in the NBA?',
-        options: ['Lebron James', 'Vince Carter', 'Chris Paul', 'P.J. Tucker'],
+        options: ['Lebron', 'Vince Carter', 'Chris Paul', 'P.J. Tucker'],
       },
       {
         question: 'How many rings are on the Olympic rings?',
@@ -52,7 +52,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
       {
         question: 'Which basketball player hold the record for most points scored in a single game?',
-        options: ['Wilt Chamberlain', 'Michael Jordan', 'Bill Russell', 'Lebron James'],
+        options: ['Wilt Chamberlain', 'Michael Jordan', 'Bill Russell', 'Lebron'],
       },
       {
         question: 'What is the name of the trophy given to the winners of the NHL?',
@@ -72,7 +72,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
       {
         question: 'Which baseball player has the most home runs of all time?',
-        options: ['Barry Bonds', 'Hank Aaron', 'Babe Ruth', 'Alex Rodriguez'],
+        options: ['Barry Bonds', 'Hank Aaron', 'Babe Ruth', 'A-Rod'],
       },
       {
         question: 'How many personal fouls does a player get to be ejected from an NBA basketball game?',
@@ -80,7 +80,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
       {
         question: 'Who was the NBA MVP in 2023?',
-        options: ['Joel Embiid', 'Giannis', 'Nikola Jokic', 'Lebron James'],
+        options: ['Joel Embiid', 'Giannis', 'Nikola Jokic', 'Lebron'],
       },
   ],
     'hard': [
@@ -98,7 +98,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
   {
         question: 'Who holds the record in basketball for the most fouls?',
-        options: ['Kareem', 'Dennis Rodman', 'Lebron James', 'Draymond Green'],
+        options: ['Kareem', 'Dennis Rodman', 'Lebron', 'Draymond Green'],
       },
   {
         question: 'Who has the most total assists this season in the NBA?',
@@ -149,7 +149,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     await kv.hset('trivia', {[fid.toString()]: user});
 
     // End quiz
-    user.score = count;
+    user.score = count - 1;
     count = -1;
     postUrl = `${process.env['HOST']}/api/frames/${FrameNames.TRIVIA}?count=0`
   }
