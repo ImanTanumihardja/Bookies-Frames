@@ -73,7 +73,6 @@ function resetHasClaimed() {
                 case 6:
                     // Filter out every other element
                     users = users.filter(function (fid, index) { return index % 2 === 0; });
-                    users = users.filter(function (fid) { return fid === 313859; });
                     _i = 0, users_1 = users;
                     _a.label = 7;
                 case 7:
@@ -84,7 +83,7 @@ function resetHasClaimed() {
                 case 8:
                     user = _a.sent();
                     if (user.balance !== undefined) { // Check if user has already been updated
-                        console.log("User: ".concat(fid, " already updated"));
+                        console.log("User: ".concat(fid, " already updated\n"));
                         return [3 /*break*/, 10];
                     }
                     updatedUser = {
@@ -100,11 +99,11 @@ function resetHasClaimed() {
                     if (eventData.bets[fid] !== undefined) {
                         updatedUser.bets.push('sblviii-ml');
                     }
-                    console.log("Changed User: ".concat(JSON.stringify(updatedUser)));
+                    console.log("Changed User: ".concat(JSON.stringify(updatedUser), "\n"));
                     return [4 /*yield*/, kv.hset(fid.toString(), updatedUser)];
                 case 9:
                     _a.sent();
-                    return [3 /*break*/, 11];
+                    _a.label = 10;
                 case 10:
                     _i++;
                     return [3 /*break*/, 7];

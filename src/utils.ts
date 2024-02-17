@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
 import { NeynarAPIClient } from "@neynar/nodejs-sdk";
 import { User, Bet} from '../app/types';
-import { getFrameMessage } from '@coinbase/onchainkit'
-// import {validateFrameMessage as validateFrame} from 'frames.js'
+import { getFrameMessage as getFrameMessageOnchain } from '@coinbase/onchainkit'
+import {validateFrameMessage as getFrameMessage} from 'frames.js'
 import { FrameValidationData } from '../app/types';
 
 export enum RequestProps {
@@ -188,7 +188,7 @@ export async function validateFrameMessage(req: NextRequest, checkFollowingBooki
 
     try {
         // Use onchainkit to validate the frame message
-        const data = await getFrameMessage(body, {neynarApiKey: process.env['NEYNAR_API_KEY'] || ""});
+        const data = await getFrameMessageOnchain(body, {neynarApiKey: process.env['NEYNAR_API_KEY'] || ""});
 
         if (!data.isValid) {
             throw new Error('Invalid frame message');
@@ -202,19 +202,21 @@ export async function validateFrameMessage(req: NextRequest, checkFollowingBooki
         message.verified_accounts = data?.message?.interactor.verified_accounts || []
         message.liked = data?.message?.liked || false
         message.recasted = data?.message?.recasted || false
-
-        // message.button = data?.message?.data.frameActionBody.buttonIndex || 0
-        // message.input = data?.message?.data.frameActionBody.inputText.toString() || ""
-        // message.fid = data?.message?.data.fid || 0
-
-        if (checkFollowingBookies){
-            message.followingBookies = true //await checkIsFollowingBookies(message.fid)
-        }
-
     }
     catch (error) {
-        throw new Error(`Error validating: ${error}`)
+        console.error(`Error validating using onchain: ${error}`)
+        console.log('Using frames.js')
 
+        const data = await getFrameMessage(body);
+
+        message.button = data?.message?.data.frameActionBody.buttonIndex || 0
+        message.input = data?.message?.data.frameActionBody.inputText.toString() || ""
+        message.fid = data?.message?.data.fid || 0
+        
+    }
+
+    if (checkFollowingBookies){
+        message.followingBookies = true //await checkIsFollowingBookies(message.fid)
     }
 
     return message

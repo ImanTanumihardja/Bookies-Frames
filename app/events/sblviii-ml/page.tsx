@@ -2,6 +2,7 @@ import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { FrameNames, generateUrl } from '../../../src/utils';
+import { Frame, getFrameFlattened } from 'frames.js';
 
 const frameName = 'sblviii-ml'
 const options = ['Chiefs', '49ers']
@@ -23,6 +24,25 @@ const frameMetadata = getFrameMetadata({
   post_url: `${process.env['HOST']}/api/frames/${FrameNames.BETSLIP}?eventName=${FrameNames.SBLVIII_ML}`
 });
 
+
+const frame : Frame = {
+  version: "vNext",
+  inputText: 'How much do you want to bet?',
+
+  buttons: [
+    {
+      label: options[0],
+      action: 'post',
+    },
+    {
+      label: options[1],
+      action: 'post',
+    },
+  ],
+  image: imageUrl,
+  postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BETSLIP}?eventName=${FrameNames.SBLVIII_ML}`
+};
+
 export const metadata: Metadata = {
   title: frameName,
   description: 'Who will win Superbowl LVIII?',
@@ -31,9 +51,7 @@ export const metadata: Metadata = {
     description: 'Who will win Superbowl LVIII?', 
     images: [imageUrl],
   },
-  other: {
-    ...frameMetadata,
-  },
+  other: getFrameFlattened(frame),
 };
 
 export default function Page() {

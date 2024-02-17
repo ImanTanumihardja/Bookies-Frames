@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
-import { RequestProps, getRequestProps } from '../../../../../src/utils';
-import NotFollowing from '../../../../../src/components/NotFollowing';
 
 // Fonts
 const plusJakartaSans = fetch(

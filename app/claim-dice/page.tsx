@@ -1,4 +1,3 @@
-import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { FrameNames, generateUrl } from '../../src/utils';

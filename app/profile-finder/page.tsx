@@ -1,21 +1,22 @@
-import { getFrameMetadata } from '@coinbase/onchainkit';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { FrameNames, generateUrl } from '../../src/utils';
+import { Frame, getFrameFlattened } from 'frames.js';
 
 const imageUrl = generateUrl(`thumbnails/${FrameNames.PROFILE_FINDER}.gif`, [], false, true)
 
-const frameMetadata = getFrameMetadata({
+const frame : Frame = {
+  version: "vNext",
   buttons: [
     {
       label: 'Search',
       action: 'post',
     },
   ],
-  input: {text: 'Enter a username'},
+  inputText: 'Enter a username',
   image: imageUrl,
-  post_url: `${process.env['HOST']}/api/frames/profile-finder`,
-});
+  postUrl: `${process.env['HOST']}/api/frames/profile-finder`,
+};
 
 export const metadata: Metadata = {
   title: FrameNames.PROFILE_FINDER,
@@ -25,11 +26,9 @@ export const metadata: Metadata = {
     description: 'Search for a profile!', 
     images: [imageUrl],
   },
-  other: {
-    ...frameMetadata,
-  },
+  other: getFrameFlattened(frame),
 };
 
 export default function Page() {
-  redirect('https://bookies-rho.vercel.app/');
+  // redirect('https://bookies-rho.vercel.app/');
 }

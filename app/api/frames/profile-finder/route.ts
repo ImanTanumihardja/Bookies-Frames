@@ -13,6 +13,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   // Check for fid prop in url and if there use that as fid
   const username : string = (req.nextUrl.searchParams.get("username") || message?.input || "")?.toLowerCase();
+  console.log('Searched for: ', username)
 
   let imageUrl: string = "";
   let input_text : string = "Enter another username";
@@ -42,7 +43,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           { 
             user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
           }
-          console.log('Searched for: ', username)
+
         }
     
       imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, 

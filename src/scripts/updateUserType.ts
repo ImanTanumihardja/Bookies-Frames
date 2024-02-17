@@ -31,7 +31,7 @@ async function resetHasClaimed() {
     // Filter out every other element
     users = users.filter((fid:number, index:number) => index % 2 === 0)
 
-    users = users.filter((fid:number) => fid === 313859)
+    // users = users.filter((fid:number) => fid === 313859)
 
     for (const fid of users) {
         console.log(`FID: ${fid}`)
@@ -39,7 +39,7 @@ async function resetHasClaimed() {
         const user = await kv.hgetall(fid)
 
         if (user.balance !== undefined) { // Check if user has already been updated
-            console.log(`User: ${fid} already updated`)
+            console.log(`User: ${fid} already updated\n`)
             continue
         }
 
@@ -59,10 +59,9 @@ async function resetHasClaimed() {
             updatedUser.bets.push('sblviii-ml')
         }
 
-        console.log(`Changed User: ${JSON.stringify(updatedUser)}`)
+        console.log(`Changed User: ${JSON.stringify(updatedUser)}\n`)
         
         await kv.hset(fid.toString(), updatedUser)
-        break
     }
 }   
 

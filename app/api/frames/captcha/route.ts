@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FrameNames } from '../../../../src/utils';
-import { getFrameHtmlResponse } from '@coinbase/onchainkit';
+import { getFrameHtml} from "frames.js";
 import { revalidatePath } from 'next/cache';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
@@ -14,9 +14,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   revalidatePath(`${process.env['HOST']}/api/frames/${FrameNames.CLAIM_DICE}`)
 
   return new NextResponse(
-    getFrameHtmlResponse({
+    getFrameHtml({
+      version: "vNext",
       image: imageUrl,
-      buttons: [{label:'🎩'}, {label:'🏆'}, {label:'🤑'}, {label:'🏇'}],
+      buttons: [{label:'🎩', action:'post'}, {label:'🏆', action:'post'}, {label:'🤑', action:'post'}, {label:'🏇', action:'post'}],
       postUrl: `${process.env['HOST']}/api/frames/${FrameNames.CLAIM_DICE}?captcha=${randomIndex}`,
     }),
   );

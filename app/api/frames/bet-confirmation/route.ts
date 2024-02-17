@@ -1,4 +1,4 @@
-import { getFrameHtmlResponse } from '@coinbase/onchainkit';
+import { getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { Event, User, Bet } from '../../../types';
@@ -67,9 +67,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const imageUrl = generateUrl(`api/frames/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: stake, [RequestProps.PREDICTION]: prediction, [RequestProps.BUTTON_INDEX]: button}, true, true);
 
   return new NextResponse(
-    getFrameHtmlResponse({
+    getFrameHtml({
+      version: "vNext",
       image: `${imageUrl}`,
-      buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}]
+      buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'} ],
+      postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BET_CONFIRMATION}`,
     }),
   );
 }
