@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Frame, getFrameHtml } from "frames.js";
 import { generateUrl, RequestProps, validateFrameMessage, FrameNames } from '../../../../src/utils';
 import { kv } from '@vercel/kv';
-import { time } from 'console';
 
 const MAX_QUESTIONS = 10;
 
@@ -31,7 +30,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
       {
         question: 'What athlete holds the record for most Olympic medals?',
-        options: ['Michael\nPhelps', 'Carl Lewis', 'Usain Bolt', 'Paavo Nurmi'],
+        options: ['Michael Phelps', 'Carl Lewis', 'Usain Bolt', 'Paavo Nurmi'],
       },
       {
         question: 'In soccer, what does the term hattrick mean?',
@@ -53,7 +52,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
       {
         question: 'Which basketball player hold the record for most points scored in a single game?',
-        options: ['Wilt\nChamberlain', 'Michael Jordan', 'Bill Russell', 'Lebron James'],
+        options: ['Wilt Chamberlain', 'Michael Jordan', 'Bill Russell', 'Lebron James'],
       },
       {
         question: 'What is the name of the trophy given to the winners of the NHL?',
@@ -140,7 +139,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (user?.strikes >= 3) { // You ran out of strikes
     // Game over
-    postUrl = `${process.env['HOST']}/api/frames/trivia?count=${count}&index=${correctIndex}`
+    postUrl = `${process.env['HOST']}/api/frames${FrameNames.TRIVIA}?count=${count}&index=${correctIndex}`
   }
   else if (prevCorrectIndex !== -1 && prevCorrectIndex !== button - 1) { // Got the wrong answer and not first question or
     // Wrong answer
@@ -150,7 +149,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     // End quiz
     count = -1;
-    postUrl = `${process.env['HOST']}/api/frames/trivia?count=0`
+    postUrl = `${process.env['HOST']}/api/frames${FrameNames.TRIVIA}?count=0`
   }
   else { // Continue game
     console.log('Got the right answer');
@@ -187,10 +186,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     // Remove question from array
     questionIndexes.splice(questionIndexes.indexOf(questionIndex), 1);
 
-    postUrl = `${process.env['HOST']}/api/frames/trivia?count=${count}&index=${correctIndex}`
+    postUrl = `${process.env['HOST']}/api/frames${FrameNames.TRIVIA}?count=${count}&index=${correctIndex}`
   }
 
-  const imageUrl = generateUrl(`api/frames/trivia/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.PROMPT]: question, [RequestProps.WINS]: count, [RequestProps.LOSSES]: user.strikes, [RequestProps.ARRAY]: questionIndexes}, true, true);
+  const imageUrl = generateUrl(`api/frames${FrameNames.TRIVIA}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.PROMPT]: question, [RequestProps.WINS]: count, [RequestProps.LOSSES]: user.strikes, [RequestProps.ARRAY]: questionIndexes}, true, true);
 
   const frame: Frame = {
     version: "vNext",
