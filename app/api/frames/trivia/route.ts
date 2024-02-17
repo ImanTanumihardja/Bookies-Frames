@@ -145,9 +145,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     // Wrong answer
     console.log('Wrong answer');
     user.strikes = parseInt(user.strikes.toString()) + 1;
+    user.score = Math.max(count, parseInt(user.score.toString()));
     await kv.hset('trivia', {[fid.toString()]: user});
 
     // End quiz
+    user.score = count;
     count = -1;
     postUrl = `${process.env['HOST']}/api/frames/${FrameNames.TRIVIA}?count=0`
   }
