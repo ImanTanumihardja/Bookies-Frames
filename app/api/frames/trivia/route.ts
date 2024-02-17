@@ -5,7 +5,7 @@ import { kv } from '@vercel/kv';
 import { time } from 'console';
 
 const MAX_QUESTIONS = 10;
-const TIME_LIMIT = 30000
+const TIME_LIMIT = 15000
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   const questions : Record<string, any> = {
@@ -144,6 +144,18 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     // Game over
     postUrl = `${process.env['HOST']}/api/frames/trivia?count=${count}&index=${correctIndex}&timestamp=${timer}`
   }
+  else if ((prevCorrectIndex !== -1 && new Date().getTime() - startTime > TIME_LIMIT)) { // Time's up
+    // Wrong answer
+    console.log("Time's up")
+    user.strikes = parseInt(user.strikes.toString()) + 1;
+    await kv.hset('trivia', {[fid.toString()]: user});
+
+    // End quiz
+    timer = -1
+    count = -1;
+
+    postUrl = `${process.env['HOST']}/api/frames/trivia?count=-1`
+  }
   else if (prevCorrectIndex !== -1 && prevCorrectIndex !== button - 1) { // Got the wrong answer and not first question or
     // Wrong answer
     console.log('Wrong answer')
@@ -152,17 +164,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     // End quiz
     count = -1;
-    postUrl = `${process.env['HOST']}/api/frames/trivia?count=-1`
-  }
-  else if ((prevCorrectIndex !== -1 && new Date().getTime() - startTime > TIME_LIMIT)) { // Time's up
-    // Wrong answer
-    console.log('Time up')
-    user.strikes = parseInt(user.strikes.toString()) + 1;
-    await kv.hset('trivia', {[fid.toString()]: user});
-
-    // End quiz
-    timer = -1
-
     postUrl = `${process.env['HOST']}/api/frames/trivia?count=-1`
   }
   else { // Continue game
@@ -189,7 +190,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     options = options.sort(() => Math.random() - 0.5);
     correctIndex = options.indexOf(correctAnswer);
-    console.log(correctAnswer, correctIndex)
+
+    // encode correctIndex
+
 
     postUrl = `${process.env['HOST']}/api/frames/trivia?count=${count}&index=${correctIndex}&timestamp=${timer}`
   }

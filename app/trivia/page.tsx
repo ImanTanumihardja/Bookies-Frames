@@ -14,7 +14,7 @@ const frame : Frame = {
     },
   ],
   image: imageUrl,
-  postUrl: `${process.env['HOST']}/api/frames/trivia?count=-1`,
+  postUrl: `${process.env['HOST']}/api/frames/trivia?count=0`,
 };
 
 export const metadata: Metadata = {

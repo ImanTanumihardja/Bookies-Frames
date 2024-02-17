@@ -24,11 +24,11 @@ export async function GET(req: NextRequest) {
                     strikes === 3 ?
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>You have reached 3 strikes!</h1>
                     :
-                    count === -1 ?
-                    <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>Incorrect Answer!</h1>
-                    :
                     timer === -1 ?
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>You did not submit answer in time!</h1>
+                    :
+                    count === -1 ?
+                    <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>Incorrect Answer!</h1>
                     :
                     count === MAX_QUESTIONS ?
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>You made it to the end!</h1>
