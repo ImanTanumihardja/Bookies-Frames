@@ -146,12 +146,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     // Wrong answer
     console.log('Wrong answer');
     user.strikes = parseInt(user.strikes.toString()) + 1;
-    user.score = Math.max(count - 1, parseInt(user.score.toString()));
+    user.score = Math.max(count, parseInt(user.score.toString()));
     await kv.hset('trivia', {[fid.toString()]: user});
 
     // End quiz
     count = -1;
-    postUrl = `${process.env['HOST']}/api/frames/${FrameNames.TRIVIA}?count=0&array=${EASY_QUESTION_INDEXES}`
+    postUrl = `${process.env['HOST']}/api/frames/${FrameNames.TRIVIA}?count=-1&array=${EASY_QUESTION_INDEXES}`
   }
   else { // Continue game
     console.log('Got the right answer');
