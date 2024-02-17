@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
 import { NeynarAPIClient } from "@neynar/nodejs-sdk";
 import { User, Bet} from '../app/types';
-import { getFrameMessage as getFrameMessageOnchain } from '@coinbase/onchainkit'
-import {validateFrameMessage as validateFrame} from 'frames.js'
+import { getFrameMessage } from '@coinbase/onchainkit'
+// import {validateFrameMessage as validateFrame} from 'frames.js'
 import { FrameValidationData } from '../app/types';
 
 export enum RequestProps {
@@ -188,24 +188,24 @@ export async function validateFrameMessage(req: NextRequest, checkFollowingBooki
 
     try {
         // Use onchainkit to validate the frame message
-        const data = await validateFrame(body);
+        const data = await getFrameMessage(body);
 
         if (!data.isValid) {
             throw new Error('Invalid frame message');
         }
 
-        // message.button = data?.message?.button || 0
-        // message.following = data?.message?.following || false
-        // message.input = data?.message?.input || ""
-        // message.fid = data?.message?.interactor.fid || 0
-        // message.custody_address = data?.message?.interactor.custody_address || ""
-        // message.verified_accounts = data?.message?.interactor.verified_accounts || []
-        // message.liked = data?.message?.liked || false
-        // message.recasted = data?.message?.recasted || false
+        message.button = data?.message?.button || 0
+        message.following = data?.message?.following || false
+        message.input = data?.message?.input || ""
+        message.fid = data?.message?.interactor.fid || 0
+        message.custody_address = data?.message?.interactor.custody_address || ""
+        message.verified_accounts = data?.message?.interactor.verified_accounts || []
+        message.liked = data?.message?.liked || false
+        message.recasted = data?.message?.recasted || false
 
-        message.button = data?.message?.data.frameActionBody.buttonIndex || 0
-        message.input = data?.message?.data.frameActionBody.inputText.toString() || ""
-        message.fid = data?.message?.data.fid || 0
+        // message.button = data?.message?.data.frameActionBody.buttonIndex || 0
+        // message.input = data?.message?.data.frameActionBody.inputText.toString() || ""
+        // message.fid = data?.message?.data.fid || 0
 
         if (checkFollowingBookies){
             message.followingBookies = true //await checkIsFollowingBookies(message.fid)
