@@ -169,17 +169,17 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   else { // Continue game
     console.log('Got the right answer')
     count++;
-    let questionIndex : number = Math.floor(Math.random() * 8);;
+    let questionIndex : number = Math.floor(Math.random() * 7);
 
     if (count > 4 && count <= 7) {
       // Easy
       mode = 'medium';
-      questionIndex = Math.floor(Math.random() * 10);
+      questionIndex = Math.floor(Math.random() * 9);
     }
     else if (count > 7) {
       // Hard
       mode = 'hard';
-      questionIndex = Math.floor(Math.random() * 7);
+      questionIndex = Math.floor(Math.random() * 6);
     }
 
     options = questions[mode][questionIndex].options;
@@ -187,11 +187,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     // shuffle options but keep the track of the right answer
     const correctAnswer = options[0];
-
     options = options.sort(() => Math.random() - 0.5);
     correctIndex = options.indexOf(correctAnswer);
-
-    // encode correctIndex
 
 
     postUrl = `${process.env['HOST']}/api/frames/trivia?count=${count}&index=${correctIndex}&timestamp=${timer}`
