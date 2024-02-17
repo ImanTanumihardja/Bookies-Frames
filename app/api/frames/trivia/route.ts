@@ -168,7 +168,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       }
       questionIndex = questionIndexes[Math.floor(Math.random() * (questionIndexes.length - 1))];
     }
-    else if (count >= 7) {
+    else if (count >= 7 && count < MAX_QUESTIONS) {
       // Hard
       mode = 'hard';
       if (count === 7) {
