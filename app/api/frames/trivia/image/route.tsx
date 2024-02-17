@@ -16,14 +16,11 @@ const MAX_QUESTIONS = 10;
 
 export async function GET(req: NextRequest) {
     try {
-        const {isFollowing, prompt: question, wins: count, timestamp: timer, losses: strikes} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.PROMPT, RequestProps.WINS, RequestProps.TIMESTAMP, RequestProps.LOSSES]);
+        const {isFollowing, prompt: question, wins: count, timestamp: timer, losses: strikes} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.PROMPT, RequestProps.WINS, RequestProps.LOSSES]);
 
         return new ImageResponse(
             <FrameBase>
                 {isFollowing ?
-                    timer === -1 ?
-                    <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>You did not submit answer in time!</h1>
-                    :
                     count === -1 ?
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>Incorrect Answer!</h1>
                     :

@@ -119,7 +119,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   // Verify the frame request
   const message = await validateFrameMessage(req);
-  let timer = new Date().getTime();
   
   const {followingBookies: isFollowing, fid , button} = message;
   console.log('FID: ', fid.toString())
@@ -132,7 +131,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   let count : number = parseInt(req.nextUrl.searchParams.get("count") || '-1')
   const prevCorrectIndex = parseInt(req.nextUrl.searchParams.get("index") || '-1')
-  const startTime = parseInt(req.nextUrl.searchParams.get("timestamp") || '0')
   
   let options : string[] = [];
   let mode : string = 'easy';
@@ -142,19 +140,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (user?.strikes >= 3) { // You ran out of strikes
     // Game over
-    postUrl = `${process.env['HOST']}/api/frames/trivia?count=${count}&index=${correctIndex}&timestamp=${timer}`
-  }
-  else if ((prevCorrectIndex !== -1 && new Date().getTime() - startTime > TIME_LIMIT)) { // Time's up
-    // Wrong answer
-    console.log("Time's up")
-    user.strikes = parseInt(user.strikes.toString()) + 1;
-    await kv.hset('trivia', {[fid.toString()]: user});
-
-    // End quiz
-    timer = -1
-    count = -1;
-
-    postUrl = `${process.env['HOST']}/api/frames/trivia?count=-1`
+    postUrl = `${process.env['HOST']}/api/frames/trivia?count=${count}&index=${correctIndex}`
   }
   else if (prevCorrectIndex !== -1 && prevCorrectIndex !== button - 1) { // Got the wrong answer and not first question or
     // Wrong answer
@@ -191,10 +177,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     correctIndex = options.indexOf(correctAnswer);
 
 
-    postUrl = `${process.env['HOST']}/api/frames/trivia?count=${count}&index=${correctIndex}&timestamp=${timer}`
+    postUrl = `${process.env['HOST']}/api/frames/trivia?count=${count}&index=${correctIndex}`
   }
 
-  const imageUrl = generateUrl(`api/frames/trivia/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.PROMPT]: question, [RequestProps.WINS]: count, [RequestProps.TIMESTAMP]: timer, [RequestProps.LOSSES]: user.strikes}, true, true);
+  const imageUrl = generateUrl(`api/frames/trivia/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.PROMPT]: question, [RequestProps.WINS]: count, [RequestProps.LOSSES]: user.strikes}, true, true);
 
   const frame: Frame = {
     version: "vNext",
