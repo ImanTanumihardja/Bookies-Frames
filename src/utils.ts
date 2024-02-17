@@ -203,8 +203,6 @@ export async function validateFrameMessage(req: NextRequest, checkFollowingBooki
         // message.liked = data?.message?.liked || false
         // message.recasted = data?.message?.recasted || false
 
-        // message = { ...message, ...data.message }
-
         message.button = data?.message?.data.frameActionBody.buttonIndex || 0
         message.input = data?.message?.data.frameActionBody.inputText.toString() || ""
         message.fid = data?.message?.data.fid || 0
