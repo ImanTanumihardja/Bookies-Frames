@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, userAgent } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
 import NotFollowing from '../../../../../src/components/NotFollowing';
@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
 
         return new ImageResponse(
             <FrameBase>
-                {(count !== -1 && count !== MAX_QUESTIONS) && <h1 style={{color: 'white', position:'absolute', top: 10, right: 25, fontSize:25}}> {count}/{MAX_QUESTIONS}</h1>}
+                {(count !== -1 && count !== MAX_QUESTIONS && strikes !== 3) && <h1 style={{color: 'white', position:'absolute', top: 10, right: 25, fontSize:25}}> {count}/{MAX_QUESTIONS}</h1>}
                 {isFollowing ?
                     count === -1 ?
                     <div style={{color: 'white', justifyContent:'center', alignItems:'center', display:'flex', flexDirection:'column'}}>
