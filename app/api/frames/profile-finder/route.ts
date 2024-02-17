@@ -16,7 +16,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   console.log('Searched for: ', username)
 
   let imageUrl: string = "";
-  let input_text : string = "Enter another username";
+  let input_text : string = "Enter another username or fid";
 
   if (username !== "") {
     let profile: any = null;
@@ -37,7 +37,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
       try {
         // Try searching by fid
-        profile = (await neynarClient.fetchBulkUsers([parseInt(username)], {viewerFid: BOOKIES_FID})).users[0];
+        const fid = parseInt(username);
+        if (!fid) {
+          throw new Error('Invalid fid');
+        }
+
+        profile = (await neynarClient.fetchBulkUsers([fid], {viewerFid: BOOKIES_FID})).users[0];
       } catch (error) {
         console.log('Profile-finder Error: Could not find user by fid:', error);
       }

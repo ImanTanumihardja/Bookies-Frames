@@ -13,7 +13,7 @@ const frame : Frame = {
       action: 'post',
     },
   ],
-  inputText: 'Enter a username',
+  inputText: 'Enter a username or fid',
   image: imageUrl,
   postUrl: `${process.env['HOST']}/api/frames/profile-finder`,
 };
