@@ -52,11 +52,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
       {
         question: 'Which basketball player hold the record for most points scored in a single game?',
-        options: ['Wilt Chamberlain', 'Michael Jordan', 'Bill Russell', 'Lebron'],
+        options: ['Wilt C.', 'M. Jordan', 'Bill Russell', 'Lebron'],
       },
       {
         question: 'What is the name of the trophy given to the winners of the NHL?',
-        options: ['Stanley Cup', 'Lombardi Trophy', 'Rose Bowl', 'Ryder Cup'],
+        options: ['Stanley Cup', 'Gold Puck', 'Rose Bowl', 'Ryder Cup'],
       },
       {
         question: 'Which country has won the most FIFA World Cups?',
@@ -80,7 +80,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
       {
         question: 'Who was the NBA MVP in 2023?',
-        options: ['Joel Embiid', 'Giannis', 'Nikola Jokic', 'Lebron'],
+        options: ['J. Embiid', 'Giannis', 'N. Jokic', 'Lebron'],
       },
   ],
     'hard': [
@@ -98,11 +98,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
   {
         question: 'Who holds the record in basketball for the most fouls?',
-        options: ['Kareem', 'Dennis Rodman', 'Lebron', 'Draymond Green'],
+        options: ['Kareem', 'Dennis Rodman', 'Lebron', 'D. Green'],
       },
   {
         question: 'Who has the most total assists this season in the NBA?',
-        options: ['Trae Young', 'Tyrese Haliburton', 'Nikola Jokic', 'Michael Porter Jr.'],
+        options: ['Trae Young', 'T. Haliburton', 'Nikola Jokic', 'Michael Porter'],
       },
   {
         question: 'Besides the Buffalo Bills, what is the only other team in NFL history to lose in all four of their Super Bowl appearances?',
