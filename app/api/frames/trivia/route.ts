@@ -53,7 +53,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
       {
         question: 'Which basketball player hold the record for most points scored in a single game?',
-        options: ['Wilt C.', 'M. Jordan', 'Bill Russell', 'Lebron'],
+        options: ['Wilt C.', 'M. Jordan', 'B. Russell', 'Lebron'],
       },
       {
         question: 'What is the name of the trophy given to the winners of the NHL?',
@@ -99,7 +99,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
   {
         question: 'Who holds the record in basketball for the most fouls?',
-        options: ['Kareem', 'Dennis Rodman', 'Lebron', 'D. Green'],
+        options: ['Kareem', 'D. Rodman', 'Lebron', 'D. Green'],
       },
   {
         question: 'Who has the most total assists this season in the NBA?',
@@ -146,11 +146,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     // Wrong answer
     console.log('Wrong answer');
     user.strikes = parseInt(user.strikes.toString()) + 1;
-    user.score = Math.max(count, parseInt(user.score.toString()));
+    user.score = Math.max(count - 1, parseInt(user.score.toString()));
     await kv.hset('trivia', {[fid.toString()]: user});
 
     // End quiz
-    user.score = count - 2;
     count = -1;
     postUrl = `${process.env['HOST']}/api/frames/${FrameNames.TRIVIA}?count=0&array=${EASY_QUESTION_INDEXES}`
   }
@@ -176,6 +175,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         questionIndexes = Array.from({ length: (questions[mode].length - 1) }, (_, index) => index + 1);
       }
       questionIndex = questionIndexes[Math.floor(Math.random() * (questionIndexes.length - 1))];
+    }
+    else if (count === MAX_QUESTIONS) {
+      user.score = Math.max(count, parseInt(user.score.toString()));
+      await kv.hset('trivia', {[fid.toString()]: user});
     }
 
     options = questions[mode][questionIndex].options;
