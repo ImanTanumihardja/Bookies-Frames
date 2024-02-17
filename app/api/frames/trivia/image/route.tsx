@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
                 {(count !== -1 && count !== MAX_QUESTIONS && strikes !== 3) && <h1 style={{color: 'white', position:'absolute', top: 10, right: 25, fontSize:25}}> {count}/{MAX_QUESTIONS}</h1>}
                 {isFollowing ?
                     count === -1 ?
-                    <div style={{color: 'white', justifyContent:'center', alignItems:'center', display:'flex', flexDirection:'column'}}>
+                    <div style={{display:'flex', flexDirection:'column', color: 'white', justifyContent:'center', alignItems:'center'}}>
                         <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>Game Over!</h1>
                         <h1 style={{color: 'white', fontSize:35, justifyContent:'flex-start', alignItems:'center'}}>You have {3 - strikes} strikes left</h1>
                     </div>

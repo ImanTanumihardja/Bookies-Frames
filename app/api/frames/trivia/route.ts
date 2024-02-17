@@ -188,10 +188,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     // Remove question from array
     questionIndexes.splice(questionIndexes.indexOf(questionIndex), 1);
 
-    postUrl = `${process.env['HOST']}/api/frames/${FrameNames.TRIVIA}?count=${count}&index=${correctIndex}`
+    postUrl = `${process.env['HOST']}/api/frames/${FrameNames.TRIVIA}?count=${count}&index=${correctIndex}&array=${encodeURIComponent(questionIndexes.toString())}`
   }
 
-  const imageUrl = generateUrl(`api/frames/${FrameNames.TRIVIA}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.PROMPT]: question, [RequestProps.WINS]: count, [RequestProps.LOSSES]: user.strikes, [RequestProps.ARRAY]: questionIndexes}, true, true);
+  const imageUrl = generateUrl(`api/frames/${FrameNames.TRIVIA}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.PROMPT]: question, [RequestProps.WINS]: count, [RequestProps.LOSSES]: user.strikes}, true, true);
 
   const frame: Frame = {
     version: "vNext",
