@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
                     count === MAX_QUESTIONS ?
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>You got {count}/{MAX_QUESTIONS}!</h1>
                     :
-                    <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center', margin:35}}>{question}</h1>
+                    <h1 style={{color: 'white', fontSize:45, justifyContent:'flex-start', alignItems:'center', margin:35}}>{question}</h1>
                     :
                     <NotFollowing/>
                 }
