@@ -139,7 +139,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (user?.strikes >= 3) { // You ran out of strikes
     // Game over
-    postUrl = `${process.env['HOST']}/api/frames${FrameNames.TRIVIA}?count=${count}&index=${correctIndex}`
+    postUrl = `${process.env['HOST']}/api/frames/${FrameNames.TRIVIA}?count=${count}&index=${correctIndex}`
   }
   else if (prevCorrectIndex !== -1 && prevCorrectIndex !== button - 1) { // Got the wrong answer and not first question or
     // Wrong answer
@@ -149,7 +149,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     // End quiz
     count = -1;
-    postUrl = `${process.env['HOST']}/api/frames${FrameNames.TRIVIA}?count=0`
+    postUrl = `${process.env['HOST']}/api/frames/${FrameNames.TRIVIA}?count=0`
   }
   else { // Continue game
     console.log('Got the right answer');
@@ -188,10 +188,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     // Remove question from array
     questionIndexes.splice(questionIndexes.indexOf(questionIndex), 1);
 
-    postUrl = `${process.env['HOST']}/api/frames${FrameNames.TRIVIA}?count=${count}&index=${correctIndex}`
+    postUrl = `${process.env['HOST']}/api/frames/${FrameNames.TRIVIA}?count=${count}&index=${correctIndex}`
   }
 
-  const imageUrl = generateUrl(`api/frames${FrameNames.TRIVIA}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.PROMPT]: question, [RequestProps.WINS]: count, [RequestProps.LOSSES]: user.strikes, [RequestProps.ARRAY]: questionIndexes}, true, true);
+  const imageUrl = generateUrl(`api/frames/${FrameNames.TRIVIA}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.PROMPT]: question, [RequestProps.WINS]: count, [RequestProps.LOSSES]: user.strikes, [RequestProps.ARRAY]: questionIndexes}, true, true);
 
   const frame: Frame = {
     version: "vNext",
