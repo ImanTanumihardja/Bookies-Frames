@@ -204,15 +204,16 @@ export async function validateFrameMessage(req: NextRequest, checkFollowingBooki
         message.recasted = data?.message?.recasted || false
     }
     catch (error) {
-        console.error(`Error validating using onchain: ${error}`)
-        console.log('Using frames.js')
-
-        const data = await getFrameMessage(body);
-
-        message.button = data?.message?.data.frameActionBody.buttonIndex || 0
-        message.input = data?.message?.data.frameActionBody.inputText.toString() || ""
-        message.fid = data?.message?.data.fid || 0
+        throw new Error(`Error validating using onchain: ${error}`)
+        // console.error(`Error validating using onchain: ${error}`)
+        // console.log('Using frames.js')
         
+
+        // const data = await getFrameMessage(body);
+
+        // message.button = data?.message?.data.frameActionBody.buttonIndex || 0
+        // message.input = data?.message?.data.frameActionBody.inputText.toString() || ""
+        // message.fid = data?.message?.data.fid || 0
     }
 
     if (checkFollowingBookies){
