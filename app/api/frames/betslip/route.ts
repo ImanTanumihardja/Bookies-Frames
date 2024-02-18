@@ -1,6 +1,7 @@
 import { getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
 import { FrameNames, RequestProps, generateUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
+import { parse } from "path";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -11,7 +12,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   console.log('FID: ', fid.toString())
   
   // Check if float
-  let isFloat = message?.input.match(/^-?\d*(\.\d+)?$/);
+  let isFloat = parseFloat(message?.input) % 1 !== 0;
 
   let stake = parseInt(message?.input);
   // Check if stake is not float
