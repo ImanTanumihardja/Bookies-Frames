@@ -79,6 +79,7 @@ var FrameNames;
     FrameNames["TRIVIA"] = "trivia";
     FrameNames["CAPTCHA"] = "captcha";
     FrameNames["NBA_ASG_ML"] = "nba-asg-ml";
+    FrameNames["NBA_ASG_OU"] = "nba-asg-ou";
 })(FrameNames || (exports.FrameNames = FrameNames = {}));
 exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.FID] = 0,

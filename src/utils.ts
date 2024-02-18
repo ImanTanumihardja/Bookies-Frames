@@ -42,6 +42,7 @@ export enum FrameNames {
     TRIVIA = 'trivia',
     CAPTCHA = 'captcha',
     NBA_ASG_ML = 'nba-asg-ml',
+    NBA_ASG_OU = 'nba-asg-ou',
 }
 
 export const RequestPropsTypes = {

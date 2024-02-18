@@ -38,30 +38,36 @@ async function updateUserType() {
 
         const user = await kv.hgetall(fid)
 
-        if (user.balance !== undefined) { // Check if user has already been updated
-            console.log(`User: ${fid} already updated\n`)
-            continue
-        }
-
-        // Convert old User object to new User object
-        const updatedUser : User = {
-            balance: user.points,
-            availableBalance: user.points,
-            hasClaimed: user.hasClaimed,
-            wins: user.wins,
-            losses: user.losses,
-            streak: user.streak,
-            numBets: user.numBets,
-            bets: []
-        }
-
-        if (eventData.bets[fid] !== undefined) {
-            updatedUser.bets.push('sblviii-ml')
-        }
-
-        console.log(`Changed User: ${JSON.stringify(updatedUser)}\n`)
+        // Delete points
+        // if (user.points !== undefined) {
+        //     console.log(`Deleting points for User: ${fid}`)
+        //     await kv.hdel(fid.toString(), 'points')
+        // }
         
-        await kv.hset(fid.toString(), updatedUser)
+        // if (user.balance !== undefined) { // Check if user has already been updated
+        //     console.log(`User: ${fid} already updated\n`)
+        //     continue
+        // }
+
+        // // Convert old User object to new User object
+        // const updatedUser : User = {
+        //     balance: user.points,
+        //     availableBalance: user.points,
+        //     hasClaimed: user.hasClaimed,
+        //     wins: user.wins,
+        //     losses: user.losses,
+        //     streak: user.streak,
+        //     numBets: user.numBets,
+        //     bets: []
+        // }
+
+        // if (eventData.bets[fid] !== undefined) {
+        //     updatedUser.bets.push('sblviii-ml')
+        // }
+
+        // console.log(`Changed User: ${JSON.stringify(updatedUser)}\n`)
+        
+        // await kv.hset(fid.toString(), updatedUser)
     }
 }   
 

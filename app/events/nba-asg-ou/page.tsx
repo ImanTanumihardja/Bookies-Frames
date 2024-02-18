@@ -3,8 +3,8 @@ import { redirect } from 'next/navigation';
 import { FrameNames, generateUrl } from '../../../src/utils';
 import { Frame, getFrameFlattened } from 'frames.js';
 
-const options = ['West', 'East']
-const imageUrl = generateUrl(`thumbnails/events/${FrameNames.NBA_ASG_ML}.png`, [], false, true)
+const options = ['Over', 'Under']
+const imageUrl = generateUrl(`thumbnails/events/${FrameNames.NBA_ASG_OU}.png`, [], false, true)
 
 const frame : Frame = {
   version: "vNext",
@@ -21,15 +21,15 @@ const frame : Frame = {
     },
   ],
   image: imageUrl,
-  postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BETSLIP}?eventName=${FrameNames.NBA_ASG_ML}`
+  postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BETSLIP}?eventName=${FrameNames.NBA_ASG_OU}`
 };
 
 export const metadata: Metadata = {
-  title: FrameNames.NBA_ASG_ML,
-  description: 'Who will win the NBA ASG?',
+  title: FrameNames.NBA_ASG_OU,
+  description: 'Over or under 363.5 points?',
   openGraph: {
-    title: FrameNames.NBA_ASG_ML,
-    description: 'Who will win the NBA ASG?', 
+    title: FrameNames.NBA_ASG_OU,
+    description: 'Over or under 363.5 points?', 
     images: [imageUrl],
   },
   other: getFrameFlattened(frame),

@@ -8,7 +8,7 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
   });
 
-async function createEvent(eventName='', startDate=1707694200000, odds=[0.5, 0.5], multiplier=1, options=["Chiefs-ML", "49ers-ML"], prompt="Who will win the Super Bowl?") {
+async function createEvent(eventName='nba-asg-ou', startDate=1708304400000, odds=[0.5, 0.5], multiplier=1, options=["Over", "Under"], prompt="Over or under 363.5 points?") {
     let event: any = {}
     event[eventName] = {startDate: startDate, poll: [0, 0], bets: {}, result: -1, odds: odds, multiplier: multiplier, options: options, prompt: prompt} as Event;
     await kv.hset(`events`, event);

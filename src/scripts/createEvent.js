@@ -44,12 +44,12 @@ var kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
 });
 function createEvent(eventName, startDate, odds, multiplier, options, prompt) {
-    if (eventName === void 0) { eventName = ''; }
-    if (startDate === void 0) { startDate = 1707694200000; }
+    if (eventName === void 0) { eventName = 'nba-asg-ou'; }
+    if (startDate === void 0) { startDate = 1708304400000; }
     if (odds === void 0) { odds = [0.5, 0.5]; }
     if (multiplier === void 0) { multiplier = 1; }
-    if (options === void 0) { options = ["Chiefs-ML", "49ers-ML"]; }
-    if (prompt === void 0) { prompt = "Who will win the Super Bowl?"; }
+    if (options === void 0) { options = ["Over", "Under"]; }
+    if (prompt === void 0) { prompt = "Over or under 363.5 points?"; }
     return __awaiter(this, void 0, void 0, function () {
         var event;
         return __generator(this, function (_a) {

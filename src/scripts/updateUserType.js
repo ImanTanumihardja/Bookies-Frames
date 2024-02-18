@@ -44,9 +44,9 @@ var kv = createClient({
     token: process.env['KV_REST_API_TOKEN'] || '',
 });
 // Create a script that access kv storage and reset the hasClaimed value
-function resetHasClaimed() {
+function updateUserType() {
     return __awaiter(this, void 0, void 0, function () {
-        var eventData, count, result, cursor, users, _i, users_1, fid, user, updatedUser;
+        var eventData, count, result, cursor, users, _i, users_1, fid, user;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, kv.hget("events", "sblviii-ml")];
@@ -79,28 +79,14 @@ function resetHasClaimed() {
                     if (!(_i < users_1.length)) return [3 /*break*/, 11];
                     fid = users_1[_i];
                     console.log("FID: ".concat(fid));
-                    return [4 /*yield*/, kv.hgetall(fid)];
+                    return [4 /*yield*/, kv.hgetall(fid)
+                        // Delete points
+                    ];
                 case 8:
                     user = _a.sent();
-                    if (user.balance !== undefined) { // Check if user has already been updated
-                        console.log("User: ".concat(fid, " already updated\n"));
-                        return [3 /*break*/, 10];
-                    }
-                    updatedUser = {
-                        balance: user.points,
-                        availableBalance: user.points,
-                        hasClaimed: user.hasClaimed,
-                        wins: user.wins,
-                        losses: user.losses,
-                        streak: user.streak,
-                        numBets: user.numBets,
-                        bets: []
-                    };
-                    if (eventData.bets[fid] !== undefined) {
-                        updatedUser.bets.push('sblviii-ml');
-                    }
-                    console.log("Changed User: ".concat(JSON.stringify(updatedUser), "\n"));
-                    return [4 /*yield*/, kv.hset(fid.toString(), updatedUser)];
+                    if (!(user.points !== undefined)) return [3 /*break*/, 10];
+                    console.log("Deleting points for User: ".concat(fid));
+                    return [4 /*yield*/, kv.hdel(fid.toString(), 'points')];
                 case 9:
                     _a.sent();
                     _a.label = 10;
@@ -113,10 +99,10 @@ function resetHasClaimed() {
     });
 }
 if (require.main === module) {
-    resetHasClaimed().then(function () { return process.exit(0); })
+    updateUserType().then(function () { return process.exit(0); })
         .catch(function (error) {
         console.error(error);
         process.exit(1);
     });
 }
-module.exports = resetHasClaimed;
+module.exports = updateUserType;
