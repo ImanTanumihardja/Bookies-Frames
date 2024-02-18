@@ -10,10 +10,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   
   console.log('FID: ', fid.toString())
   
+  // Check if float
+  let isFloat = message?.input.match(/^-?\d*(\.\d+)?$/);
+
   let stake = parseInt(message?.input);
   // Check if stake is not float
 
-  if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isInteger(stake)) {
+  if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || isFloat) {
     throw new Error('Invalid wager amount');  
   }
 
