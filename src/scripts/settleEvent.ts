@@ -40,7 +40,7 @@ async function settleEvent(eventName="", result=-1) {
     // Pay each user
     const multi = await kv.multi();
     for (const fid in eventData?.bets) {
-      let bet: Bet = eventData?.bets[parseInt(fid)]
+      const bet: Bet = eventData?.bets[parseInt(fid)]
       const user : User | null = await kv.hgetall(fid);
       if (user !== null) {
         if (bet.prediction === result) {  
