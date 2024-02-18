@@ -10,6 +10,7 @@ const plusJakartaSans = fetch(
       '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
       import.meta.url,
     ),
+    {next : {revalidate: false}},
   ).then((res) => res.arrayBuffer());
 
 export async function GET(req: NextRequest) {
