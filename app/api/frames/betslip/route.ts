@@ -8,6 +8,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const {followingBookies: isFollowing, button, fid} = message;
   
+  console.log('FID: ', fid.toString())
+  
   let stake = parseInt(message?.input);
   if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number') {
     throw new Error('Invalid wager amount');  
