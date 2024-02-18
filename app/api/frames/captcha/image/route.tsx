@@ -2,14 +2,28 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
 import { Plus_Jakarta_Sans } from 'next/font/google'
+import fs from 'fs';
 
 // Fonts
-const plusJakartaSans = fetch(
-    new URL(
-      '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
-      import.meta.url,
-    ),
-  ).then((res) => res.arrayBuffer());
+// const plusJakartaSans = fetch(
+//     new URL(
+//       '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
+//       import.meta.url,
+//     ),
+//   ).then((res) => res.arrayBuffer());
+
+  // Read in the .woff file as ArrayBuffer
+
+//   const plusJakartaSans = Plus_Jakarta_Sans({
+//     subsets: ['latin'],
+//     display: 'swap',
+//     weight: ["700"],
+//   })
+
+//   const plusJakartaSansBuffer = plusJakartaSans;
+
+// Load font file using fs
+const plusJakartaSansBuffer = fs.readFileSync(`${process.env['HOST']}/plus-jakarta-sans-latin-700-normal.woff`);
 
 export async function GET(req: NextRequest) {
     try {
@@ -26,7 +40,7 @@ export async function GET(req: NextRequest) {
             {
                 width: 764, 
                 height: 400, 
-                fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
+                fonts: [{ name: 'Plus_Jakarta_Sans_700', data: Buffer.from(plusJakartaSansBuffer), weight: 400 }],
             })
     } catch (error) {
         console.error(error);
@@ -34,4 +48,4 @@ export async function GET(req: NextRequest) {
     }
 }
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
