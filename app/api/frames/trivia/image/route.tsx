@@ -16,7 +16,7 @@ const MAX_QUESTIONS = 10;
 
 export async function GET(req: NextRequest) {
     try {
-        const {isFollowing, prompt: question, wins: count, timestamp: timer, losses: strikes} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.PROMPT, RequestProps.WINS, RequestProps.LOSSES]);
+        const {isFollowing, prompt: question, wins: count, losses: strikes} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.PROMPT, RequestProps.WINS, RequestProps.LOSSES]);
 
         return new ImageResponse(
             <FrameBase>
