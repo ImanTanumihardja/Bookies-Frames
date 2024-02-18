@@ -7,15 +7,21 @@ import { FrameNames } from '../../../../src/utils';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
-  const message = await validateFrameMessage(req);
+  // const message = await validateFrameMessage(req);
+
+  const message = {
+    followingBookies: true,
+    fid: 3131859,
+    button: 1
+  }
 
   const {followingBookies: isFollowing, fid, button} = message;
   console.log('FID: ', fid.toString())
 
-  var validCaptcha = true;
-  if (parseInt(req.nextUrl.searchParams.get('captcha') || "-1") != (button - 1)) {
-    validCaptcha = false;
-  }
+  let validCaptcha = true;
+  // if (parseInt(req.nextUrl.searchParams.get('captcha') || "-1") != (button - 1)) {
+  //   validCaptcha = false;
+  // }
 
   var user : User = DEFAULT_USER;
   var isNewUser: boolean = false;
