@@ -61,6 +61,9 @@ function settleEvent(eventName, result) {
                     if ((eventData === null || eventData === void 0 ? void 0 : eventData.startDate) > new Date().getTime()) {
                         throw new Error('Event has not started yet');
                     }
+                    if ((eventData === null || eventData === void 0 ? void 0 : eventData.result) !== -1) {
+                        throw new Error('Event has already been settled');
+                    }
                     console.log("Event: ".concat(eventName));
                     console.log(eventData);
                     // Set the result of the event
@@ -81,53 +84,47 @@ function settleEvent(eventName, result) {
                     _i = 0;
                     _d.label = 4;
                 case 4:
-                    if (!(_i < _b.length)) return [3 /*break*/, 14];
+                    if (!(_i < _b.length)) return [3 /*break*/, 10];
                     _c = _b[_i];
-                    if (!(_c in _a)) return [3 /*break*/, 13];
+                    if (!(_c in _a)) return [3 /*break*/, 9];
                     fid = _c;
                     bet = eventData === null || eventData === void 0 ? void 0 : eventData.bets[parseInt(fid)];
                     return [4 /*yield*/, kv.hgetall(fid)];
                 case 5:
                     user = _d.sent();
-                    if (!(bet.prediction === result && user !== null)) return [3 /*break*/, 9];
-                    // Pay out the user
-                    console.log("Paying out user: ".concat(fid, " with wager: ").concat(bet.stake));
-                    payout = (0, utils_1.calculatePayout)(eventData.multiplier, eventData.odds[result], bet.stake, user === null || user === void 0 ? void 0 : user.streak);
-                    user.points = parseInt(user === null || user === void 0 ? void 0 : user.points.toString()) + payout;
-                    user.streak = parseInt(user === null || user === void 0 ? void 0 : user.streak.toString()) + 1;
-                    user.numBets = parseInt(user === null || user === void 0 ? void 0 : user.numBets.toString()) + 1;
-                    user.wins = parseInt(user === null || user === void 0 ? void 0 : user.wins.toString()) + 1;
+                    if (!(user !== null)) return [3 /*break*/, 9];
+                    if (bet.prediction === result) {
+                        // Pay out the user
+                        console.log("Paying out user: ".concat(fid, " with wager: ").concat(bet.stake));
+                        payout = (0, utils_1.calculatePayout)(eventData.multiplier, eventData.odds[result], bet.stake, user === null || user === void 0 ? void 0 : user.streak);
+                        user.availableBalance = parseInt(user === null || user === void 0 ? void 0 : user.availableBalance.toString()) + payout;
+                        user.balance = parseInt(user === null || user === void 0 ? void 0 : user.balance.toString()) + (payout - bet.stake);
+                        user.streak = parseInt(user === null || user === void 0 ? void 0 : user.streak.toString()) + 1;
+                        user.numBets = parseInt(user === null || user === void 0 ? void 0 : user.numBets.toString()) + 1;
+                        user.wins = parseInt(user === null || user === void 0 ? void 0 : user.wins.toString()) + 1;
+                    }
+                    else if (parseInt(fid)) {
+                        // User lost
+                        console.log("User: ".concat(fid, " lost with wager: ").concat(bet.stake));
+                        user.streak = 0;
+                        user.balance = parseInt(user.balance.toString()) - bet.stake;
+                        user.numBets = parseInt(user.streak.toString()) + 1;
+                        user.losses = parseInt(user.losses.toString()) + 1;
+                    }
                     return [4 /*yield*/, multi.hset(fid.toString(), user)];
                 case 6:
                     _d.sent();
-                    return [4 /*yield*/, multi.zadd('users', { score: user.points, member: fid })];
+                    return [4 /*yield*/, multi.zadd('users', { score: user.balance, member: fid })];
                 case 7:
                     _d.sent();
                     return [4 /*yield*/, multi.exec()];
                 case 8:
                     _d.sent();
-                    return [3 /*break*/, 13];
+                    _d.label = 9;
                 case 9:
-                    if (!(parseInt(fid) && user !== null)) return [3 /*break*/, 13];
-                    // User lost
-                    console.log("User: ".concat(fid, " lost with wager: ").concat(bet.stake));
-                    user.streak = 0;
-                    user.numBets = parseInt(user.streak.toString()) + 1;
-                    user.losses = parseInt(user.losses.toString()) + 1;
-                    return [4 /*yield*/, multi.hset(fid.toString(), user)];
-                case 10:
-                    _d.sent();
-                    return [4 /*yield*/, multi.zadd('users', { score: user.points, member: fid })];
-                case 11:
-                    _d.sent();
-                    return [4 /*yield*/, multi.exec()];
-                case 12:
-                    _d.sent();
-                    _d.label = 13;
-                case 13:
                     _i++;
                     return [3 /*break*/, 4];
-                case 14: return [2 /*return*/];
+                case 10: return [2 /*return*/];
             }
         });
     });

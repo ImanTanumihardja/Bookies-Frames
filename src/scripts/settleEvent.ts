@@ -22,6 +22,10 @@ async function settleEvent(eventName="", result=-1) {
       throw new Error('Event has not started yet')
     }
 
+    if (eventData?.result !== -1) {
+      throw new Error('Event has already been settled')
+    }
+
     console.log(`Event: ${eventName}`)
     console.log(eventData)
 
