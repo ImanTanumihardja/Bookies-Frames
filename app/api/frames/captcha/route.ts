@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FrameNames, validateFrameMessage } from '../../../../src/utils';
 import { getFrameHtml} from "frames.js";
-import { revalidatePath } from 'next/cache';
+
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -13,8 +13,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const randomIndex = Math.floor(Math.random() * 4);
 
   const imageUrl = `${process.env['HOST']}/api/frames/captcha/image/?timestamp=${new Date().getTime()}&image=${images[randomIndex]}`;
-
-  revalidatePath(`${process.env['HOST']}/api/frames/${FrameNames.CLAIM_DICE}`)
 
   return new NextResponse(
     getFrameHtml({
