@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
+import { Plus_Jakarta_Sans } from 'next/font/google'
 
-// Fonts
-const plusJakartaSans = fetch(
-    new URL(
-      '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
-      import.meta.url,
-    ),
-  ).then((res) => res.arrayBuffer());
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+    subsets: ['latin'],
+    display: 'swap',
+    weight: ["700"],
+  })
 
 export async function GET(req: NextRequest) {
     try {
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
             {
                 width: 764, 
                 height: 400, 
-                fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
+                // fonts: [{ name: 'Plus_Jakarta_Sans_700', data: plusJakartaSans, weight: 400 }],
             })
     } catch (error) {
         console.error(error);

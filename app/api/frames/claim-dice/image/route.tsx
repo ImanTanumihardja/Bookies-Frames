@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
             {
                 width: 764, 
                 height: 400, 
-                fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
+                // fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
             })
     } catch (error) {
         console.error(error);
