@@ -42,6 +42,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           user.balance = parseInt(user.balance.toString()) + 10;
           user.availableBalance = user.balance;
           console.log('CLAIMED 10 DICE')
+        } else {
+          console.log('ALREADY CLAIMED')
         }
       }
 
