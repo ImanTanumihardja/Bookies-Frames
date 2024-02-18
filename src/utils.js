@@ -37,9 +37,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.calculatePayout = exports.convertImpliedProbabilityToAmerican = exports.validateFrameMessage = exports.checkIsFollowingBookies = exports.neynarClient = exports.generateUrl = exports.getRequestProps = exports.DEFAULT_FRAME_VALIDATION_DATA = exports.DEFAULT_BET = exports.DEFAULT_USER = exports.BOOKIES_FID = exports.RequestPropsTypes = exports.FrameNames = exports.RequestProps = void 0;
+exports.fetchCache = exports.dynamic = exports.revalidate = exports.calculatePayout = exports.convertImpliedProbabilityToAmerican = exports.validateFrameMessage = exports.checkIsFollowingBookies = exports.neynarClient = exports.generateUrl = exports.getRequestProps = exports.DEFAULT_FRAME_VALIDATION_DATA = exports.DEFAULT_BET = exports.DEFAULT_USER = exports.BOOKIES_FID = exports.RequestPropsTypes = exports.FrameNames = exports.RequestProps = void 0;
 var nodejs_sdk_1 = require("@neynar/nodejs-sdk");
-var frames_js_1 = require("frames.js");
+var onchainkit_1 = require("@coinbase/onchainkit");
 var RequestProps;
 (function (RequestProps) {
     RequestProps["FID"] = "fid";
@@ -66,6 +66,8 @@ var RequestProps;
     RequestProps["BALANCE"] = "balance";
     RequestProps["POLL"] = "poll";
     RequestProps["VALID_CAPTCHA"] = "validCaptcha";
+    RequestProps["INDEX"] = "index";
+    RequestProps["ARRAY"] = "array";
 })(RequestProps || (exports.RequestProps = RequestProps = {}));
 var FrameNames;
 (function (FrameNames) {
@@ -74,6 +76,7 @@ var FrameNames;
     FrameNames["SBLVIII_ML"] = "sblviii-ml";
     FrameNames["BETSLIP"] = "betslip";
     FrameNames["BET_CONFIRMATION"] = "bet-confirmation";
+    FrameNames["TRIVIA"] = "trivia";
     FrameNames["CAPTCHA"] = "captcha";
 })(FrameNames || (exports.FrameNames = FrameNames = {}));
 exports.RequestPropsTypes = (_a = {},
@@ -101,6 +104,8 @@ exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.BALANCE] = 0,
     _a[RequestProps.POLL] = [],
     _a[RequestProps.VALID_CAPTCHA] = true,
+    _a[RequestProps.INDEX] = 0,
+    _a[RequestProps.ARRAY] = [],
     _a);
 exports.BOOKIES_FID = 244367;
 exports.DEFAULT_USER = {
@@ -218,45 +223,34 @@ function checkIsFollowingBookies(fid) {
 }
 exports.checkIsFollowingBookies = checkIsFollowingBookies;
 function validateFrameMessage(req, checkFollowingBookies) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     if (checkFollowingBookies === void 0) { checkFollowingBookies = true; }
     return __awaiter(this, void 0, void 0, function () {
-        var body, message, data, error_1;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
+        var body, message, data;
+        return __generator(this, function (_j) {
+            switch (_j.label) {
                 case 0: return [4 /*yield*/, req.json()];
                 case 1:
-                    body = _d.sent();
+                    body = _j.sent();
                     message = exports.DEFAULT_FRAME_VALIDATION_DATA;
-                    _d.label = 2;
+                    return [4 /*yield*/, (0, onchainkit_1.getFrameMessage)(body, { neynarApiKey: process.env['NEYNAR_API_KEY'] || "" })];
                 case 2:
-                    _d.trys.push([2, 4, , 5]);
-                    return [4 /*yield*/, (0, frames_js_1.validateFrameMessage)(body)];
-                case 3:
-                    data = _d.sent();
+                    data = _j.sent();
                     if (!data.isValid) {
                         throw new Error('Invalid frame message');
                     }
-                    // message.button = data?.message?.button || 0
-                    // message.following = data?.message?.following || false
-                    // message.input = data?.message?.input || ""
-                    // message.fid = data?.message?.interactor.fid || 0
-                    // message.custody_address = data?.message?.interactor.custody_address || ""
-                    // message.verified_accounts = data?.message?.interactor.verified_accounts || []
-                    // message.liked = data?.message?.liked || false
-                    // message.recasted = data?.message?.recasted || false
-                    // message = { ...message, ...data.message }
-                    message.button = ((_a = data === null || data === void 0 ? void 0 : data.message) === null || _a === void 0 ? void 0 : _a.data.frameActionBody.buttonIndex) || 0;
-                    message.input = ((_b = data === null || data === void 0 ? void 0 : data.message) === null || _b === void 0 ? void 0 : _b.data.frameActionBody.inputText.toString()) || "";
-                    message.fid = ((_c = data === null || data === void 0 ? void 0 : data.message) === null || _c === void 0 ? void 0 : _c.data.fid) || 0;
+                    message.button = ((_a = data === null || data === void 0 ? void 0 : data.message) === null || _a === void 0 ? void 0 : _a.button) || 0;
+                    message.following = ((_b = data === null || data === void 0 ? void 0 : data.message) === null || _b === void 0 ? void 0 : _b.following) || false;
+                    message.input = ((_c = data === null || data === void 0 ? void 0 : data.message) === null || _c === void 0 ? void 0 : _c.input) || "";
+                    message.fid = ((_d = data === null || data === void 0 ? void 0 : data.message) === null || _d === void 0 ? void 0 : _d.interactor.fid) || 0;
+                    message.custody_address = ((_e = data === null || data === void 0 ? void 0 : data.message) === null || _e === void 0 ? void 0 : _e.interactor.custody_address) || "";
+                    message.verified_accounts = ((_f = data === null || data === void 0 ? void 0 : data.message) === null || _f === void 0 ? void 0 : _f.interactor.verified_accounts) || [];
+                    message.liked = ((_g = data === null || data === void 0 ? void 0 : data.message) === null || _g === void 0 ? void 0 : _g.liked) || false;
+                    message.recasted = ((_h = data === null || data === void 0 ? void 0 : data.message) === null || _h === void 0 ? void 0 : _h.recasted) || false;
                     if (checkFollowingBookies) {
                         message.followingBookies = true; //await checkIsFollowingBookies(message.fid)
                     }
-                    return [3 /*break*/, 5];
-                case 4:
-                    error_1 = _d.sent();
-                    throw new Error("Error validating: ".concat(error_1));
-                case 5: return [2 /*return*/, message];
+                    return [2 /*return*/, message];
             }
         });
     });
@@ -275,3 +269,6 @@ function calculatePayout(multiplier, impliedProbability, stake, streak) {
     return multiplier * (1 / impliedProbability) * (stake); // TODO add streak
 }
 exports.calculatePayout = calculatePayout;
+exports.revalidate = 0;
+exports.dynamic = 'force-dynamic';
+exports.fetchCache = 'force-no-store';

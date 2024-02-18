@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
 
         return new ImageResponse(
             <FrameBase>
-                    {!validCaptcha ?
+                    {/* {!validCaptcha ?
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center'}}>CAPTCHA failed!</h1>
                     :
                     (isFollowing ?
@@ -29,9 +29,9 @@ export async function GET(req: NextRequest) {
                         <h1 style={{color: 'white', fontSize:55}}> You already claimed </h1>
                         <h1 style={{color: 'white', fontSize:55, marginTop:-10, alignItems:'flex-start'}}> your free <img style={{width: 65, height: 65, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
                     </div>)
-                    :
+                    : */}
                         <NotFollowing/>
-                    )}
+                    {/* )} */}
             </FrameBase>
             ,
             {
