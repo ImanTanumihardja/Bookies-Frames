@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
-import { Plus_Jakarta_Sans } from 'next/font/google'
-import fs from 'fs';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -12,17 +10,6 @@ const plusJakartaSans = fetch(
     ),
     {next : {revalidate: false}},
   ).then((res) => res.arrayBuffer());
-
-  // Read in the .woff file as ArrayBuffer
-
-//   const plusJakartaSans = Plus_Jakarta_Sans({
-//     subsets: ['latin'],
-//     display: 'swap',
-//     weight: ["700"],
-//   })
-
-//   const plusJakartaSansBuffer = plusJakartaSans;
-
 
 export async function GET(req: NextRequest) {
     try {
@@ -47,4 +34,4 @@ export async function GET(req: NextRequest) {
     }
 }
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
