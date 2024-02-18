@@ -30,6 +30,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         user.balance = 100;
         user.availableBalance = 100;
         console.log('NEW USER: ', user)
+        console.log('CLAIMED 100 DICE')
       }
     else {
         user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
@@ -40,6 +41,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           // Get daily 10 dice for old user
           user.balance = parseInt(user.balance.toString()) + 10;
           user.availableBalance = user.balance;
+          console.log('CLAIMED 10 DICE')
         }
       }
 
