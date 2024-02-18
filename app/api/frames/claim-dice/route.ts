@@ -21,33 +21,33 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   var isNewUser: boolean = false;
   var hasClaimed: boolean = false;
 
-  // if (isFollowing && validCaptcha) {
-  //   isNewUser = await kv.zscore('users', fid) === null;
+  if (isFollowing && validCaptcha) {
+    isNewUser = await kv.zscore('users', fid) === null;
 
-  //   const multi = kv.multi();
-  //   if (isNewUser) {
-  //       // New user
-  //       user.balance = 100;
-  //       user.availableBalance = 100;
-  //       console.log('NEW USER: ', user)
-  //     }
-  //   else {
-  //       user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
-  //       console.log('USER: ', user)
+    const multi = kv.multi();
+    if (isNewUser) {
+        // New user
+        user.balance = 100;
+        user.availableBalance = 100;
+        console.log('NEW USER: ', user)
+      }
+    else {
+        user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
+        console.log('USER: ', user)
         
-  //       hasClaimed = user.hasClaimed;
-  //       if (!hasClaimed) {
-  //         // Get daily 10 dice for old user
-  //         user.balance = parseInt(user.balance.toString()) + 10;
-  //         user.availableBalance = user.balance;
-  //       }
-  //     }
+        hasClaimed = user.hasClaimed;
+        if (!hasClaimed) {
+          // Get daily 10 dice for old user
+          user.balance = parseInt(user.balance.toString()) + 10;
+          user.availableBalance = user.balance;
+        }
+      }
 
-  //   user.hasClaimed = true;
-  //   await multi.hset(fid.toString(), user);
-  //   await multi.zadd('users', {score: user.balance, member: fid});
-  //   await multi.exec();
-  // }
+    user.hasClaimed = true;
+    await multi.hset(fid.toString(), user);
+    await multi.zadd('users', {score: user.balance, member: fid});
+    await multi.exec();
+  }
 
   const imageUrl = generateUrl(`api/frames/${FrameNames.CLAIM_DICE}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed, [RequestProps.POINTS]: isNewUser ? 100 : 10, [RequestProps.VALID_CAPTCHA]: validCaptcha}, true, true);
 
