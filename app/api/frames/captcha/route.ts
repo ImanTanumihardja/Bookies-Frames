@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames } from '../../../../src/utils';
+import { FrameNames, validateFrameMessage } from '../../../../src/utils';
 import { getFrameHtml} from "frames.js";
 import { revalidatePath } from 'next/cache';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
+  // Verify the frame request
+  const message = await validateFrameMessage(req);
+    
   const images = ['🎩', '🏆', '🤑', '🏇'] 
 
   // Generate random number between 0 and 3
