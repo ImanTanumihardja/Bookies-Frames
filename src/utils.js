@@ -78,6 +78,7 @@ var FrameNames;
     FrameNames["BET_CONFIRMATION"] = "bet-confirmation";
     FrameNames["TRIVIA"] = "trivia";
     FrameNames["CAPTCHA"] = "captcha";
+    FrameNames["NBA_ASG_ML"] = "nba-asg-ml";
 })(FrameNames || (exports.FrameNames = FrameNames = {}));
 exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.FID] = 0,

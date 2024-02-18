@@ -14,15 +14,25 @@ async function resetHasClaimed() {
     const count = await kv.zcount("users", 0, 'inf')
     console.log(`Total users: ${count}`)
 
-    let users = (await kv.zscan("users", 0, { count: count }))[1]
+    // Iteratively fetch all users
+    let result = (await kv.zscan("users", 0, { count: 150 }))
+    let cursor = result[0]
+    let users = result[1]
 
+    while (cursor) {
+        result = (await kv.zscan("users", cursor, { count: 150 }))
+        cursor = result[0]
+        users = users.concat(result[1])
+    }
+    
     // Filter out every other element
     users = users.filter((_ : any, index : number) => index % 2 === 0)
 
-    // // Reset the hasClaimed value for each user
-    // for (const fid in users) {
-    //     await kv.hset(fid.toString(), {'hasClaimed': false});
-    // }
+    // Reset the hasClaimed value for each user
+    for (const fid of users) {
+        await kv.hset(fid.toString(), {'hasClaimed': false});
+        console.log(`Reset hasClaimed for user: ${fid}`)
+    }
 }   
 
 if (require.main === module) {

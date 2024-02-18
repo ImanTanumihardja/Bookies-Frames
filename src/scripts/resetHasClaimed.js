@@ -46,19 +46,44 @@ var kv = createClient({
 // Create a script that access kv storage and reset the hasClaimed value
 function resetHasClaimed() {
     return __awaiter(this, void 0, void 0, function () {
-        var count, users;
+        var count, result, cursor, users, _i, users_1, fid;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, kv.zcount("users", 0, 'inf')];
                 case 1:
                     count = _a.sent();
                     console.log("Total users: ".concat(count));
-                    return [4 /*yield*/, kv.zscan("users", 0, { count: count })];
+                    return [4 /*yield*/, kv.zscan("users", 0, { count: 150 })];
                 case 2:
-                    users = (_a.sent())[1];
+                    result = (_a.sent());
+                    cursor = result[0];
+                    users = result[1];
+                    _a.label = 3;
+                case 3:
+                    if (!cursor) return [3 /*break*/, 5];
+                    return [4 /*yield*/, kv.zscan("users", cursor, { count: 150 })];
+                case 4:
+                    result = (_a.sent());
+                    cursor = result[0];
+                    users = users.concat(result[1]);
+                    return [3 /*break*/, 3];
+                case 5:
                     // Filter out every other element
                     users = users.filter(function (_, index) { return index % 2 === 0; });
-                    return [2 /*return*/];
+                    _i = 0, users_1 = users;
+                    _a.label = 6;
+                case 6:
+                    if (!(_i < users_1.length)) return [3 /*break*/, 9];
+                    fid = users_1[_i];
+                    return [4 /*yield*/, kv.hset(fid.toString(), { 'hasClaimed': false })];
+                case 7:
+                    _a.sent();
+                    console.log("Reset hasClaimed for user: ".concat(fid));
+                    _a.label = 8;
+                case 8:
+                    _i++;
+                    return [3 /*break*/, 6];
+                case 9: return [2 /*return*/];
             }
         });
     });
