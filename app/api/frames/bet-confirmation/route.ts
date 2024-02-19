@@ -24,13 +24,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   event = event as unknown as Event || null;
 
-  // let user : User | null = await kv.hgetall(fid.toString()) || DEFAULT_USER;
-
   console.log('FID: ', fid.toString())
 
   const currentBalance = parseInt(user.availableBalance.toString());
 
-  // let event : Event | null = await kv.hget('events', eventName)
   if (event === null) throw new Error('Event not found');
 
   if (stake <= 0 || stake > currentBalance) {
@@ -45,22 +42,22 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Need to check bet does not exists, time is not past, and stake >= 1 and not rejected
   if (!betExists && now < event?.startDate && stake >= 1 && button != 2) {
     // Can bet
-    const multi = kv.multi();
-
     event.poll[prediction]++;
     event.bets[fid] = {prediction:prediction, odd: event.odds[prediction], stake:stake, timeStamp: now} as Bet;
 
     let sendEvent : any = {}
     sendEvent[eventName] = event;
 
-    await multi.hset('events', sendEvent);
-
     // Adjust user available balance
     user.availableBalance = currentBalance - stake;
     user.bets.push(eventName)
 
+    const multi = kv.multi();
+    // Set events
+    await multi.hset('events', sendEvent);
+    // Set user
     await multi.hset(fid.toString(), user);
-
+    
     await multi.exec();
 
     console.log('NEW BET: ', event.bets[fid])

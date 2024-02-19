@@ -24,14 +24,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (isFollowing && validCaptcha) {
     isNewUser = await kv.zscore('users', fid) === null;
 
-    const multi = kv.multi();
     if (isNewUser) {
         // New user
         user.balance = 100;
         user.availableBalance = 100;
         console.log('NEW USER: ', user)
         console.log('CLAIMED 100 DICE')
-      }
+    }
     else {
         user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
         console.log('USER: ', user)
@@ -48,6 +47,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       }
 
     user.hasClaimed = true;
+    const multi = kv.multi();
     await multi.hset(fid.toString(), user);
     await multi.zadd('users', {score: user.balance, member: fid});
     await multi.exec();

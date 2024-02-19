@@ -11,12 +11,6 @@ const kv = createClient({
 
 // Create a script that access kv storage and reset the hasClaimed value
 async function updateUserType() {
-    // Get event
-    const eventData : Event = await kv.hget(`events`, `sblviii-ml`);
-
-    const count = await kv.zcount("users", 0, 'inf')
-    console.log(`Total users: ${count}`)
-
     // Iteratively fetch all users
     let result = (await kv.zscan("users", 0, { count: 150 }))
     let cursor = result[0]
@@ -31,43 +25,80 @@ async function updateUserType() {
     // Filter out every other element
     users = users.filter((fid:number, index:number) => index % 2 === 0)
 
+    console.log(`Total users: ${users.length}`)
+
+    // Get nba-asg-ou and nba-asg-ou events
+    const eventData : Event | null = await kv.hget(`events`, `nba-asg-ou`)
+    const eventData2 : Event | null = await kv.hget(`events`, `nba-asg-ml`)
+
     // users = users.filter((fid:number) => fid === 313859)
+    let count = 0;
 
-    for (const fid of users) {
-        console.log(`FID: ${fid}`)
+    if (eventData !== null || eventData2 !== null) {
+      for (const fid of users) {
+          const user : User | null = await kv.hgetall(fid)
+          if (user === null) {
+              console.log(`User: ${fid} does not exist`)
+              // count++;
+              continue
+          }
 
-        const user = await kv.hgetall(fid)
+          if (user.bets === undefined) {
+              console.log(`User: ${fid} does not have any bets`, user)
+              // count++;
+              continue
+          }
 
-        // Delete points
-        // if (user.points !== undefined) {
-        //     console.log(`Deleting points for User: ${fid}`)
-        //     await kv.hdel(fid.toString(), 'points')
-        // }
-        
-        // if (user.balance !== undefined) { // Check if user has already been updated
-        //     console.log(`User: ${fid} already updated\n`)
-        //     continue
-        // }
+          const bets = user.bets
 
-        // // Convert old User object to new User object
-        // const updatedUser : User = {
-        //     balance: user.points,
-        //     availableBalance: user.points,
-        //     hasClaimed: user.hasClaimed,
-        //     wins: user.wins,
-        //     losses: user.losses,
-        //     streak: user.streak,
-        //     numBets: user.numBets,
-        //     bets: []
-        // }
+          // Check if user has a bet on nba-asg-ou if so check if they have bet in nba-asg-ou event
+          if (bets.includes('nba-asg-ou')) {
+            if (eventData?.bets[fid.toString()] === undefined) {
+                console.log(`User: ${fid} does not have bet on nba-asg-ou event`)
+                count++;
+            }
+          }
 
-        // if (eventData.bets[fid] !== undefined) {
-        //     updatedUser.bets.push('sblviii-ml')
-        // }
+          // Check if user has a bet on nba-asg-ml if so check if they have bet in nba-asg-ml event
+          if (bets.includes('nba-asg-ml')) {
+            if (eventData2?.bets[fid.toString()] === undefined) {
+                console.log(`User: ${fid} does not have bet on nba-asg-ml event`)
+                count++;
+            }
+          }
 
-        // console.log(`Changed User: ${JSON.stringify(updatedUser)}\n`)
-        
-        // await kv.hset(fid.toString(), updatedUser)
+          // Delete points
+          // if (user.points !== undefined) {
+          //     console.log(`Deleting points for User: ${fid}`)
+          //     await kv.hdel(fid.toString(), 'points')
+          // }
+          
+          // if (user.balance !== undefined) { // Check if user has already been updated
+          //     console.log(`User: ${fid} already updated\n`)
+          //     continue
+          // }
+
+          // // Convert old User object to new User object
+          // const updatedUser : User = {
+          //     balance: user.points,
+          //     availableBalance: user.points,
+          //     hasClaimed: user.hasClaimed,
+          //     wins: user.wins,
+          //     losses: user.losses,
+          //     streak: user.streak,
+          //     numBets: user.numBets,
+          //     bets: []
+          // }
+
+          // if (eventData.bets[fid] !== undefined) {
+          //     updatedUser.bets.push('sblviii-ml')
+          // }
+
+          // console.log(`Changed User: ${JSON.stringify(updatedUser)}\n`)
+          
+          // await kv.hset(fid.toString(), updatedUser)
+      }
+      console.log(`Total: ${count}`)
     }
 }   
 
