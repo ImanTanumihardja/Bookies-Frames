@@ -17,6 +17,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let user : User = DEFAULT_USER;
   let event : Event | null = null;
 
+
   await Promise.all([kv.hgetall(fid.toString()), kv.hget('events', eventName)]).then( (res) => {
     user = res[0] as User || DEFAULT_USER;
     event = res[1] as Event || null;

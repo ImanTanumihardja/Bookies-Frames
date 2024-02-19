@@ -49,7 +49,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     })
     .finally(async () => {
         if (profile !== null) {
-          rank = await kv.zrevrank('users', profile?.fid || "") || -1;
+          rank = await kv.zrevrank('users', profile?.fid || "");
+          rank = rank === null ? -1 : rank;
           
           // Can skip if not found in kv
           if (rank !== -1) 
