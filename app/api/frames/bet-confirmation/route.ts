@@ -57,14 +57,16 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     // Set user
     await kv.hset(fid.toString(), user).then( async () => {
       // Set event
-      await kv.sadd(`${eventName}:bets`, fid.toString()).catch(async (error) => {
-        console.error('Error adding user to event:', error);    
+      await kv.sadd(`${eventName}:bets`, bet).catch(async (error) => {
+        console.error('Error adding user to event:', error);
         // Try again
-        await kv.sadd(`${eventName}:bets`, fid.toString())
+        await kv.sadd(`${eventName}:bets`, bet).catch((error) => {
+          throw new Error('Error creating bet');
+        })
       })
     }).catch((error) => {
       throw new Error('Error creating bet');
-    });
+  });   
 
     console.log('NEW BET: ', bet)
   } 

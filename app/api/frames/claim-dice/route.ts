@@ -53,7 +53,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         await kv.zadd('users', {score: user.balance, member: fid}).catch(async (error) => {
           console.error('Error adding user to leaderboard:', error);
           // Try again
-          await kv.zadd('users', {score: user.balance, member: fid})
+          if (user !== null) await kv.zadd('users', {score: user.balance, member: fid}).catch((error) => {
+            throw new Error('Error adding user to leaderboard');
+          })
         });
       }).catch((error) => {
         throw new Error('Error updating user');
