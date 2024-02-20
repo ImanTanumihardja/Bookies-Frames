@@ -39,13 +39,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     stake = -1
   }
 
-  // Check if voted before and if the event is closed
-  const betExists = await kv.sismember(`${eventName}:bets`, fid.toString());
+  // // Check if voted before and if the event is closed
+  // const betExists = await kv.sismember(`${eventName}:bets`, fid.toString());
 
   const now = new Date().getTime();
 
   // Need to check bet does not exists, time is not past, and stake >= 1 and not rejected
-  if (!betExists && now < event?.startDate && stake >= 1 && button != 2) {
+  if (now < event?.startDate && stake >= 1 && event?.result === -1 && button != 2) {
     // Can bet
     event.poll[prediction]++;
     const bet : Bet = {eventName: eventName, fid: fid, prediction:prediction, odd: event.odds[prediction], stake:stake, timeStamp: now} as Bet;
@@ -70,10 +70,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     console.log('NEW BET: ', bet)
   } 
-  else if (betExists) {
-    stake = 0;
-    console.log('BET EXISTS')
-  }
+  // else if (betExists) {
+  //   stake = 0;
+  //   console.log('BET EXISTS')
+  // }
   else {
     prediction = -1
     console.log('FAILED TO PLACE BET')
