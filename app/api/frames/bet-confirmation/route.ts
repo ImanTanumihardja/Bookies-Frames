@@ -50,9 +50,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     event.poll[prediction]++;
     const bet : Bet = {eventName: eventName, fid: fid, prediction:prediction, odd: event.odds[prediction], stake:stake, timeStamp: now} as Bet;
 
-    let sendEvent : any = {}
-    sendEvent[eventName] = event;
-
     // Adjust user available balance
     user.availableBalance = availableBal - stake;
     user.bets[eventName] = bet
@@ -65,6 +62,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         // Try again
         await kv.sadd(`${eventName}:bets`, fid.toString())
       })
+    }).catch((error) => {
+      throw new Error('Error creating bet');
     });
 
     console.log('NEW BET: ', bet)

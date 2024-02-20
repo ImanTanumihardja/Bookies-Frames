@@ -62,7 +62,7 @@ async function updateUserType() {
                 losses: user.losses,
                 streak: user.streak,
                 numBets: user.numBets,
-                bets: {} as Record<string, Bet>
+                bets: []
             }
           }
           else {
@@ -76,7 +76,7 @@ async function updateUserType() {
                 losses: user.losses,
                 streak: user.streak,
                 numBets: user.numBets,
-                bets: {} as Record<string, Bet>
+                bets: []
               }
           }
 

@@ -19,10 +19,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   var user : User = DEFAULT_USER;
   var isNewUser: boolean = false;
-  var hasClaimed: boolean = false;
+  var hasClaimed: boolean = true;
 
   if (isFollowing && validCaptcha) {
-    isNewUser = await kv.zscore('users', fid) === null;
+    isNewUser = await kv.hexists(fid.toString(), 'hasClaimed') === 0;
 
     if (isNewUser) {
         // New user
@@ -30,6 +30,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         user.availableBalance = 100;
         console.log('NEW USER: ', user)
         console.log('CLAIMED 100 DICE')
+        hasClaimed = false;
     }
     else {
       user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
@@ -46,18 +47,18 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       }
     }
 
-    user.hasClaimed = true;
-    await kv.hset(fid.toString(), user).then( async () => {
-      await kv.zadd('users', {score: user.balance, member: fid}).catch(async (error) => {
-        console.error('Error adding user to leaderboard:', error);
-        // Try again
-        await kv.zadd('users', {score: user.balance, member: fid})
+    if (!hasClaimed) {
+      user.hasClaimed = true;
+      await kv.hset(fid.toString(), user).then( async () => {
+        await kv.zadd('users', {score: user.balance, member: fid}).catch(async (error) => {
+          console.error('Error adding user to leaderboard:', error);
+          // Try again
+          await kv.zadd('users', {score: user.balance, member: fid})
+        });
+      }).catch((error) => {
+        throw new Error('Error updating user');
       });
-    }).catch((error) => {
-      throw new Error('Error updating user');
-    });
-
-    
+    }
   }
 
   const imageUrl = generateUrl(`api/frames/${FrameNames.CLAIM_DICE}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed, [RequestProps.POINTS]: isNewUser ? 100 : 10, [RequestProps.VALID_CAPTCHA]: validCaptcha}, true, true);

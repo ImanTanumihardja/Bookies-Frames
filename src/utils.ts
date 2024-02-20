@@ -84,7 +84,7 @@ export const DEFAULT_USER: User = {
     losses: 0,
     numBets: 0,
     hasClaimed: false,
-    bets: {} as Record<string, Bet>
+    bets: []
 }
 
 export const DEFAULT_BET: Bet = {

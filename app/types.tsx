@@ -17,7 +17,7 @@ export type User = {
     losses: number;
     numBets: number;
     hasClaimed: boolean;
-    bets: Record<string, Bet>
+    bets: Bet[]
 }
 
 export type Bet = {
