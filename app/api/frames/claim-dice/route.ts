@@ -17,23 +17,24 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     validCaptcha = false;
   }
 
-  var user : User = DEFAULT_USER;
+  var user : User | null = null;
   var isNewUser: boolean = false;
   var hasClaimed: boolean = true;
 
   if (isFollowing && validCaptcha) {
-    isNewUser = await kv.hexists(fid.toString(), 'hasClaimed') === 0;
+    user = await kv.hgetall(fid.toString()) || null;
+    isNewUser = !user || user.hasClaimed === undefined;
 
     if (isNewUser) {
         // New user
+        user = DEFAULT_USER;
         user.balance = 100;
         user.availableBalance = 100;
         console.log('NEW USER: ', user)
         console.log('CLAIMED 100 DICE')
         hasClaimed = false;
     }
-    else {
-      user = await kv.hgetall(fid.toString()) || DEFAULT_USER;
+    else if (user !== null && user.hasClaimed !== undefined) {
       console.log('USER: ', user)
       
       hasClaimed = user.hasClaimed;
@@ -47,15 +48,15 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       }
     }
 
+    if (user === null) throw new Error('User is null');
+    
     if (!hasClaimed) {
       user.hasClaimed = true;
       await kv.hset(fid.toString(), user).then( async () => {
-        await kv.zadd('users', {score: user.balance, member: fid}).catch(async (error) => {
+       if (user !== null) await kv.zadd('users', {score: user.balance, member: fid}).catch(async (error) => {
           console.error('Error adding user to leaderboard:', error);
           // Try again
-          if (user !== null) await kv.zadd('users', {score: user.balance, member: fid}).catch((error) => {
-            throw new Error('Error adding user to leaderboard');
-          })
+          if (user !== null) await kv.zadd('users', {score: user.balance, member: fid})
         });
       }).catch((error) => {
         throw new Error('Error updating user');

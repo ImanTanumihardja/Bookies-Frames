@@ -19,19 +19,38 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let {eventName, stake, prediction} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PREDICTION]);
 
   // Wait for both user to be found and event to be found
-  let user : User = DEFAULT_USER;
+  let user : User | null = null;
   let event : Event | null = null;
+  var isNewUser: boolean = false;
 
   await Promise.all([kv.hgetall(fid.toString()), kv.hget('events', eventName)]).then( (res) => {
-    user = res[0] as User || DEFAULT_USER;
+    user = res[0] as User || null;
     event = res[1] as Event || null;
   });
 
+  isNewUser = !user || (user as User)?.hasClaimed === undefined;
+
+  if (isNewUser) {
+      // New user
+      user = DEFAULT_USER
+      user.balance = 100;
+      user.availableBalance = 100;
+      console.log('NEW USER: ', user)
+
+      // Add to leaderboard
+      await kv.zadd('users', {score: user.balance, member: fid})
+  }
+  else {
+    console.log('USER: ', user)    
+  }
+
   event = event as unknown as Event || null;
+
+  if (user === null) throw new Error('User is null');
 
   console.log('FID: ', fid.toString())
 
-  const availableBal = parseInt(user.availableBalance.toString());
+  const availableBal = parseInt(user?.availableBalance.toString());
 
   if (event === null) throw new Error('Event not found');
 
@@ -39,9 +58,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     stake = -1
   }
 
-  // // Check if voted before and if the event is closed
-  // const betExists = await kv.sismember(`${eventName}:bets`, fid.toString());
-
+  // Check if voted before and if the event is closed
+  const betExists = await kv.sismember(`${eventName}:bets`, fid.toString());
   const now = new Date().getTime();
 
   // Need to check bet does not exists, time is not past, and stake >= 1 and not rejected
