@@ -52,12 +52,14 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           rank = await kv.zrevrank('users', profile?.fid || "");
           rank = rank === null ? -1 : rank;
           
-          // Can skip if not found in kv
-          if (rank !== -1) 
-          { 
-            user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
-          }
+          user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
 
+          // Add users back to leaderboard if not already there
+          if (rank === -1 && user !== DEFAULT_USER) {
+            // Add user to leaderboard
+            await kv.zadd('users', {score: user.balance, member: profile?.fid});
+            rank = await kv.zrevrank('users', profile?.fid || "");
+          }
         }
     
       imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, 
@@ -97,6 +99,6 @@ export async function POST(req: NextRequest): Promise<Response> {
   return getResponse(req);
 } 
 
-export const revalidate = 0;
-export const dynamic = 'force-dynamic';
-export const fetchCache = 'force-no-store';
+export const revalidate = 30;
+// export const dynamic = 'force-dynamic';
+// export const fetchCache = 'force-no-store';

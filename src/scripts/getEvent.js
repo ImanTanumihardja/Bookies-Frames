@@ -44,7 +44,6 @@ var kv = (0, kv_1.createClient)({
     url: process.env['KV_REST_API_URL'] || '',
     token: process.env['KV_REST_API_TOKEN'] || '',
 });
-var result = 0;
 function getEvent(eventName) {
     if (eventName === void 0) { eventName = "sblviii-ml"; }
     return __awaiter(this, void 0, void 0, function () {
@@ -74,12 +73,12 @@ function getEvent(eventName) {
                     _c = _b[_i];
                     if (!(_c in _a)) return [3 /*break*/, 4];
                     fid = _c;
-                    bet = (eventData === null || eventData === void 0 ? void 0 : eventData.bets[parseInt(fid)]) || { prediction: -1, stake: 0, timeStamp: 0, odd: 0.5 };
-                    if (!(bet.prediction === result)) return [3 /*break*/, 4];
+                    bet = (eventData === null || eventData === void 0 ? void 0 : eventData.bets[parseInt(fid)]) || utils_1.DEFAULT_BET;
+                    if (!(bet.prediction === (eventData === null || eventData === void 0 ? void 0 : eventData.result))) return [3 /*break*/, 4];
                     return [4 /*yield*/, kv.hget("".concat(fid), 'streak')];
                 case 3:
                     streak = (_d.sent()) || 0;
-                    payout = (0, utils_1.calculatePayout)((eventData === null || eventData === void 0 ? void 0 : eventData.multiplier) || 1, (eventData === null || eventData === void 0 ? void 0 : eventData.odds[result]) || 0.5, bet.stake, streak);
+                    payout = (0, utils_1.calculatePayout)((eventData === null || eventData === void 0 ? void 0 : eventData.multiplier) || 1, (eventData === null || eventData === void 0 ? void 0 : eventData.odds[eventData === null || eventData === void 0 ? void 0 : eventData.result]) || 0.5, bet.stake, streak);
                     if (payout > maxValue) {
                         fids = [fid];
                         maxValue = payout;

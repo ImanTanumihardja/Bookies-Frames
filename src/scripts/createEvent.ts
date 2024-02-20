@@ -10,7 +10,7 @@ const kv = createClient({
 
 async function createEvent(eventName='nba-asg-ml', startDate=1708304400000, odds=[0.5, 0.5], multiplier=1, options=["West", "East"], prompt="Who will win the 2024 NBA All-Star Game?") {
     let event: any = {}
-    event[eventName] = {startDate: startDate, poll: [0, 0], bets: {}, result: -1, odds: odds, multiplier: multiplier, options: options, prompt: prompt} as Event;
+    event[eventName] = {startDate: startDate, poll: [0, 0], result: -1, odds: odds, multiplier: multiplier, options: options, prompt: prompt} as Event;
     await kv.hset(`events`, event);
 
     event = await kv.hget(`events`, `${eventName}`)

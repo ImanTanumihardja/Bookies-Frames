@@ -1,7 +1,7 @@
 const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
-import { calculatePayout } from "../utils";
+import { DEFAULT_BET, calculatePayout } from "../utils";
 import { Event, Bet } from '../../app/types';
 import { createClient  } from "@vercel/kv";
 
@@ -9,8 +9,6 @@ const kv = createClient({
   url: process.env['KV_REST_API_URL'] || '',
   token: process.env['KV_REST_API_TOKEN'] || '',
 });
-
-const result = 0;
 
 async function getEvent(eventName = "sblviii-ml") {
   let eventData: Event | null = await kv.hget(`events`, `${eventName}`);
@@ -26,11 +24,11 @@ async function getEvent(eventName = "sblviii-ml") {
     let payout = 0;
 
     for (const fid in eventData?.bets as Record<string, Bet>) {
-      bet = eventData?.bets[parseInt(fid)] || {prediction: -1, stake: 0, timeStamp: 0, odd:0.5};
+      bet = eventData?.bets[parseInt(fid)] || DEFAULT_BET
 
-      if (bet.prediction === result) {
+      if (bet.prediction === eventData?.result) {
         streak = await kv.hget(`${fid}`, 'streak') || 0;
-        payout = calculatePayout(eventData?.multiplier || 1, eventData?.odds[result] || 0.5, bet.stake, streak);
+        payout = calculatePayout(eventData?.multiplier || 1, eventData?.odds[eventData?.result] || 0.5, bet.stake, streak);
 
         if (payout > maxValue) {
           fids = [fid];

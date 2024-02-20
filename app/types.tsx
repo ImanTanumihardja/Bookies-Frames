@@ -2,23 +2,12 @@
 export type Event = { 
     startDate: number;
     poll: number[]; 
-    bets: Record<number, Bet>; 
     result: number 
     odds : number[]
     multiplier: number
     options: string[]
     prompt: string
 }
-
-// Old User type
-// export type User = {
-//     points: number;
-//     streak: number;
-//     wins: number;
-//     losses: number;
-//     numBets: number;
-//     hasClaimed: boolean;
-// }
 
 export type User = {
     balance: number;
@@ -28,14 +17,17 @@ export type User = {
     losses: number;
     numBets: number;
     hasClaimed: boolean;
-    bets: string[]
+    bets: Record<string, Bet>
 }
 
 export type Bet = {
+    eventName: string,
+    fid: number,
     stake: number
     odd: number
     prediction: number
     timeStamp: number
+    settled: boolean
 }
 
 export type FrameValidationData = {

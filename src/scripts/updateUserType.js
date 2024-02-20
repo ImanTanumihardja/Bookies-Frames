@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var createClient = require("@vercel/kv").createClient;
 var dotenv = require("dotenv");
 dotenv.config({ path: ".env" });
+var utils_1 = require("../utils");
 var kv = createClient({
     url: process.env['KV_REST_API_URL'] || '',
     token: process.env['KV_REST_API_TOKEN'] || '',
@@ -46,7 +47,7 @@ var kv = createClient({
 // Create a script that access kv storage and reset the hasClaimed value
 function updateUserType() {
     return __awaiter(this, void 0, void 0, function () {
-        var result, cursor, users, eventData, eventData2, count, _i, users_1, fid, user, bets;
+        var result, cursor, users, eventData, eventData2, count, _i, users_1, fid, user, updatedUser;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, kv.zscan("users", 0, { count: 150 })];
@@ -71,53 +72,75 @@ function updateUserType() {
                 case 5:
                     eventData = _a.sent();
                     return [4 /*yield*/, kv.hget("events", "nba-asg-ml")
-                        // users = users.filter((fid:number) => fid === 313859)
+                        // users = users.filter((fid:number) => fid === 313859) // Testing
                     ];
                 case 6:
                     eventData2 = _a.sent();
                     count = 0;
-                    if (!(eventData !== null || eventData2 !== null)) return [3 /*break*/, 11];
+                    if (!(eventData !== null || eventData2 !== null)) return [3 /*break*/, 15];
                     _i = 0, users_1 = users;
                     _a.label = 7;
                 case 7:
-                    if (!(_i < users_1.length)) return [3 /*break*/, 10];
+                    if (!(_i < users_1.length)) return [3 /*break*/, 14];
                     fid = users_1[_i];
                     return [4 /*yield*/, kv.hgetall(fid)];
                 case 8:
                     user = _a.sent();
                     if (user === null) {
                         console.log("User: ".concat(fid, " does not exist"));
-                        // count++;
-                        return [3 /*break*/, 9];
+                        return [3 /*break*/, 13];
                     }
                     if (user.bets === undefined) {
                         console.log("User: ".concat(fid, " does not have any bets"), user);
-                        // count++;
-                        return [3 /*break*/, 9];
+                        return [3 /*break*/, 13];
                     }
-                    bets = user.bets;
-                    // Check if user has a bet on nba-asg-ou if so check if they have bet in nba-asg-ou event
-                    if (bets.includes('nba-asg-ou')) {
-                        if ((eventData === null || eventData === void 0 ? void 0 : eventData.bets[fid.toString()]) === undefined) {
-                            console.log("User: ".concat(fid, " does not have bet on nba-asg-ou event"));
-                            count++;
-                        }
-                    }
-                    // Check if user has a bet on nba-asg-ml if so check if they have bet in nba-asg-ml event
-                    if (bets.includes('nba-asg-ml')) {
-                        if ((eventData2 === null || eventData2 === void 0 ? void 0 : eventData2.bets[fid.toString()]) === undefined) {
-                            console.log("User: ".concat(fid, " does not have bet on nba-asg-ml event"));
-                            count++;
-                        }
-                    }
-                    _a.label = 9;
+                    updatedUser = utils_1.DEFAULT_USER;
+                    if (!(user.points !== undefined)) return [3 /*break*/, 10];
+                    console.log("Deleting points for User: ".concat(fid));
+                    return [4 /*yield*/, kv.hdel(fid.toString(), 'points')
+                        // Convert old User object to new User object
+                    ];
                 case 9:
+                    _a.sent();
+                    // Convert old User object to new User object
+                    updatedUser = {
+                        balance: user.points,
+                        availableBalance: user.points,
+                        hasClaimed: user.hasClaimed,
+                        wins: user.wins,
+                        losses: user.losses,
+                        streak: user.streak,
+                        numBets: user.numBets,
+                        bets: {}
+                    };
+                    return [3 /*break*/, 11];
+                case 10:
+                    // Convert old User object to new User object
+                    console.log("Converting User: ".concat(fid));
+                    updatedUser = {
+                        balance: user.balance,
+                        availableBalance: user.availableBalance,
+                        hasClaimed: user.hasClaimed,
+                        wins: user.wins,
+                        losses: user.losses,
+                        streak: user.streak,
+                        numBets: user.numBets,
+                        bets: {}
+                    };
+                    _a.label = 11;
+                case 11:
+                    console.log("Changed User: ".concat(JSON.stringify(updatedUser), "\n"));
+                    return [4 /*yield*/, kv.hset(fid.toString(), updatedUser)];
+                case 12:
+                    _a.sent();
+                    _a.label = 13;
+                case 13:
                     _i++;
                     return [3 /*break*/, 7];
-                case 10:
+                case 14:
                     console.log("Total: ".concat(count));
-                    _a.label = 11;
-                case 11: return [2 /*return*/];
+                    _a.label = 15;
+                case 15: return [2 /*return*/];
             }
         });
     });

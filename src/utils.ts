@@ -84,14 +84,17 @@ export const DEFAULT_USER: User = {
     losses: 0,
     numBets: 0,
     hasClaimed: false,
-    bets: [],
+    bets: {} as Record<string, Bet>
 }
 
 export const DEFAULT_BET: Bet = {
+    eventName: '',
+    fid: 0,
     stake: 0,
     odd: 0.5,
     prediction: -1,
     timeStamp: 0,
+    settled: false
 }
 
 export const DEFAULT_FRAME_VALIDATION_DATA: FrameValidationData = {

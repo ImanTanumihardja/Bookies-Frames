@@ -24,6 +24,10 @@ async function settleEvent(eventName="", result=-1) {
 
     if (eventData?.result !== -1) {
       throw new Error('Event has already been settled')
+    } 
+
+    if (result === -1) {
+      throw new Error('Result is invalid')
     }
 
     console.log(`Event: ${eventName}`)
@@ -38,7 +42,6 @@ async function settleEvent(eventName="", result=-1) {
     console.log(`Set result of event: ${eventName} to ${result}`)
 
     // Pay each user
-    const multi = await kv.multi();
     for (const fid in eventData?.bets) {
       const bet: Bet = eventData?.bets[parseInt(fid)]
       const user : User | null = await kv.hgetall(fid);
@@ -64,9 +67,14 @@ async function settleEvent(eventName="", result=-1) {
           user.losses = parseInt(user.losses.toString()) + 1;
         }
 
-        await multi.hset(fid.toString(), user);
-        await multi.zadd('users', {score:user.balance, member:fid});
-        await multi.exec();
+        await kv.hset(fid.toString(), user).then( async () => {
+          console.log(`Settled user: ${fid}`)
+          
+          // Update leaderboard;
+          await kv.zadd('users', {score:user.balance, member:fid});
+        }).catch((error) => {
+          throw new Error(`Error updating user: ${fid}`)
+          });
       }
   }
 }

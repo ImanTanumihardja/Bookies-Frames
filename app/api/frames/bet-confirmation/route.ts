@@ -10,13 +10,17 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const {followingBookies: isFollowing, button, fid} = message;
 
+  const kv_url = process.env.KV_URL;
+  if (kv_url === undefined) {
+    throw new Error('KV_URL not defined');
+  }
+
   // Get eventName from req
   let {eventName, stake, prediction} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PREDICTION]);
 
   // Wait for both user to be found and event to be found
   let user : User = DEFAULT_USER;
   let event : Event | null = null;
-
 
   await Promise.all([kv.hgetall(fid.toString()), kv.hget('events', eventName)]).then( (res) => {
     user = res[0] as User || DEFAULT_USER;
@@ -27,16 +31,16 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   console.log('FID: ', fid.toString())
 
-  const currentBalance = parseInt(user.availableBalance.toString());
+  const availableBal = parseInt(user.availableBalance.toString());
 
   if (event === null) throw new Error('Event not found');
 
-  if (stake <= 0 || stake > currentBalance) {
+  if (stake <= 0 || stake > availableBal) {
     stake = -1
   }
 
   // Check if voted before and if the event is closed
-  const betExists = event?.bets.hasOwnProperty(fid);
+  const betExists = await kv.sismember(`${eventName}:bets`, fid.toString());
 
   const now = new Date().getTime();
 
@@ -44,29 +48,30 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (!betExists && now < event?.startDate && stake >= 1 && button != 2) {
     // Can bet
     event.poll[prediction]++;
-    event.bets[fid] = {prediction:prediction, odd: event.odds[prediction], stake:stake, timeStamp: now} as Bet;
+    const bet : Bet = {eventName: eventName, fid: fid, prediction:prediction, odd: event.odds[prediction], stake:stake, timeStamp: now} as Bet;
 
     let sendEvent : any = {}
     sendEvent[eventName] = event;
 
     // Adjust user available balance
-    user.availableBalance = currentBalance - stake;
-    user.bets.push(eventName)
+    user.availableBalance = availableBal - stake;
+    user.bets[eventName] = bet
 
-    const multi = kv.multi();
-    // Set events
-    await multi.hset('events', sendEvent);
     // Set user
-    await multi.hset(fid.toString(), user);
-    
-    await multi.exec();
+    await kv.hset(fid.toString(), user).then( async () => {
+      // Set event
+      await kv.sadd(`${eventName}:bets`, fid.toString()).catch(async (error) => {
+        console.error('Error adding user to event:', error);    
+        // Try again
+        await kv.sadd(`${eventName}:bets`, fid.toString())
+      })
+    });
 
-    console.log('NEW BET: ', event.bets[fid])
+    console.log('NEW BET: ', bet)
   } 
   else if (betExists) {
     stake = 0;
-    prediction = event.bets[fid].prediction;
-    console.log('BET EXISTS: ', event.bets[fid])
+    console.log('BET EXISTS')
   }
   else {
     prediction = -1
@@ -88,7 +93,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 export async function POST(req: NextRequest): Promise<Response> {
   return getResponse(req);
 } 
-
 
 export const revalidate = 0;
 export const dynamic = 'force-dynamic';

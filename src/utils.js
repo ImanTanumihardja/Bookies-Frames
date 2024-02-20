@@ -118,13 +118,16 @@ exports.DEFAULT_USER = {
     losses: 0,
     numBets: 0,
     hasClaimed: false,
-    bets: [],
+    bets: {}
 };
 exports.DEFAULT_BET = {
+    eventName: '',
+    fid: 0,
     stake: 0,
     odd: 0.5,
     prediction: -1,
     timeStamp: 0,
+    settled: false
 };
 exports.DEFAULT_FRAME_VALIDATION_DATA = {
     button: 0,
