@@ -12,17 +12,17 @@ const kv = createClient({
   });
 
 async function settleEvent(eventName="", result=-1) {
-    let eventData: Event | null = await kv.hget(`events`, `${eventName}`);
+    let event: Event | null = await kv.hgetall(`${eventName}`);
 
-    if (eventData === null) {
+    if (event === null) {
       throw new Error(`Event: ${eventName} does not exist`)
     }
     
-    if (eventData?.startDate > new Date().getTime()) {
+    if (event?.startDate > new Date().getTime()) {
       throw new Error('Event has not started yet')
     }
 
-    if (eventData?.result !== -1) {
+    if (parseInt(event?.result.toString()) !== -1) {
       throw new Error('Event has already been settled')
     } 
 
@@ -31,26 +31,27 @@ async function settleEvent(eventName="", result=-1) {
     }
 
     console.log(`Event: ${eventName}`)
-    console.log(eventData)
+    console.log(event)
 
     // Set the result of the event
-    eventData.result = result
+    event.result = result
 
-    let event: any = {}
-    event[eventName] = eventData;
-    await kv.hset(`events`, event);
+    await kv.hset(`${eventName}`, event)
     console.log(`Set result of event: ${eventName} to ${result}`)
 
     // Get all bets
-    let betsData = (await kv.zscan("users", 0, { count: 150 }))
+    let betsData = (await kv.sscan(`${eventName}:bets`, 0, { count: 150 }))
     let cursor = betsData[0]
-    let fids : Bet[] = betsData[1] as unknown as Bet[]
+    let fids : number[] = betsData[1] as unknown as number[]
 
     while (cursor) {
-      betsData = (await kv.zscan("users", cursor, { count: 150 }))
+      betsData = (await kv.sscan("users", cursor, { count: 150 }))
       cursor = betsData[0]
-      fids = fids.concat(betsData[1] as unknown as Bet[])
+      fids = fids.concat(betsData[1] as unknown as number[])
     }
+
+    // Filter out all fids that are not 313859
+    fids = fids.filter((fid:number) => fid === 313859) // Testing
 
     // Pay each user
     for (const fid of fids) {
@@ -60,33 +61,31 @@ async function settleEvent(eventName="", result=-1) {
         continue
       }
       for (const bet of user?.bets) {
-        if (bet.eventName === eventName && !bet.settled) {
-          // Pay out the user
-          if (bet.prediction === result) {  
-            const payout = calculatePayout(eventData.multiplier, eventData.odds[result], bet.stake, user?.streak);
-            user.balance = parseInt(user?.balance.toString()) + payout;
+        if (bet.eventName === eventName) {
+          if (bet.pick === result) {  // Won
+            console.log(`User: ${fid} won bet: ${JSON.stringify(bet)}`)
+            const payout = calculatePayout(event.multiplier, event.odds[result], bet.stake, user?.streak);
+
+            console.log(`Payout: ${payout}`)
+
+            user.balance = parseFloat(user?.balance.toString()) + payout;
             user.streak = parseInt(user?.streak.toString()) + 1;
-            user.numBets = parseInt(user?.numBets.toString()) + 1;
             user.wins = parseInt(user?.wins.toString()) + 1;
           }
-          else if (parseInt(fid.toString())) {
+          else if (parseInt(fid.toString())) { // Lost
+            console.log(`User: ${fid} lost bet: ${JSON.stringify(bet)}`)
             user.streak = 0;
-            user.numBets = parseInt(user.streak.toString()) + 1;
             user.losses = parseInt(user.losses.toString()) + 1;
           }
         }
+        bet.settled = true;
+        user.numBets = parseInt(user?.numBets.toString()) + 1;
       }
-
-      user.bets = user?.bets.map((b: Bet) => {
-        if (b.eventName === eventName && !b.settled) {
-          b.settled = true;
-        }
-        return b;
-      });
+      console.log(`Updated user: ${JSON.stringify(user)}`)
 
       // Update user and database
       await kv.hset(fid.toString(), user).then( async () => {
-        console.log(`Settled user: ${fid}`)
+        console.log(`Settled user: ${fid}\n`)
         await kv.zadd('users', {score:user.balance, member:fid});
       }).catch((error) => {
         throw new Error(`Error updating user: ${fid}`)

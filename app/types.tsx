@@ -22,7 +22,7 @@ export type Bet = {
     eventName: string,
     stake: number
     odd: number
-    prediction: number
+    pick: number
     timeStamp: number
     settled: boolean
 }

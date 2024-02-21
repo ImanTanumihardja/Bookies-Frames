@@ -14,7 +14,7 @@ const plusJakartaSans = fetch(
 export async function GET(req: NextRequest) {
     try {
         let text= '' // Default empty React element
-        const {prediction, stake, buttonIndex} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.STAKE, RequestProps.PREDICTION, RequestProps.BUTTON_INDEX]);
+        const {pick, stake, buttonIndex} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX]);
 
         if (buttonIndex == 2) {
             text = 'You rejected the bet!'
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
         else if (stake <= -1){
             text =  "You don't have enough dice!"
         }
-        else if (prediction === -1) {
+        else if (pick === -1) {
             text = "Event is no longer taking bets!"
         }
         else {

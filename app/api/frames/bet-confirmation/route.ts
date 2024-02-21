@@ -16,7 +16,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   }
 
   // Get eventName from req
-  let {eventName, stake, prediction} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PREDICTION]);
+  let {eventName, stake, pick} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK]);
 
   // Wait for both user to be found and event to be found
   let user : User | null = DEFAULT_USER;
@@ -48,7 +48,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   console.log('FID: ', fid.toString())
 
-  const balance = parseInt(user?.balance.toString());
+  const balance = parseFloat(user?.balance.toString());
 
   if (event === null) throw new Error('Event not found');
 
@@ -61,7 +61,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Need to check bet does not exists, time is not past, and stake >= 1 and not rejected
   if (now < event?.startDate && stake >= 1 && parseInt(event?.result.toString()) === -1 && button != 2) {
     // Can bet
-    const bet : Bet = {eventName: eventName, prediction:prediction, odd: event.odds[prediction], stake:stake, timeStamp: now, settled: false} as Bet;
+    const bet : Bet = {eventName: eventName, pick:pick, odd: event.odds[pick], stake:stake, timeStamp: now, settled: false} as Bet;
 
     // Adjust user available balance
     user.balance = balance - stake;
@@ -79,10 +79,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       })
 
       // Update poll
-      await kv.hincrby(`${eventName}:poll`, `${prediction}`, 1).catch(async (error) => {
+      await kv.hincrby(`${eventName}:poll`, `${pick}`, 1).catch(async (error) => {
         console.error('Error adding user to event:', error);
         // Try again
-        await kv.hincrby(`${eventName}:poll`, `${prediction}`, 1).catch((error) => {
+        await kv.hincrby(`${eventName}:poll`, `${pick}`, 1).catch((error) => {
           throw new Error('Error creating bet');
         })
       })
@@ -104,17 +104,17 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     console.log('NEW BET: ', bet)
   } 
   else {
-    prediction = -1
+    pick = -1
     console.log('FAILED TO PLACE BET')
   }
 
-  const imageUrl = generateUrl(`api/frames/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: stake, [RequestProps.PREDICTION]: prediction, [RequestProps.BUTTON_INDEX]: button}, true, true);
+  const imageUrl = generateUrl(`api/frames/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button}, true, true);
 
   return new NextResponse(
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-            buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label: prediction === -1 ? 'Try Again' : 'Place Another Bet', action:'link', target: 'https://warpcast.com/~/channel/bookies'}],
+            buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label: pick === -1 ? 'Try Again' : 'Place Another Bet', action:'link', target: 'https://warpcast.com/~/channel/bookies'}],
             postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BET_CONFIRMATION}`,
           }),
         );

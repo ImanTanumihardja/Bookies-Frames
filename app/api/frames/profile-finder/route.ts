@@ -68,7 +68,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
                                               [RequestProps.RANK]: rank, 
                                               [RequestProps.WINS]: user.wins, 
                                               [RequestProps.LOSSES]: user.losses, 
-                                              [RequestProps.POINTS]: user.balance, 
+                                              [RequestProps.BALANCE]: user.balance, 
                                               [RequestProps.STREAK]: user.streak, 
                                               [RequestProps.NUM_BETS]: user.numBets}, true, true);
     });

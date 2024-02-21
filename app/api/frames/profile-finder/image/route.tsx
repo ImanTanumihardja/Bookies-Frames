@@ -14,13 +14,13 @@ const plusJakartaSans = fetch(
 
 export async function GET(req: NextRequest) {
     try {
-        const {isFollowing, rank, username, avatarUrl, wins, losses, points, streak, numBets} = getRequestProps(req, [RequestProps.IS_FOLLOWING, 
+        const {isFollowing, rank, username, avatarUrl, wins, losses, balance, streak, numBets} = getRequestProps(req, [RequestProps.IS_FOLLOWING, 
                                                                                                                         RequestProps.RANK, 
                                                                                                                         RequestProps.USERNAME, 
                                                                                                                         RequestProps.AVATAR_URL, 
                                                                                                                         RequestProps.WINS, 
                                                                                                                         RequestProps.LOSSES, 
-                                                                                                                        RequestProps.POINTS, 
+                                                                                                                        RequestProps.BALANCE, 
                                                                                                                         RequestProps.STREAK,
                                                                                                                         RequestProps.NUM_BETS]);
         
@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
                             {shortUsername} {rank !== -1 ? `(#${rank + 1})` : ''}
                         </h1>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start', alignSelf:'center', top: -40}}>
-                            <h2 style={{color: 'white', marginBottom:-10, fontSize:30}}> 🎲 Dice: {points} </h2>
+                            <h2 style={{color: 'white', marginBottom:-10, fontSize:30}}> 🎲 Dice: {balance} </h2>
                             <h2 style={{color: 'white', marginBottom:-10, fontSize:30}}> 🔥 Streak: {streak} </h2>
                             <h2 style={{color: 'white', fontSize:30}}> 🎰 Total Bets: {numBets} ({wins}W - {losses}L)</h2>
                         </div>

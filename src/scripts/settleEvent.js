@@ -49,110 +49,110 @@ function settleEvent(eventName, result) {
     if (eventName === void 0) { eventName = ""; }
     if (result === void 0) { result = -1; }
     return __awaiter(this, void 0, void 0, function () {
-        var eventData, event, betsData, cursor, bets, _loop_1, _i, bets_1, bet;
+        var event, betsData, cursor, fids, _loop_1, _i, fids_1, fid;
         var _this = this;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, kv.hget("events", "".concat(eventName))];
+                case 0: return [4 /*yield*/, kv.hgetall("".concat(eventName))];
                 case 1:
-                    eventData = _a.sent();
-                    if (eventData === null) {
+                    event = _a.sent();
+                    if (event === null) {
                         throw new Error("Event: ".concat(eventName, " does not exist"));
                     }
-                    if ((eventData === null || eventData === void 0 ? void 0 : eventData.startDate) > new Date().getTime()) {
+                    if ((event === null || event === void 0 ? void 0 : event.startDate) > new Date().getTime()) {
                         throw new Error('Event has not started yet');
                     }
-                    if ((eventData === null || eventData === void 0 ? void 0 : eventData.result) !== -1) {
+                    if (parseInt(event === null || event === void 0 ? void 0 : event.result.toString()) !== -1) {
                         throw new Error('Event has already been settled');
                     }
                     if (result === -1) {
                         throw new Error('Result is invalid');
                     }
                     console.log("Event: ".concat(eventName));
-                    console.log(eventData);
+                    console.log(event);
                     // Set the result of the event
-                    eventData.result = result;
-                    event = {};
-                    event[eventName] = eventData;
-                    return [4 /*yield*/, kv.hset("events", event)];
+                    event.result = result;
+                    return [4 /*yield*/, kv.hset("".concat(eventName), event)];
                 case 2:
                     _a.sent();
                     console.log("Set result of event: ".concat(eventName, " to ").concat(result));
-                    return [4 /*yield*/, kv.zscan("users", 0, { count: 150 })];
+                    return [4 /*yield*/, kv.sscan("".concat(eventName, ":bets"), 0, { count: 150 })];
                 case 3:
                     betsData = (_a.sent());
                     cursor = betsData[0];
-                    bets = betsData[1];
+                    fids = betsData[1];
                     _a.label = 4;
                 case 4:
                     if (!cursor) return [3 /*break*/, 6];
-                    return [4 /*yield*/, kv.zscan("users", cursor, { count: 150 })];
+                    return [4 /*yield*/, kv.sscan("users", cursor, { count: 150 })];
                 case 5:
                     betsData = (_a.sent());
                     cursor = betsData[0];
-                    bets = bets.concat(betsData[1]);
+                    fids = fids.concat(betsData[1]);
                     return [3 /*break*/, 4];
                 case 6:
-                    _loop_1 = function (bet) {
-                        var user, payout;
-                        return __generator(this, function (_b) {
-                            switch (_b.label) {
-                                case 0: return [4 /*yield*/, kv.hgetall(bet === null || bet === void 0 ? void 0 : bet.fid.toString())];
+                    // Filter out all fids that are not 313859
+                    fids = fids.filter(function (fid) { return fid === 313859; }); // Testing
+                    _loop_1 = function (fid) {
+                        var user, _b, _c, bet, payout;
+                        return __generator(this, function (_d) {
+                            switch (_d.label) {
+                                case 0: return [4 /*yield*/, kv.hgetall(fid.toString())];
                                 case 1:
-                                    user = _b.sent();
-                                    if (!(user !== null)) return [3 /*break*/, 3];
-                                    if (bet.prediction === result) {
-                                        // Pay out the user
-                                        console.log("Paying out user: ".concat(bet === null || bet === void 0 ? void 0 : bet.fid, " with wager: ").concat(bet.stake));
-                                        payout = (0, utils_1.calculatePayout)(eventData.multiplier, eventData.odds[result], bet.stake, user === null || user === void 0 ? void 0 : user.streak);
-                                        user.balance = parseInt(user === null || user === void 0 ? void 0 : user.balance.toString()) + payout;
-                                        user.streak = parseInt(user === null || user === void 0 ? void 0 : user.streak.toString()) + 1;
-                                        user.numBets = parseInt(user === null || user === void 0 ? void 0 : user.numBets.toString()) + 1;
-                                        user.wins = parseInt(user === null || user === void 0 ? void 0 : user.wins.toString()) + 1;
-                                        // Get user bets and update the settled variable for bet
-                                        user.bets = user === null || user === void 0 ? void 0 : user.bets.map(function (b) {
-                                            if (b.eventName === eventName && !b.settled && b.timeStamp === bet.timeStamp) {
-                                                b.settled = true;
+                                    user = _d.sent();
+                                    if (user === null) {
+                                        console.log("User: ".concat(fid, " does not exist"));
+                                        return [2 /*return*/, "continue"];
+                                    }
+                                    for (_b = 0, _c = user === null || user === void 0 ? void 0 : user.bets; _b < _c.length; _b++) {
+                                        bet = _c[_b];
+                                        if (bet.eventName === eventName) {
+                                            if (bet.pick === result) { // Won
+                                                console.log("User: ".concat(fid, " won bet: ").concat(JSON.stringify(bet)));
+                                                payout = (0, utils_1.calculatePayout)(event.multiplier, event.odds[result], bet.stake, user === null || user === void 0 ? void 0 : user.streak);
+                                                console.log("Payout: ".concat(payout));
+                                                user.balance = parseFloat(user === null || user === void 0 ? void 0 : user.balance.toString()) + payout;
+                                                user.streak = parseInt(user === null || user === void 0 ? void 0 : user.streak.toString()) + 1;
+                                                user.wins = parseInt(user === null || user === void 0 ? void 0 : user.wins.toString()) + 1;
                                             }
-                                            return b;
-                                        });
+                                            else if (parseInt(fid.toString())) { // Lost
+                                                console.log("User: ".concat(fid, " lost bet: ").concat(JSON.stringify(bet)));
+                                                user.streak = 0;
+                                                user.losses = parseInt(user.losses.toString()) + 1;
+                                            }
+                                        }
+                                        bet.settled = true;
+                                        user.numBets = parseInt(user === null || user === void 0 ? void 0 : user.numBets.toString()) + 1;
                                     }
-                                    else if (parseInt(bet === null || bet === void 0 ? void 0 : bet.fid.toString())) {
-                                        // User lost
-                                        console.log("User: ".concat(bet === null || bet === void 0 ? void 0 : bet.fid, " lost with wager: ").concat(bet.stake));
-                                        user.streak = 0;
-                                        user.numBets = parseInt(user.streak.toString()) + 1;
-                                        user.losses = parseInt(user.losses.toString()) + 1;
-                                    }
-                                    return [4 /*yield*/, kv.hset(bet.fid.toString(), user).then(function () { return __awaiter(_this, void 0, void 0, function () {
+                                    console.log("Updated user: ".concat(JSON.stringify(user)));
+                                    // Update user and database
+                                    return [4 /*yield*/, kv.hset(fid.toString(), user).then(function () { return __awaiter(_this, void 0, void 0, function () {
                                             return __generator(this, function (_a) {
                                                 switch (_a.label) {
                                                     case 0:
-                                                        console.log("Settled user: ".concat(bet.fid));
-                                                        // Update leaderboard;
-                                                        return [4 /*yield*/, kv.zadd('users', { score: user.balance, member: bet.fid })];
+                                                        console.log("Settled user: ".concat(fid, "\n"));
+                                                        return [4 /*yield*/, kv.zadd('users', { score: user.balance, member: fid })];
                                                     case 1:
-                                                        // Update leaderboard;
                                                         _a.sent();
                                                         return [2 /*return*/];
                                                 }
                                             });
                                         }); }).catch(function (error) {
-                                            throw new Error("Error updating user: ".concat(bet.fid));
+                                            throw new Error("Error updating user: ".concat(fid));
                                         })];
                                 case 2:
-                                    _b.sent();
-                                    _b.label = 3;
-                                case 3: return [2 /*return*/];
+                                    // Update user and database
+                                    _d.sent();
+                                    return [2 /*return*/];
                             }
                         });
                     };
-                    _i = 0, bets_1 = bets;
+                    _i = 0, fids_1 = fids;
                     _a.label = 7;
                 case 7:
-                    if (!(_i < bets_1.length)) return [3 /*break*/, 10];
-                    bet = bets_1[_i];
-                    return [5 /*yield**/, _loop_1(bet)];
+                    if (!(_i < fids_1.length)) return [3 /*break*/, 10];
+                    fid = fids_1[_i];
+                    return [5 /*yield**/, _loop_1(fid)];
                 case 8:
                     _a.sent();
                     _a.label = 9;

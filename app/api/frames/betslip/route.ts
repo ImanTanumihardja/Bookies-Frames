@@ -63,18 +63,18 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     console.log('USER: ', user)    
   }
 
-  const prediction = button - 1;
-  const impliedProbability = event.odds[prediction]
+  const pick = button - 1;
+  const impliedProbability = event.odds[pick]
   const multiplier = event.multiplier;
   const streak = parseInt(user.streak.toString());
-  const availableBal = parseInt(user?.balance.toString());
+  const availableBal = parseFloat(user?.balance.toString());
   const poll = Object.values(await kv.hgetall(`${eventName}:poll`) as Record<number, number>)
   const prompt = event.prompt;
   const options = event.options;
 
 
   const imageUrl = generateUrl(`api/frames/${FrameNames.BETSLIP}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, 
-                                                                          [RequestProps.PREDICTION]: prediction, 
+                                                                          [RequestProps.PICK]: pick, 
                                                                           [RequestProps.STAKE]: stake, 
                                                                           [RequestProps.ODD]: impliedProbability,
                                                                           [RequestProps.MULTIPLIER]: multiplier,
@@ -88,7 +88,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-      postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BET_CONFIRMATION}?eventName=${eventName}&stake=${stake}&prediction=${button-1}`,
+      postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BET_CONFIRMATION}?eventName=${eventName}&stake=${stake}&pick=${button-1}`,
       buttons: [
                 {label: "Confirm", action: 'post'},
                 {label: "Reject", action: 'post'}

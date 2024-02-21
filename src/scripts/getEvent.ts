@@ -35,7 +35,7 @@ async function getEvent(eventName = "sblviii-ml") {
     let payout = 0;
 
     for (const bet of bets) {
-      if (bet.prediction === eventData?.result) {
+      if (bet.pick === eventData?.result) {
         streak = await kv.hget(`${bet.fid}`, 'streak') || 0;
         payout = calculatePayout(eventData?.multiplier || 1, eventData?.odds[eventData?.result] || 0.5, bet.stake, streak);
 

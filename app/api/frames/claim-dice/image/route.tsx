@@ -14,7 +14,7 @@ const plusJakartaSans = fetch(
 
 export async function GET(req: NextRequest) {
     try {
-        const {isFollowing, hasClaimed, points, validCaptcha} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.HAS_CLAIMED, RequestProps.POINTS, RequestProps.VALID_CAPTCHA]);
+        const {isFollowing, hasClaimed, points, validCaptcha} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.HAS_CLAIMED, RequestProps.BALANCE, RequestProps.VALID_CAPTCHA]);
 
         return new ImageResponse(
             <FrameBase>

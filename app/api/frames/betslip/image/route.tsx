@@ -16,7 +16,7 @@ const plusJakartaSans = fetch(
 export async function GET(req: NextRequest) {
     try {
         let {isFollowing, 
-            prediction, 
+            pick, 
             stake, 
             odd : impliedProbability, 
             multiplier, 
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
             prompt, 
             options} 
                 = getRequestProps(req, [RequestProps.IS_FOLLOWING, 
-                                        RequestProps.PREDICTION, 
+                                        RequestProps.PICK, 
                                         RequestProps.STAKE, 
                                         RequestProps.ODD,
                                         RequestProps.MULTIPLIER,
@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
                     <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:5, textAlign:'start'}}>Available Balance: {availableBalance} <img style={{width: 22, height: 22, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/> </h1>
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%', alignItems:'center', justifyItems:"center"}}>
                         <div style={{display: 'flex', flexDirection: 'column', alignItems:'flex-start', justifyItems:"center", padding:10}}> 
-                            <h1 style={{color: 'white', fontSize:30, margin:10}}> PICK: {options[prediction]}</h1>
+                            <h1 style={{color: 'white', fontSize:30, margin:10}}> PICK: {options[pick]}</h1>
                             <h1 style={{color: 'white', fontSize:30, margin:10}}> STAKE: {stake} <img style={{width: 35, height: 35, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
                             <h1 style={{color: 'white', fontSize:30, margin:10}}> ODDS: {impliedProbability > 0.5 ? '-' : '+'}{odd}</h1>
                             <h1 style={{color: 'white', fontSize:30, margin:10}}> PAYOUT: {payout}<img style={{width: 35, height: 35, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>

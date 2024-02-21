@@ -51,7 +51,6 @@ var RequestProps;
     RequestProps["RANK"] = "rank";
     RequestProps["WINS"] = "wins";
     RequestProps["LOSSES"] = "losses";
-    RequestProps["POINTS"] = "points";
     RequestProps["NUM_BETS"] = "numBets";
     RequestProps["BUTTON_INDEX"] = "buttonIndex";
     RequestProps["INPUT_TEXT"] = "inputText";
@@ -59,7 +58,7 @@ var RequestProps;
     RequestProps["OPTIONS"] = "options";
     RequestProps["PROMPT"] = "prompt";
     RequestProps["EVENT_NAME"] = "eventName";
-    RequestProps["PREDICTION"] = "prediction";
+    RequestProps["PICK"] = "pick";
     RequestProps["MULTIPLIER"] = "multiplier";
     RequestProps["TIMESTAMP"] = "timestamp";
     RequestProps["ODDS"] = "odds";
@@ -93,7 +92,6 @@ exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.RANK] = 0,
     _a[RequestProps.WINS] = 0,
     _a[RequestProps.LOSSES] = 0,
-    _a[RequestProps.POINTS] = 0,
     _a[RequestProps.NUM_BETS] = 0,
     _a[RequestProps.BUTTON_INDEX] = 0,
     _a[RequestProps.INPUT_TEXT] = "",
@@ -101,11 +99,11 @@ exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.PROMPT] = "",
     _a[RequestProps.STREAK] = 0,
     _a[RequestProps.EVENT_NAME] = "",
-    _a[RequestProps.PREDICTION] = 0,
+    _a[RequestProps.PICK] = 0,
     _a[RequestProps.MULTIPLIER] = 0,
     _a[RequestProps.TIMESTAMP] = 0,
     _a[RequestProps.ODDS] = [],
-    _a[RequestProps.BALANCE] = 0,
+    _a[RequestProps.BALANCE] = 0.0,
     _a[RequestProps.POLL] = [],
     _a[RequestProps.VALID_CAPTCHA] = true,
     _a[RequestProps.INDEX] = 0,
@@ -127,7 +125,7 @@ exports.DEFAULT_BET = {
     eventName: '',
     stake: 0,
     odd: 0.5,
-    prediction: -1,
+    pick: -1,
     timeStamp: 0,
     settled: false
 };

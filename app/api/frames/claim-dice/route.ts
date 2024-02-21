@@ -38,7 +38,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       hasClaimed = user.hasClaimed;
       if (!hasClaimed) {
         // Get daily 10 dice for old user
-        user.balance = parseInt(user.balance.toString()) + 10;
+        user.balance = parseFloat(user.balance.toString()) + 10;
         console.log('CLAIMED 10 DICE')
       } else {
         console.log('ALREADY CLAIMED')
@@ -61,7 +61,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
   }
 
-  const imageUrl = generateUrl(`api/frames/${FrameNames.CLAIM_DICE}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed, [RequestProps.POINTS]: isNewUser ? 100 : 10, [RequestProps.VALID_CAPTCHA]: validCaptcha}, true, true);
+  const imageUrl = generateUrl(`api/frames/${FrameNames.CLAIM_DICE}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed, [RequestProps.BALANCE]: isNewUser ? 100 : 10, [RequestProps.VALID_CAPTCHA]: validCaptcha}, true, true);
 
   const frame: Frame = {
     version: "vNext",
