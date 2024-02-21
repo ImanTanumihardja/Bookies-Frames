@@ -55,9 +55,8 @@ function createEvent(eventName, startDate, odds, multiplier, options, prompt) {
         return __generator(this, function (_g) {
             switch (_g.label) {
                 case 0:
-                    event = {};
-                    event[eventName] = { startDate: startDate, result: -1, odds: odds, multiplier: multiplier, options: options, prompt: prompt };
-                    return [4 /*yield*/, kv.hset("events", event)];
+                    event = { startDate: startDate, result: -1, odds: odds, multiplier: multiplier, options: options, prompt: prompt };
+                    return [4 /*yield*/, kv.hset("".concat(eventName), event)];
                 case 1:
                     _g.sent();
                     poll = { 0: 0, 1: 0, 2: 0, 3: 0 };

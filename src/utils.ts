@@ -93,7 +93,6 @@ export const DEFAULT_USER: User = {
 
 export const DEFAULT_BET: Bet = {
     eventName: '',
-    fid: 0,
     stake: 0,
     odd: 0.5,
     prediction: -1,

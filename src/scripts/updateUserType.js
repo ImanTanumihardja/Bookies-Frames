@@ -110,7 +110,7 @@ function updateUserType() {
                         losses: user.losses,
                         streak: user.streak,
                         numBets: user.numBets,
-                        bets: []
+                        bets: {},
                     };
                     return [3 /*break*/, 12];
                 case 10:

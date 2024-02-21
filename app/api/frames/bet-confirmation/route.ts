@@ -23,7 +23,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let event : Event | null = null;
   let isNewUser: boolean = false;
 
-  await Promise.all([kv.hgetall(fid.toString()), kv.hget('events', eventName)]).then( (res) => {
+  await Promise.all([kv.hgetall(fid.toString()), kv.hgetall(eventName)]).then( (res) => {
     user = res[0] as User || null;
     event = res[1] as Event || null;
   });
@@ -61,7 +61,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Need to check bet does not exists, time is not past, and stake >= 1 and not rejected
   if (now < event?.startDate && stake >= 1 && event?.result === -1 && button != 2) {
     // Can bet
-    const bet : Bet = {eventName: eventName, fid: fid, prediction:prediction, odd: event.odds[prediction], stake:stake, timeStamp: now, settled: false} as Bet;
+    const bet : Bet = {eventName: eventName, prediction:prediction, odd: event.odds[prediction], stake:stake, timeStamp: now, settled: false} as Bet;
 
     // Adjust user available balance
     user.balance = balance - stake;
@@ -70,10 +70,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     // Set user
     await kv.hset(fid.toString(), user).then( async () => {
       // Set event
-      await kv.sadd(`${eventName}:bets`, bet).catch(async (error) => {
+      await kv.sadd(`${eventName}:bets`, fid).catch(async (error) => {
         console.error('Error adding user to event:', error);
         // Try again
-        await kv.sadd(`${eventName}:bets`, bet).catch((error) => {
+        await kv.sadd(`${eventName}:bets`, fid).catch((error) => {
           throw new Error('Error creating bet');
         })
       })
@@ -114,16 +114,16 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-      buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label:'Try Again', action:'post'}],
-      postUrl: `${process.env['HOST']}/${FrameNames.BET_CONFIRMATION}`,
-    }),
-  );
-}
+            buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label: prediction !== -1 ? 'Try Again' : 'Place Another Bet', action:'link', target: ''}],
+            postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BET_CONFIRMATION}`,
+          }),
+        );
+      }
 
-export async function POST(req: NextRequest): Promise<Response> {
-  return getResponse(req);
-} 
+      export async function POST(req: NextRequest): Promise<Response> {
+        return getResponse(req);
+      } 
 
-export const revalidate = 0;
+      export const revalidate = 0;
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';

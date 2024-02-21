@@ -20,7 +20,6 @@ export type User = {
 
 export type Bet = {
     eventName: string,
-    fid: number,
     stake: number
     odd: number
     prediction: number

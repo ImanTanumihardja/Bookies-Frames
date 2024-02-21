@@ -11,30 +11,39 @@ const kv = createClient({
 });
 
 async function getEvent(eventName = "sblviii-ml") {
-  let eventData: Event | null = await kv.hget(`events`, `${eventName}`);
+  let eventData: Event | null = await kv.hgetall(`${eventName}`);
   console.log(`Event: ${eventName}`);
   console.log(eventData);
-  console.log(`Total bets: ${(Object.keys(eventData?.bets || {}).length)}`);
+  
+  // Get all bets
+  let betsData = (await kv.zscan("users", 0, { count: 150 }))
+  let cursor = betsData[0]
+  let bets : Bet[] = betsData[1] as unknown as Bet[]
+
+  while (cursor) {
+    betsData = (await kv.zscan("users", cursor, { count: 150 }))
+    cursor = betsData[0]
+    bets = bets.concat(betsData[1] as unknown as Bet[])
+  }
+
+  console.log(`Total bets: ${bets.length}`);
 
   if (eventData?.result !== -1) {
     let maxValue = 0;
-    let fids: string[] = [];
-    let bet: Bet;
+    let fids: number[] = [];
     let streak = 0;
     let payout = 0;
 
-    for (const fid in eventData?.bets as Record<string, Bet>) {
-      bet = eventData?.bets[parseInt(fid)] || DEFAULT_BET
-
+    for (const bet of bets) {
       if (bet.prediction === eventData?.result) {
-        streak = await kv.hget(`${fid}`, 'streak') || 0;
+        streak = await kv.hget(`${bet.fid}`, 'streak') || 0;
         payout = calculatePayout(eventData?.multiplier || 1, eventData?.odds[eventData?.result] || 0.5, bet.stake, streak);
 
         if (payout > maxValue) {
-          fids = [fid];
+          fids = [bet.fid];
           maxValue = payout;
         } else if (payout === maxValue) {
-          fids.push(fid);
+          fids.push(bet.fid);
         }
       }
     }
@@ -43,12 +52,6 @@ async function getEvent(eventName = "sblviii-ml") {
     console.log(`MAX WINNERS: ${fids}`);
     console.log(`MAX WINNERS PAYOUT: ${maxValue}`);
   }
-
-  let count = 0;
-  for (const bet in eventData?.bets) {
-    count++;
-  }
-  console.log(`Total bets: ${count}`);
 }
 
 

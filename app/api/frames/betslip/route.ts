@@ -28,12 +28,23 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let event : Event | null = null;
   var isNewUser: boolean = false;
 
-  await Promise.all([kv.hgetall(fid.toString()), kv.hget('events', eventName)]).then( (res) => {
+  await Promise.all([kv.hgetall(fid.toString()), kv.hgetall(eventName)]).then( (res) => {
     user = res[0] as User || null;
     event = res[1] as Event || null;
   });
 
   event = event as unknown as Event || null;
+
+
+  if (user === null) throw new Error('User is null');
+
+  // Get info for bet
+  if (event === null) throw new Error('Event not found');
+
+  // Check if event has already passed
+  if (event.startDate < new Date().getTime()) {
+    throw new Error('Event has already started');
+  }
 
   // Check if new user if so add new user
   isNewUser = !user || (user as User)?.hasClaimed === undefined;
@@ -46,11 +57,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   else {
     console.log('USER: ', user)    
   }
-
-  if (user === null) throw new Error('User is null');
-
-  // Get info for bet
-  if (event === null) throw new Error('Event not found');
 
   const prediction = button - 1;
   const impliedProbability = event.odds[prediction]

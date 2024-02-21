@@ -22,9 +22,6 @@ export async function GET(req: NextRequest) {
         else if (stake <= -1){
             text =  "You don't have enough dice!"
         }
-        else if (stake === 0 ){
-            text = "You already placed a bet!"
-        }
         else if (prediction === -1) {
             text = "Event is no longer taking bets!"
         }

@@ -49,13 +49,13 @@ function settleEvent(eventName, result) {
     if (eventName === void 0) { eventName = ""; }
     if (result === void 0) { result = -1; }
     return __awaiter(this, void 0, void 0, function () {
-        var eventData, event, _loop_1, _a, _b, _c, _i, fid;
+        var eventData, event, betsData, cursor, bets, _loop_1, _i, bets_1, bet;
         var _this = this;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0: return [4 /*yield*/, kv.hget("events", "".concat(eventName))];
                 case 1:
-                    eventData = _d.sent();
+                    eventData = _a.sent();
                     if (eventData === null) {
                         throw new Error("Event: ".concat(eventName, " does not exist"));
                     }
@@ -76,43 +76,61 @@ function settleEvent(eventName, result) {
                     event[eventName] = eventData;
                     return [4 /*yield*/, kv.hset("events", event)];
                 case 2:
-                    _d.sent();
+                    _a.sent();
                     console.log("Set result of event: ".concat(eventName, " to ").concat(result));
-                    _loop_1 = function (fid) {
-                        var bet, user, payout;
-                        return __generator(this, function (_e) {
-                            switch (_e.label) {
-                                case 0:
-                                    bet = eventData === null || eventData === void 0 ? void 0 : eventData.bets[parseInt(fid)];
-                                    return [4 /*yield*/, kv.hgetall(fid)];
+                    return [4 /*yield*/, kv.zscan("users", 0, { count: 150 })];
+                case 3:
+                    betsData = (_a.sent());
+                    cursor = betsData[0];
+                    bets = betsData[1];
+                    _a.label = 4;
+                case 4:
+                    if (!cursor) return [3 /*break*/, 6];
+                    return [4 /*yield*/, kv.zscan("users", cursor, { count: 150 })];
+                case 5:
+                    betsData = (_a.sent());
+                    cursor = betsData[0];
+                    bets = bets.concat(betsData[1]);
+                    return [3 /*break*/, 4];
+                case 6:
+                    _loop_1 = function (bet) {
+                        var user, payout;
+                        return __generator(this, function (_b) {
+                            switch (_b.label) {
+                                case 0: return [4 /*yield*/, kv.hgetall(bet === null || bet === void 0 ? void 0 : bet.fid.toString())];
                                 case 1:
-                                    user = _e.sent();
+                                    user = _b.sent();
                                     if (!(user !== null)) return [3 /*break*/, 3];
                                     if (bet.prediction === result) {
                                         // Pay out the user
-                                        console.log("Paying out user: ".concat(fid, " with wager: ").concat(bet.stake));
+                                        console.log("Paying out user: ".concat(bet === null || bet === void 0 ? void 0 : bet.fid, " with wager: ").concat(bet.stake));
                                         payout = (0, utils_1.calculatePayout)(eventData.multiplier, eventData.odds[result], bet.stake, user === null || user === void 0 ? void 0 : user.streak);
-                                        user.availableBalance = parseInt(user === null || user === void 0 ? void 0 : user.availableBalance.toString()) + payout;
-                                        user.balance = parseInt(user === null || user === void 0 ? void 0 : user.balance.toString()) + (payout - bet.stake);
+                                        user.balance = parseInt(user === null || user === void 0 ? void 0 : user.balance.toString()) + payout;
                                         user.streak = parseInt(user === null || user === void 0 ? void 0 : user.streak.toString()) + 1;
                                         user.numBets = parseInt(user === null || user === void 0 ? void 0 : user.numBets.toString()) + 1;
                                         user.wins = parseInt(user === null || user === void 0 ? void 0 : user.wins.toString()) + 1;
+                                        // Get user bets and update the settled variable for bet
+                                        user.bets = user === null || user === void 0 ? void 0 : user.bets.map(function (b) {
+                                            if (b.eventName === eventName && !b.settled && b.timeStamp === bet.timeStamp) {
+                                                b.settled = true;
+                                            }
+                                            return b;
+                                        });
                                     }
-                                    else if (parseInt(fid)) {
+                                    else if (parseInt(bet === null || bet === void 0 ? void 0 : bet.fid.toString())) {
                                         // User lost
-                                        console.log("User: ".concat(fid, " lost with wager: ").concat(bet.stake));
+                                        console.log("User: ".concat(bet === null || bet === void 0 ? void 0 : bet.fid, " lost with wager: ").concat(bet.stake));
                                         user.streak = 0;
-                                        user.balance = parseInt(user.balance.toString()) - bet.stake;
                                         user.numBets = parseInt(user.streak.toString()) + 1;
                                         user.losses = parseInt(user.losses.toString()) + 1;
                                     }
-                                    return [4 /*yield*/, kv.hset(fid.toString(), user).then(function () { return __awaiter(_this, void 0, void 0, function () {
+                                    return [4 /*yield*/, kv.hset(bet.fid.toString(), user).then(function () { return __awaiter(_this, void 0, void 0, function () {
                                             return __generator(this, function (_a) {
                                                 switch (_a.label) {
                                                     case 0:
-                                                        console.log("Settled user: ".concat(fid));
+                                                        console.log("Settled user: ".concat(bet.fid));
                                                         // Update leaderboard;
-                                                        return [4 /*yield*/, kv.zadd('users', { score: user.balance, member: fid })];
+                                                        return [4 /*yield*/, kv.zadd('users', { score: user.balance, member: bet.fid })];
                                                     case 1:
                                                         // Update leaderboard;
                                                         _a.sent();
@@ -120,34 +138,28 @@ function settleEvent(eventName, result) {
                                                 }
                                             });
                                         }); }).catch(function (error) {
-                                            throw new Error("Error updating user: ".concat(fid));
+                                            throw new Error("Error updating user: ".concat(bet.fid));
                                         })];
                                 case 2:
-                                    _e.sent();
-                                    _e.label = 3;
+                                    _b.sent();
+                                    _b.label = 3;
                                 case 3: return [2 /*return*/];
                             }
                         });
                     };
-                    _a = eventData === null || eventData === void 0 ? void 0 : eventData.bets;
-                    _b = [];
-                    for (_c in _a)
-                        _b.push(_c);
-                    _i = 0;
-                    _d.label = 3;
-                case 3:
-                    if (!(_i < _b.length)) return [3 /*break*/, 6];
-                    _c = _b[_i];
-                    if (!(_c in _a)) return [3 /*break*/, 5];
-                    fid = _c;
-                    return [5 /*yield**/, _loop_1(fid)];
-                case 4:
-                    _d.sent();
-                    _d.label = 5;
-                case 5:
+                    _i = 0, bets_1 = bets;
+                    _a.label = 7;
+                case 7:
+                    if (!(_i < bets_1.length)) return [3 /*break*/, 10];
+                    bet = bets_1[_i];
+                    return [5 /*yield**/, _loop_1(bet)];
+                case 8:
+                    _a.sent();
+                    _a.label = 9;
+                case 9:
                     _i++;
-                    return [3 /*break*/, 3];
-                case 6: return [2 /*return*/];
+                    return [3 /*break*/, 7];
+                case 10: return [2 /*return*/];
             }
         });
     });
