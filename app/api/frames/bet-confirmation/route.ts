@@ -61,7 +61,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Need to check bet does not exists, time is not past, and stake >= 1 and not rejected
   if (now < event?.startDate && stake >= 1 && event?.result === -1 && button != 2) {
     // Can bet
-    const bet : Bet = {eventName: eventName, fid: fid, prediction:prediction, odd: event.odds[prediction], stake:stake, timeStamp: now} as Bet;
+    const bet : Bet = {eventName: eventName, fid: fid, prediction:prediction, odd: event.odds[prediction], stake:stake, timeStamp: now, settled: false} as Bet;
 
     // Adjust user available balance
     user.balance = balance - stake;
