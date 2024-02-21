@@ -114,7 +114,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-            buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label: prediction !== -1 ? 'Try Again' : 'Place Another Bet', action:'link', target: 'https://warpcast.com/~/channel/bookies'}],
+            buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label: prediction === -1 ? 'Try Again' : 'Place Another Bet', action:'link', target: 'https://warpcast.com/~/channel/bookies'}],
             postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BET_CONFIRMATION}`,
           }),
         );
@@ -124,6 +124,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         return getResponse(req);
       } 
 
-      export const revalidate = 0;
-export const dynamic = 'force-dynamic';
-export const fetchCache = 'force-no-store';
+export const revalidate = 0;
+// export const dynamic = 'force-dynamic';
+// export const fetchCache = 'force-no-store';
