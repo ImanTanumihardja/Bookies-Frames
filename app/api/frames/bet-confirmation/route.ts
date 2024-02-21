@@ -37,8 +37,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (isNewUser) {
       // New user
       user = DEFAULT_USER
-      user.balance = 100;
-      user.availableBalance = 100;
+      user.hasClaimed = true;
       console.log('NEW USER: ', user)
   }
   else {
@@ -49,11 +48,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   console.log('FID: ', fid.toString())
 
-  const availableBal = parseInt(user?.availableBalance.toString());
+  const balance = parseInt(user?.balance.toString());
 
   if (event === null) throw new Error('Event not found');
 
-  if (stake <= 0 || stake > availableBal) {
+  if (stake <= 0 || stake > balance) {
     stake = -1
   }
 
@@ -65,7 +64,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const bet : Bet = {eventName: eventName, fid: fid, prediction:prediction, odd: event.odds[prediction], stake:stake, timeStamp: now} as Bet;
 
     // Adjust user available balance
-    user.availableBalance = availableBal - stake;
+    user.balance = balance - stake;
     user.bets.push(bet)
 
     // Set user
@@ -90,7 +89,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
       // If new user add to leaderboard
       if (isNewUser) {
-        if (user !== null) await kv.zadd('users', {score: user.balance, member: fid}).catch(async (error) => {
+        if (user !== null) await kv.zadd('users', {score: 100, member: fid}).catch(async (error) => {
           console.error('Error adding user to leaderboard:', error);
           // Try again
           if (user !== null) await kv.zadd('users', {score: user.balance, member: fid}).catch((error) => {
@@ -104,10 +103,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     console.log('NEW BET: ', bet)
   } 
-  // else if (betExists) {
-  //   stake = 0;
-  //   console.log('BET EXISTS')
-  // }
   else {
     prediction = -1
     console.log('FAILED TO PLACE BET')
@@ -119,8 +114,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-      buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'} ],
-      postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BET_CONFIRMATION}`,
+      buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label:'Try Again', action:'post'}],
+      postUrl: `${process.env['HOST']}/${FrameNames.BET_CONFIRMATION}`,
     }),
   );
 }

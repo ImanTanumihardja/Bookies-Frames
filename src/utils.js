@@ -115,8 +115,7 @@ exports.RequestPropsTypes = (_a = {},
     _a);
 exports.BOOKIES_FID = 244367;
 exports.DEFAULT_USER = {
-    balance: 0,
-    availableBalance: 0,
+    balance: 100,
     streak: 0,
     wins: 0,
     losses: 0,
@@ -276,14 +275,13 @@ function convertImpliedProbabilityToAmerican(impliedProbability) {
         americanOdds =
             Math.round(((impliedProbability * 100) * 100) / (100 - (impliedProbability * 100)));
     }
-    // Get negative american odds
     return americanOdds;
 }
 exports.convertImpliedProbabilityToAmerican = convertImpliedProbabilityToAmerican;
 function calculatePayout(multiplier, impliedProbability, stake, streak) {
     if (streak === void 0) { streak = 0; }
     var payout = multiplier * (1 / impliedProbability) * (stake); // TODO add streak
-    return Math.round(payout * 100) / 100;
+    return Math.ceil(payout * 100) / 100;
 }
 exports.calculatePayout = calculatePayout;
 exports.revalidate = 0;

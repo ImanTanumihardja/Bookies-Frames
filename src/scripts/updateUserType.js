@@ -77,22 +77,22 @@ function updateUserType() {
                 case 6:
                     eventData2 = _a.sent();
                     count = 0;
-                    if (!(eventData !== null || eventData2 !== null)) return [3 /*break*/, 15];
+                    if (!(eventData !== null || eventData2 !== null)) return [3 /*break*/, 16];
                     _i = 0, users_1 = users;
                     _a.label = 7;
                 case 7:
-                    if (!(_i < users_1.length)) return [3 /*break*/, 14];
+                    if (!(_i < users_1.length)) return [3 /*break*/, 15];
                     fid = users_1[_i];
                     return [4 /*yield*/, kv.hgetall(fid)];
                 case 8:
                     user = _a.sent();
                     if (user === null) {
                         console.log("User: ".concat(fid, " does not exist"));
-                        return [3 /*break*/, 13];
+                        return [3 /*break*/, 14];
                     }
                     if (user.bets === undefined) {
                         console.log("User: ".concat(fid, " does not have any bets"), user);
-                        return [3 /*break*/, 13];
+                        return [3 /*break*/, 14];
                     }
                     updatedUser = utils_1.DEFAULT_USER;
                     if (!(user.points !== undefined)) return [3 /*break*/, 10];
@@ -105,7 +105,6 @@ function updateUserType() {
                     // Convert old User object to new User object
                     updatedUser = {
                         balance: user.points,
-                        availableBalance: user.points,
                         hasClaimed: user.hasClaimed,
                         wins: user.wins,
                         losses: user.losses,
@@ -113,34 +112,38 @@ function updateUserType() {
                         numBets: user.numBets,
                         bets: []
                     };
-                    return [3 /*break*/, 11];
+                    return [3 /*break*/, 12];
                 case 10:
+                    if (!(user.availableBalance !== undefined)) return [3 /*break*/, 12];
                     // Convert old User object to new User object
+                    return [4 /*yield*/, kv.hdel(fid.toString(), 'availableBalance')];
+                case 11:
+                    // Convert old User object to new User object
+                    _a.sent();
                     console.log("Converting User: ".concat(fid));
                     updatedUser = {
                         balance: user.balance,
-                        availableBalance: user.availableBalance,
                         hasClaimed: user.hasClaimed,
                         wins: user.wins,
                         losses: user.losses,
                         streak: user.streak,
                         numBets: user.numBets,
-                        bets: []
+                        bets: [],
                     };
-                    _a.label = 11;
-                case 11:
+                    _a.label = 12;
+                case 12:
                     console.log("Changed User: ".concat(JSON.stringify(updatedUser), "\n"));
                     return [4 /*yield*/, kv.hset(fid.toString(), updatedUser)];
-                case 12:
-                    _a.sent();
-                    _a.label = 13;
                 case 13:
+                    _a.sent();
+                    _a.label = 14;
+                case 14:
                     _i++;
                     return [3 /*break*/, 7];
-                case 14:
+                case 15:
                     console.log("Total: ".concat(count));
-                    _a.label = 15;
-                case 15: return [2 /*return*/];
+                    _a.label = 16;
+                case 16: return [2 /*return*/];
             }
         });
     });

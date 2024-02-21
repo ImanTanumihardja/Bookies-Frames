@@ -41,40 +41,47 @@ async function settleEvent(eventName="", result=-1) {
     await kv.hset(`events`, event);
     console.log(`Set result of event: ${eventName} to ${result}`)
 
+    // Get all bets
+    let betsData = (await kv.zscan("users", 0, { count: 150 }))
+    let cursor = betsData[0]
+    let bets : Bet[] = betsData[1] as unknown as Bet[]
+
+    while (cursor) {
+      betsData = (await kv.zscan("users", cursor, { count: 150 }))
+      cursor = betsData[0]
+      bets = bets.concat(betsData[1] as unknown as Bet[])
+    }
+
     // Pay each user
-    for (const fid in eventData?.bets) {
-      const bet: Bet = eventData?.bets[parseInt(fid)]
-      const user : User | null = await kv.hgetall(fid);
+    for (const bet of bets) {
+      const user : User | null = await kv.hgetall(bet?.fid.toString());
       if (user !== null) {
         if (bet.prediction === result) {  
           // Pay out the user
-          console.log(`Paying out user: ${fid} with wager: ${bet.stake}`)
+          console.log(`Paying out user: ${bet?.fid} with wager: ${bet.stake}`)
           const payout = calculatePayout(eventData.multiplier, eventData.odds[result], bet.stake, user?.streak);
 
-          user.availableBalance = parseInt(user?.availableBalance.toString()) + payout;
-          user.balance = parseInt(user?.balance.toString()) + (payout - bet.stake);
+          user.balance = parseInt(user?.balance.toString()) + payout;
           user.streak = parseInt(user?.streak.toString()) + 1;
           user.numBets = parseInt(user?.numBets.toString()) + 1;
           user.wins = parseInt(user?.wins.toString()) + 1;
         }
-        else if (parseInt(fid)) {
+        else if (parseInt(bet?.fid.toString())) {
           // User lost
-          console.log(`User: ${fid} lost with wager: ${bet.stake}`)
+          console.log(`User: ${bet?.fid} lost with wager: ${bet.stake}`)
 
           user.streak = 0;
-          user.balance = parseInt(user.balance.toString()) - bet.stake;
           user.numBets = parseInt(user.streak.toString()) + 1;
           user.losses = parseInt(user.losses.toString()) + 1;
         }
 
-        await kv.hset(fid.toString(), user).then( async () => {
-          console.log(`Settled user: ${fid}`)
-          
+        await kv.hset(bet.fid.toString(), user).then( async () => {
+          console.log(`Settled user: ${bet.fid}`)
           // Update leaderboard;
-          await kv.zadd('users', {score:user.balance, member:fid});
+          await kv.zadd('users', {score:user.balance, member:bet.fid});
         }).catch((error) => {
-          throw new Error(`Error updating user: ${fid}`)
-          });
+          throw new Error(`Error updating user: ${bet.fid}`)
+        });
       }
   }
 }

@@ -41,8 +41,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (isNewUser) {
       // New user
       user = DEFAULT_USER
-      user.balance = 100;
-      user.availableBalance = 100;
       console.log('NEW USER: ', user)
   }
   else {
@@ -50,8 +48,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   }
 
   if (user === null) throw new Error('User is null');
-    
-
 
   // Get info for bet
   if (event === null) throw new Error('Event not found');
@@ -60,7 +56,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const impliedProbability = event.odds[prediction]
   const multiplier = event.multiplier;
   const streak = parseInt(user.streak.toString());
-  const availableBal = parseInt(user?.availableBalance.toString());
+  const availableBal = parseInt(user?.balance.toString());
   const poll = Object.values(await kv.hgetall(`${eventName}:poll`) as Record<number, number>)
   const prompt = event.prompt;
   const options = event.options;

@@ -56,7 +56,6 @@ async function updateUserType() {
               // Convert old User object to new User object
               updatedUser = {
                 balance: user.points,
-                availableBalance: user.points,
                 hasClaimed: user.hasClaimed,
                 wins: user.wins,
                 losses: user.losses,
@@ -65,18 +64,18 @@ async function updateUserType() {
                 bets: []
             }
           }
-          else {
+          else if (user.availableBalance !== undefined) {
               // Convert old User object to new User object
+              await kv.hdel(fid.toString(), 'availableBalance')
               console.log(`Converting User: ${fid}`)
               updatedUser = {
                 balance: user.balance,
-                availableBalance: user.availableBalance,
                 hasClaimed: user.hasClaimed,
                 wins: user.wins,
                 losses: user.losses,
                 streak: user.streak,
                 numBets: user.numBets,
-                bets: []
+                bets: [],
               }
           }
 

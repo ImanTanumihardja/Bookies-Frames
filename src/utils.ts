@@ -82,8 +82,7 @@ export const RequestPropsTypes = {
 export const BOOKIES_FID = 244367;
 
 export const DEFAULT_USER: User = {
-    balance: 0,
-    availableBalance: 0,
+    balance: 100,
     streak: 0,
     wins: 0,
     losses: 0,
@@ -236,17 +235,13 @@ export function convertImpliedProbabilityToAmerican(impliedProbability: number) 
         americanOdds =
             Math.round(((impliedProbability * 100) * 100) / (100 - (impliedProbability * 100)));
     }
-    
-
-    // Get negative american odds
-
   
     return americanOdds;
   }
 
 export function calculatePayout(multiplier: number, impliedProbability: number, stake: number, streak: number = 0){
     const payout = multiplier * (1 / impliedProbability) * (stake) // TODO add streak
-    return Math.round(payout * 100) / 100
+    return Math.ceil(payout * 100) / 100
 }
 
 export const revalidate = 0;

@@ -28,8 +28,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     if (isNewUser) {
         // New user
         user = DEFAULT_USER;
-        user.balance = 100;
-        user.availableBalance = 100;
         console.log('NEW USER: ', user)
         console.log('CLAIMED 100 DICE')
         hasClaimed = false;
@@ -41,7 +39,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       if (!hasClaimed) {
         // Get daily 10 dice for old user
         user.balance = parseInt(user.balance.toString()) + 10;
-        user.availableBalance = parseInt(user.availableBalance.toString()) + 10;
         console.log('CLAIMED 10 DICE')
       } else {
         console.log('ALREADY CLAIMED')

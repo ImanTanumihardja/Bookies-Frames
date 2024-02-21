@@ -10,13 +10,12 @@ export type Event = {
 
 export type User = {
     balance: number;
-    availableBalance: number;
     streak: number;
     wins: number;
     losses: number;
     numBets: number;
     hasClaimed: boolean;
-    bets: Bet[]
+    bets: Bet[];
 }
 
 export type Bet = {

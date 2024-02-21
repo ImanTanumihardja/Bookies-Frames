@@ -98,7 +98,7 @@ async function getEvent(eventName = "nba-asg-ml") {
         if (user) {
           let newStake = Math.ceil(value.stake);
           console.log('New Stake:', newStake);
-          console.log('Available Bal: ', user?.availableBalance);
+          console.log('Available Bal: ', user?.balance);
           console.log('Bal: ', user?.balance);
           eventData.bets[Number(fid)].stake = newStake;
         }
