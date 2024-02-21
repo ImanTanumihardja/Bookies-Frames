@@ -35,6 +35,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   event = event as unknown as Event || null;
 
+  if (!user || (user as User)?.hasClaimed === undefined) {
+    // New user
+    user = DEFAULT_USER
+    console.log('NEW USER: ', user)
+  }
 
   if (user === null) throw new Error('User is null');
 

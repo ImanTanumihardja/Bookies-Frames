@@ -70,7 +70,7 @@ function createEvent(eventName, startDate, odds, multiplier, options, prompt) {
                 case 3:
                     // Create bets list 
                     _g.sent();
-                    return [4 /*yield*/, kv.hget("events", "".concat(eventName))];
+                    return [4 /*yield*/, kv.hgetall("".concat(eventName))];
                 case 4:
                     event = _g.sent();
                     console.log("Event: ".concat(eventName));

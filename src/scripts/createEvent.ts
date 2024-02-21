@@ -19,7 +19,7 @@ async function createEvent(eventName='sblviii-ml', startDate=1708554183000, odds
     // Create bets list 
     await kv.del(`${eventName}:bets`)
 
-    event = await kv.hget(`events`, `${eventName}`)
+    event = await kv.hgetall(`${eventName}`)
 
     console.log(`Event: ${eventName}`)
     console.log(event)
