@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
                         <div style={{display: 'flex', flexDirection: 'column', alignItems:'flex-start', justifyItems:"center", padding:10}}> 
                             <h1 style={{color: 'white', fontSize:30, margin:10}}> PICK: {options[prediction]}</h1>
                             <h1 style={{color: 'white', fontSize:30, margin:10}}> STAKE: {stake} <img style={{width: 35, height: 35, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
-                            <h1 style={{color: 'white', fontSize:30, margin:10}}> ODDS: +{odd}</h1>
+                            <h1 style={{color: 'white', fontSize:30, margin:10}}> ODDS: {impliedProbability > 0.5 ? '-' : '+'}{odd}</h1>
                             <h1 style={{color: 'white', fontSize:30, margin:10}}> PAYOUT: {payout}<img style={{width: 35, height: 35, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
                         </div>
                     </div>

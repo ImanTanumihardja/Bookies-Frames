@@ -69,6 +69,7 @@ var RequestProps;
     RequestProps["INDEX"] = "index";
     RequestProps["ARRAY"] = "array";
     RequestProps["ODD"] = "odd";
+    RequestProps["STRING"] = "string";
 })(RequestProps || (exports.RequestProps = RequestProps = {}));
 var FrameNames;
 (function (FrameNames) {
@@ -110,6 +111,7 @@ exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.INDEX] = 0,
     _a[RequestProps.ARRAY] = [],
     _a[RequestProps.ODD] = 0.5,
+    _a[RequestProps.STRING] = "",
     _a);
 exports.BOOKIES_FID = 244367;
 exports.DEFAULT_USER = {
@@ -265,7 +267,9 @@ function convertImpliedProbabilityToAmerican(impliedProbability) {
     if (impliedProbability <= 0 || impliedProbability >= 1) {
         throw new Error('Implied probability must be between 0 and 1 (exclusive).');
     }
-    var americanOdds = Math.round((10000 - ((impliedProbability * 100) * 100)) / (impliedProbability * 100));
+    var americanOdds = 0;
+    americanOdds =
+        Math.abs(Math.round(((impliedProbability * 100) * 100) / (100 - (impliedProbability * 100))));
     return americanOdds;
 }
 exports.convertImpliedProbabilityToAmerican = convertImpliedProbabilityToAmerican;
