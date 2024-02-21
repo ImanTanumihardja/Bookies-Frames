@@ -268,8 +268,15 @@ function convertImpliedProbabilityToAmerican(impliedProbability) {
         throw new Error('Implied probability must be between 0 and 1 (exclusive).');
     }
     var americanOdds = 0;
-    americanOdds =
-        Math.abs(Math.round(((impliedProbability * 100) * 100) / (100 - (impliedProbability * 100))));
+    if (impliedProbability <= 0.5) {
+        americanOdds =
+            Math.round((10000 - ((impliedProbability * 100) * 100)) / (impliedProbability * 100));
+    }
+    else {
+        americanOdds =
+            Math.round(((impliedProbability * 100) * 100) / (100 - (impliedProbability * 100)));
+    }
+    // Get negative american odds
     return americanOdds;
 }
 exports.convertImpliedProbabilityToAmerican = convertImpliedProbabilityToAmerican;

@@ -227,9 +227,18 @@ export function convertImpliedProbabilityToAmerican(impliedProbability: number) 
     }
 
     let americanOdds = 0;
+  
+    if (impliedProbability <= 0.5) {
+        americanOdds =
+            Math.round((10000 - ((impliedProbability * 100) * 100))/(impliedProbability * 100));
+    }
+    else {
+        americanOdds =
+            Math.round(((impliedProbability * 100) * 100) / (100 - (impliedProbability * 100)));
+    }
+    
 
-    americanOdds =
-        Math.abs(Math.round(((impliedProbability * 100) * 100) / (100 - (impliedProbability * 100))));
+    // Get negative american odds
 
   
     return americanOdds;
