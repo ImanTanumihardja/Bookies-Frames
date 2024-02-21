@@ -225,9 +225,21 @@ export function convertImpliedProbabilityToAmerican(impliedProbability: number) 
     if (impliedProbability <= 0 || impliedProbability >= 1) {
       throw new Error('Implied probability must be between 0 and 1 (exclusive).');
     }
+
+    let americanOdds = 0;
   
-    const americanOdds =
-      Math.round((10000 - ((impliedProbability * 100) * 100))/(impliedProbability * 100));
+    if (impliedProbability <= 0.5) {
+        americanOdds =
+            Math.round((10000 - ((impliedProbability * 100) * 100))/(impliedProbability * 100));
+    }
+    else {
+        americanOdds =
+            -Math.round(((impliedProbability * 100) * 100) / (1 - (impliedProbability * 100)));
+    }
+    
+
+    // Get negative american odds
+
   
     return americanOdds;
   }
