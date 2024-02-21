@@ -15,35 +15,39 @@ const plusJakartaSans = fetch(
 
 export async function GET(req: NextRequest) {
     try {
-        let {isFollowing, fid, prediction, eventName, stake} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.FID, RequestProps.PREDICTION, RequestProps.EVENT_NAME, RequestProps.STAKE]);
+        let {isFollowing, 
+            prediction, 
+            stake, 
+            odd : impliedProbability, 
+            multiplier, 
+            streak, 
+            balance: availableBalance, 
+            poll, 
+            prompt, 
+            options} 
+                = getRequestProps(req, [RequestProps.IS_FOLLOWING, 
+                                        RequestProps.PREDICTION, 
+                                        RequestProps.STAKE, 
+                                        RequestProps.ODD,
+                                        RequestProps.MULTIPLIER,
+                                        RequestProps.STREAK,
+                                        RequestProps.BALANCE,
+                                        RequestProps.POLL,
+                                        RequestProps.PROMPT,
+                                        RequestProps.OPTIONS]);
         
-        let user : User | null = DEFAULT_USER
-        let event : Event | null = null
-
-        await Promise.all([kv.hgetall(fid.toString()), kv.hget('events', eventName)]).then( (res) => {
-            user = res[0] as User || DEFAULT_USER;
-            event = res[1] as Event || null;
-          });
-
-        event = event as unknown as Event || null;
-
-        if (event === null) throw new Error('Event not found');
-        
-        const impliedProbability = event.odds[prediction]
+        console.log(multiplier, impliedProbability, stake, streak)
         const odd = convertImpliedProbabilityToAmerican(impliedProbability)
-        
-        const payout = calculatePayout(event.multiplier, impliedProbability, stake, parseInt(user.streak.toString()))
+        const payout = calculatePayout(multiplier, impliedProbability, stake, streak)
 
         let pollData = [];
         // Get total votes
-        let totalVotes : number = event.poll.reduce((a, b) => a + b, 0); 
+        let totalVotes : number = poll.reduce((a:any, b:any) => a + b, 0); 
         if (totalVotes === 0) totalVotes = 1;
 
-        for (let i = 0; i < event.odds.length; i++) {
-            if (event.odds[i] === 0) continue;
-
-            const percent = Math.round(Math.min((event.poll[i] / totalVotes) * 100, 100));
-            pollData.push({votes: event.poll[i], percent:percent, text: `${event.options[i]}`})
+        for (let i = 0; i < options.length; i++) {
+            const percent = Math.round(Math.min((poll[i] / totalVotes) * 100, 100));
+            pollData.push({votes: poll[i], percent:percent, text: `${options[i]}`})
         }
 
         return new ImageResponse((
@@ -58,10 +62,10 @@ export async function GET(req: NextRequest) {
                 }}>
                     <img src={`${process.env['HOST']}/Full_logo.png`} style={{ width: 120, height: 40, position: 'absolute', bottom:10, left:10}}/>
                     <h1 style={{color: 'white', fontSize:55, position:'absolute', top:-10, textDecoration:"underline" }}>Betslip</h1>
-                    <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:5, textAlign:'start'}}>Available Balance: {user.availableBalance} <img style={{width: 22, height: 22, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/> </h1>
+                    <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:5, textAlign:'start'}}>Available Balance: {availableBalance} <img style={{width: 22, height: 22, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/> </h1>
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%', alignItems:'center', justifyItems:"center"}}>
                         <div style={{display: 'flex', flexDirection: 'column', alignItems:'flex-start', justifyItems:"center", padding:10}}> 
-                            <h1 style={{color: 'white', fontSize:30, margin:10}}> PICK: {event.options[prediction]}</h1>
+                            <h1 style={{color: 'white', fontSize:30, margin:10}}> PICK: {options[prediction]}</h1>
                             <h1 style={{color: 'white', fontSize:30, margin:10}}> STAKE: {stake} <img style={{width: 35, height: 35, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
                             <h1 style={{color: 'white', fontSize:30, margin:10}}> ODDS: +{odd}</h1>
                             <h1 style={{color: 'white', fontSize:30, margin:10}}> PAYOUT: {payout}<img style={{width: 35, height: 35, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
@@ -92,7 +96,7 @@ export async function GET(req: NextRequest) {
                             })
                         }
                     </div>
-                    <h2 style={{display: 'flex', justifyContent: 'center', textAlign: 'center', color: 'black', fontSize: 27, width:'75%', position:'absolute'}}>{event.prompt}</h2>
+                    <h2 style={{display: 'flex', justifyContent: 'center', textAlign: 'center', color: 'black', fontSize: 27, width:'75%', position:'absolute'}}>{prompt}</h2>
                 </div>
             </div>
         ), {

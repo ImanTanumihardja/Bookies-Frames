@@ -1,7 +1,6 @@
 
 export type Event = { 
     startDate: number;
-    poll: number[]; 
     result: number 
     odds : number[]
     multiplier: number

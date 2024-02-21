@@ -68,6 +68,7 @@ var RequestProps;
     RequestProps["VALID_CAPTCHA"] = "validCaptcha";
     RequestProps["INDEX"] = "index";
     RequestProps["ARRAY"] = "array";
+    RequestProps["ODD"] = "odd";
 })(RequestProps || (exports.RequestProps = RequestProps = {}));
 var FrameNames;
 (function (FrameNames) {
@@ -108,6 +109,7 @@ exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.VALID_CAPTCHA] = true,
     _a[RequestProps.INDEX] = 0,
     _a[RequestProps.ARRAY] = [],
+    _a[RequestProps.ODD] = 0.5,
     _a);
 exports.BOOKIES_FID = 244367;
 exports.DEFAULT_USER = {
@@ -167,12 +169,10 @@ function getRequestProps(req, params) {
                 var floatArray = array.map(function (item) { return parseFloat(item); });
                 if (!floatArray.some(isNaN)) {
                     returnParams[key] = floatArray;
-                    console.log('floatArray:', key);
                 }
                 else {
                     returnParams[key] = array; // Just return normal
                 }
-                console.log(returnParams[key]);
                 break;
         }
     }
@@ -271,7 +271,8 @@ function convertImpliedProbabilityToAmerican(impliedProbability) {
 exports.convertImpliedProbabilityToAmerican = convertImpliedProbabilityToAmerican;
 function calculatePayout(multiplier, impliedProbability, stake, streak) {
     if (streak === void 0) { streak = 0; }
-    return multiplier * (1 / impliedProbability) * (stake); // TODO add streak
+    var payout = multiplier * (1 / impliedProbability) * (stake); // TODO add streak
+    return Math.round(payout * 100) / 100;
 }
 exports.calculatePayout = calculatePayout;
 exports.revalidate = 0;

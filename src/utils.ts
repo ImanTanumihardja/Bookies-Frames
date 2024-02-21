@@ -4,33 +4,36 @@ import { User, Bet} from '../app/types';
 import { getFrameMessage } from '@coinbase/onchainkit'
 import { FrameValidationData } from '../app/types';
 
+
 export enum RequestProps {
-    FID = 'fid',
-    IS_FOLLOWING = 'isFollowing',
-    HAS_CLAIMED = 'hasClaimed',
-    STAKE = 'stake',
-    AVATAR_URL = 'avatarUrl',
-    USERNAME = 'username',
-    RANK = 'rank',
-    WINS = 'wins',
-    LOSSES = 'losses',
-    POINTS = 'points',
-    NUM_BETS = 'numBets',
-    BUTTON_INDEX = 'buttonIndex',
-    INPUT_TEXT = 'inputText',
-    STREAK = 'streak',
-    OPTIONS = 'options',
-    PROMPT = 'prompt',
-    EVENT_NAME = 'eventName',
-    PREDICTION = 'prediction',
-    MULTIPLIER = 'multiplier',
-    TIMESTAMP = 'timestamp',
-    ODDS = 'odds',
-    BALANCE = 'balance',
-    POLL = 'poll',
-    VALID_CAPTCHA = 'validCaptcha',
-    INDEX = 'index',
-    ARRAY = 'array',
+  FID = 'fid',
+  IS_FOLLOWING = 'isFollowing',
+  HAS_CLAIMED = 'hasClaimed',
+  STAKE = 'stake',
+  AVATAR_URL = 'avatarUrl',
+  USERNAME = 'username',
+  RANK = 'rank',
+  WINS = 'wins',
+  LOSSES = 'losses',
+  POINTS = 'points',
+  NUM_BETS = 'numBets',
+  BUTTON_INDEX = 'buttonIndex',
+  INPUT_TEXT = 'inputText',
+  STREAK = 'streak',
+  OPTIONS = 'options',
+  PROMPT = 'prompt',
+  EVENT_NAME = 'eventName',
+  PREDICTION = 'prediction',
+  MULTIPLIER = 'multiplier',
+  TIMESTAMP = 'timestamp',
+  ODDS = 'odds',
+  BALANCE = 'balance',
+  POLL = 'poll',
+  VALID_CAPTCHA = 'validCaptcha',
+  INDEX = 'index',
+  ARRAY = 'array',
+  ODD = 'odd',
+  STRING = "string"
 }
 
 export enum FrameNames {
@@ -72,6 +75,8 @@ export const RequestPropsTypes = {
     [RequestProps.VALID_CAPTCHA]: true,
     [RequestProps.INDEX] : 0,
     [RequestProps.ARRAY] : [],
+    [RequestProps.ODD] : 0.5,
+    [RequestProps.STRING] : ""
 }
 
 export const BOOKIES_FID = 244367;
@@ -136,12 +141,10 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
                 const floatArray = array.map((item: string) => parseFloat(item))
                 if (!floatArray.some(isNaN)) {
                     returnParams[key] = floatArray
-                    console.log('floatArray:', key)
                 }
                 else {
                     returnParams[key] = array // Just return normal
                 }
-                console.log(returnParams[key])
                 break;
         }
     }
@@ -230,7 +233,8 @@ export function convertImpliedProbabilityToAmerican(impliedProbability: number) 
   }
 
 export function calculatePayout(multiplier: number, impliedProbability: number, stake: number, streak: number = 0){
-    return multiplier * (1 / impliedProbability) * (stake) // TODO add streak
+    const payout = multiplier * (1 / impliedProbability) * (stake) // TODO add streak
+    return Math.round(payout * 100) / 100
 }
 
 export const revalidate = 0;

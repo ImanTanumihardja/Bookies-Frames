@@ -1,13 +1,16 @@
 import { getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, RequestProps, generateUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
-import { parse } from "path";
+import { DEFAULT_USER, FrameNames, RequestProps, generateUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
+import { kv } from "@vercel/kv";
+import { User, Event } from "../../../types";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
   const message = await validateFrameMessage(req);
 
   const {followingBookies: isFollowing, button, fid} = message;
+
+  let {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
   
   console.log('FID: ', fid.toString())
   
@@ -16,15 +19,63 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   let stake = parseInt(message?.input);
   // Check if stake is not float
-
   if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || isFloat) {
     throw new Error('Invalid wager amount');  
   }
 
-  // Get eventName from req
-  const {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
+  // Wait for both user to be found and event to be found
+  let user : User | null = null;
+  let event : Event | null = null;
+  var isNewUser: boolean = false;
 
-  const imageUrl = generateUrl(`api/frames/${FrameNames.BETSLIP}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid, [RequestProps.PREDICTION]: button-1, [RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake}, true, true);
+  await Promise.all([kv.hgetall(fid.toString()), kv.hget('events', eventName)]).then( (res) => {
+    user = res[0] as User || null;
+    event = res[1] as Event || null;
+  });
+
+  event = event as unknown as Event || null;
+
+  // Check if new user if so add new user
+  isNewUser = !user || (user as User)?.hasClaimed === undefined;
+
+  if (isNewUser) {
+      // New user
+      user = DEFAULT_USER
+      user.balance = 100;
+      user.availableBalance = 100;
+      console.log('NEW USER: ', user)
+  }
+  else {
+    console.log('USER: ', user)    
+  }
+
+  if (user === null) throw new Error('User is null');
+    
+
+
+  // Get info for bet
+  if (event === null) throw new Error('Event not found');
+
+  const prediction = button - 1;
+  const impliedProbability = event.odds[prediction]
+  const multiplier = event.multiplier;
+  const streak = parseInt(user.streak.toString());
+  const availableBal = parseInt(user?.availableBalance.toString());
+  const poll = Object.values(await kv.hgetall(`${eventName}:poll`) as Record<number, number>)
+  const prompt = event.prompt;
+  const options = event.options;
+
+
+  const imageUrl = generateUrl(`api/frames/${FrameNames.BETSLIP}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, 
+                                                                          [RequestProps.PREDICTION]: prediction, 
+                                                                          [RequestProps.STAKE]: stake, 
+                                                                          [RequestProps.ODD]: impliedProbability,
+                                                                          [RequestProps.MULTIPLIER]: multiplier,
+                                                                          [RequestProps.STREAK]: streak,
+                                                                          [RequestProps.BALANCE]: availableBal,
+                                                                          [RequestProps.POLL]: poll,
+                                                                          [RequestProps.PROMPT]: prompt, 
+                                                                          [RequestProps.OPTIONS]: options}, true, true);
 
   return new NextResponse(
     getFrameHtml({

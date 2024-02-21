@@ -19,16 +19,20 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let {eventName, stake, prediction} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PREDICTION]);
 
   // Wait for both user to be found and event to be found
-  let user : User | null = null;
+  let user : User | null = DEFAULT_USER;
   let event : Event | null = null;
-  var isNewUser: boolean = false;
+  let isNewUser: boolean = false;
 
   await Promise.all([kv.hgetall(fid.toString()), kv.hget('events', eventName)]).then( (res) => {
     user = res[0] as User || null;
     event = res[1] as Event || null;
   });
 
-  isNewUser = !user || (user as User)?.hasClaimed === undefined;
+  event = event as unknown as Event || null;
+
+  // Check if new user if so add new user
+  isNewUser = !user || user.hasClaimed === undefined;
+  console.log(isNewUser)
 
   if (isNewUser) {
       // New user
@@ -36,15 +40,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       user.balance = 100;
       user.availableBalance = 100;
       console.log('NEW USER: ', user)
-
-      // Add to leaderboard
-      await kv.zadd('users', {score: user.balance, member: fid})
   }
   else {
     console.log('USER: ', user)    
   }
-
-  event = event as unknown as Event || null;
 
   if (user === null) throw new Error('User is null');
 
@@ -58,19 +57,16 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     stake = -1
   }
 
-  // Check if voted before and if the event is closed
-  const betExists = await kv.sismember(`${eventName}:bets`, fid.toString());
   const now = new Date().getTime();
 
   // Need to check bet does not exists, time is not past, and stake >= 1 and not rejected
   if (now < event?.startDate && stake >= 1 && event?.result === -1 && button != 2) {
     // Can bet
-    event.poll[prediction]++;
     const bet : Bet = {eventName: eventName, fid: fid, prediction:prediction, odd: event.odds[prediction], stake:stake, timeStamp: now} as Bet;
 
     // Adjust user available balance
     user.availableBalance = availableBal - stake;
-    user.bets[eventName] = bet
+    user.bets.push(bet)
 
     // Set user
     await kv.hset(fid.toString(), user).then( async () => {
@@ -82,6 +78,26 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           throw new Error('Error creating bet');
         })
       })
+
+      // Update poll
+      await kv.hincrby(`${eventName}:poll`, `${prediction}`, 1).catch(async (error) => {
+        console.error('Error adding user to event:', error);
+        // Try again
+        await kv.hincrby(`${eventName}:poll`, `${prediction}`, 1).catch((error) => {
+          throw new Error('Error creating bet');
+        })
+      })
+
+      // If new user add to leaderboard
+      if (isNewUser) {
+        if (user !== null) await kv.zadd('users', {score: user.balance, member: fid}).catch(async (error) => {
+          console.error('Error adding user to leaderboard:', error);
+          // Try again
+          if (user !== null) await kv.zadd('users', {score: user.balance, member: fid}).catch((error) => {
+            throw new Error('Error adding user to leaderboard');
+          })
+        });
+      }
     }).catch((error) => {
       throw new Error('Error creating bet');
   });   
