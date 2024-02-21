@@ -36,7 +36,6 @@ export async function GET(req: NextRequest) {
                                         RequestProps.PROMPT,
                                         RequestProps.OPTIONS]);
         
-        console.log(multiplier, impliedProbability, stake, streak)
         const odd = convertImpliedProbabilityToAmerican(impliedProbability)
         const payout = calculatePayout(multiplier, impliedProbability, stake, streak)
 
