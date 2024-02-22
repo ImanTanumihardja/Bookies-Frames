@@ -43,8 +43,7 @@ export enum FrameNames {
     BET_CONFIRMATION = 'bet-confirmation',
     TRIVIA = 'trivia',
     CAPTCHA = 'captcha',
-    NBA_ASG_ML = 'nba-asg-ml',
-    NBA_ASG_OU = 'nba-asg-ou',
+    GSW_LAL_ML = 'gsw-lal-ml',
 }
 
 export const RequestPropsTypes = {

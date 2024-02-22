@@ -44,12 +44,12 @@ var kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
 });
 function createEvent(eventName, startDate, odds, multiplier, options, prompt) {
-    if (eventName === void 0) { eventName = 'sblviii-ml'; }
-    if (startDate === void 0) { startDate = 1708554183000; }
-    if (odds === void 0) { odds = [0.6, 0.4]; }
+    if (eventName === void 0) { eventName = 'warriors-vs-lakers-2-22'; }
+    if (startDate === void 0) { startDate = 1708657200000; }
+    if (odds === void 0) { odds = [0.6154, 0.3846]; }
     if (multiplier === void 0) { multiplier = 1; }
-    if (options === void 0) { options = ["West", "East"]; }
-    if (prompt === void 0) { prompt = "Who will win the 2024 NBA All-Star Game?"; }
+    if (options === void 0) { options = ["Warriors", "Lakers"]; }
+    if (prompt === void 0) { prompt = "Warriors vs. Lakers"; }
     return __awaiter(this, void 0, void 0, function () {
         var event, poll, _a, _b, _c, _d, _e, _f;
         return __generator(this, function (_g) {

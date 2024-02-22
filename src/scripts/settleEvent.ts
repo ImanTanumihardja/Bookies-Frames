@@ -61,7 +61,7 @@ async function settleEvent(eventName="", result=-1) {
         continue
       }
       for (const bet of user?.bets) {
-        if (bet.eventName === eventName) {
+        if (bet.eventName === eventName && !bet.settled) {
           if (bet.pick === result) {  // Won
             console.log(`User: ${fid} won bet: ${JSON.stringify(bet)}`)
             const payout = calculatePayout(event.multiplier, event.odds[result], bet.stake, user?.streak);

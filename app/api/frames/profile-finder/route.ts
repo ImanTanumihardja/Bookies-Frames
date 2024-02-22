@@ -54,6 +54,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           
           user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
 
+
           // Add users back to leaderboard if not already there
           if (rank === -1 && user !== DEFAULT_USER) {
             // Add user to leaderboard

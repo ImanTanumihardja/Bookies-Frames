@@ -84,12 +84,12 @@ export async function GET(req: NextRequest) {
                                         background: 'linear-gradient(to top, orange, #aa3855, purple)',
                                         borderRadius: 4,
                                         width:'20%',
-                                        height: `${Math.min(opt.percent + 5, 100)}%`,
+                                        height: `${Math.min(opt.percent + 18, 100)}%`,
                                         whiteSpace: 'nowrap',
                                         overflow: 'visible',
                                         fontSize: 20,
                                     }}>
-                                        <h3 style={{color:'black', top:20, transform: 'rotate(90deg) scaleY(-1)'}}>{`${opt.text + " " + opt.percent}`}%</h3>
+                                        <h3 style={{color:'black', top:30, transform: 'rotate(90deg) scaleY(-1)'}}>{`${opt.text + " " + opt.percent}`}%</h3>
                                     </div>
                                 )
                             })

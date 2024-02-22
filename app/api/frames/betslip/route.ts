@@ -51,6 +51,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     throw new Error('Event has already started');
   }
 
+  // Check if result has been set
+  if (parseInt(event.result.toString()) !== -1) {
+    throw new Error('Event has already been settled');
+  }
+
   // Check if new user if so add new user
   isNewUser = !user || (user as User)?.hasClaimed === undefined;
 
