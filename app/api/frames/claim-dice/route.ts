@@ -24,7 +24,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (isFollowing && validCaptcha) {
     user = await kv.hgetall(fid.toString()) || null;
     
-    isNewUser = !user || user.hasClaimed === undefined || await kv.zscore('users', fid.toString()) === null;
+    isNewUser = !user || user.hasClaimed === undefined || user.balance === undefined || await kv.zscore('users', fid.toString()) === null;
 
     if (isNewUser) {
         // New user
