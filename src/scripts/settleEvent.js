@@ -62,9 +62,9 @@ function settleEvent(eventName, result) {
                     // if (event?.startDate > new Date().getTime()) {
                     //   throw new Error('Event has not started yet')
                     // }
-                    // if (parseInt(event?.result.toString()) !== -1) {
-                    //   throw new Error('Event has already been settled')
-                    // } 
+                    if (parseInt(event === null || event === void 0 ? void 0 : event.result.toString()) !== -1) {
+                        throw new Error('Event has already been settled');
+                    }
                     if (result === -1) {
                         throw new Error('Result is invalid');
                     }
@@ -91,8 +91,6 @@ function settleEvent(eventName, result) {
                     fids = fids.concat(betsData[1]);
                     return [3 /*break*/, 4];
                 case 6:
-                    // Filter out all fids that are not 313859
-                    fids = fids.filter(function (fid) { return fid !== 313859; }); // Testing
                     _loop_1 = function (fid) {
                         var user, _b, _c, bet, payout;
                         return __generator(this, function (_d) {
