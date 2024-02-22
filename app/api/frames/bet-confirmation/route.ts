@@ -32,7 +32,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   // Check if new user if so add new user
   isNewUser = !user || user.hasClaimed === undefined;
-  console.log(isNewUser)
 
   if (isNewUser) {
       // New user
@@ -114,7 +113,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-            buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label: pick === -1 ? 'Try Again' : 'Place Another Bet', action:'link', target: 'https://warpcast.com/~/channel/bookies'}],
+            buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label: pick === -1 ? 'Try Again' : 'Place Another Bet', action:'link', target: 'https://warpcast.com/bookies/0x1a01ca64'}],
             postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BET_CONFIRMATION}`,
           }),
         );
