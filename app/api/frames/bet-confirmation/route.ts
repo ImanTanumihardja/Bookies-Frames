@@ -59,7 +59,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const now = new Date().getTime();
 
   // Need to check bet does not exists, time is not past, and stake >= 1 and not rejected
-  if (now < event?.startDate && stake >= 1 && parseInt(event?.result.toString()) === -1 && button != 2) {
+  if (now < event?.startDate && stake > 0 && parseInt(event?.result.toString()) === -1 && button != 2) {
     // Can bet
     const bet : Bet = {eventName: eventName, pick:pick, odd: event.odds[pick], stake:stake, timeStamp: now, settled: false} as Bet;
 

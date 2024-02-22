@@ -79,14 +79,13 @@ var FrameNames;
     FrameNames["BET_CONFIRMATION"] = "bet-confirmation";
     FrameNames["TRIVIA"] = "trivia";
     FrameNames["CAPTCHA"] = "captcha";
-    FrameNames["NBA_ASG_ML"] = "nba-asg-ml";
-    FrameNames["NBA_ASG_OU"] = "nba-asg-ou";
+    FrameNames["GSW_LAL_ML"] = "gsw-lal-ml";
 })(FrameNames || (exports.FrameNames = FrameNames = {}));
 exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.FID] = 0,
     _a[RequestProps.IS_FOLLOWING] = true,
     _a[RequestProps.HAS_CLAIMED] = true,
-    _a[RequestProps.STAKE] = 0,
+    _a[RequestProps.STAKE] = 0.0,
     _a[RequestProps.AVATAR_URL] = "",
     _a[RequestProps.USERNAME] = "",
     _a[RequestProps.RANK] = 0,

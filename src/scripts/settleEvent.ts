@@ -51,7 +51,7 @@ async function settleEvent(eventName="", result=-1) {
     }
 
     // Filter out all fids that are not 313859
-    fids = fids.filter((fid:number) => fid === 313859) // Testing
+    // fids = fids.filter((fid:number) => fid === 313859) // Testing
 
     // Pay each user
     for (const fid of fids) {
