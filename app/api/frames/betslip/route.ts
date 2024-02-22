@@ -14,10 +14,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   
   console.log('FID: ', fid.toString())
   
-  // Check if float
-  // let isFloat = parseFloat(message?.input) % 1 !== 0;
 
-  let stake = parseFloat(message?.input);
+  let stake = Math.ceil(parseFloat(message?.input) * 100) / 100;
+
   // Check if stake is not float
   if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number') {
     throw new Error('Invalid wager amount');  
