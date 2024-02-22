@@ -50,7 +50,7 @@ export const RequestPropsTypes = {
     [RequestProps.FID]: 0,
     [RequestProps.IS_FOLLOWING]: true,
     [RequestProps.HAS_CLAIMED]: true,
-    [RequestProps.STAKE]: 0,
+    [RequestProps.STAKE]: 0.0,
     [RequestProps.AVATAR_URL]: "",
     [RequestProps.USERNAME]: "",
     [RequestProps.RANK]: 0,

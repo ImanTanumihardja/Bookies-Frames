@@ -44,7 +44,7 @@ var kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
 });
 function createEvent(eventName, startDate, odds, multiplier, options, prompt) {
-    if (eventName === void 0) { eventName = 'warriors-vs-lakers-2-22'; }
+    if (eventName === void 0) { eventName = 'gsw-lal-ml'; }
     if (startDate === void 0) { startDate = 1708657200000; }
     if (odds === void 0) { odds = [0.6154, 0.3846]; }
     if (multiplier === void 0) { multiplier = 1; }
