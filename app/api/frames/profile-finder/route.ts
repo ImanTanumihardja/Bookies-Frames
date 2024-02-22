@@ -8,11 +8,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
   const message = await validateFrameMessage(req);
 
-  const {followingBookies: isFollowing, fid } = message;
+  const {followingBookies: isFollowing, fid, input} = message;
   console.log('FID: ', fid.toString())
 
   // Check for fid prop in url and if there use that as fid
-  const username : string = (req.nextUrl.searchParams.get("username") || message?.input || "")?.toLowerCase();
+  const username : string = (req.nextUrl.searchParams.get("username") || input || "")?.toLowerCase();
   console.log('Searched for: ', username)
 
   let imageUrl: string = "";

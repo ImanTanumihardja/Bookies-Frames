@@ -8,18 +8,17 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
   const message = await validateFrameMessage(req);
 
-  const {followingBookies: isFollowing, button, fid} = message;
+  const {followingBookies: isFollowing, button, fid, input} = message;
 
   let {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
   
   console.log('FID: ', fid.toString())
-  
 
-  let stake = Math.ceil(parseFloat(message?.input) * 100) / 100;
+  let stake = Math.ceil(parseFloat(input) * 100) / 100;
 
   // Check if stake is not float
   if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number') {
-    throw new Error(`Invalid wager amount STAKE: ${stake}`);  
+    throw new Error(`Invalid wager amount STAKE: ${input}`);  
   }
 
   // Wait for both user to be found and event to be found

@@ -30,6 +30,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   event = event as unknown as Event || null;
 
+  console.log('FID: ', fid.toString())
+
   // Check if new user if so add new user
   isNewUser = !user || user.hasClaimed === undefined;
 
@@ -44,8 +46,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   }
 
   if (user === null) throw new Error('User is null');
-
-  console.log('FID: ', fid.toString())
 
   const balance = parseFloat(user?.balance.toString());
 
