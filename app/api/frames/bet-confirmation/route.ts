@@ -34,7 +34,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   console.log('FID: ', fid.toString())
 
   // Check if new user if so add new user
-  isNewUser = !user || (user as User).hasClaimed === undefined || (user as User).balance === undefined;
+  isNewUser = !user || (user as User).hasClaimed === undefined || (user as User).balance === undefined || await kv.zscore('users', fid.toString()) === null;
 
   if (isNewUser) {
       // New user
