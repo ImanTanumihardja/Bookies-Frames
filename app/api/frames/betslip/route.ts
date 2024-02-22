@@ -19,7 +19,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   // Check if stake is not float
   if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number') {
-    throw new Error('Invalid wager amount');  
+    throw new Error(`Invalid wager amount STAKE: ${stake}`);  
   }
 
   // Wait for both user to be found and event to be found
