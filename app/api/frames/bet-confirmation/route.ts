@@ -19,7 +19,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let {eventName, stake, pick} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK]);
 
   // Wait for both user to be found and event to be found
-  let user : User | null = DEFAULT_USER;
+  let user : User | null = null;
   let event : Event | null = null;
   let isNewUser: boolean = false;
 
@@ -29,15 +29,16 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   });
 
   event = event as unknown as Event || null;
+  user = user as unknown as User || null;
 
   console.log('FID: ', fid.toString())
 
   // Check if new user if so add new user
-  isNewUser = !user || user.hasClaimed === undefined;
+  isNewUser = !user || (user as User).hasClaimed === undefined || (user as User).balance === undefined;
 
   if (isNewUser) {
       // New user
-      user = DEFAULT_USER
+      user = structuredClone(DEFAULT_USER)
       user.hasClaimed = true;
       console.log('NEW USER: ', user)
   }
