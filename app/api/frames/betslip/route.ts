@@ -26,7 +26,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Wait for both user to be found and event to be found
   let user : User | null = null;
   let event : Event | null = null;
-  var isNewUser: boolean = false;
 
   await Promise.all([kv.hgetall(fid.toString()), kv.hgetall(eventName)]).then( (res) => {
     user = res[0] as User || null;
@@ -38,7 +37,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (!user || (user as User)?.hasClaimed === undefined) {
     // New user
     user = DEFAULT_USER
-    console.log('NEW USER: ', user)
   }
 
   if (user === null) throw new Error('User is null');
@@ -54,18 +52,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Check if result has been set
   if (parseInt(event.result.toString()) !== -1) {
     throw new Error('Event has already been settled');
-  }
-
-  // Check if new user if so add new user
-  isNewUser = !user || (user as User)?.hasClaimed === undefined;
-
-  if (isNewUser) {
-      // New user
-      user = DEFAULT_USER
-      console.log('NEW USER: ', user)
-  }
-  else {
-    console.log('USER: ', user)    
   }
 
   const pick = button - 1;
