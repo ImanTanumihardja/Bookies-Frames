@@ -42,10 +42,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Get info for bet
   if (event === null) throw new Error('Event not found');
 
-  // Check if event has already passed
-  if (event.startDate < new Date().getTime()) {
-    throw new Error('Event has already started');
-  }
+  // // Check if event has already passed
+  // if (event.startDate < new Date().getTime()) {
+  //   throw new Error('Event has already started');
+  // }
 
   // Check if result has been set
   if (parseInt(event.result.toString()) !== -1) {

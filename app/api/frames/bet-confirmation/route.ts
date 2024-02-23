@@ -34,16 +34,17 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   console.log('FID: ', fid.toString())
 
   // Check if new user if so add new user
-  isNewUser = !user || (user as User).hasClaimed === undefined || (user as User).balance === undefined || await kv.zscore('users', fid.toString()) === null;
+  isNewUser = !user || (user as User).hasClaimed === undefined || (user as User).balance === undefined || (await kv.zscore('users', fid.toString())) === null;
 
   if (isNewUser) {
       // New user
       user = structuredClone(DEFAULT_USER)
       user.hasClaimed = true;
+
       console.log('NEW USER: ', user)
   }
   else {
-    console.log('USER: ', user)    
+    console.log('USER: ', user)
   }
 
   if (user === null) throw new Error('User is null');
@@ -125,5 +126,5 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       } 
 
 export const revalidate = 0;
-// export const dynamic = 'force-dynamic';
-// export const fetchCache = 'force-no-store';
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
