@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
-import { RequestProps, getRequestProps } from '../../../../../src/utils';
+import { DEFAULT_USER, RequestProps, getRequestProps } from '../../../../../src/utils';
+import { kv } from '@vercel/kv';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -13,8 +14,13 @@ const plusJakartaSans = fetch(
 
 export async function GET(req: NextRequest) {
     try {
-        let text= '' // Default empty React element
-        const {pick, stake, buttonIndex} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX]);
+        let text='' // Default empty React element
+        const {pick, stake, buttonIndex, fid} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID]);
+
+        // Get user
+        const bets = await kv.hget(fid?.toString() || "", 'bets');
+
+        if (bets === null) throw new Error('Bets not found');
 
         if (buttonIndex == 2) {
             text = 'You rejected the bet!'
