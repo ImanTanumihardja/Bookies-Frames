@@ -3,6 +3,7 @@ import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
 import { DEFAULT_USER, RequestProps, getRequestProps } from '../../../../../src/utils';
 import { kv } from '@vercel/kv';
+import { Bet } from '../../../../types';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -15,12 +16,16 @@ const plusJakartaSans = fetch(
 export async function GET(req: NextRequest) {
     try {
         let text='' // Default empty React element
-        const {pick, stake, buttonIndex, fid} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID]);
+        const {pick, stake, buttonIndex, fid, eventName, options, time} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.TIME]);
 
-        // Get user
-        const bets = await kv.hget(fid?.toString() || "", 'bets');
+        // Get bets for this event by filtering the bets array for the eventName
+        const bets = ((await kv.hget(fid?.toString() || "", 'bets')) || []);
+        const betsArray = Array.isArray(bets) ? bets : [];
 
-        if (bets === null) throw new Error('Bets not found');
+        // Ensure bets is an array before calling filter
+        const filteredBets : Bet[] = betsArray.filter((bet: any) => bet.eventName === eventName);
+
+        if (filteredBets === null) throw new Error('Bets not found');
 
         if (buttonIndex == 2) {
             text = 'You rejected the bet!'
@@ -29,7 +34,7 @@ export async function GET(req: NextRequest) {
             text =  "You don't have enough dice!"
         }
         else if (pick === -1) {
-            text = "Event is no longer taking bets!"
+            text = "Event is over!"
         }
         else {
             text = "Bet confirmed!"
@@ -37,9 +42,42 @@ export async function GET(req: NextRequest) {
 
         return new ImageResponse(
             (
-                <FrameBase>
+            <div style={{display: 'flex', flexDirection:'row', height:'100%', width:'100%'}}>
+                <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        width: '65%',
+                        height: '100%',
+                        background: 'linear-gradient(to right, orange, #aa3855, purple)',
+                        justifyContent: 'center',
+                }}>
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> {text} </h1>
-                </FrameBase>
+                </div>
+                <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyItems:'flex-start',
+                        width: '35%',
+                        height: '100%',
+                        background: 'white'}}>
+                            <h1 style={{color: 'black', fontSize:35, justifyContent:'center', margin:5, marginTop: 20}}>Your Bets: </h1>
+                            <div style={{display: 'flex', flexDirection:'column', alignItems: 'center'}}>
+                                {filteredBets.reverse().slice(0, 6).map((bet: Bet, index: number) => { 
+                                return (
+                                    (bet.timeStamp === time) ?
+                                    <h2 key={index} style={{color: 'black', fontSize:20, justifyContent:'center', margin:10, textDecoration:"underline"}}>{options[bet.pick]} | {bet.stake}</h2>
+                                    :
+                                    <h2 key={index} style={{color: 'black', fontSize:20, justifyContent:'center', margin:10}}>{options[bet.pick]} | {bet.stake}</h2>
+                                )})}
+                            </div>
+                            {filteredBets.length > 6 ?
+                            <h2 style={{color: 'black', fontSize:35, justifyContent:'center', margin:-10}}>. . .</h2>
+                            :
+                            <div></div>
+                            }
+                </div>
+            </div>
             ), {
             width: 764, 
             height: 400, 

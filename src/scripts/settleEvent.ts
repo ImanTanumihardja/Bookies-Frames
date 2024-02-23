@@ -77,9 +77,9 @@ async function settleEvent(eventName="", result=-1) {
             user.streak = 0;
             user.losses = parseInt(user.losses.toString()) + 1;
           }
+          bet.settled = true;
+          user.numBets = parseInt(user?.numBets.toString()) + 1;
         }
-        bet.settled = true;
-        user.numBets = parseInt(user?.numBets.toString()) + 1;
       }
       console.log(`Updated user: ${JSON.stringify(user)}`)
 

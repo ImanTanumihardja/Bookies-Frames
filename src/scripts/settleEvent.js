@@ -59,12 +59,12 @@ function settleEvent(eventName, result) {
                     if (event === null) {
                         throw new Error("Event: ".concat(eventName, " does not exist"));
                     }
-                    // if (event?.startDate > new Date().getTime()) {
-                    //   throw new Error('Event has not started yet')
-                    // }
-                    if (parseInt(event === null || event === void 0 ? void 0 : event.result.toString()) !== -1) {
-                        throw new Error('Event has already been settled');
+                    if ((event === null || event === void 0 ? void 0 : event.startDate) > new Date().getTime()) {
+                        throw new Error('Event has not started yet');
                     }
+                    // if (parseInt(event?.result.toString()) !== -1) {
+                    //   throw new Error('Event has already been settled')
+                    // } 
                     if (result === -1) {
                         throw new Error('Result is invalid');
                     }
@@ -118,9 +118,9 @@ function settleEvent(eventName, result) {
                                                 user.streak = 0;
                                                 user.losses = parseInt(user.losses.toString()) + 1;
                                             }
+                                            bet.settled = true;
+                                            user.numBets = parseInt(user === null || user === void 0 ? void 0 : user.numBets.toString()) + 1;
                                         }
-                                        bet.settled = true;
-                                        user.numBets = parseInt(user === null || user === void 0 ? void 0 : user.numBets.toString()) + 1;
                                     }
                                     console.log("Updated user: ".concat(JSON.stringify(user)));
                                     // Update user and database

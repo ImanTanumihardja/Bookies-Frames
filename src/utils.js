@@ -60,7 +60,7 @@ var RequestProps;
     RequestProps["EVENT_NAME"] = "eventName";
     RequestProps["PICK"] = "pick";
     RequestProps["MULTIPLIER"] = "multiplier";
-    RequestProps["TIMESTAMP"] = "timestamp";
+    RequestProps["TIME"] = "time";
     RequestProps["ODDS"] = "odds";
     RequestProps["BALANCE"] = "balance";
     RequestProps["POLL"] = "poll";
@@ -100,7 +100,7 @@ exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.EVENT_NAME] = "",
     _a[RequestProps.PICK] = 0,
     _a[RequestProps.MULTIPLIER] = 0,
-    _a[RequestProps.TIMESTAMP] = 0,
+    _a[RequestProps.TIME] = 0,
     _a[RequestProps.ODDS] = [],
     _a[RequestProps.BALANCE] = 0.0,
     _a[RequestProps.POLL] = [],
