@@ -32,7 +32,8 @@ export enum RequestProps {
   INDEX = 'index',
   ARRAY = 'array',
   ODD = 'odd',
-  STRING = "string"
+  STRING = "string",
+  RESULT = "result"
 }
 
 export enum FrameNames {
@@ -73,7 +74,8 @@ export const RequestPropsTypes = {
     [RequestProps.INDEX] : 0,
     [RequestProps.ARRAY] : [],
     [RequestProps.ODD] : 0.5,
-    [RequestProps.STRING] : ""
+    [RequestProps.STRING] : "",
+    [RequestProps.RESULT] : 0
 }
 
 export const BOOKIES_FID = 244367;

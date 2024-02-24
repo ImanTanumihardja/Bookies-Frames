@@ -35,6 +35,6 @@ export const metadata: Metadata = {
   other: getFrameFlattened(frame),
 };
 
-export default function Page() {
+export default async function Page() {
   // redirect('https://bookies-rho.vercel.app/');
 }

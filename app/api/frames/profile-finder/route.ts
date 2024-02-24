@@ -81,12 +81,14 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: [
+    buttons: isFollowing ? [
       {
         label: 'Search',
         action: 'post',
       },
-    ],
+    ] 
+    :
+    [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
     inputText: input_text,
     postUrl: `${process.env['HOST']}/api/frames/${FrameNames.PROFILE_FINDER}`,
   };

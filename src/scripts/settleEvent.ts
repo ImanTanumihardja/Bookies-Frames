@@ -18,9 +18,9 @@ async function settleEvent(eventName="", result=-1) {
       throw new Error(`Event: ${eventName} does not exist`)
     }
     
-    // if (event?.startDate > new Date().getTime()) {
-    //   throw new Error('Event has not started yet')
-    // }
+    if (event?.startDate > new Date().getTime()) {
+      throw new Error('Event has not started yet')
+    }
 
     if (parseInt(event?.result.toString()) !== -1) {
       throw new Error('Event has already been settled')
@@ -81,7 +81,7 @@ async function settleEvent(eventName="", result=-1) {
           user.numBets = parseInt(user?.numBets.toString()) + 1;
         }
       }
-      console.log(`Updated user: ${JSON.stringify(user)}`)
+      // console.log(`Updated user: ${JSON.stringify(user)}`)
 
       // Update user and database
       await kv.hset(fid.toString(), user).then( async () => {

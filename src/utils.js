@@ -69,6 +69,7 @@ var RequestProps;
     RequestProps["ARRAY"] = "array";
     RequestProps["ODD"] = "odd";
     RequestProps["STRING"] = "string";
+    RequestProps["RESULT"] = "result";
 })(RequestProps || (exports.RequestProps = RequestProps = {}));
 var FrameNames;
 (function (FrameNames) {
@@ -109,6 +110,7 @@ exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.ARRAY] = [],
     _a[RequestProps.ODD] = 0.5,
     _a[RequestProps.STRING] = "",
+    _a[RequestProps.RESULT] = 0,
     _a);
 exports.BOOKIES_FID = 244367;
 exports.DEFAULT_USER = {

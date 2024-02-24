@@ -16,7 +16,7 @@ const plusJakartaSans = fetch(
 export async function GET(req: NextRequest) {
     try {
         let text='' // Default empty React element
-        const {isFollowing, pick, stake, buttonIndex, fid, eventName, options, time} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.TIME]);
+        const {isFollowing, pick, stake, buttonIndex, fid, eventName, options, time, result} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.TIME, RequestProps.RESULT]);
 
         // Get bets for this event by filtering the bets array for the eventName
         const bets : Record<string, Bet[]> = (await kv.hget(fid?.toString(), 'bets') || {});
@@ -26,16 +26,18 @@ export async function GET(req: NextRequest) {
         // Ensure bets is an array before calling filter
         const filteredBets : Bet[] = bets[eventName] || []
 
+        const maxLength = options.reduce((a:string, b:string) => a.length > b.length ? a : b).length
+
         if (filteredBets === null) throw new Error('Bets not found');
 
-        if (buttonIndex == 2) {
+        if (buttonIndex === 2) {
             text = 'You rejected the bet!'
         } 
         else if (stake <= -1){
             text =  "You don't have enough dice!"
         }
         else if (pick === -1) {
-            text = "Event is over!"
+            text = "Event is closed!"
         }
         else {
             text = "Bet confirmed!"
@@ -53,7 +55,7 @@ export async function GET(req: NextRequest) {
                         background: 'linear-gradient(to right, orange, #aa3855, purple)',
                         justifyContent: 'center',
                 }}>
-                    <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', margin:50}}> {text} </h1>
+                    <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', padding:25}}> {text} </h1>
                 </div>
                 <div style={{
                         display: 'flex',
@@ -64,13 +66,10 @@ export async function GET(req: NextRequest) {
                         height: '100%',
                         background: 'white'}}>
                             <h1 style={{color: 'black', fontSize:35, justifyContent:'center', margin:5, marginTop: 20}}>Your Bets: </h1>
-                            <div style={{display: 'flex', flexDirection:'column', alignItems: 'center'}}>
+                            <div style={{display: 'flex', flexDirection:'column', alignItems: 'flex-start'}}>
                                 {filteredBets.reverse().slice(0, 6).map((bet: Bet, index: number) => { 
                                 return (
-                                    (bet.timeStamp === time) ?
-                                    <h2 key={index} style={{color: 'black', fontSize:20, justifyContent:'center', margin:10, textDecoration:"underline"}}>{options[bet.pick]} | {bet.stake}</h2>
-                                    :
-                                    <h2 key={index} style={{color: 'black', fontSize:20, justifyContent:'center', margin:10}}>{options[bet.pick]} | {bet.stake}</h2>
+                                    <h2 key={index} style={{color: 'black', fontSize:20, justifyContent:'center', margin:10, whiteSpace: 'pre', textDecoration: bet.timeStamp === time ? "underline" :'none'}}>{options[bet.pick].padEnd(maxLength - 1, '&nbsp;')} | {bet.stake} { result === -1 ? '' : bet.pick === result ? '🟢' : '🔴'}</h2>
                                 )})}
                             </div>
                             {filteredBets.length > 6 ?
