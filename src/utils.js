@@ -118,10 +118,9 @@ exports.DEFAULT_USER = {
     losses: 0,
     numBets: 0,
     hasClaimed: false,
-    bets: []
+    bets: {}
 };
 exports.DEFAULT_BET = {
-    eventName: '',
     stake: 0,
     odd: 0.5,
     pick: -1,

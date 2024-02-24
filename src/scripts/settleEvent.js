@@ -59,12 +59,12 @@ function settleEvent(eventName, result) {
                     if (event === null) {
                         throw new Error("Event: ".concat(eventName, " does not exist"));
                     }
-                    if ((event === null || event === void 0 ? void 0 : event.startDate) > new Date().getTime()) {
-                        throw new Error('Event has not started yet');
+                    // if (event?.startDate > new Date().getTime()) {
+                    //   throw new Error('Event has not started yet')
+                    // }
+                    if (parseInt(event === null || event === void 0 ? void 0 : event.result.toString()) !== -1) {
+                        throw new Error('Event has already been settled');
                     }
-                    // if (parseInt(event?.result.toString()) !== -1) {
-                    //   throw new Error('Event has already been settled')
-                    // } 
                     if (result === -1) {
                         throw new Error('Result is invalid');
                     }
@@ -84,7 +84,7 @@ function settleEvent(eventName, result) {
                     _a.label = 4;
                 case 4:
                     if (!cursor) return [3 /*break*/, 6];
-                    return [4 /*yield*/, kv.sscan("users", cursor, { count: 150 })];
+                    return [4 /*yield*/, kv.sscan("leaderboard", cursor, { count: 150 })];
                 case 5:
                     betsData = (_a.sent());
                     cursor = betsData[0];
@@ -102,9 +102,9 @@ function settleEvent(eventName, result) {
                                         console.log("User: ".concat(fid, " does not exist"));
                                         return [2 /*return*/, "continue"];
                                     }
-                                    for (_b = 0, _c = user === null || user === void 0 ? void 0 : user.bets; _b < _c.length; _b++) {
+                                    for (_b = 0, _c = user === null || user === void 0 ? void 0 : user.bets[eventName]; _b < _c.length; _b++) {
                                         bet = _c[_b];
-                                        if (bet.eventName === eventName && !bet.settled) {
+                                        if (!bet.settled) {
                                             if (bet.pick === result) { // Won
                                                 console.log("User: ".concat(fid, " won bet: ").concat(JSON.stringify(bet)));
                                                 payout = (0, utils_1.calculatePayout)(event.multiplier, event.odds[result], bet.stake, user === null || user === void 0 ? void 0 : user.streak);
@@ -129,7 +129,7 @@ function settleEvent(eventName, result) {
                                                 switch (_a.label) {
                                                     case 0:
                                                         console.log("Settled user: ".concat(fid, "\n"));
-                                                        return [4 /*yield*/, kv.zadd('users', { score: user.balance, member: fid })];
+                                                        return [4 /*yield*/, kv.zadd('leaderboard', { score: user.balance, member: fid })];
                                                     case 1:
                                                         _a.sent();
                                                         return [2 /*return*/];

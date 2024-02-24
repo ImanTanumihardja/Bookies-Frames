@@ -66,6 +66,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     // Adjust user available balance
     user.balance = Math.ceil((balance - stake) * 100) / 100;
+
+    if (user.bets[eventName] === undefined) user.bets[eventName] = [];
     user.bets[eventName].push(bet)
 
     // Set user
