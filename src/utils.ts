@@ -85,11 +85,10 @@ export const DEFAULT_USER: User = {
     losses: 0,
     numBets: 0,
     hasClaimed: false,
-    bets: []
+    bets: {}
 }
 
 export const DEFAULT_BET: Bet = {
-    eventName: '',
     stake: 0,
     odd: 0.5,
     pick: -1,

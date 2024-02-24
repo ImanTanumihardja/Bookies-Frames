@@ -2,7 +2,7 @@ const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
 import { DEFAULT_BET, calculatePayout } from "../utils";
-import { Event, Bet } from '../../app/types';
+import { Event, Bet, User } from '../../app/types';
 import { createClient  } from "@vercel/kv";
 
 const kv = createClient({
@@ -16,17 +16,17 @@ async function getEvent(eventName = "sblviii-ml") {
   console.log(eventData);
   
   // Get all bets
-  let betsData = (await kv.zscan("users", 0, { count: 150 }))
+  let betsData = (await kv.zscan("leaderboard", 0, { count: 150 }))
   let cursor = betsData[0]
-  let bets : Bet[] = betsData[1] as unknown as Bet[]
+  let fids : Bet[] = betsData[1] as unknown as Bet[]
 
   while (cursor) {
-    betsData = (await kv.zscan("users", cursor, { count: 150 }))
+    betsData = (await kv.zscan("leaderboard", cursor, { count: 150 }))
     cursor = betsData[0]
-    bets = bets.concat(betsData[1] as unknown as Bet[])
+    fids = fids.concat(betsData[1] as unknown as Bet[])
   }
 
-  console.log(`Total bets: ${bets.length}`);
+  console.log(`Total bets: ${fids.length}`);
 
   if (eventData?.result !== -1) {
     let maxValue = 0;
@@ -34,16 +34,26 @@ async function getEvent(eventName = "sblviii-ml") {
     let streak = 0;
     let payout = 0;
 
-    for (const bet of bets) {
-      if (bet.pick === eventData?.result) {
-        streak = await kv.hget(`${bet.fid}`, 'streak') || 0;
-        payout = calculatePayout(eventData?.multiplier || 1, eventData?.odds[eventData?.result] || 0.5, bet.stake, streak);
+    // Find the max winners
+    for (const fid of fids) {
+      const user : User | null = await kv.hgetall(fid.toString());
 
-        if (payout > maxValue) {
-          fids = [bet.fid];
-          maxValue = payout;
-        } else if (payout === maxValue) {
-          fids.push(bet.fid);
+      if (user === null) {
+        console.error(`User: ${fid} does not exist`)
+        continue;
+      } 
+
+      const bets : Bet[] = user?.bets[eventName]
+      for (const bet of bets) {
+        if (bet.pick === eventData?.result) {
+          payout = calculatePayout(eventData?.multiplier || 1, eventData?.odds[eventData?.result] || 0.5, bet.stake, streak);
+  
+          if (payout > maxValue) {
+            fids = [fid];
+            maxValue = payout;
+          } else if (payout === maxValue) {
+            fids.push(fid);
+          }
         }
       }
     }

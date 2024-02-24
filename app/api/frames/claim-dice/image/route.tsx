@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
                         <h1 style={{color: 'white', fontSize:55, marginTop:-10, alignItems:'flex-start'}}> your free <img style={{width: 65, height: 65, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
                     </div>)
                     :
-                        <NotFollowing/>
+                    <NotFollowing/>
                     )}
             </FrameBase>
             ,

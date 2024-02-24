@@ -32,7 +32,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   event = event as unknown as Event || null;
 
-  if (!user || (user as User)?.hasClaimed === undefined || await kv.zscore('users', fid.toString()) === null) {
+  if (!user || (user as User)?.hasClaimed === undefined || await kv.zscore('leaderboard', fid.toString()) === null) {
     // New user
     user = DEFAULT_USER
   }

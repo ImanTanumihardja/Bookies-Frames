@@ -34,7 +34,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   console.log('FID: ', fid.toString())
 
   // Check if new user if so add new user
-  isNewUser = !user || (user as User).hasClaimed === undefined || (user as User).balance === undefined || (await kv.zscore('users', fid.toString())) === null;
+  isNewUser = !user || (user as User).hasClaimed === undefined || (user as User).balance === undefined || (await kv.zscore('leaderboard', fid.toString())) === null;
 
   if (isNewUser) {
       // New user
@@ -65,8 +65,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const bet : Bet = {eventName: eventName, pick:pick, odd: event.odds[pick], stake:stake, timeStamp: now, settled: false} as Bet;
 
     // Adjust user available balance
-    user.balance = balance - stake;
-    user.bets.push(bet)
+    user.balance = Math.ceil((balance - stake) * 100) / 100;
+    user.bets[eventName].push(bet)
 
     // Set user
     await kv.hset(fid.toString(), user).then( async () => {
@@ -90,10 +90,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
       // If new user add to leaderboard
       if (isNewUser) {
-        if (user !== null) await kv.zadd('users', {score: DEFAULT_USER.balance, member: fid}).catch(async (error) => {
+        if (user !== null) await kv.zadd('leaderboard', {score: DEFAULT_USER.balance, member: fid}).catch(async (error) => {
           console.error('Error adding user to leaderboard:', error);
           // Try again
-          if (user !== null) await kv.zadd('users', {score: DEFAULT_USER.balance, member: fid}).catch((error) => {
+          if (user !== null) await kv.zadd('leaderboard', {score: DEFAULT_USER.balance, member: fid}).catch((error) => {
             throw new Error('Error adding user to leaderboard');
           })
         });

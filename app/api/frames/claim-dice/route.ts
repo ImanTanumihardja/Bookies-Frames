@@ -24,7 +24,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (isFollowing && validCaptcha) {
     user = await kv.hgetall(fid.toString()) || null;
     
-    isNewUser = !user || user.hasClaimed === undefined || user.balance === undefined || await kv.zscore('users', fid.toString()) === null;
+    isNewUser = !user || user.hasClaimed === undefined || user.balance === undefined || await kv.zscore('leaderboard', fid.toString()) === null;
 
     if (isNewUser) {
         // New user
@@ -51,10 +51,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     if (!hasClaimed) {
       user.hasClaimed = true;
       await kv.hset(fid.toString(), user).then( async () => {
-       if (user !== null) await kv.zadd('users', {score: user.balance, member: fid}).catch(async (error) => {
+       if (user !== null) await kv.zadd('leaderboard', {score: user.balance, member: fid}).catch(async (error) => {
           console.error('Error adding user to leaderboard:', error);
           // Try again
-          if (user !== null) await kv.zadd('users', {score: user.balance, member: fid})
+          if (user !== null) await kv.zadd('leaderboard', {score: user.balance, member: fid})
         });
       }).catch((error) => {
         throw new Error('Error updating user');

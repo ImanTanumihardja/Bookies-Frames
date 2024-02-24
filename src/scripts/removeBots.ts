@@ -97,7 +97,7 @@ async function resetHasClaimed() {
                 console.log('Deleting user: ', fid)
                 deletedCount++;
                 deleteUsers.push(fid)
-                await multi.zrem('users', fid)
+                await multi.zrem('leaderboard', fid)
                 await multi.del(fid)
                 await multi.exec()
             }

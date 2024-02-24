@@ -13,12 +13,12 @@ const kv = createClient({
 // Create a script that access kv storage and reset the hasClaimed value
 async function updateUserType() {
     // Iteratively fetch all users
-    let result = (await kv.zscan("users", 0, { count: 150 }))
+    let result = (await kv.zscan("leaderboard", 0, { count: 150 }))
     let cursor = result[0]
     let users = result[1]
 
     while (cursor) {
-        result = (await kv.zscan("users", cursor, { count: 150 }))
+        result = (await kv.zscan("leaderboard", cursor, { count: 150 }))
         cursor = result[0]
         users = users.concat(result[1])
     }

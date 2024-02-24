@@ -15,11 +15,10 @@ export type User = {
     losses: number;
     numBets: number;
     hasClaimed: boolean;
-    bets: Bet[];
+    bets: Record<string, Bet[]>;
 }
 
 export type Bet = {
-    eventName: string,
     stake: number
     odd: number
     pick: number

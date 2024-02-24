@@ -45,7 +45,7 @@ async function settleEvent(eventName="", result=-1) {
     let fids : number[] = betsData[1] as unknown as number[]
 
     while (cursor) {
-      betsData = (await kv.sscan("users", cursor, { count: 150 }))
+      betsData = (await kv.sscan("leaderboard", cursor, { count: 150 }))
       cursor = betsData[0]
       fids = fids.concat(betsData[1] as unknown as number[])
     }
@@ -60,8 +60,8 @@ async function settleEvent(eventName="", result=-1) {
         console.log(`User: ${fid} does not exist`)
         continue
       }
-      for (const bet of user?.bets) {
-        if (bet.eventName === eventName && !bet.settled) {
+      for (const bet of user?.bets[eventName]) {
+        if (!bet.settled) {
           if (bet.pick === result) {  // Won
             console.log(`User: ${fid} won bet: ${JSON.stringify(bet)}`)
             const payout = calculatePayout(event.multiplier, event.odds[result], bet.stake, user?.streak);
@@ -86,7 +86,7 @@ async function settleEvent(eventName="", result=-1) {
       // Update user and database
       await kv.hset(fid.toString(), user).then( async () => {
         console.log(`Settled user: ${fid}\n`)
-        await kv.zadd('users', {score:user.balance, member:fid});
+        await kv.zadd('leaderboard', {score:user.balance, member:fid});
       }).catch((error) => {
         throw new Error(`Error updating user: ${fid}`)
       });

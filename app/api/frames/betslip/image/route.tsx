@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import { RequestProps, getRequestProps, convertImpliedProbabilityToAmerican, DEFAULT_USER, calculatePayout } from '../../../../../src/utils';
-import { User, Event } from '../../../../types';
-import { kv } from '@vercel/kv';
+import NotFollowing from '../../../../../src/components/NotFollowing';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -50,6 +49,7 @@ export async function GET(req: NextRequest) {
         }
 
         return new ImageResponse((
+            isFollowing ?
             <div style={{display: 'flex', flexDirection:'row', height:'100%', width:'100%'}}>
                 <div style={{
                         display: 'flex',
@@ -98,6 +98,8 @@ export async function GET(req: NextRequest) {
                     <h2 style={{display: 'flex', justifyContent: 'center', textAlign: 'center', color: 'black', fontSize: 27, width:'75%', position:'absolute'}}>{prompt}</h2>
                 </div>
             </div>
+            :
+            <NotFollowing/>
         ), {
             width: 764, 
             height: 400, 

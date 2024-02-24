@@ -49,7 +49,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     })
     .finally(async () => {
         if (profile !== null) {
-          rank = await kv.zrevrank('users', profile?.fid || "");
+          rank = await kv.zrevrank('leaderboard', profile?.fid || "");
           rank = rank === null ? -1 : rank;
           
           user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
@@ -58,8 +58,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           // Add users back to leaderboard if not already there
           if (rank === -1 && user !== DEFAULT_USER) {
             // Add user to leaderboard
-            await kv.zadd('users', {score: user.balance, member: profile?.fid});
-            rank = await kv.zrevrank('users', profile?.fid || "");
+            await kv.zadd('leaderboard', {score: user.balance, member: profile?.fid});
+            rank = await kv.zrevrank('leaderboard', profile?.fid || "");
           }
         }
     
