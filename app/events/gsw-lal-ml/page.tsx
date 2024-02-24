@@ -8,7 +8,7 @@ const imageUrl = generateUrl(`thumbnails/events/${FrameNames.GSW_LAL_ML}.png`, [
 
 const frame : Frame = {
   version: "vNext",
-  inputText: 'How much do Dice you want to bet?',
+  inputText: 'How much do you want to bet?',
 
   buttons: [
     {
