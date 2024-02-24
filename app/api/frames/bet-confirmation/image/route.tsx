@@ -19,11 +19,10 @@ export async function GET(req: NextRequest) {
         const {isFollowing, pick, stake, buttonIndex, fid, eventName, options, time} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.TIME]);
 
         // Get bets for this event by filtering the bets array for the eventName
-        const bets = ((await kv.hget(fid?.toString() || "", 'bets')) || []);
-        const betsArray = Array.isArray(bets) ? bets : [];
+        const bets : Record<string, Bet[]> = ((await kv.hget(fid?.toString() || "", 'bets')) || {});
 
         // Ensure bets is an array before calling filter
-        const filteredBets : Bet[] = betsArray.filter((bet: any) => bet.eventName === eventName);
+        const filteredBets : Bet[] = bets[eventName] || []
 
         if (filteredBets === null) throw new Error('Bets not found');
 
