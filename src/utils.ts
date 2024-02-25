@@ -33,7 +33,8 @@ export enum RequestProps {
   ARRAY = 'array',
   ODD = 'odd',
   STRING = "string",
-  RESULT = "result"
+  RESULT = "result",
+  OFFSET = 'offset'
 }
 
 export enum FrameNames {
@@ -45,6 +46,8 @@ export enum FrameNames {
     TRIVIA = 'trivia',
     CAPTCHA = 'captcha',
     GSW_LAL_ML = 'gsw-lal-ml',
+    EVENT_THUMBNAIL = 'event-thumbnail',
+    LEADERBOARD = 'leaderboard',
 }
 
 export const RequestPropsTypes = {
@@ -75,7 +78,8 @@ export const RequestPropsTypes = {
     [RequestProps.ARRAY] : [],
     [RequestProps.ODD] : 0.5,
     [RequestProps.STRING] : "",
-    [RequestProps.RESULT] : 0
+    [RequestProps.RESULT] : 0,
+    [RequestProps.OFFSET] : 0
 }
 
 export const BOOKIES_FID = 244367;
@@ -86,7 +90,7 @@ export const DEFAULT_USER: User = {
     wins: 0,
     losses: 0,
     numBets: 0,
-    hasClaimed: false,
+    hasClaimed: true,
     bets: {}
 }
 

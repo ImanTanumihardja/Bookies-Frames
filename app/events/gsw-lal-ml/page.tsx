@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { FrameNames, generateUrl } from '../../../src/utils';
+import { FrameNames, RequestProps, generateUrl } from '../../../src/utils';
 import { Frame, getFrameFlattened } from 'frames.js';
 
 const options = ['Warriors', 'Lakers']
-const imageUrl = generateUrl(`thumbnails/events/${FrameNames.GSW_LAL_ML}.png`, [], false, true)
+const imageUrl = generateUrl(`api/frames/${FrameNames.EVENT_THUMBNAIL}/image`, {[RequestProps.EVENT_NAME]: FrameNames.GSW_LAL_ML}, false, true)
 
 const frame : Frame = {
   version: "vNext",

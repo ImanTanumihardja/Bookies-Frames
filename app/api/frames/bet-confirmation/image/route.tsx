@@ -26,8 +26,6 @@ export async function GET(req: NextRequest) {
         // Ensure bets is an array before calling filter
         const filteredBets : Bet[] = bets[eventName] || []
 
-        const maxLength = options.reduce((a:string, b:string) => a.length > b.length ? a : b).length
-
         if (filteredBets === null) throw new Error('Bets not found');
 
         if (buttonIndex === 2) {
@@ -69,7 +67,7 @@ export async function GET(req: NextRequest) {
                             <div style={{display: 'flex', flexDirection:'column', alignItems: 'flex-start'}}>
                                 {filteredBets.reverse().slice(0, 6).map((bet: Bet, index: number) => { 
                                 return (
-                                    <h2 key={index} style={{color: 'black', fontSize:20, justifyContent:'center', margin:10, whiteSpace: 'pre', textDecoration: bet.timeStamp === time ? "underline" :'none'}}>{options[bet.pick].padEnd(maxLength - 1, '&nbsp;')} | {bet.stake} { result === -1 ? '' : bet.pick === result ? '🟢' : '🔴'}</h2>
+                                    <h2 key={index} style={{color: 'black', fontSize:20, justifyContent:'center', margin:10, whiteSpace: 'pre', textDecoration: bet.timeStamp === time ? "underline" :'none'}}>{options[bet.pick]} | {bet.stake} { result === -1 ? '' : bet.pick === result ? '🟢' : '🔴'}</h2>
                                 )})}
                             </div>
                             {filteredBets.length > 6 ?

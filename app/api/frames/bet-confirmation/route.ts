@@ -10,11 +10,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const {followingBookies: isFollowing, button, fid} = message;
 
-  const kv_url = process.env.KV_URL;
-  if (kv_url === undefined) {
-    throw new Error('KV_URL not defined');
-  }
-
   // Get eventName from req
   let {eventName, stake, pick} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK]);
 
@@ -39,7 +34,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (isNewUser) {
       // New user
       user = structuredClone(DEFAULT_USER)
-      user.hasClaimed = true;
 
       console.log('NEW USER: ', user)
   }

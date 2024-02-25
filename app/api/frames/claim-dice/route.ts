@@ -31,7 +31,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         user = structuredClone(DEFAULT_USER);
         console.log('NEW USER: ', user)
         console.log('CLAIMED 100 DICE')
-        hasClaimed = false;
     }
     else if (user !== null && user.hasClaimed !== undefined) {
       console.log('USER: ', user)
