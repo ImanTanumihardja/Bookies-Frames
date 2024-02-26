@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { FrameNames, generateUrl } from '../../src/utils';
 import { Frame, getFrameFlattened } from 'frames.js';
 
-const imageUrl = generateUrl(`thumbnails/${FrameNames.PROFILE_FINDER}.gif`, [], false, true)
+const imageUrl = generateUrl(`thumbnails/${FrameNames.PROFILE_FINDER}.gif`, [], false)
 
 const frame : Frame = {
   version: "vNext",

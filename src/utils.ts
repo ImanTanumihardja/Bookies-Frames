@@ -157,18 +157,11 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
     return returnParams
 }
 
-export function generateUrl(extension: string, props: Record<string, any>, addTimestamp: boolean = false, isImageURL: boolean = false): string {
+export function generateUrl(extension: string, props: Record<string, any>, addTimestamp: boolean = false): string {
     let url = `${process.env['HOST']}/${extension}`;
 
-    if(isImageURL && (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging'))){
-        url += `?version=${process.env['VERSION']}`
-        url += `&timestamp=${new Date().getTime()}`
-    }
-    else if (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging')) {
+     if (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging')) {
         url += `?timestamp=${new Date().getTime()}`
-    }
-    else{
-        url += `?version=${process.env['VERSION']}`
     }
     
     // Loop through each param

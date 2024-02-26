@@ -69,7 +69,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
                                                                               [RequestProps.LOSSES]: user.losses, 
                                                                               [RequestProps.BALANCE]: user.balance, 
                                                                               [RequestProps.STREAK]: user.streak, 
-                                                                              [RequestProps.NUM_BETS]: user.numBets}, true, true);
+                                                                              [RequestProps.NUM_BETS]: user.numBets}, true);
     });
   }
   else {
@@ -82,7 +82,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   console.log('Event Names: ', eventNames)
 
   if (rank !== -1 && eventNames.length > 0) {
-    postUrl = generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}`, {[RequestProps.FID]: profile?.fid, [RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.INDEX]: -1, [RequestProps.ARRAY]: eventNames}, false, false)
+    postUrl = generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}`, {[RequestProps.FID]: profile?.fid, [RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.INDEX]: -1, [RequestProps.ARRAY]: eventNames}, false)
     console.log(postUrl)
     input_text = undefined
   }

@@ -54,7 +54,15 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Check if event has already passed
   if (event.startDate < now || result !== -1) {
     pick = -1;
-    imageUrl = generateUrl(`api/frames/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventName, [RequestProps.OPTIONS]: event.options, [RequestProps.TIME]: now, [RequestProps.RESULT]: result}, true, true);
+    imageUrl = generateUrl(`api/frames/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, 
+                                                                              [RequestProps.STAKE]: stake, 
+                                                                              [RequestProps.PICK]: pick, 
+                                                                              [RequestProps.BUTTON_INDEX]: button, 
+                                                                              [RequestProps.FID]: fid, 
+                                                                              [RequestProps.EVENT_NAME]: eventName, 
+                                                                              [RequestProps.OPTIONS]: event.options, 
+                                                                              [RequestProps.TIME]: now, 
+                                                                              [RequestProps.RESULT]: result}, true);
   }
   else{
     const impliedProbability = event.odds[pick]
@@ -76,7 +84,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
                                                                             [RequestProps.POLL]: poll,
                                                                             [RequestProps.PROMPT]: prompt, 
                                                                             [RequestProps.OPTIONS]: options,
-                                                                            [RequestProps.RESULT]: result}, true, true);
+                                                                            [RequestProps.RESULT]: result}, true);
   }
 
   return new NextResponse(

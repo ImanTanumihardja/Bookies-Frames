@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { FrameNames, RequestProps, generateUrl } from '../../src/utils';
 import { getFrameFlattened, Frame } from 'frames.js';import { get } from 'https';
 
-const imageUrl = generateUrl(`api/frames/${FrameNames.LEADERBOARD}/image`, {[RequestProps.OFFSET]: 0}, false, true)
+const imageUrl = generateUrl(`api/frames/${FrameNames.LEADERBOARD}/image`, {[RequestProps.OFFSET]: 0}, false)
 
 const frame : Frame = {
   version: "vNext",

@@ -4,7 +4,7 @@ import { FrameNames, RequestProps, generateUrl } from '../../../src/utils';
 import { Frame, getFrameFlattened } from 'frames.js';
 
 const options = ['Warriors', 'Lakers']
-const imageUrl = generateUrl(`api/frames/${FrameNames.EVENT_THUMBNAIL}/image`, {[RequestProps.EVENT_NAME]: FrameNames.GSW_LAL_ML}, false, true)
+const imageUrl = generateUrl(`api/frames/${FrameNames.EVENT_THUMBNAIL}/image`, {[RequestProps.EVENT_NAME]: FrameNames.GSW_LAL_ML}, false)
 
 const frame : Frame = {
   version: "vNext",

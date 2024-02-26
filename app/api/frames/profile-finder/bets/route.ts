@@ -31,7 +31,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   console.log('Current Index: ', currentIndex)
     
-  const imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventNames[currentIndex]}, true, true);
+  const imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventNames[currentIndex]}, true);
 
   const frame: Frame = {
     version: "vNext",
@@ -86,7 +86,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     ]
     :
     [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
-    postUrl: generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}`, {[RequestProps.FID]: fid, [RequestProps.INDEX]: currentIndex, [RequestProps.ARRAY]: eventNames}, false, false),
+    postUrl: generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}`, {[RequestProps.FID]: fid, [RequestProps.INDEX]: currentIndex, [RequestProps.ARRAY]: eventNames}, false),
   };
 
   return new NextResponse(

@@ -18,7 +18,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     offset = Math.max(0, offset - 10);
   }
 
-  const imageUrl = generateUrl(`api/frames/${FrameNames.LEADERBOARD}/image`, {[RequestProps.OFFSET]: offset}, false, true);
+  const imageUrl = generateUrl(`api/frames/${FrameNames.LEADERBOARD}/image`, {[RequestProps.OFFSET]: offset}, true);
 
   return new NextResponse(
     getFrameHtml({
