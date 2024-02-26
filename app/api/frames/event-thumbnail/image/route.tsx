@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
         const till = startDate - now;
         const hours = Math.round(((till) / (1000 * 60 * 60)));
 
-        const imageUrl:string = generateUrl(`thumbnails/events/${eventName}.png`, [], false, true)
+        const imageUrl:string = generateUrl(`thumbnails/events/${eventName}.png`, [], true, true)
 
         return new ImageResponse(
             <div style={{display:'flex'}}>
