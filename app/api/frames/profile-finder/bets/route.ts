@@ -31,24 +31,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   console.log('Current Index: ', currentIndex)
     
-  const imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventNames[currentIndex]}, false, true);
+  const imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventNames[currentIndex]}, true, true);
 
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: isFollowing ? currentIndex === 0 ? [
-      {
-        label: 'Search Again',
-        action: 'link',
-        target: 'https://warpcast.com/bookies'
-      },
-      {
-        label: '>',
-        action: 'post'
-      }
-    ] 
-    : 
-    currentIndex === eventNames.length - 1 ? 
+    buttons: isFollowing ? currentIndex === eventNames.length - 1 ? 
     [
       {
         label: '<',
@@ -60,6 +48,18 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         target: 'https://warpcast.com/bookies'
       },
     ]
+    :
+    currentIndex === 0 ? [
+      {
+        label: 'Search Again',
+        action: 'link',
+        target: 'https://warpcast.com/bookies'
+      },
+      {
+        label: '>',
+        action: 'post'
+      }
+    ] 
     :
     [
       {
