@@ -59,9 +59,9 @@ function settleEvent(eventName, result) {
                     if (event === null) {
                         throw new Error("Event: ".concat(eventName, " does not exist"));
                     }
-                    if ((event === null || event === void 0 ? void 0 : event.startDate) > new Date().getTime()) {
-                        throw new Error('Event has not started yet');
-                    }
+                    // if (event?.startDate > new Date().getTime()) {
+                    //   throw new Error('Event has not started yet')
+                    // }
                     if (parseInt(event === null || event === void 0 ? void 0 : event.result.toString()) !== -1) {
                         throw new Error('Event has already been settled');
                     }
@@ -122,7 +122,7 @@ function settleEvent(eventName, result) {
                                             user.numBets = parseInt(user === null || user === void 0 ? void 0 : user.numBets.toString()) + 1;
                                         }
                                     }
-                                    console.log("Updated user: ".concat(JSON.stringify(user)));
+                                    // console.log(`Updated user: ${JSON.stringify(user)}`)
                                     // Update user and database
                                     return [4 /*yield*/, kv.hset(fid.toString(), user).then(function () { return __awaiter(_this, void 0, void 0, function () {
                                             return __generator(this, function (_a) {
@@ -139,6 +139,7 @@ function settleEvent(eventName, result) {
                                             throw new Error("Error updating user: ".concat(fid));
                                         })];
                                 case 2:
+                                    // console.log(`Updated user: ${JSON.stringify(user)}`)
                                     // Update user and database
                                     _d.sent();
                                     return [2 /*return*/];

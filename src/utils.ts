@@ -47,7 +47,7 @@ export enum FrameNames {
     TRIVIA = 'trivia',
     CAPTCHA = 'captcha',
     GSW_LAL_ML = 'gsw-lal-ml',
-    CL_BAY_LAZ_ML = 'cl-bay-laz-ml',
+    LUTON_CITY_SPREAD = 'luton-city-spread',
     EVENT_THUMBNAIL = 'event-thumbnail',
     LEADERBOARD = 'leaderboard',
     BETS = 'bets',

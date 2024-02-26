@@ -3,8 +3,8 @@ import { redirect } from 'next/navigation';
 import { FrameNames, RequestProps, generateUrl } from '../../../src/utils';
 import { Frame, getFrameFlattened } from 'frames.js';
 
-const options = ['Bayern', 'Lazio']
-const imageUrl = generateUrl(`api/frames/${FrameNames.EVENT_THUMBNAIL}/image`, {[RequestProps.EVENT_NAME]: FrameNames.CL_BAY_LAZ_ML}, false, true)
+const options = ['Luton Town +1.5', 'Man City -1.5']
+const imageUrl = generateUrl(`api/frames/${FrameNames.EVENT_THUMBNAIL}/image`, {[RequestProps.EVENT_NAME]: FrameNames.LUTON_CITY_SPREAD}, false, true)
 
 const frame : Frame = {
   version: "vNext",
@@ -19,10 +19,9 @@ const frame : Frame = {
       label: options[1],
       action: 'post',
     },
-
   ],
   image: imageUrl,
-  postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BETSLIP}?eventName=${FrameNames.CL_BAY_LAZ_ML}`
+  postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BETSLIP}?eventName=${FrameNames.LUTON_CITY_SPREAD}`
 };
 
 export const metadata: Metadata = {

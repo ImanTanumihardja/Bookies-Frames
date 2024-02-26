@@ -83,7 +83,7 @@ var FrameNames;
     FrameNames["TRIVIA"] = "trivia";
     FrameNames["CAPTCHA"] = "captcha";
     FrameNames["GSW_LAL_ML"] = "gsw-lal-ml";
-    FrameNames["CL_BAY_LAZ_ML"] = "cl-bay-laz-ml";
+    FrameNames["LUTON_CITY_SPREAD"] = "luton-city-spread";
     FrameNames["EVENT_THUMBNAIL"] = "event-thumbnail";
     FrameNames["LEADERBOARD"] = "leaderboard";
     FrameNames["BETS"] = "bets";
