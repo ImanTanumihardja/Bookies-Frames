@@ -23,9 +23,8 @@ export async function GET(req: NextRequest) {
         const users : number[] = await kv.zrange('leaderboard', '+inf', 0, {byScore: true, rev:true, offset: offset, count: count, withScores:true});
 
         if (users.length === 0) {
-            throw new Error('No users found');
+            console.error('No users found');
         }
-
 
         const fids = users.filter((user:any, index:number) => index % 2 === 0);
         const scores = users.filter((user:any, index) => index % 2 !== 0);
@@ -40,7 +39,7 @@ export async function GET(req: NextRequest) {
           
           const response = await fetch(`https://api.neynar.com/v2/farcaster/user/bulk?fids=${encodeURIComponent(fids.toString())}`, options);
           const data = await response.json();
-          const profiles = data.users;
+          const profiles = data.users || [];
 
         if (profiles.length !== fids.length) {
             throw new Error('Profiles and users length do not match');
@@ -53,7 +52,6 @@ export async function GET(req: NextRequest) {
                 return `${offset + index + 1}. ${shortUsername}: ${scores[index]}`
             }
         })
-
 
         return new ImageResponse(
             <FrameBase>
