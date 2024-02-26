@@ -52,7 +52,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let pick = button - 1;
   const now = new Date().getTime();
   // Check if event has already passed
-  if (event.startDate < now || result === -1) {
+  if (event.startDate < now || result !== -1) {
     pick = -1;
     imageUrl = generateUrl(`api/frames/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventName, [RequestProps.OPTIONS]: event.options, [RequestProps.TIME]: now, [RequestProps.RESULT]: result}, true, true);
   }
