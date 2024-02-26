@@ -186,20 +186,12 @@ function getRequestProps(req, params) {
     return returnParams;
 }
 exports.getRequestProps = getRequestProps;
-function generateUrl(extension, props, addTimestamp, isImageURL) {
-    var _a, _b, _c, _d;
+function generateUrl(extension, props, addTimestamp) {
+    var _a, _b;
     if (addTimestamp === void 0) { addTimestamp = false; }
-    if (isImageURL === void 0) { isImageURL = false; }
     var url = "".concat(process.env['HOST'], "/").concat(extension);
-    if (isImageURL && (addTimestamp || ((_a = process.env['HOST']) === null || _a === void 0 ? void 0 : _a.includes('localhost')) || ((_b = process.env['HOST']) === null || _b === void 0 ? void 0 : _b.includes('staging')))) {
-        url += "?version=".concat(process.env['VERSION']);
-        url += "&timestamp=".concat(new Date().getTime());
-    }
-    else if (addTimestamp || ((_c = process.env['HOST']) === null || _c === void 0 ? void 0 : _c.includes('localhost')) || ((_d = process.env['HOST']) === null || _d === void 0 ? void 0 : _d.includes('staging'))) {
+    if (addTimestamp || ((_a = process.env['HOST']) === null || _a === void 0 ? void 0 : _a.includes('localhost')) || ((_b = process.env['HOST']) === null || _b === void 0 ? void 0 : _b.includes('staging'))) {
         url += "?timestamp=".concat(new Date().getTime());
-    }
-    else {
-        url += "?version=".concat(process.env['VERSION']);
     }
     // Loop through each param
     for (var key in props) {
@@ -238,16 +230,16 @@ function validateFrameMessage(req, checkFollowingBookies) {
     var _a, _b, _c, _d, _e, _f, _g, _h;
     if (checkFollowingBookies === void 0) { checkFollowingBookies = true; }
     return __awaiter(this, void 0, void 0, function () {
-        var body, message, data;
-        return __generator(this, function (_j) {
-            switch (_j.label) {
+        var body, message, data, _j;
+        return __generator(this, function (_k) {
+            switch (_k.label) {
                 case 0: return [4 /*yield*/, req.json()];
                 case 1:
-                    body = _j.sent();
+                    body = _k.sent();
                     message = exports.DEFAULT_FRAME_VALIDATION_DATA;
                     return [4 /*yield*/, (0, onchainkit_1.getFrameMessage)(body, { neynarApiKey: process.env['NEYNAR_API_KEY'] || "" })];
                 case 2:
-                    data = _j.sent();
+                    data = _k.sent();
                     if (!data.isValid) {
                         throw new Error('Invalid frame message');
                     }
@@ -259,10 +251,13 @@ function validateFrameMessage(req, checkFollowingBookies) {
                     message.verified_accounts = ((_f = data === null || data === void 0 ? void 0 : data.message) === null || _f === void 0 ? void 0 : _f.interactor.verified_accounts) || [];
                     message.liked = ((_g = data === null || data === void 0 ? void 0 : data.message) === null || _g === void 0 ? void 0 : _g.liked) || false;
                     message.recasted = ((_h = data === null || data === void 0 ? void 0 : data.message) === null || _h === void 0 ? void 0 : _h.recasted) || false;
-                    if (checkFollowingBookies) {
-                        message.followingBookies = true; //await checkIsFollowingBookies(message.fid)
-                    }
-                    return [2 /*return*/, message];
+                    if (!checkFollowingBookies) return [3 /*break*/, 4];
+                    _j = message;
+                    return [4 /*yield*/, checkIsFollowingBookies(message.fid)];
+                case 3:
+                    _j.followingBookies = _k.sent();
+                    _k.label = 4;
+                case 4: return [2 /*return*/, message];
             }
         });
     });
