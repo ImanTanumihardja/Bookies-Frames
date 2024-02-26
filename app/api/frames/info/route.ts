@@ -22,7 +22,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     getFrameHtml({
       version: "vNext",
       image: `${process.env['HOST']}/${FrameNames.INFO}/${currentIndex}.png`,
-      buttons: currentIndex === MAX_INDEX ? [{label: '<', action:'post'}, { label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}] : currentIndex !== 1 ? [{label: '<', action:'post'} , {label: '>', action:'post'}] : [{label: '>', action:'post'}],
+      buttons: currentIndex === MAX_INDEX ? [{label: '<', action:'post'}, { label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}] : currentIndex !== 1 ? [{label: '<', action:'post'} , {label: '>', action:'post'}] : [{label: currentIndex === 1 ? 'See Schedule': '>', action:'post'}],
       postUrl: `${process.env['HOST']}/api/frames/${FrameNames.INFO}?index=${currentIndex}`,
     }),
   );
@@ -31,7 +31,3 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 export async function POST(req: NextRequest): Promise<Response> {
   return getResponse(req);
 } 
-
-export const dynamic = 'force-dynamic';
-// export const revalidate = 0;
-// export const fetchCache = 'force-no-store';
