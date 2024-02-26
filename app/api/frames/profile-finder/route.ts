@@ -90,7 +90,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: isFollowing ? rank === -1 ? [
+    buttons: isFollowing ? rank === -1 || eventNames.length === 0 ? [
       {
         label: 'Search',
         action: 'post',
