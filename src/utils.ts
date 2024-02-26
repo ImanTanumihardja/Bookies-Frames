@@ -160,8 +160,11 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
 export function generateUrl(extension: string, props: Record<string, any>, addTimestamp: boolean = false): string {
     let url = `${process.env['HOST']}/${extension}`;
 
-     if (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging')) {
+    if (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging')) {
         url += `?timestamp=${new Date().getTime()}`
+    }
+    else {
+        url += `?`
     }
     
     // Loop through each param
