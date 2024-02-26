@@ -8,7 +8,7 @@ const imageUrl = generateUrl(`api/frames/${FrameNames.EVENT_THUMBNAIL}/image`, {
 
 const frame : Frame = {
   version: "vNext",
-  inputText: 'How much do you want to bet?',
+  inputText: 'Amount of dice you want to bet',
 
   buttons: [
     {
