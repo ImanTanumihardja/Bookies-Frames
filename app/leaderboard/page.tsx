@@ -9,7 +9,7 @@ const frame : Frame = {
   version: "vNext",
   buttons: [{label: '>', action:'post'}],
   image: imageUrl,
-  postUrl: `${process.env['HOST']}/api/frames/${FrameNames.LEADERBOARD}?offset=0`
+  postUrl: `${process.env['HOST']}/api/frames/${FrameNames.LEADERBOARD}?offset=0&count=5`
 };
 
 export const metadata: Metadata = {

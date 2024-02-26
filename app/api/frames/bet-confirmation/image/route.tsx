@@ -4,6 +4,7 @@ import NotFollowing from '../../../../../src/components/NotFollowing';
 import { RequestProps, getRequestProps } from '../../../../../src/utils';
 import { kv } from '@vercel/kv';
 import { Bet } from '../../../../types';
+import FrameBase from '../../../../../src/components/FrameBase';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -67,7 +68,7 @@ export async function GET(req: NextRequest) {
                             <div style={{display: 'flex', flexDirection:'column', alignItems: 'flex-start'}}>
                                 {filteredBets.reverse().slice(0, 6).map((bet: Bet, index: number) => { 
                                 return (
-                                    <h2 key={index} style={{color: 'black', fontSize:20, justifyContent:'center', margin:10, whiteSpace: 'pre', textDecoration: bet.timeStamp === time ? "underline" :'none'}}>{options[bet.pick]} | {bet.stake} { result === -1 ? '' : bet.pick === result ? '🟢' : '🔴'}</h2>
+                                    <h2 key={index} style={{color: 'black', fontSize:20, justifyContent:'center', margin:10, whiteSpace: 'pre', textDecoration: bet.timeStamp === time ? "underline" :'none'}}>{options[bet.pick]} | {bet.stake} { result === -1 ? '' : bet.pick === result ? '✅' : '❌'}</h2>
                                 )})}
                             </div>
                             {filteredBets.length > 6 ?
@@ -78,7 +79,9 @@ export async function GET(req: NextRequest) {
                 </div>
             </div>
             :
-            <NotFollowing/>
+            <FrameBase>
+                <NotFollowing/>
+            </FrameBase>
             ), {
             width: 764, 
             height: 400, 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import { RequestProps, getRequestProps, convertImpliedProbabilityToAmerican, DEFAULT_USER, calculatePayout } from '../../../../../src/utils';
 import NotFollowing from '../../../../../src/components/NotFollowing';
+import FrameBase from '../../../../../src/components/FrameBase';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -99,7 +100,9 @@ export async function GET(req: NextRequest) {
                 </div>
             </div>
             :
-            <NotFollowing/>
+            <FrameBase>
+                <NotFollowing/>
+            </FrameBase>
         ), {
             width: 764, 
             height: 400, 

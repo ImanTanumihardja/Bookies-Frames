@@ -71,6 +71,7 @@ var RequestProps;
     RequestProps["STRING"] = "string";
     RequestProps["RESULT"] = "result";
     RequestProps["OFFSET"] = "offset";
+    RequestProps["COUNT"] = "count";
 })(RequestProps || (exports.RequestProps = RequestProps = {}));
 var FrameNames;
 (function (FrameNames) {
@@ -82,8 +83,10 @@ var FrameNames;
     FrameNames["TRIVIA"] = "trivia";
     FrameNames["CAPTCHA"] = "captcha";
     FrameNames["GSW_LAL_ML"] = "gsw-lal-ml";
+    FrameNames["CL_BAY_LAZ_ML"] = "cl-bay-laz-ml";
     FrameNames["EVENT_THUMBNAIL"] = "event-thumbnail";
     FrameNames["LEADERBOARD"] = "leaderboard";
+    FrameNames["BETS"] = "bets";
 })(FrameNames || (exports.FrameNames = FrameNames = {}));
 exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.FID] = 0,
@@ -115,6 +118,7 @@ exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.STRING] = "",
     _a[RequestProps.RESULT] = 0,
     _a[RequestProps.OFFSET] = 0,
+    _a[RequestProps.COUNT] = 0,
     _a);
 exports.BOOKIES_FID = 244367;
 exports.DEFAULT_USER = {

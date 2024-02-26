@@ -16,12 +16,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   console.log('Searched for: ', username)
 
   let imageUrl: string = "";
-  let input_text : string = "Enter another username or fid";
+  let user : User = DEFAULT_USER;
+  let rank : number | null = -1;
 
   if (username !== "") {
     let profile: any = null;
-    let user : User = DEFAULT_USER;
-    let rank : number | null = -1;
 
     await neynarClient.searchUser(username, BOOKIES_FID).then( (res) => {
       const profiles = res?.result?.users;
@@ -64,33 +63,55 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         }
     
       imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, 
-                                              [RequestProps.USERNAME]: profile?.username || '', 
-                                              [RequestProps.AVATAR_URL]: profile?.pfp_url || '', 
-                                              [RequestProps.RANK]: rank, 
-                                              [RequestProps.WINS]: user.wins, 
-                                              [RequestProps.LOSSES]: user.losses, 
-                                              [RequestProps.BALANCE]: user.balance, 
-                                              [RequestProps.STREAK]: user.streak, 
-                                              [RequestProps.NUM_BETS]: user.numBets}, true, true);
+                                                                              [RequestProps.USERNAME]: profile?.username || '', 
+                                                                              [RequestProps.AVATAR_URL]: profile?.pfp_url || '', 
+                                                                              [RequestProps.RANK]: rank, 
+                                                                              [RequestProps.WINS]: user.wins, 
+                                                                              [RequestProps.LOSSES]: user.losses, 
+                                                                              [RequestProps.BALANCE]: user.balance, 
+                                                                              [RequestProps.STREAK]: user.streak, 
+                                                                              [RequestProps.NUM_BETS]: user.numBets}, true, true);
     });
   }
   else {
     throw new Error('Invalid username');
   }
 
+  let postUrl = `${process.env['HOST']}/api/frames/${FrameNames.PROFILE_FINDER}`;
+  let input_text : string | undefined = "Enter another username or fid";
+  const eventNames = Object.keys((user as User).bets)
+
+  if (rank !== -1 && eventNames.length > 0) {
+    postUrl = generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}`, {[RequestProps.FID]: fid, [RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.INDEX]: -1, [RequestProps.ARRAY]: eventNames}, false, false)
+    console.log(postUrl)
+    input_text = undefined
+  }
+
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: isFollowing ? [
+    buttons: isFollowing ? rank === -1 ? [
       {
         label: 'Search',
         action: 'post',
       },
-    ] 
+    ]
+    :
+    [
+      {
+        label: 'Search Again',
+        action: 'link',
+        target: 'https://warpcast.com/bookies'
+      },
+      {
+        label: "Bets",
+        action: 'post',
+      },
+    ]
     :
     [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
     inputText: input_text,
-    postUrl: `${process.env['HOST']}/api/frames/${FrameNames.PROFILE_FINDER}`,
+    postUrl: postUrl,
   };
 
   return new NextResponse(

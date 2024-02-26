@@ -22,8 +22,7 @@ export async function GET(req: NextRequest) {
 
         // Get hrs and mins till event
         const till = startDate - now;
-        const hours = Math.round(((till % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) * 10)/10;
-        // const mins = Math.floor((till % (1000 * 60 * 60)) / (1000 * 60));
+        const hours = Math.round(((till) / (1000 * 60 * 60)));
 
         const imageUrl:string = generateUrl(`thumbnails/events/${eventName}.png`, [], false, true)
 

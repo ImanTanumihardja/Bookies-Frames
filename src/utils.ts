@@ -34,7 +34,8 @@ export enum RequestProps {
   ODD = 'odd',
   STRING = "string",
   RESULT = "result",
-  OFFSET = 'offset'
+  OFFSET = 'offset',
+  COUNT = 'count'
 }
 
 export enum FrameNames {
@@ -46,8 +47,10 @@ export enum FrameNames {
     TRIVIA = 'trivia',
     CAPTCHA = 'captcha',
     GSW_LAL_ML = 'gsw-lal-ml',
+    CL_BAY_LAZ_ML = 'cl-bay-laz-ml',
     EVENT_THUMBNAIL = 'event-thumbnail',
     LEADERBOARD = 'leaderboard',
+    BETS = 'bets',
 }
 
 export const RequestPropsTypes = {
@@ -79,7 +82,8 @@ export const RequestPropsTypes = {
     [RequestProps.ODD] : 0.5,
     [RequestProps.STRING] : "",
     [RequestProps.RESULT] : 0,
-    [RequestProps.OFFSET] : 0
+    [RequestProps.OFFSET] : 0,
+    [RequestProps.COUNT] : 0
 }
 
 export const BOOKIES_FID = 244367;
