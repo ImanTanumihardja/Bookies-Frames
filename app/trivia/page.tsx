@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { FrameNames, generateUrl } from '../../src/utils';
 import { Frame, getFrameFlattened } from 'frames.js';
 
-const imageUrl = generateUrl(`thumbnails/${FrameNames.TRIVIA}.png`, [], false, true)
+const imageUrl = generateUrl(`thumbnails/${FrameNames.TRIVIA}.png`, [], false)
 const questionIndexes = encodeURIComponent([0, 1, 2, 3, 4, 5, 6, 7].toString()) // Make sure matchs with the amount of questions in easy category
 
 const frame : Frame = {
