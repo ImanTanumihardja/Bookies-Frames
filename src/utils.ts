@@ -51,6 +51,7 @@ export enum FrameNames {
     EVENT_THUMBNAIL = 'event-thumbnail',
     LEADERBOARD = 'leaderboard',
     BETS = 'bets',
+    INFO = 'info',
 }
 
 export const RequestPropsTypes = {

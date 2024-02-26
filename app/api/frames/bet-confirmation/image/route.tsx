@@ -29,6 +29,9 @@ export async function GET(req: NextRequest) {
 
         if (filteredBets === null) throw new Error('Bets not found');
 
+        // TODO: format the string for each bet
+
+
         if (buttonIndex === 2) {
             text = 'You rejected the bet!'
         } 

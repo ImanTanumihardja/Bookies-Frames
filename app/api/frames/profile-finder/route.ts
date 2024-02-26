@@ -79,6 +79,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let postUrl = `${process.env['HOST']}/api/frames/${FrameNames.PROFILE_FINDER}`;
   let input_text : string | undefined = "Enter another username or fid";
   const eventNames = Object.keys((user as User).bets)
+  console.log('Event Names: ', eventNames)
 
   if (rank !== -1 && eventNames.length > 0) {
     postUrl = generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}`, {[RequestProps.FID]: profile?.fid, [RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.INDEX]: -1, [RequestProps.ARRAY]: eventNames}, false, false)

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { FrameNames, RequestProps, generateUrl } from '../../../src/utils';
 import { Frame, getFrameFlattened } from 'frames.js';
 
-const options = ['Luton Town +1.5', 'Man City -1.5']
+const options = ["Luton +1.5", "City -1.5"]
 const imageUrl = generateUrl(`api/frames/${FrameNames.EVENT_THUMBNAIL}/image`, {[RequestProps.EVENT_NAME]: FrameNames.LUTON_CITY_SPREAD}, false, true)
 
 const frame : Frame = {
@@ -25,11 +25,11 @@ const frame : Frame = {
 };
 
 export const metadata: Metadata = {
-  title: FrameNames.GSW_LAL_ML,
-  description: 'Warriors vs Lakers 2/22/24 ML',
+  title: FrameNames.LUTON_CITY_SPREAD,
+  description: 'Will Man City win by more or less than 1.5 goals?',
   openGraph: {
-    title: FrameNames.GSW_LAL_ML,
-    description: 'Warriors vs Lakers 2/22/24 ML', 
+    title: FrameNames.LUTON_CITY_SPREAD,
+    description: 'Will Man City win by more or less than 1.5 goals?', 
     images: [imageUrl],
   },
   other: getFrameFlattened(frame),

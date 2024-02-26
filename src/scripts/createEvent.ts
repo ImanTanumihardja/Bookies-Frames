@@ -8,7 +8,7 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
   });
 
-async function createEvent(eventName='luton-city-spread', startDate=1709064000000, odds=[0.5, 0.5], multiplier=1, options=["Luton Town +1.5", "Man City -1.5"], prompt="Will Man City win by more or less than 1.5 goals?") {
+async function createEvent(eventName='luton-city-spread', startDate=1709064000000, odds=[0.5, 0.5], multiplier=1, options=["Luton +1.5", "City -1.5"], prompt="Will Man City win by more or less than 1.5 goals?") {
     let event: Event = {startDate: startDate, result: -1, odds: odds, multiplier: multiplier, options: options, prompt: prompt} as Event;
     await kv.hset(`${eventName}`, event);
 

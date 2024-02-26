@@ -21,7 +21,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   let currentIndex = 0
   if (eventNames && lastEventIndex < eventNames.length) {
-    if (button === 2 || lastEventIndex === -1 || lastEventIndex === 0) {
+    if (button === 2 || button === 3 || lastEventIndex === -1 || lastEventIndex === 0) {
       currentIndex = lastEventIndex + 1;
     }
     else if (button === 1){

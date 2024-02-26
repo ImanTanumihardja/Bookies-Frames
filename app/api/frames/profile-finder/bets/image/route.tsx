@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
                 }}>
                     <img src={`${process.env['HOST']}/Full_logo.png`} style={{ width: 120, height: 40, position: 'absolute', bottom:10, left:10}}/>
                     <div style={{display: 'flex', flexDirection:'column', justifyContent:'center', alignContent:'center', width:'100%', height:'100%'}}>
-                        <h1 style={{color: 'white', fontSize:50, bottom: 10, textAlign:'center'}}> {event.prompt} {`(${date.toLocaleDateString()})`}</h1>
+                        <h1 style={{color: 'white', fontSize:50, bottom: 10, textAlign:'center', margin:10}}> {event.prompt} {`(${date.toLocaleDateString()})`}</h1>
                     </div>
                 </div>
                 <div style={{display:'flex', width:'35%', flexDirection:'column', alignItems: 'center'}}>

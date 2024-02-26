@@ -87,6 +87,7 @@ var FrameNames;
     FrameNames["EVENT_THUMBNAIL"] = "event-thumbnail";
     FrameNames["LEADERBOARD"] = "leaderboard";
     FrameNames["BETS"] = "bets";
+    FrameNames["INFO"] = "info";
 })(FrameNames || (exports.FrameNames = FrameNames = {}));
 exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.FID] = 0,

@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
                     <h2 style={{color: 'white', fontSize:50, textAlign:'center'}}> No profile found!</h2>
                     :
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%'}}>
-                        <h1 style={{color: 'white', top:-50, left: 20, fontSize: 56, alignItems:'center'}}> 
+                        <h1 style={{color: 'white', top:-25, left: 20, fontSize: 56, alignItems:'center'}}> 
                         <img
                             style={{ width: 65, maxHeight: 65, marginRight: 15, borderRadius: 50 }}
                             src={pfpURL}
@@ -47,10 +47,10 @@ export async function GET(req: NextRequest) {
                         />
                             {shortUsername} {rank !== -1 ? `(#${rank + 1})` : ''}
                         </h1>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start', alignSelf:'center', top: -40}}>
-                            <h2 style={{color: 'white', marginBottom:-10, fontSize:30}}> 🎲 Dice: {balance} </h2>
-                            <h2 style={{color: 'white', marginBottom:-10, fontSize:30}}> 🔥 Streak: {streak} </h2>
-                            <h2 style={{color: 'white', fontSize:30}}> 🎰 Total Bets: {numBets} ({wins}W - {losses}L)</h2>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start', alignSelf:'center', top: -50}}>
+                            <h2 style={{color: 'white', marginBottom:-10, fontSize:40}}> 🎲 Dice: {balance} </h2>
+                            <h2 style={{color: 'white', marginBottom:-10, fontSize:40}}> 🔥 Streak: {streak} </h2>
+                            <h2 style={{color: 'white', fontSize:40}}> 🎰 Total Bets: {numBets} ({wins}W - {losses}L)</h2>
                         </div>
                     </div>
                     :
