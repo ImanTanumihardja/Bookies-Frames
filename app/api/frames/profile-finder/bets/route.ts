@@ -49,7 +49,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
     ]
     :
-    currentIndex === 0 ? [
+    currentIndex === 0 && eventNames.length !== 1 ? [
       {
         label: 'Search Again',
         action: 'link',
@@ -60,6 +60,14 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         action: 'post'
       }
     ] 
+    :
+    currentIndex === 0 && eventNames.length === 1 ? [
+      {
+        label: 'Search Again',
+        action: 'link',
+        target: 'https://warpcast.com/bookies'
+      }
+    ]
     :
     [
       {
