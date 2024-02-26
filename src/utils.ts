@@ -220,7 +220,7 @@ export async function validateFrameMessage(req: NextRequest, checkFollowingBooki
     message.recasted = data?.message?.recasted || false
 
     if (checkFollowingBookies){
-        message.followingBookies = true //await checkIsFollowingBookies(message.fid)
+        message.followingBookies = await checkIsFollowingBookies(message.fid)
     }
 
     return message
