@@ -18,10 +18,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let imageUrl: string = "";
   let user : User = DEFAULT_USER;
   let rank : number | null = -1;
+  let profile: any = null;
 
   if (username !== "") {
-    let profile: any = null;
-
     await neynarClient.searchUser(username, BOOKIES_FID).then( (res) => {
       const profiles = res?.result?.users;
       if (profiles && profiles.length > 0) {
@@ -82,7 +81,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const eventNames = Object.keys((user as User).bets)
 
   if (rank !== -1 && eventNames.length > 0) {
-    postUrl = generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}`, {[RequestProps.FID]: fid, [RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.INDEX]: -1, [RequestProps.ARRAY]: eventNames}, false, false)
+    postUrl = generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}`, {[RequestProps.FID]: profile?.fid, [RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.INDEX]: -1, [RequestProps.ARRAY]: eventNames}, false, false)
     console.log(postUrl)
     input_text = undefined
   }
