@@ -57,15 +57,20 @@ export async function GET(req: NextRequest) {
                     </div>
                 </div>
                 <div style={{display:'flex', width:'35%', flexDirection:'column', alignItems: 'center'}}>
-                        {eventBets.map((bet: Bet | undefined, index: number) => {
-                            return (
-                                bet && 
-                                <h3 key={index} style={{color: 'black', fontSize: 30, marginBottom:-5}}>
-                                    {event?.options[bet.pick]} | {bet.stake} {event?.result != -1 ? (bet.pick == event?.result ? '✅' : '❌') : ''}
-                                </h3>
-                                )
-                            })}
-                        </div>
+                    {eventBets.reverse().slice(0, 7).map((bet: Bet | undefined, index: number) => {
+                        return (
+                            bet && 
+                            <h3 key={index} style={{color: 'black', fontSize: 30, marginBottom:-5}}>
+                                {event?.options[bet.pick]} | {bet.stake} {event?.result != -1 ? (bet.pick == event?.result ? '✅' : '❌') : ''}
+                            </h3>
+                        )
+                    })}
+                </div>
+                {eventBets.length > 7 ?
+                <h2 style={{color: 'black', fontSize:35, justifyContent:'center', margin:-10}}>. . .</h2>
+                :
+                <div></div>
+                }
             </div>
             :    
             <FrameBase>
