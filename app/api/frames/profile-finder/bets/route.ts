@@ -31,7 +31,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   console.log('Current Index: ', currentIndex)
     
-  const imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventNames[currentIndex]}, false, false);
+  const imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventNames[currentIndex]}, false, true);
 
   const frame: Frame = {
     version: "vNext",
