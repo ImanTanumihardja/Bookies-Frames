@@ -33,7 +33,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 export async function POST(req: NextRequest): Promise<Response> {
   return getResponse(req);
 } 
-
-export const dynamic = 'force-dynamic';
-// export const revalidate = 0;
+export const revalidate = 0;
+// export const dynamic = 'force-dynamic';
 // export const fetchCache = 'force-no-store';

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { FrameNames, RequestProps, generateUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
 import { getFrameHtml} from "frames.js";
 
-const MAX_INDEX:number = 11;
+const MAX_INDEX:number = 8;
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
