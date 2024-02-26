@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getRequestProps, RequestProps } from '../../../src/utils';
+import { FrameNames, getRequestProps, RequestProps } from '../../../src/utils';
 import { kv } from '@vercel/kv';
 
 const PASSWORD: string = 'bookies123';
@@ -13,7 +13,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   }
 
   await kv.del(fid.toString());
-  await kv.zrem('users', fid.toString());
+  await kv.zrem(FrameNames.LEADERBOARD, fid.toString());
 
   return new NextResponse('User reset', {status: 200});
 }
