@@ -6,7 +6,6 @@ import { Props } from 'next/script';
 
 
 export async function generateMetadata(
-  {  }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const options = ["Luton +1.5", "City -1.5"]
