@@ -1,16 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import { FrameNames, RequestProps, generateUrl, getRequestProps } from '../../../../../src/utils';
+import { RequestProps, generateUrl, getRequestProps } from '../../../../../src/utils';
 import { kv } from '@vercel/kv';
-import { headers } from 'next/headers';
-import satori from "satori";
+// import satori from "satori";
 import { join } from 'path';
-import sharp from 'sharp';
+// import sharp from 'sharp';
 
-import * as fs from "fs";
+// import * as fs from "fs";
 
-const fontPath = join(process.cwd(), 'Roboto-Regular.ttf')
-let fontData = fs.readFileSync(fontPath)
+// const fontPath = join(process.cwd(), 'Roboto-Regular.ttf')
+// let fontData = fs.readFileSync(fontPath)
 
 // Fonts
 const plusJakartaSans = fetch(
