@@ -88,11 +88,11 @@ export async function GET(req: NextRequest) {
                 height: 400, 
                 fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
                 headers:{
-                    'CDN-Cache-Control': 'public, s-maxage=0',
-                    'Vercel-CDN-Cache-Control': 'public, s-maxage=0'
+                    'CDN-Cache-Control': 'public, s-maxage=3600',
+                    'Vercel-CDN-Cache-Control': 'public, s-maxage=3600'
                 }
             })
-        imageResponse.headers.set('Cache-Control', 'public, s-maxage=0, max-age=0');
+        imageResponse.headers.set('Cache-Control', 'public, s-maxage=3600, max-age=3600');
         return imageResponse
     } catch (error) {
         console.error(error);
@@ -101,6 +101,4 @@ export async function GET(req: NextRequest) {
 }
 
 export const runtime = 'edge';
-export const revalidate = 0;
-export const dynamic = 'force-dynamic';
-export const fetchCache = 'force-no-store';
+
