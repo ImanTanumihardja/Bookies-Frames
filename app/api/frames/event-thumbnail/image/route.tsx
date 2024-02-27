@@ -46,7 +46,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 }
             })
 
-        return new NextResponse(imageResponse.toString(), { status: 200, headers: imageResponse.headers });
+        return new NextResponse(imageResponse.toString(), { status: 200, headers: {
+            'Cache-Control': 'public, s-maxage=0, max-age=0',
+            'CDN-Cache-Control': 'public, s-maxage=0',
+            'Vercel-CDN-Cache-Control': 'public, s-maxage=0'
+        } });
     } catch (error) {
         console.error(error);
         return new NextResponse('Could not generate image', { status: 500 });
