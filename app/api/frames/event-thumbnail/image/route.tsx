@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
         const svg = await satori(
             <div style={{display:'flex'}}>
                 <img src={imageUrl} />
-                <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:15, textAlign:'start', textDecoration:'underline'}}>{now > startDate ? 'Event Closed' : `Closes in: ${now}hrs`}</h1>
+                <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:15, textAlign:'start', textDecoration:'underline'}}>{now > startDate ? `Event Closed ${now}` : `Closes in: ${now}hrs`}</h1>
             </div>
             ,
             {
