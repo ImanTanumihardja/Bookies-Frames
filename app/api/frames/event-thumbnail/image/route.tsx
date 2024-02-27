@@ -38,7 +38,9 @@ export async function GET(req: NextRequest) {
                 height: 400, 
                 fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
                 headers:{
-                    'Cache-Control': 'public, s-maxage=1',
+                    'Cache-Control': 'public, s-maxage=0, max-age=0',
+                    'CDN-Cache-Control': 'public, s-maxage=60',
+                    'Vercel-CDN-Cache-Control': 'public, s-maxage=3600'
                 }
             })
     } catch (error) {
