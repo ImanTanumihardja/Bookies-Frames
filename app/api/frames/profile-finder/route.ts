@@ -21,21 +21,21 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   let postUrl = `${process.env['HOST']}/api/frames/${FrameNames.PROFILE_FINDER}`;
   let input_text : string | undefined = "Enter another username or fid";
 
+  // If on bets page figure out which event to show based on button press
   let currentEventIndex = lastEventIndex
   if (eventNames && lastEventIndex !== -1) {
     if (button === 1){
       currentEventIndex = lastEventIndex - 1;
     }
-    else if ((button === 3 || button === 2) && !fromProfile) {
+    else if ((button === 3 || button === 2) && !fromProfile) { // Increment index if not coming from profile page
       currentEventIndex = lastEventIndex + 1;
     }
   }
 
+  const username : string = (req.nextUrl.searchParams.get("username") || input || '')?.toLowerCase();
   if (currentEventIndex === -1) { // Show the profile page
-    // Check for fid prop in url and if there use that as fid
-
-    if (!profileFID) {
-      const username : string = (req.nextUrl.searchParams.get("username") || input || '')?.toLowerCase();
+    if (!profileFID) { // Not coming from bets page
+      // Check for fid prop in url and if there use that as fid
       console.log('Searched for: ', username)
 
       if (username === "") {
@@ -49,32 +49,22 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         }else {
           throw new Error('Profile-finder Error: Could not find user');
         }
-      })
-      .catch ( async (error) => {
+      }).catch ( async (error) => {
         console.error('Profile-finder Error: Could not find user by username:', error);
         console.log('Trying to search by fid')
-
-        try {
-          // Try searching by fid
-          const fid = parseInt(username);
-          if (!fid) {
-            throw new Error('Invalid fid');
-          }
-
-          profile = (await neynarClient.fetchBulkUsers([fid], {viewerFid: BOOKIES_FID})).users[0];
-        } catch (error) {
-          console.log('Profile-finder Error: Could not find user by fid:', error);
-        }
       })
     }
-    else {
+
+    if (!profile) { // Coming from bets page or search by fid
       try {
         // Try searching by fid
-        if (!profileFID) {
+        if (!profileFID && username === '') {
           throw new Error('Invalid fid');
         }
 
-        profile = (await neynarClient.fetchBulkUsers([profileFID], {viewerFid: BOOKIES_FID})).users[0];
+        const searchFID = profileFID || username;
+
+        profile = (await neynarClient.fetchBulkUsers([searchFID], {viewerFid: BOOKIES_FID})).users[0];
       } catch (error) {
         console.log('Profile-finder Error: Could not find user by fid:', error);
       }
@@ -105,14 +95,22 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
                                                                             [RequestProps.STREAK]: user.streak, 
                                                                             [RequestProps.NUM_BETS]: user.numBets}, true);
 
-    if (rank === -1) { // No user or no bets
+    if (rank === -1) { // No user or no bets give search page on post
       input_text = "Enter another username or fid";
-      postUrl = generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: '', [RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.INDEX]: -1, [RequestProps.ARRAY]: '', [RequestProps.BOOLEAN]: false}, false)
+      postUrl = generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: '', 
+                                                                        [RequestProps.IS_FOLLOWING]: isFollowing, 
+                                                                        [RequestProps.INDEX]: -1, 
+                                                                        [RequestProps.ARRAY]: '', 
+                                                                        [RequestProps.BOOLEAN]: false}, false)
     }
-    else { // User with bets
+    else { // User with bets give bets page on post
       input_text = undefined
       eventNames = Object.keys((user as User).bets)                                                   
-      postUrl = generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: profile?.fid, [RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.INDEX]: 0, [RequestProps.ARRAY]: eventNames, [RequestProps.BOOLEAN]: true}, false)
+      postUrl = generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: profile?.fid, 
+                                                                        [RequestProps.IS_FOLLOWING]: isFollowing, 
+                                                                        [RequestProps.INDEX]: 0, 
+                                                                        [RequestProps.ARRAY]: eventNames, 
+                                                                        [RequestProps.BOOLEAN]: true}, false)
     }      
 
   }
@@ -134,7 +132,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: isFollowing ? (currentEventIndex === -1 ? (rank === -1 || eventNames.length === 0 ? 
+    buttons: isFollowing ? (currentEventIndex === -1 ? (rank === -1 || eventNames.length === 0 ? // No user or no bets
     [
       {
         label: 'Search',
@@ -180,7 +178,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
     ]
     :
-    currentEventIndex === 0 && eventNames.length !== 1 ? 
+    currentEventIndex === 0 && eventNames.length !== 1 ? // First event with others
     [
       {
         label: 'Back to Profile',

@@ -38,6 +38,8 @@ export async function GET(req: NextRequest) {
 
         if (!eventBets) throw new Error('No bets found');
 
+        console.log(`${eventName}: ${eventBets.length} bets`);
+
         const date = new Date(parseInt(event.startDate.toString()));
 
         return new ImageResponse(
