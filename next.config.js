@@ -6,7 +6,7 @@ module.exports = {
           headers: [
             {
                 key: 'Cache-Control',
-                value: 'public, max-age=60',
+                value: 'no-store, max-age=60',
             },
           ],
         },
