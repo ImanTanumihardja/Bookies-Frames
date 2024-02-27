@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
             }
         })
 
-        return new ImageResponse(
+        let imageResponse = new ImageResponse(
             <FrameBase>
                 <div style={{display:'flex', flexDirection:'row', width:'100%', height:'100%', justifyContent:'center'}}>
                     <h1 style={{color: 'white', fontSize:55, padding:10, position:'absolute', top: -25, left: 15}}>Leaderboard</h1>
@@ -87,7 +87,13 @@ export async function GET(req: NextRequest) {
                 width: 764, 
                 height: 400, 
                 fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
+                headers:{
+                    'CDN-Cache-Control': 'public, s-maxage=0',
+                    'Vercel-CDN-Cache-Control': 'public, s-maxage=0'
+                }
             })
+        imageResponse.headers.set('Cache-Control', 'public, s-maxage=0, max-age=0');
+        return imageResponse
     } catch (error) {
         console.error(error);
         return new NextResponse('Could not generate image', { status: 500 });

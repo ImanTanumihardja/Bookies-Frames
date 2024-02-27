@@ -2,14 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import { RequestProps, generateUrl, getRequestProps } from '../../../../../src/utils';
 import { kv } from '@vercel/kv';
-// import satori from "satori";
-import { join } from 'path';
-// import sharp from 'sharp';
-
-// import * as fs from "fs";
-
-// const fontPath = join(process.cwd(), 'Roboto-Regular.ttf')
-// let fontData = fs.readFileSync(fontPath)
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -34,42 +26,10 @@ export async function GET(req: NextRequest) {
 
         const imageUrl:string = generateUrl(`thumbnails/events/${eventName}.png`, [], false)
 
-        // const svg = await satori(
-        //     <div style={{display:'flex'}}>
-        //         <img src={imageUrl} />
-        //         <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:15, textAlign:'start', textDecoration:'underline'}}>{now > startDate ? `Event Closed ${now}` : `Closes in: ${now}hrs`}</h1>
-        //     </div>
-        //     ,
-        //     {
-        //         width: 764, 
-        //         height: 400, 
-        //         fonts: [{
-        //             data: fontData,
-        //             name: 'Roboto',
-        //             style: 'normal',
-        //             weight: 400
-        //         }],
-        //     }
-        // )
-
-        //  // Convert SVG to PNG using Sharp
-        //  const pngBuffer = await sharp(Buffer.from(svg))
-        //  .toFormat('png')
-        //  .toBuffer();
-
-        // return new NextResponse(pngBuffer, {
-        //     headers: {
-        //         'Content-Type': 'image/png',
-        //         'Cache-Control': 'public, s-maxage=0, max-age=0',
-        //         'CDN-Cache-Control': 'public, s-maxage=0',
-        //         'Vercel-CDN-Cache-Control': 'public, s-maxage=0'
-        //     }
-        // });
-
         let imageResponse =  new ImageResponse(
             <div style={{display:'flex'}}>
                 <img src={imageUrl} />
-                <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:15, textAlign:'start', textDecoration:'underline'}}>{now > startDate ? `Event Closed ${now}` : `Closes in: ${now}hrs`}</h1>
+                <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:15, textAlign:'start', textDecoration:'underline'}}>{now > startDate ? `Event Closed` : `Closes in: ${hours}hrs`}</h1>
             </div>
             ,
             {
@@ -77,7 +37,6 @@ export async function GET(req: NextRequest) {
                 height: 400, 
                 fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
                 headers:{
-                    'Cache-Control': 'public, s-maxage=0, max-age=0',
                     'CDN-Cache-Control': 'public, s-maxage=0',
                     'Vercel-CDN-Cache-Control': 'public, s-maxage=0'
                 }
