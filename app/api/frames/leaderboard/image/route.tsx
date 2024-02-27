@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
-import { RequestProps, getRequestProps } from '../../../../../src/utils';
+import { DatabaseKeys, RequestProps, getRequestProps } from '../../../../../src/utils';
 import { kv } from "@vercel/kv";
 
 // Fonts
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
         if (offset === 0) count = 5 
 
         // Get 10 users from the leaderboard from cursor
-        const users : number[] = await kv.zrange('leaderboard', '+inf', 0, {byScore: true, rev:true, offset: offset, count: count, withScores:true});
+        const users : number[] = await kv.zrange(DatabaseKeys.LEADERBOARD, '+inf', 0, {byScore: true, rev:true, offset: offset, count: count, withScores:true});
 
         if (users.length === 0) {
             console.error('No users found');

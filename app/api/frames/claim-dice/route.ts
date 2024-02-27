@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { User} from '../../../types';
-import { RequestProps, generateUrl, DEFAULT_USER, validateFrameMessage } from '../../../../src/utils';
+import { RequestProps, generateUrl, DEFAULT_USER, validateFrameMessage, DatabaseKeys } from '../../../../src/utils';
 import { getFrameHtml, Frame} from "frames.js";
 import { FrameNames } from '../../../../src/utils';
 
@@ -24,7 +24,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (isFollowing && validCaptcha) {
     user = await kv.hgetall(fid.toString()) || null;
     
-    isNewUser = !user || user.hasClaimed === undefined || user.balance === undefined || await kv.zscore('leaderboard', fid.toString()) === null;
+    isNewUser = !user || user.hasClaimed === undefined || user.balance === undefined || await kv.zscore(DatabaseKeys.LEADERBOARD, fid.toString()) === null;
 
     if (isNewUser) {
         // New user
@@ -50,10 +50,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     if (!hasClaimed) {
       user.hasClaimed = true;
       await kv.hset(fid.toString(), user).then( async () => {
-       if (user !== null) await kv.zadd('leaderboard', {score: user.balance, member: fid}).catch(async (error) => {
+       if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: user.balance, member: fid}).catch(async (error) => {
           console.error('Error adding user to leaderboard:', error);
           // Try again
-          if (user !== null) await kv.zadd('leaderboard', {score: user.balance, member: fid})
+          if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: user.balance, member: fid})
         });
       }).catch((error) => {
         throw new Error('Error updating user');

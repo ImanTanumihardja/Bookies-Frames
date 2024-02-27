@@ -55,6 +55,12 @@ export enum FrameNames {
     INFO = 'info',
 }
 
+export enum DatabaseKeys {
+    LEADERBOARD = 'leaderboard',
+    BETS = 'bets',
+    POLL = 'poll',
+}
+
 export const RequestPropsTypes = {
     [RequestProps.FID]: 0,
     [RequestProps.IS_FOLLOWING]: true,

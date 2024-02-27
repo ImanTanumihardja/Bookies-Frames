@@ -1,7 +1,7 @@
 const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
-import { DEFAULT_BET, calculatePayout } from "../utils";
+import { DEFAULT_BET, DatabaseKeys, calculatePayout } from "../utils";
 import { Event, Bet, User } from '../../app/types';
 import { createClient  } from "@vercel/kv";
 
@@ -16,12 +16,12 @@ async function getEvent(eventName = "sblviii-ml") {
   console.log(eventData);
   
   // Get all bets
-  let betsData = (await kv.zscan("leaderboard", 0, { count: 150 }))
+  let betsData = (await kv.zscan(DatabaseKeys.LEADERBOARD, 0, { count: 150 }))
   let cursor = betsData[0]
   let fids : Bet[] = betsData[1] as unknown as Bet[]
 
   while (cursor) {
-    betsData = (await kv.zscan("leaderboard", cursor, { count: 150 }))
+    betsData = (await kv.zscan(DatabaseKeys.LEADERBOARD, cursor, { count: 150 }))
     cursor = betsData[0]
     fids = fids.concat(betsData[1] as unknown as Bet[])
   }

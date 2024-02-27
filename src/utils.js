@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchCache = exports.dynamic = exports.revalidate = exports.calculatePayout = exports.convertImpliedProbabilityToAmerican = exports.validateFrameMessage = exports.checkIsFollowingBookies = exports.neynarClient = exports.generateUrl = exports.getRequestProps = exports.DEFAULT_FRAME_VALIDATION_DATA = exports.DEFAULT_BET = exports.DEFAULT_USER = exports.BOOKIES_FID = exports.RequestPropsTypes = exports.FrameNames = exports.RequestProps = void 0;
+exports.fetchCache = exports.dynamic = exports.revalidate = exports.calculatePayout = exports.convertImpliedProbabilityToAmerican = exports.validateFrameMessage = exports.checkIsFollowingBookies = exports.neynarClient = exports.generateUrl = exports.getRequestProps = exports.DEFAULT_FRAME_VALIDATION_DATA = exports.DEFAULT_BET = exports.DEFAULT_USER = exports.BOOKIES_FID = exports.RequestPropsTypes = exports.DatabaseKeys = exports.FrameNames = exports.RequestProps = void 0;
 var nodejs_sdk_1 = require("@neynar/nodejs-sdk");
 var onchainkit_1 = require("@coinbase/onchainkit");
 var RequestProps;
@@ -90,6 +90,12 @@ var FrameNames;
     FrameNames["BETS"] = "bets";
     FrameNames["INFO"] = "info";
 })(FrameNames || (exports.FrameNames = FrameNames = {}));
+var DatabaseKeys;
+(function (DatabaseKeys) {
+    DatabaseKeys["LEADERBOARD"] = "leaderboard";
+    DatabaseKeys["BETS"] = "bets";
+    DatabaseKeys["POLL"] = "poll";
+})(DatabaseKeys || (exports.DatabaseKeys = DatabaseKeys = {}));
 exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.FID] = 0,
     _a[RequestProps.IS_FOLLOWING] = true,

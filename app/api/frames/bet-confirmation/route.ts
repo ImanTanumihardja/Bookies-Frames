@@ -2,7 +2,7 @@ import { getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { Event, User, Bet } from '../../../types';
-import { DEFAULT_USER, FrameNames, RequestProps, generateUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
+import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -29,7 +29,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   console.log('FID: ', fid.toString())
 
   // Check if new user if so add new user
-  isNewUser = !user || (user as User).hasClaimed === undefined || (user as User).balance === undefined || (await kv.zscore('leaderboard', fid.toString())) === null;
+  isNewUser = !user || (user as User).hasClaimed === undefined || (user as User).balance === undefined || (await kv.zscore(DatabaseKeys.LEADERBOARD, fid.toString())) === null;
 
   if (isNewUser) {
       // New user
@@ -67,29 +67,29 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     // Set user
     await kv.hset(fid.toString(), user).then( async () => {
       // Set event
-      await kv.sadd(`${eventName}:bets`, fid).catch(async (error) => {
+      await kv.sadd(`${eventName}:${DatabaseKeys.BETS}`, fid).catch(async (error) => {
         console.error('Error adding user to event:', error);
         // Try again
-        await kv.sadd(`${eventName}:bets`, fid).catch((error) => {
+        await kv.sadd(`${eventName}:${DatabaseKeys.BETS}`, fid).catch((error) => {
           throw new Error('Error creating bet');
         })
       })
 
       // Update poll
-      await kv.hincrby(`${eventName}:poll`, `${pick}`, 1).catch(async (error) => {
+      await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(async (error) => {
         console.error('Error adding user to event:', error);
         // Try again
-        await kv.hincrby(`${eventName}:poll`, `${pick}`, 1).catch((error) => {
+        await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch((error) => {
           throw new Error('Error creating bet');
         })
       })
 
       // If new user add to leaderboard
       if (isNewUser) {
-        if (user !== null) await kv.zadd('leaderboard', {score: DEFAULT_USER.balance, member: fid}).catch(async (error) => {
+        if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: DEFAULT_USER.balance, member: fid}).catch(async (error) => {
           console.error('Error adding user to leaderboard:', error);
           // Try again
-          if (user !== null) await kv.zadd('leaderboard', {score: DEFAULT_USER.balance, member: fid}).catch((error) => {
+          if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: DEFAULT_USER.balance, member: fid}).catch((error) => {
             throw new Error('Error adding user to leaderboard');
           })
         });

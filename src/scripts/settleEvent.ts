@@ -2,7 +2,7 @@
 const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
-import { calculatePayout } from "../utils";
+import { calculatePayout, DatabaseKeys } from "../utils";
 import { Event, Bet, User } from '../../app/types';
 import { createClient  } from "@vercel/kv";
 
@@ -40,12 +40,12 @@ async function settleEvent(eventName="", result=-1) {
     console.log(`Set result of event: ${eventName} to ${result}`)
 
     // Get all bets
-    let betsData = (await kv.sscan(`${eventName}:bets`, 0, { count: 150 }))
+    let betsData = (await kv.sscan(`${eventName}:${DatabaseKeys.BETS}`, 0, { count: 150 }))
     let cursor = betsData[0]
     let fids : number[] = betsData[1] as unknown as number[]
 
     while (cursor) {
-      betsData = (await kv.sscan("leaderboard", cursor, { count: 150 }))
+      betsData = (await kv.sscan(DatabaseKeys.LEADERBOARD, cursor, { count: 150 }))
       cursor = betsData[0]
       fids = fids.concat(betsData[1] as unknown as number[])
     }
@@ -86,7 +86,7 @@ async function settleEvent(eventName="", result=-1) {
       // Update user and database
       await kv.hset(fid.toString(), user).then( async () => {
         console.log(`Settled user: ${fid}\n`)
-        await kv.zadd('leaderboard', {score:user.balance, member:fid});
+        await kv.zadd(DatabaseKeys.LEADERBOARD, {score:user.balance, member:fid});
       }).catch((error) => {
         throw new Error(`Error updating user: ${fid}`)
       });

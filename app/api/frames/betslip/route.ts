@@ -1,6 +1,6 @@
 import { getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
-import { DEFAULT_USER, FrameNames, RequestProps, generateUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
+import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
 import { kv } from "@vercel/kv";
 import { User, Event } from "../../../types";
 
@@ -32,7 +32,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   event = event as unknown as Event || null;
 
-  if (!user || (user as User)?.hasClaimed === undefined || await kv.zscore('leaderboard', fid.toString()) === null) {
+  if (!user || (user as User)?.hasClaimed === undefined || await kv.zscore(DatabaseKeys.LEADERBOARD, fid.toString()) === null) {
     // New user
     user = DEFAULT_USER
   }
@@ -69,7 +69,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const multiplier = event.multiplier;
     const streak = parseInt(user.streak.toString());
     const availableBal = parseFloat(user?.balance.toString());
-    const poll = Object.values(await kv.hgetall(`${eventName}:poll`) as Record<number, number>)
+    const poll = Object.values(await kv.hgetall(`${eventName}:${DatabaseKeys.POLL}`) as Record<number, number>)
     const prompt = event.prompt;
     const options = event.options;
 

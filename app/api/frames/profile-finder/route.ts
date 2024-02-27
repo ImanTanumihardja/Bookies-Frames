@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Frame, getFrameHtml } from "frames.js";
-import { DEFAULT_USER, generateUrl, RequestProps, validateFrameMessage, neynarClient, BOOKIES_FID, FrameNames, getRequestProps } from '../../../../src/utils';
+import { DEFAULT_USER, generateUrl, RequestProps, validateFrameMessage, neynarClient, BOOKIES_FID, FrameNames, getRequestProps, DatabaseKeys } from '../../../../src/utils';
 import { User } from '../../../types';
 import { kv } from '@vercel/kv';
 
@@ -71,7 +71,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }
 
     if (profile !== null) {
-      rank = await kv.zrevrank('leaderboard', profile?.fid || "");
+      rank = await kv.zrevrank(DatabaseKeys.LEADERBOARD, profile?.fid || "");
       rank = rank === null ? -1 : rank;
       
       user = await kv.hgetall(profile?.fid?.toString() || "") || DEFAULT_USER;
@@ -80,8 +80,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       // Add users back to leaderboard if not already there
       if (rank === -1 && user !== DEFAULT_USER) {
         // Add user to leaderboard
-        await kv.zadd('leaderboard', {score: user.balance, member: profile?.fid});
-        rank = await kv.zrevrank('leaderboard', profile?.fid || "");
+        await kv.zadd(DatabaseKeys.LEADERBOARD, {score: user.balance, member: profile?.fid});
+        rank = await kv.zrevrank(DatabaseKeys.LEADERBOARD, profile?.fid || "");
       }
     }
   
