@@ -4,15 +4,21 @@ import { FrameNames, RequestProps, generateUrl, getRequestProps } from '../../..
 import { kv } from '@vercel/kv';
 import { headers } from 'next/headers';
 import satori from "satori";
+import { join } from 'path';
 import sharp from 'sharp';
 
+import * as fs from "fs";
+
+const fontPath = join(process.cwd(), 'Roboto-Regular.ttf')
+let fontData = fs.readFileSync(fontPath)
+
 // Fonts
-const plusJakartaSans = fetch(
-    new URL(
-      '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
-      import.meta.url,
-    ),
-  ).then((res) => res.arrayBuffer());
+// const plusJakartaSans = fetch(
+//     new URL(
+//       '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
+//       import.meta.url,
+//     ),
+//   ).then((res) => res.arrayBuffer());
 
 export async function GET(req: NextRequest) {
     try {
@@ -38,7 +44,12 @@ export async function GET(req: NextRequest) {
             {
                 width: 764, 
                 height: 400, 
-                fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
+                fonts: [{
+                    data: fontData,
+                    name: 'Roboto',
+                    style: 'normal',
+                    weight: 400
+                }],
             }
         )
 
