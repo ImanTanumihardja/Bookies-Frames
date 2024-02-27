@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import { FrameNames, RequestProps, generateUrl, getRequestProps } from '../../../../../src/utils';
 import { kv } from '@vercel/kv';
+import { headers } from 'next/headers';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -36,6 +37,9 @@ export async function GET(req: NextRequest) {
                 width: 764, 
                 height: 400, 
                 fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
+                headers:{
+                    'Cache-Control': 'public, s-maxage=1',
+                }
             })
     } catch (error) {
         console.error(error);
