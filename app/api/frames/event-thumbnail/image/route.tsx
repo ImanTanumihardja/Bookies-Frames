@@ -46,7 +46,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 }
             })
 
-        return new NextResponse(imageResponse.arrayBuffer.toString(), { status: 200, headers: {
+        return new NextResponse(imageResponse.body, { status: 200, headers: {
             'Cache-Control': 'public, s-maxage=0, max-age=0',
             'CDN-Cache-Control': 'public, s-maxage=0',
             'Vercel-CDN-Cache-Control': 'public, s-maxage=0'
