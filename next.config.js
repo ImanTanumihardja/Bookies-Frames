@@ -2,7 +2,7 @@ module.exports = {
     async headers() {
       return [
         {
-          source: '/events/*',
+          source: '/events/gsw-lal-ml*',
           headers: [
             {
                 key: 'Cache-Control',
