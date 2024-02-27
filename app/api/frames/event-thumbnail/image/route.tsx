@@ -5,12 +5,12 @@ import { kv } from '@vercel/kv';
 import { headers } from 'next/headers';
 
 // Fonts
-// const plusJakartaSans = fetch(
-//     new URL(
-//       '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
-//       import.meta.url,
-//     ),
-//   ).then((res) => res.arrayBuffer());
+const plusJakartaSans = fetch(
+    new URL(
+      '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
+      import.meta.url,
+    ),
+  ).then((res) => res.arrayBuffer());
 
 export async function GET(req: NextRequest) {
     try {
@@ -27,29 +27,36 @@ export async function GET(req: NextRequest) {
 
         const imageUrl:string = generateUrl(`thumbnails/events/${eventName}.png`, [], false)
 
-        return new ImageResponse(
-            <div style={{display:'flex'}}>
-                <img src={imageUrl} />
-                <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:15, textAlign:'start', textDecoration:'underline'}}>{now > startDate ? 'Event Closed' : `Closes in: ${now}hrs`}</h1>
-            </div>
-            ,
-            {
-                width: 764, 
-                height: 400, 
-                // fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
-                headers:{
-                    'Cache-Control': 'public, s-maxage=0, max-age=0',
-                    'CDN-Cache-Control': 'public, s-maxage=0',
-                    'Vercel-CDN-Cache-Control': 'public, s-maxage=0'
-                }
-            })
+        return new NextResponse(
+            'Test', {status: 200, headers:{
+                            'Cache-Control': 'public, s-maxage=0, max-age=0',
+                            'CDN-Cache-Control': 'public, s-maxage=0',
+                            'Vercel-CDN-Cache-Control': 'public, s-maxage=0'
+                        }}
+        )
+        // return new ImageResponse(
+        //     <div style={{display:'flex'}}>
+        //         <img src={imageUrl} />
+        //         <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:15, textAlign:'start', textDecoration:'underline'}}>{now > startDate ? 'Event Closed' : `Closes in: ${now}hrs`}</h1>
+        //     </div>
+        //     ,
+        //     {
+        //         width: 764, 
+        //         height: 400, 
+        //         fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
+        //         headers:{
+        //             'Cache-Control': 'public, s-maxage=0, max-age=0',
+        //             'CDN-Cache-Control': 'public, s-maxage=0',
+        //             'Vercel-CDN-Cache-Control': 'public, s-maxage=0'
+        //         }
+        //     })
     } catch (error) {
         console.error(error);
         return new NextResponse('Could not generate image', { status: 500 });
     }
 }
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
 export const revalidate = 0;
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
