@@ -15,7 +15,7 @@ const frame : Frame = {
   ],
   inputText: 'Enter a username or fid',
   image: imageUrl,
-  postUrl: `${process.env['HOST']}/api/frames/profile-finder`,
+  postUrl: `${process.env['HOST']}/api/frames/profile-finder?fid=&index=-1&array=&boolean=false`,
 };
 
 export const metadata: Metadata = {

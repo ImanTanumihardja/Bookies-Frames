@@ -35,7 +35,8 @@ export enum RequestProps {
   STRING = "string",
   RESULT = "result",
   OFFSET = 'offset',
-  COUNT = 'count'
+  COUNT = 'count',
+  BOOLEAN = 'boolean'
 }
 
 export enum FrameNames {
@@ -84,7 +85,8 @@ export const RequestPropsTypes = {
     [RequestProps.STRING] : "",
     [RequestProps.RESULT] : 0,
     [RequestProps.OFFSET] : 0,
-    [RequestProps.COUNT] : 0
+    [RequestProps.COUNT] : 0,
+    [RequestProps.BOOLEAN] : true
 }
 
 export const BOOKIES_FID = 244367;

@@ -72,6 +72,7 @@ var RequestProps;
     RequestProps["RESULT"] = "result";
     RequestProps["OFFSET"] = "offset";
     RequestProps["COUNT"] = "count";
+    RequestProps["BOOLEAN"] = "boolean";
 })(RequestProps || (exports.RequestProps = RequestProps = {}));
 var FrameNames;
 (function (FrameNames) {
@@ -120,6 +121,7 @@ exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.RESULT] = 0,
     _a[RequestProps.OFFSET] = 0,
     _a[RequestProps.COUNT] = 0,
+    _a[RequestProps.BOOLEAN] = true,
     _a);
 exports.BOOKIES_FID = 244367;
 exports.DEFAULT_USER = {

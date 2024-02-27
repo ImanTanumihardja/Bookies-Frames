@@ -44,11 +44,11 @@ var kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
 });
 function createEvent(eventName, startDate, odds, multiplier, options, prompt) {
-    if (eventName === void 0) { eventName = 'luton-city-spread'; }
+    if (eventName === void 0) { eventName = 'gsw-lal-ml'; }
     if (startDate === void 0) { startDate = 1709064000000; }
     if (odds === void 0) { odds = [0.5, 0.5]; }
     if (multiplier === void 0) { multiplier = 1; }
-    if (options === void 0) { options = ["Luton +1.5", "City -1.5"]; }
+    if (options === void 0) { options = ["GSW", "LAL"]; }
     if (prompt === void 0) { prompt = "Will Man City win by more or less than 1.5 goals?"; }
     return __awaiter(this, void 0, void 0, function () {
         var eventExists, event, poll, _a, _b, _c, _d, _e, _f;
