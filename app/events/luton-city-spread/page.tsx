@@ -2,7 +2,6 @@ import type { Metadata, ResolvingMetadata } from 'next';
 import { redirect } from 'next/navigation';
 import { FrameNames, RequestProps, generateUrl } from '../../../src/utils';
 import { Frame, getFrameFlattened } from 'frames.js';
-import { Props } from 'next/script';
 
 
 export async function generateMetadata(
@@ -46,6 +45,6 @@ export default async function Page() {
   // redirect('https://bookies-rho.vercel.app/');
 }
 
-export const revalidate = 0;
-export const dynamic = 'force-dynamic';
-export const fetchCache = 'force-no-store';
+// export const revalidate = 60;
+// export const dynamic = 'force-dynamic';
+// export const fetchCache = 'force-no-store';
