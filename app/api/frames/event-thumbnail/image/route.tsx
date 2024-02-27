@@ -28,11 +28,7 @@ export async function GET(req: NextRequest) {
         const imageUrl:string = generateUrl(`thumbnails/events/${eventName}.png`, [], false)
 
         return new NextResponse(
-            'Test', {status: 200, headers:{
-                            'Cache-Control': 'public, s-maxage=0, max-age=0',
-                            'CDN-Cache-Control': 'public, s-maxage=0',
-                            'Vercel-CDN-Cache-Control': 'public, s-maxage=0'
-                        }}
+            'Test', {status: 200, }
         )
         // return new ImageResponse(
         //     <div style={{display:'flex'}}>
