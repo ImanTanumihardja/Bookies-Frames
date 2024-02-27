@@ -193,6 +193,9 @@ function generateUrl(extension, props, addTimestamp) {
     if (addTimestamp || ((_a = process.env['HOST']) === null || _a === void 0 ? void 0 : _a.includes('localhost')) || ((_b = process.env['HOST']) === null || _b === void 0 ? void 0 : _b.includes('staging'))) {
         url += "?timestamp=".concat(new Date().getTime());
     }
+    else {
+        url += "?";
+    }
     // Loop through each param
     for (var key in props) {
         url += "&".concat(key, "=").concat(encodeURIComponent(props[key]));

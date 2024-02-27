@@ -26,9 +26,9 @@ async function getEvent(eventName = "sblviii-ml") {
     fids = fids.concat(betsData[1] as unknown as Bet[])
   }
 
-  console.log(`Total bets: ${fids.length}`);
+  console.log(`Total bets: ${fids.length/2}`);
 
-  if (eventData?.result !== -1) {
+  if (eventData?.result != -1) {
     let maxValue = 0;
     let fids: number[] = [];
     let streak = 0;

@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
-import { DEFAULT_USER, RequestProps, getRequestProps } from '../../../../../src/utils';
+import { RequestProps, getRequestProps } from '../../../../../src/utils';
 import { kv } from "@vercel/kv";
-import { User } from '../../../../types';
 
 // Fonts
 const plusJakartaSans = fetch(

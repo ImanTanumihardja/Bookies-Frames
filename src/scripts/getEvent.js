@@ -47,61 +47,71 @@ var kv = (0, kv_1.createClient)({
 function getEvent(eventName) {
     if (eventName === void 0) { eventName = "sblviii-ml"; }
     return __awaiter(this, void 0, void 0, function () {
-        var eventData, maxValue, fids, bet, streak, payout, _a, _b, _c, _i, fid, count, bet;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
-                case 0: return [4 /*yield*/, kv.hget("events", "".concat(eventName))];
+        var eventData, betsData, cursor, fids, maxValue, fids_2, streak, payout, _i, fids_1, fid, user, bets, _a, bets_1, bet;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, kv.hgetall("".concat(eventName))];
                 case 1:
-                    eventData = _d.sent();
+                    eventData = _b.sent();
                     console.log("Event: ".concat(eventName));
                     console.log(eventData);
-                    console.log("Total bets: ".concat((Object.keys((eventData === null || eventData === void 0 ? void 0 : eventData.bets) || {}).length)));
-                    if (!((eventData === null || eventData === void 0 ? void 0 : eventData.result) !== -1)) return [3 /*break*/, 6];
+                    return [4 /*yield*/, kv.zscan("leaderboard", 0, { count: 150 })];
+                case 2:
+                    betsData = (_b.sent());
+                    cursor = betsData[0];
+                    fids = betsData[1];
+                    _b.label = 3;
+                case 3:
+                    if (!cursor) return [3 /*break*/, 5];
+                    return [4 /*yield*/, kv.zscan("leaderboard", cursor, { count: 150 })];
+                case 4:
+                    betsData = (_b.sent());
+                    cursor = betsData[0];
+                    fids = fids.concat(betsData[1]);
+                    return [3 /*break*/, 3];
+                case 5:
+                    console.log("Total bets: ".concat(fids.length / 2));
+                    if (!((eventData === null || eventData === void 0 ? void 0 : eventData.result) != -1)) return [3 /*break*/, 10];
                     maxValue = 0;
-                    fids = [];
-                    bet = void 0;
+                    fids_2 = [];
                     streak = 0;
                     payout = 0;
-                    _a = eventData === null || eventData === void 0 ? void 0 : eventData.bets;
-                    _b = [];
-                    for (_c in _a)
-                        _b.push(_c);
-                    _i = 0;
-                    _d.label = 2;
-                case 2:
-                    if (!(_i < _b.length)) return [3 /*break*/, 5];
-                    _c = _b[_i];
-                    if (!(_c in _a)) return [3 /*break*/, 4];
-                    fid = _c;
-                    bet = (eventData === null || eventData === void 0 ? void 0 : eventData.bets[parseInt(fid)]) || utils_1.DEFAULT_BET;
-                    if (!(bet.prediction === (eventData === null || eventData === void 0 ? void 0 : eventData.result))) return [3 /*break*/, 4];
-                    return [4 /*yield*/, kv.hget("".concat(fid), 'streak')];
-                case 3:
-                    streak = (_d.sent()) || 0;
-                    payout = (0, utils_1.calculatePayout)((eventData === null || eventData === void 0 ? void 0 : eventData.multiplier) || 1, (eventData === null || eventData === void 0 ? void 0 : eventData.odds[eventData === null || eventData === void 0 ? void 0 : eventData.result]) || 0.5, bet.stake, streak);
-                    if (payout > maxValue) {
-                        fids = [fid];
-                        maxValue = payout;
-                    }
-                    else if (payout === maxValue) {
-                        fids.push(fid);
-                    }
-                    _d.label = 4;
-                case 4:
-                    _i++;
-                    return [3 /*break*/, 2];
-                case 5:
-                    console.log("MAX WINNERS COUNT: ".concat(fids.length));
-                    console.log("MAX WINNERS: ".concat(fids));
-                    console.log("MAX WINNERS PAYOUT: ".concat(maxValue));
-                    _d.label = 6;
+                    _i = 0, fids_1 = fids_2;
+                    _b.label = 6;
                 case 6:
-                    count = 0;
-                    for (bet in eventData === null || eventData === void 0 ? void 0 : eventData.bets) {
-                        count++;
+                    if (!(_i < fids_1.length)) return [3 /*break*/, 9];
+                    fid = fids_1[_i];
+                    return [4 /*yield*/, kv.hgetall(fid.toString())];
+                case 7:
+                    user = _b.sent();
+                    if (user === null) {
+                        console.error("User: ".concat(fid, " does not exist"));
+                        return [3 /*break*/, 8];
                     }
-                    console.log("Total bets: ".concat(count));
-                    return [2 /*return*/];
+                    bets = user === null || user === void 0 ? void 0 : user.bets[eventName];
+                    for (_a = 0, bets_1 = bets; _a < bets_1.length; _a++) {
+                        bet = bets_1[_a];
+                        if (bet.pick === (eventData === null || eventData === void 0 ? void 0 : eventData.result)) {
+                            payout = (0, utils_1.calculatePayout)((eventData === null || eventData === void 0 ? void 0 : eventData.multiplier) || 1, (eventData === null || eventData === void 0 ? void 0 : eventData.odds[eventData === null || eventData === void 0 ? void 0 : eventData.result]) || 0.5, bet.stake, streak);
+                            if (payout > maxValue) {
+                                fids_2 = [fid];
+                                maxValue = payout;
+                            }
+                            else if (payout === maxValue) {
+                                fids_2.push(fid);
+                            }
+                        }
+                    }
+                    _b.label = 8;
+                case 8:
+                    _i++;
+                    return [3 /*break*/, 6];
+                case 9:
+                    console.log("MAX WINNERS COUNT: ".concat(fids_2.length));
+                    console.log("MAX WINNERS: ".concat(fids_2));
+                    console.log("MAX WINNERS PAYOUT: ".concat(maxValue));
+                    _b.label = 10;
+                case 10: return [2 /*return*/];
             }
         });
     });
