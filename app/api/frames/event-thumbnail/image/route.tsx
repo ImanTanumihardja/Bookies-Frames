@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
         return new ImageResponse(
             <div style={{display:'flex'}}>
                 <img src={imageUrl} />
-                <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:15, textAlign:'start', textDecoration:'underline'}}>{now > startDate ? 'Event Closed' : `Closes in: ${hours}hrs`}</h1>
+                <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:15, textAlign:'start', textDecoration:'underline'}}>{now > startDate ? 'Event Closed' : `Closes in: ${now}hrs`}</h1>
             </div>
             ,
             {
