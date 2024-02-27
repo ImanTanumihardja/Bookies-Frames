@@ -9,7 +9,6 @@ const imageUrl = generateUrl(`api/frames/${FrameNames.EVENT_THUMBNAIL}/image`, {
 const frame : Frame = {
   version: "vNext",
   inputText: 'How much do you want to bet?',
-
   buttons: [
     {
       label: options[0],
@@ -31,6 +30,7 @@ export const metadata: Metadata = {
     title: FrameNames.GSW_LAL_ML,
     description: 'Warriors vs Lakers 2/22/24 ML', 
     images: [imageUrl],
+    
   },
   other: getFrameFlattened(frame),
 };
