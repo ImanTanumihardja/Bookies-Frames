@@ -6,7 +6,6 @@ import { Props } from 'next/script';
 
 
 export async function generateMetadata(
-  parent: ResolvingMetadata
 ): Promise<Metadata> {
   const options = ["Luton +1.5", "City -1.5"]
   const imageUrl = generateUrl(`api/frames/${FrameNames.EVENT_THUMBNAIL}/image`, {[RequestProps.EVENT_NAME]: FrameNames.LUTON_CITY_SPREAD}, true)
