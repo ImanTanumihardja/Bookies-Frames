@@ -45,6 +45,6 @@ export default async function Page() {
   // redirect('https://bookies-rho.vercel.app/');
 }
 
-// export const revalidate = 60;
-// export const dynamic = 'force-dynamic';
-// export const fetchCache = 'force-no-store';
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
