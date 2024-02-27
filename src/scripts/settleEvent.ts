@@ -45,13 +45,13 @@ async function settleEvent(eventName="", result=-1) {
     let fids : number[] = betsData[1] as unknown as number[]
 
     while (cursor) {
-      betsData = (await kv.sscan(DatabaseKeys.LEADERBOARD, cursor, { count: 150 }))
+      betsData = (await kv.sscan(`${eventName}:${DatabaseKeys.BETS}`, cursor, { count: 150 }))
       cursor = betsData[0]
       fids = fids.concat(betsData[1] as unknown as number[])
     }
 
     // Filter out all fids that are not 313859
-    // fids = fids.filter((fid:number) => fid === 313859) // Testing
+    // fids = fids.filter((fid:number) => fid === 241573) // Testing
 
     // Pay each user
     for (const fid of fids) {

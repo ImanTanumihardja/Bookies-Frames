@@ -59,12 +59,12 @@ function settleEvent(eventName, result) {
                     if (event === null) {
                         throw new Error("Event: ".concat(eventName, " does not exist"));
                     }
-                    // if (event?.startDate > new Date().getTime()) {
-                    //   throw new Error('Event has not started yet')
-                    // }
-                    if (parseInt(event === null || event === void 0 ? void 0 : event.result.toString()) !== -1) {
-                        throw new Error('Event has already been settled');
+                    if ((event === null || event === void 0 ? void 0 : event.startDate) > new Date().getTime()) {
+                        throw new Error('Event has not started yet');
                     }
+                    // if (parseInt(event?.result.toString()) !== -1) {
+                    //   throw new Error('Event has already been settled')
+                    // } 
                     if (result === -1) {
                         throw new Error('Result is invalid');
                     }
@@ -76,7 +76,7 @@ function settleEvent(eventName, result) {
                 case 2:
                     _a.sent();
                     console.log("Set result of event: ".concat(eventName, " to ").concat(result));
-                    return [4 /*yield*/, kv.sscan("".concat(eventName, ":bets"), 0, { count: 150 })];
+                    return [4 /*yield*/, kv.sscan("".concat(eventName, ":").concat(utils_1.DatabaseKeys.BETS), 0, { count: 150 })];
                 case 3:
                     betsData = (_a.sent());
                     cursor = betsData[0];
@@ -84,7 +84,7 @@ function settleEvent(eventName, result) {
                     _a.label = 4;
                 case 4:
                     if (!cursor) return [3 /*break*/, 6];
-                    return [4 /*yield*/, kv.sscan("leaderboard", cursor, { count: 150 })];
+                    return [4 /*yield*/, kv.sscan("".concat(eventName, ":").concat(utils_1.DatabaseKeys.BETS), cursor, { count: 150 })];
                 case 5:
                     betsData = (_a.sent());
                     cursor = betsData[0];
@@ -129,7 +129,7 @@ function settleEvent(eventName, result) {
                                                 switch (_a.label) {
                                                     case 0:
                                                         console.log("Settled user: ".concat(fid, "\n"));
-                                                        return [4 /*yield*/, kv.zadd('leaderboard', { score: user.balance, member: fid })];
+                                                        return [4 /*yield*/, kv.zadd(utils_1.DatabaseKeys.LEADERBOARD, { score: user.balance, member: fid })];
                                                     case 1:
                                                         _a.sent();
                                                         return [2 /*return*/];
