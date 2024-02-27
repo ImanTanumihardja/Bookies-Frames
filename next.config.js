@@ -6,7 +6,7 @@ module.exports = {
           headers: [
             {
                 key: 'Cache-Control',
-                value: 'no-store, max-age=60',
+                value: 'no-store, max-age=1',
             },
           ],
         },      
@@ -14,8 +14,8 @@ module.exports = {
             source: '/:path*{/}?',
             headers: [
               {
-                key: 'x-custom-header',
-                value: 'my custom header value for all pages',
+                key: 'Cache-Control',
+                value: 'no-store, max-age=1',
               },
             ],
           },
