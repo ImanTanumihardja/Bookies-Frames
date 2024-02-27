@@ -11,7 +11,7 @@ module.exports = {
           ],
         },      
         {
-          source: '/api/frames/:slug*', // Matches all paths
+          source: '/api/frames/event-thumbnail/:slug*', // Matches all paths
           headers: [
             {
               key: 'Cache-Control',
