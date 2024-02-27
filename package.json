@@ -12,7 +12,7 @@
   "author": "Emmaniii",
   "license": "MIT",
   "dependencies": {
-    "@coinbase/onchainkit": "^0.9.4",
+    "@coinbase/onchainkit": "^0.9.5",
     "@fontsource/plus-jakarta-sans": "^5.0.18",
     "@neynar/nodejs-sdk": "^1.10.0",
     "@vercel/kv": "^1.0.1",
@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.20",
-    "@types/react": "18.2.59",
+    "@types/react": "18.2.60",
     "prettier": "^3.2.5",
     "typescript": "^5.3.3"
   }
