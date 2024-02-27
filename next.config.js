@@ -9,7 +9,16 @@ module.exports = {
                 value: 'no-store, max-age=60',
             },
           ],
-        },
+        },      
+        { 
+            source: '/:path*{/}?',
+            headers: [
+              {
+                key: 'x-custom-header',
+                value: 'my custom header value for all pages',
+              },
+            ],
+          },
         ]
     }
 }
