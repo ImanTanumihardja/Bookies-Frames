@@ -3,8 +3,8 @@ import { ImageResponse } from 'next/og';
 import { FrameNames, RequestProps, generateUrl, getRequestProps } from '../../../../../src/utils';
 import { kv } from '@vercel/kv';
 import { headers } from 'next/headers';
-// import satori from "satori";
-// import sharp from 'sharp';
+import satori from "satori";
+import sharp from 'sharp';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -14,7 +14,7 @@ const plusJakartaSans = fetch(
     ),
   ).then((res) => res.arrayBuffer());
 
-export async function GET(req: NextRequest): Promise<NextResponse> {
+export async function GET(req: NextRequest) {
     try {
         const {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
         const startDate : number | null = await kv.hget(eventName, 'startDate')
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
         const imageUrl:string = generateUrl(`thumbnails/events/${eventName}.png`, [], false)
 
-        const imageResponse = new ImageResponse(
+        const svg = await satori(
             <div style={{display:'flex'}}>
                 <img src={imageUrl} />
                 <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:15, textAlign:'start', textDecoration:'underline'}}>{now > startDate ? 'Event Closed' : `Closes in: ${now}hrs`}</h1>
@@ -39,18 +39,39 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
                 width: 764, 
                 height: 400, 
                 fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
-                headers:{
-                    'Cache-Control': 'public, s-maxage=0, max-age=0',
-                    'CDN-Cache-Control': 'public, s-maxage=0',
-                    'Vercel-CDN-Cache-Control': 'public, s-maxage=0'
-                }
-            })
+            }
+        )
 
-        return new NextResponse(imageResponse.body, { status: 200, headers: {
-            'Cache-Control': 'public, s-maxage=0, max-age=0',
-            'CDN-Cache-Control': 'public, s-maxage=0',
-            'Vercel-CDN-Cache-Control': 'public, s-maxage=0'
-        } });
+         // Convert SVG to PNG using Sharp
+         const pngBuffer = await sharp(Buffer.from(svg))
+         .toFormat('png')
+         .toBuffer();
+
+        return new NextResponse(pngBuffer, {
+            headers: {
+                'Content-Type': 'image/png',
+                'Cache-Control': 'public, s-maxage=0, max-age=0',
+                'CDN-Cache-Control': 'public, s-maxage=0',
+                'Vercel-CDN-Cache-Control': 'public, s-maxage=0'
+            }
+        });
+
+        // return new ImageResponse(
+        //     <div style={{display:'flex'}}>
+        //         <img src={imageUrl} />
+        //         <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:15, textAlign:'start', textDecoration:'underline'}}>{now > startDate ? 'Event Closed' : `Closes in: ${now}hrs`}</h1>
+        //     </div>
+        //     ,
+        //     {
+        //         width: 764, 
+        //         height: 400, 
+        //         fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
+        //         headers:{
+        //             'Cache-Control': 'public, s-maxage=0, max-age=0',
+        //             'CDN-Cache-Control': 'public, s-maxage=0',
+        //             'Vercel-CDN-Cache-Control': 'public, s-maxage=0'
+        //         }
+        //     })
     } catch (error) {
         console.error(error);
         return new NextResponse('Could not generate image', { status: 500 });
