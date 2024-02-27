@@ -24,7 +24,7 @@ export async function generateMetadata(
       },
     ],
     image: imageUrl,
-    postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BETSLIP}?eventName=${FrameNames.LUTON_CITY_SPREAD}`
+    postUrl: generateUrl(`${process.env['HOST']}/api/frames/${FrameNames.BETSLIP}`, {[RequestProps.EVENT_NAME]: FrameNames.LUTON_CITY_SPREAD}, false),
   };
 
   const metadata: Metadata = {
