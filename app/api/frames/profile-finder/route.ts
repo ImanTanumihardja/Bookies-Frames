@@ -144,7 +144,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       {
         label: 'Search Again',
         action: 'link',
-        target: 'https://warpcast.com/bookies'
+        target: 'https://warpcast.com/bookies/0xa0e21c05'
       },
       {
         label: "Bets",
@@ -161,7 +161,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       {
         label: 'Search Again',
         action: 'post',
-        target: 'https://warpcast.com/bookies'
+        target: 'https://warpcast.com/bookies/0xa0e21c05'
       },
     ] 
     :
@@ -174,7 +174,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       {
         label: 'Search Again',
         action: 'link',
-        target: 'https://warpcast.com/bookies'
+        target: 'https://warpcast.com/bookies/0xa0e21c05'
       },
     ]
     :
@@ -187,7 +187,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       {
         label: 'Search Again',
         action: 'link',
-        target: 'https://warpcast.com/bookies'
+        target: 'https://warpcast.com/bookies/0xa0e21c05'
       },
       {
         label: '>',
@@ -203,7 +203,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       {
         label: 'Search Again',
         action: 'link',
-        target: 'https://warpcast.com/bookies'
+        target: 'https://warpcast.com/bookies/0xa0e21c05'
       },
       {
         label: '>',
