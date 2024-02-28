@@ -161,7 +161,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       {
         label: 'Search Again',
         action: 'post',
-        target: generateUrl(`api/frames/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: 0, [RequestProps.COUNT]:5}, false)
+        target: generateUrl(`${FrameNames.PROFILE_FINDER}`, {}, false)
       },
     ] 
     :
