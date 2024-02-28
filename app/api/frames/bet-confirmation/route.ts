@@ -111,7 +111,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-      buttons: isFollowing ? [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label: pick === -1 ? 'Try Again' : 'Place Another Bet', action:'link', target: 'https://warpcast.com/bookies/0xbd650a48'}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
+      buttons: isFollowing ? [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label: pick === -1 ? 'Try Again' : 'Place Another Bet', action:'link', target: 'https://warpcast.com/bookies/0x29e3c835'}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
       postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BET_CONFIRMATION}`,
     }),
   );
