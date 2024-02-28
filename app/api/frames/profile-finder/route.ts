@@ -144,7 +144,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       {
         label: 'Search Again',
         action: 'link',
-        target: 'https://warpcast.com/bookies'
+        target: generateUrl(`${FrameNames.PROFILE_FINDER}`, {}, false)
       },
       {
         label: "Bets",
@@ -160,8 +160,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
       {
         label: 'Search Again',
-        action: 'link',
-        target: 'https://warpcast.com/bookies'
+        action: 'post',
+        target: generateUrl(`api/frames/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: 0, [RequestProps.COUNT]:5}, false)
       },
     ] 
     :
@@ -174,7 +174,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       {
         label: 'Search Again',
         action: 'link',
-        target: 'https://warpcast.com/bookies'
+        target: generateUrl(`${FrameNames.PROFILE_FINDER}`, {}, false)
       },
     ]
     :
@@ -186,8 +186,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
       {
         label: 'Search Again',
-        action: 'link',
-        target: 'https://warpcast.com/bookies'
+        action: 'post',
+        target: generateUrl(`${FrameNames.PROFILE_FINDER}`, {}, false)
       },
       {
         label: '>',
@@ -203,7 +203,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       {
         label: 'Search Again',
         action: 'link',
-        target: 'https://warpcast.com/bookies'
+        target: generateUrl(`${FrameNames.PROFILE_FINDER}`, {}, false)
       },
       {
         label: '>',
