@@ -47,12 +47,13 @@ export enum FrameNames {
     BET_CONFIRMATION = 'bet-confirmation',
     TRIVIA = 'trivia',
     CAPTCHA = 'captcha',
-    GSW_LAL_ML = 'gsw-lal-ml',
     LUTON_CITY_SPREAD = 'luton-city-spread',
     EVENT_THUMBNAIL = 'event-thumbnail',
     LEADERBOARD = 'leaderboard',
     BETS = 'bets',
     INFO = 'info',
+    LAL_LAC_ML = 'lal-lac-ml',
+
 }
 
 export enum DatabaseKeys {

@@ -24,7 +24,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     getFrameHtml({
       version: "vNext",
       image: imageUrl,
-      buttons: offset !== 0 ? [{label: '<', action:'post'} , {label: '>', action:'post'}] : [{label: '>', action:'post'}],
+      buttons: (offset !== 0 ?  [{label: '<', action:'post'} , {label: '>', action:'post'}] : [{label: '>', action:'post'}]),
       postUrl: `${process.env['HOST']}/api/frames/${FrameNames.LEADERBOARD}?offset=${offset}`,
     }),
   );

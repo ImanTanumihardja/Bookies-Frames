@@ -83,12 +83,12 @@ var FrameNames;
     FrameNames["BET_CONFIRMATION"] = "bet-confirmation";
     FrameNames["TRIVIA"] = "trivia";
     FrameNames["CAPTCHA"] = "captcha";
-    FrameNames["GSW_LAL_ML"] = "gsw-lal-ml";
     FrameNames["LUTON_CITY_SPREAD"] = "luton-city-spread";
     FrameNames["EVENT_THUMBNAIL"] = "event-thumbnail";
     FrameNames["LEADERBOARD"] = "leaderboard";
     FrameNames["BETS"] = "bets";
     FrameNames["INFO"] = "info";
+    FrameNames["LAL_LAC_ML"] = "lal-lac-ml";
 })(FrameNames || (exports.FrameNames = FrameNames = {}));
 var DatabaseKeys;
 (function (DatabaseKeys) {
