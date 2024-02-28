@@ -160,7 +160,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       },
       {
         label: 'Search Again',
-        action: 'post',
+        action: 'link',
         target: 'https://warpcast.com/bookies/0xa0e21c05'
       },
     ] 

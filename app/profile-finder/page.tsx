@@ -2,13 +2,6 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { FrameNames, generateUrl } from '../../src/utils';
 import { Frame, getFrameFlattened } from 'frames.js';
-import { NextRequest, NextResponse } from 'next/server';
-
-export async function POST (req: NextRequest): Promise<NextResponse> {
-    return new NextResponse(
-      'Test',
-    );
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   const imageUrl = generateUrl(`thumbnails/${FrameNames.PROFILE_FINDER}.gif`, [], false)
