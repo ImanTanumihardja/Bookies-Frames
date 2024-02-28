@@ -24,7 +24,7 @@ export async function generateMetadata(
       },
     ],
     image: imageUrl,
-    postUrl: generateUrl(`${process.env['HOST']}/api/frames/${FrameNames.BETSLIP}`, {[RequestProps.EVENT_NAME]: FrameNames.LAL_LAC_ML}, false),
+    postUrl: generateUrl(`api/frames/${FrameNames.BETSLIP}`, {[RequestProps.EVENT_NAME]: FrameNames.LAL_LAC_ML}, false),
   };
 
   const metadata: Metadata = {

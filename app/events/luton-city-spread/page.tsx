@@ -1,4 +1,4 @@
-import type { Metadata, ResolvingMetadata } from 'next';
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { FrameNames, RequestProps, generateUrl } from '../../../src/utils';
 import { Frame, getFrameFlattened } from 'frames.js';
@@ -24,7 +24,7 @@ export async function generateMetadata(
       },
     ],
     image: imageUrl,
-    postUrl: generateUrl(`${process.env['HOST']}/api/frames/${FrameNames.BETSLIP}`, {[RequestProps.EVENT_NAME]: FrameNames.LUTON_CITY_SPREAD}, false),
+    postUrl: generateUrl(`api/frames/${FrameNames.BETSLIP}`, {[RequestProps.EVENT_NAME]: FrameNames.LUTON_CITY_SPREAD}, false),
   };
 
   const metadata: Metadata = {

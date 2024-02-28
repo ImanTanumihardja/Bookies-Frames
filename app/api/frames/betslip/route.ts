@@ -64,7 +64,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
                                                                               [RequestProps.TIME]: now, 
                                                                               [RequestProps.RESULT]: result}, true);
   }
-  else{
+  else
+  {
     const impliedProbability = event.odds[pick]
     const multiplier = event.multiplier;
     const streak = parseInt(user.streak.toString());
