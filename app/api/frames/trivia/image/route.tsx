@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     try {
         const {isFollowing, prompt: question, wins: count, losses: strikes} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.PROMPT, RequestProps.WINS, RequestProps.LOSSES]);
 
-        return new ImageResponse(
+        const imageResponse = new ImageResponse(
             <FrameBase>
                 {(count !== -1 && count !== MAX_QUESTIONS && strikes !== 3) && <h1 style={{color: 'white', position:'absolute', top: 10, right: 25, fontSize:25}}> {count}/{MAX_QUESTIONS}</h1>}
                 {isFollowing ?
@@ -44,7 +44,13 @@ export async function GET(req: NextRequest) {
                 width: 764, 
                 height: 400, 
                 fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
+                headers:{
+                    'CDN-Cache-Control': 'public, s-maxage=60',
+                    'Vercel-CDN-Cache-Control': 'public, s-maxage=60'
+                }
             })
+        imageResponse.headers.set('Cache-Control', 'public, s-maxage=60, max-age=60');
+        return imageResponse;
     } catch (error) {
         console.error(error);
         return new NextResponse('Could not generate image', { status: 500 });

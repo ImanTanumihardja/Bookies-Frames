@@ -3,8 +3,7 @@ import { redirect } from 'next/navigation';
 import { FrameNames, RequestProps, generateUrl } from '../../src/utils';
 import { getFrameFlattened, Frame } from 'frames.js';import { get } from 'https';
 
-export async function generateMetadata(
-  ): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
     const imageUrl = generateUrl(`api/frames/${FrameNames.LEADERBOARD}/image`, {[RequestProps.OFFSET]: 0}, true)
 
     const frame : Frame = {

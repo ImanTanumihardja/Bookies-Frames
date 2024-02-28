@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     try {
         const {isFollowing, hasClaimed, balance, validCaptcha} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.HAS_CLAIMED, RequestProps.BALANCE, RequestProps.VALID_CAPTCHA]);
 
-        return new ImageResponse(
+        const imageResponse = new ImageResponse(
             <FrameBase>
                     {!validCaptcha ?
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center'}}>CAPTCHA failed!</h1>
@@ -38,7 +38,13 @@ export async function GET(req: NextRequest) {
                 width: 764, 
                 height: 400, 
                 fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
+                headers:{
+                    'CDN-Cache-Control': 'public, s-maxage=60',
+                    'Vercel-CDN-Cache-Control': 'public, s-maxage=60'
+                }
             })
+        imageResponse.headers.set('Cache-Control', 'public, s-maxage=60, max-age=60');
+        return imageResponse;
     } catch (error) {
         console.error(error);
         return new NextResponse('Could not generate image', { status: 500 });

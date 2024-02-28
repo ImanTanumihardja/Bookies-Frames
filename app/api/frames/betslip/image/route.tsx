@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
             pollData.push({votes: poll[i], percent:percent, text: `${options[i]}`})
         }
 
-        return new ImageResponse((
+        const imageResponse = new ImageResponse((
             isFollowing ?
             <div style={{display: 'flex', flexDirection:'row', height:'100%', width:'100%'}}>
                 <div style={{
@@ -107,7 +107,13 @@ export async function GET(req: NextRequest) {
             width: 764, 
             height: 400, 
             fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
+            headers:{
+                'CDN-Cache-Control': 'public, s-maxage=60',
+                'Vercel-CDN-Cache-Control': 'public, s-maxage=60'
+            }
         });
+        imageResponse.headers.set('Cache-Control', 'public, s-maxage=60, max-age=60');
+        return imageResponse;
     } catch (error) {
         console.error(error);
         return new NextResponse('Could not generate image', { status: 500 });

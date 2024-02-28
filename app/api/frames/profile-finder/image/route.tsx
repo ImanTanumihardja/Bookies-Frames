@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
             shortUsername = username?.length > 10 ? username?.substring(0, 10) + "..." : username;      
         }                                                                            
 
-        return new ImageResponse(
+        const imageResponse = new ImageResponse(
             <FrameBase>
                 {isFollowing ?
                     (rank === -1 && !shortUsername && !pfpURL) ?
@@ -62,7 +62,13 @@ export async function GET(req: NextRequest) {
                 width: 764, 
                 height: 400, 
                 fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
+                headers:{
+                    'CDN-Cache-Control': 'public, s-maxage=60',
+                    'Vercel-CDN-Cache-Control': 'public, s-maxage=60'
+                }
             })
+        imageResponse.headers.set('Cache-Control', 'public, s-maxage=60, max-age=60');
+        return imageResponse;
     } catch (error) {
         console.error(error);
         return new NextResponse('Could not generate image', { status: 500 });

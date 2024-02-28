@@ -13,7 +13,7 @@ const plusJakartaSans = fetch(
 export async function GET(req: NextRequest) {
     try {
         const image = req.nextUrl.searchParams.get('image')
-        return new ImageResponse(
+        const imageResponse = new ImageResponse(
             <FrameBase>
                 <div style={{display:'flex', flexDirection:'column'}}>
                     <h2 style={{color: 'white', fontSize:50, justifyContent:'center', alignItems:'center', textAlign:'center'}}>Click the matching image</h2>
@@ -26,7 +26,13 @@ export async function GET(req: NextRequest) {
                 width: 764, 
                 height: 400, 
                 fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
+                headers:{
+                    'CDN-Cache-Control': 'public, s-maxage=60',
+                    'Vercel-CDN-Cache-Control': 'public, s-maxage=60'
+                }
             })
+        imageResponse.headers.set('Cache-Control', 'public, s-maxage=60, max-age=60');
+        return imageResponse;
     } catch (error) {
         console.error(error);
         return new NextResponse('Could not generate image', { status: 500 });
