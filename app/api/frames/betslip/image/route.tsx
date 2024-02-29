@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import { RequestProps, getRequestProps, convertImpliedProbabilityToAmerican, DEFAULT_USER, calculatePayout } from '../../../../../src/utils';
-import NotFollowing from '../../../../../src/components/NotFollowing';
-import FrameBase from '../../../../../src/components/FrameBase';
+import { RequestProps, getRequestProps, convertImpliedProbabilityToAmerican, calculatePayout } from '../../../../../src/utils';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -15,7 +13,7 @@ const plusJakartaSans = fetch(
 
 export async function GET(req: NextRequest) {
     try {
-        let {isFollowing, 
+        let {
             pick, 
             stake, 
             odd : impliedProbability, 
@@ -25,8 +23,7 @@ export async function GET(req: NextRequest) {
             poll, 
             prompt, 
             options} 
-                = getRequestProps(req, [RequestProps.IS_FOLLOWING, 
-                                        RequestProps.PICK, 
+                = getRequestProps(req, [RequestProps.PICK, 
                                         RequestProps.STAKE, 
                                         RequestProps.ODD,
                                         RequestProps.MULTIPLIER,
@@ -50,7 +47,6 @@ export async function GET(req: NextRequest) {
         }
 
         const imageResponse = new ImageResponse((
-            isFollowing ?
             <div style={{display: 'flex', flexDirection:'row', height:'100%', width:'100%'}}>
                 <div style={{
                         display: 'flex',
@@ -99,10 +95,6 @@ export async function GET(req: NextRequest) {
                     <h2 style={{display: 'flex', justifyContent: 'center', textAlign: 'center', color: 'black', fontSize: 27, width:'75%', position:'absolute'}}>{prompt}</h2>
                 </div>
             </div>
-            :
-            <FrameBase>
-                <NotFollowing/>
-            </FrameBase>
         ), {
             width: 764, 
             height: 400, 

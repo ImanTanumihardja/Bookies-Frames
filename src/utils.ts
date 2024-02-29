@@ -1,8 +1,9 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { NeynarAPIClient } from "@neynar/nodejs-sdk";
 import { User, Bet} from '../app/types';
-import { getFrameMessage } from '@coinbase/onchainkit'
+import { getFrameMessage as validateFrameMessage } from '@coinbase/onchainkit'
 import { FrameValidationData } from '../app/types';
+import { getFrameHtml } from 'frames.js';
 
 
 export enum RequestProps {
@@ -29,6 +30,7 @@ export enum RequestProps {
   BALANCE = 'balance',
   POLL = 'poll',
   VALID_CAPTCHA = 'validCaptcha',
+  CAPTCHA_INDEX = 'captchaIndex',
   INDEX = 'index',
   ARRAY = 'array',
   ODD = 'odd',
@@ -36,30 +38,8 @@ export enum RequestProps {
   RESULT = "result",
   OFFSET = 'offset',
   COUNT = 'count',
-  BOOLEAN = 'boolean'
-}
-
-export enum FrameNames {
-    CLAIM_DICE = 'claim-dice',
-    PROFILE_FINDER = 'profile-finder',
-    SBLVIII_ML = 'sblviii-ml',
-    BETSLIP = 'betslip',
-    BET_CONFIRMATION = 'bet-confirmation',
-    TRIVIA = 'trivia',
-    CAPTCHA = 'captcha',
-    LUTON_CITY_SPREAD = 'luton-city-spread',
-    EVENT_THUMBNAIL = 'event-thumbnail',
-    LEADERBOARD = 'leaderboard',
-    BETS = 'bets',
-    INFO = 'info',
-    LAL_LAC_ML = 'lal-lac-ml',
-
-}
-
-export enum DatabaseKeys {
-    LEADERBOARD = 'leaderboard',
-    BETS = 'bets',
-    POLL = 'poll',
+  BOOLEAN = 'boolean',
+  URL = 'url'
 }
 
 export const RequestPropsTypes = {
@@ -86,6 +66,7 @@ export const RequestPropsTypes = {
     [RequestProps.BALANCE]: 0.0,
     [RequestProps.POLL]: [],
     [RequestProps.VALID_CAPTCHA]: true,
+    [RequestProps.CAPTCHA_INDEX]: 0,
     [RequestProps.INDEX] : 0,
     [RequestProps.ARRAY] : [],
     [RequestProps.ODD] : 0.5,
@@ -93,7 +74,31 @@ export const RequestPropsTypes = {
     [RequestProps.RESULT] : 0,
     [RequestProps.OFFSET] : 0,
     [RequestProps.COUNT] : 0,
-    [RequestProps.BOOLEAN] : true
+    [RequestProps.BOOLEAN] : true,
+    [RequestProps.URL] : ""
+}
+
+export enum FrameNames {
+    CLAIM_DICE = 'claim-dice',
+    PROFILE_FINDER = 'profile-finder',
+    SBLVIII_ML = 'sblviii-ml',
+    BETSLIP = 'betslip',
+    BET_CONFIRMATION = 'bet-confirmation',
+    TRIVIA = 'trivia',
+    CAPTCHA = 'captcha',
+    LUTON_CITY_SPREAD = 'luton-city-spread',
+    EVENT_THUMBNAIL = 'event-thumbnail',
+    LEADERBOARD = 'leaderboard',
+    BETS = 'bets',
+    INFO = 'info',
+    LAL_LAC_ML = 'lal-lac-ml',
+
+}
+
+export enum DatabaseKeys {
+    LEADERBOARD = 'leaderboard',
+    BETS = 'bets',
+    POLL = 'poll',
 }
 
 export const BOOKIES_FID = 244367;
@@ -166,6 +171,28 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
     return returnParams
 }
 
+export function notFollowingResponse(url:string) {
+    return new NextResponse(
+        getFrameHtml({
+          version: "vNext",
+          image: `${process.env['HOST']}/thumbnails/not-following.gif`,
+          buttons: [
+            {
+              label:'Try Again', 
+              action:'post',
+              target: url
+            },
+            { 
+              label: "Follow Us!", 
+              action: 'link', 
+              target: 'https://warpcast.com/bookies'
+            }
+          ],
+          postUrl: url,
+        }),
+      );
+}
+
 export function generateUrl(extension: string, props: Record<string, any>, addTimestamp: boolean = false): string {
     let url = `${process.env['HOST']}/${extension}`;
 
@@ -203,29 +230,40 @@ export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
 }
 
 
-export async function validateFrameMessage(req: NextRequest, checkFollowingBookies=true) {
+export async function getFrameMessage(req: NextRequest, validate=true) {
     const body = await req.json();
 
     let message: FrameValidationData = DEFAULT_FRAME_VALIDATION_DATA
 
     // Use onchainkit to validate the frame message
-    const data = await getFrameMessage(body, {neynarApiKey: process.env['NEYNAR_API_KEY'] || ""});
+    if (validate) {
+        const data = await validateFrameMessage(body, {neynarApiKey: process.env['NEYNAR_API_KEY'] || ""});
 
-    if (!data.isValid) {
-        throw new Error('Invalid frame message');
-    }
+        if (!data.isValid) {
+            throw new Error('Invalid frame message');
+        }
 
-    message.button = data?.message?.button || 0
-    message.following = data?.message?.following || false
-    message.input = data?.message?.input || ""
-    message.fid = data?.message?.interactor.fid || 0
-    message.custody_address = data?.message?.interactor.custody_address || ""
-    message.verified_accounts = data?.message?.interactor.verified_accounts || []
-    message.liked = data?.message?.liked || false
-    message.recasted = data?.message?.recasted || false
+        message.button = data?.message?.button || 0
+        message.following = data?.message?.following || false
+        message.input = data?.message?.input || ""
+        message.fid = data?.message?.interactor.fid || 0
+        message.custody_address = data?.message?.interactor.custody_address || ""
+        message.verified_accounts = data?.message?.interactor.verified_accounts || []
+        message.liked = data?.message?.liked || false
+        message.recasted = data?.message?.recasted || false
 
-    if (checkFollowingBookies){
         message.followingBookies = await checkIsFollowingBookies(message.fid)
+    }
+    else {
+        console.log('Not validating frame message')
+        message.button = body.untrustedData.buttonIndex
+        message.following = body.untrustedData.following || false
+        message.input = body.untrustedData.input
+        message.fid = body.untrustedData.fid
+        message.custody_address = body.untrustedData.custody_address
+        message.verified_accounts = body.untrustedData.verified_accounts
+        message.liked = body.untrustedData.liked
+        message.recasted = body.untrustedData.recasted
     }
 
     return message
@@ -252,7 +290,7 @@ export function convertImpliedProbabilityToAmerican(impliedProbability: number) 
 
 export function calculatePayout(multiplier: number, impliedProbability: number, stake: number, streak: number = 0){
     const payout = multiplier * (1 / impliedProbability) * (stake) // TODO add streak
-    return Math.ceil(payout * 100) / 100
+    return Math.round(payout * 100)
 }
 
 export const revalidate = 0;

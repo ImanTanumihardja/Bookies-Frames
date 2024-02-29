@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import NotFollowing from '../../../../../src/components/NotFollowing';
 import { RequestProps, getRequestProps } from '../../../../../src/utils';
 import { kv } from '@vercel/kv';
 import { Bet } from '../../../../types';
-import FrameBase from '../../../../../src/components/FrameBase';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -17,7 +15,7 @@ const plusJakartaSans = fetch(
 export async function GET(req: NextRequest) {
     try {
         let text='' // Default empty React element
-        const {isFollowing, pick, stake, buttonIndex, fid, eventName, options, time, result} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.TIME, RequestProps.RESULT]);
+        const {pick, stake, buttonIndex, fid, eventName, options, time, result} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.TIME, RequestProps.RESULT]);
 
         // Get bets for this event by filtering the bets array for the eventName
         const bets : Record<string, Bet[]> = (await kv.hget(fid?.toString(), 'bets') || {});
@@ -45,9 +43,8 @@ export async function GET(req: NextRequest) {
             text = "Bet confirmed!"
         }
 
-        const imageResponse =  new ImageResponse(
+        const imageResponse = new ImageResponse(
             (
-            isFollowing ? 
             <div style={{display: 'flex', flexDirection:'row', height:'100%', width:'100%'}}>
                 <div style={{
                         display: 'flex',
@@ -83,10 +80,6 @@ export async function GET(req: NextRequest) {
                             }
                 </div>
             </div>
-            :
-            <FrameBase>
-                <NotFollowing/>
-            </FrameBase>
             ), {
             width: 764, 
             height: 400, 

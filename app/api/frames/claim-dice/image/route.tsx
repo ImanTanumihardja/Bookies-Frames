@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
 import { RequestProps, getRequestProps } from '../../../../../src/utils';
-import NotFollowing from '../../../../../src/components/NotFollowing';
 
 // Fonts
 const plusJakartaSans = fetch(
@@ -14,23 +13,20 @@ const plusJakartaSans = fetch(
 
 export async function GET(req: NextRequest) {
     try {
-        const {isFollowing, hasClaimed, balance, validCaptcha} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.HAS_CLAIMED, RequestProps.BALANCE, RequestProps.VALID_CAPTCHA]);
+        const {hasClaimed, balance, validCaptcha} = getRequestProps(req, [RequestProps.HAS_CLAIMED, RequestProps.BALANCE, RequestProps.VALID_CAPTCHA]);
 
         const imageResponse = new ImageResponse(
             <FrameBase>
                     {!validCaptcha ?
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center'}}>CAPTCHA failed!</h1>
                     :
-                    (isFollowing ?
                     (!hasClaimed ? 
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'flex-start', alignItems:'center'}}> You received {balance} <img style={{width: 65, height: 65, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
                     :
                     <div style={{display: 'flex', flexDirection: 'column', alignItems:'flex-start'}}>
                         <h1 style={{color: 'white', fontSize:55}}> You already claimed </h1>
                         <h1 style={{color: 'white', fontSize:55, marginTop:-10, alignItems:'flex-start'}}> your free <img style={{width: 65, height: 65, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/>!</h1>
-                    </div>)
-                    :
-                    <NotFollowing/>
+                    </div>
                     )}
             </FrameBase>
             ,

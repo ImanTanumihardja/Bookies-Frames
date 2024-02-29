@@ -1,33 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { User} from '../../../types';
-import { RequestProps, generateUrl, DEFAULT_USER, validateFrameMessage, DatabaseKeys } from '../../../../src/utils';
+import { RequestProps, generateUrl, DEFAULT_USER, getFrameMessage, DatabaseKeys, notFollowingResponse, getRequestProps } from '../../../../src/utils';
 import { getFrameHtml, Frame} from "frames.js";
 import { FrameNames } from '../../../../src/utils';
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
-  const message = await validateFrameMessage(req);
+  const message = await getFrameMessage(req);
 
   const {followingBookies: isFollowing, fid, button} = message;
   console.log('FID: ', fid.toString())
 
   var validCaptcha = true;
-  if (parseInt(req.nextUrl.searchParams.get('captcha') || "-1") != (button - 1)) {
-    validCaptcha = false;
+  const {captchaIndex} = getRequestProps(req, [RequestProps.CAPTCHA_INDEX]);
+
+  if (captchaIndex === -1) { // Show thumbnail
+    return await GET(req); 
   }
 
+  if (!isFollowing) {
+    // Call fetch to get not following
+    return notFollowingResponse(generateUrl(`/api/frames/${FrameNames.CLAIM_DICE}`, {[RequestProps.CAPTCHA_INDEX]: -1}, false))
+  }
+
+  if (captchaIndex !== (button - 1)) {
+    validCaptcha = false;
+  }
   var user : User | null = null;
   var isNewUser: boolean = false;
   var hasClaimed: boolean = true;
 
-  if (isFollowing && validCaptcha) {
+  if (validCaptcha) {
     user = await kv.hgetall(fid.toString()) || null;
     
     isNewUser = !user || user.hasClaimed === undefined || user.balance === undefined || await kv.zscore(DatabaseKeys.LEADERBOARD, fid.toString()) === null;
 
     if (isNewUser) {
         // New user
+        hasClaimed = false;
         user = structuredClone(DEFAULT_USER);
         console.log('NEW USER: ', user)
         console.log('CLAIMED 100 DICE')
@@ -61,12 +72,12 @@ export async function POST(req: NextRequest): Promise<Response> {
     }
   }
 
-  const imageUrl = generateUrl(`api/frames/${FrameNames.CLAIM_DICE}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.HAS_CLAIMED]: hasClaimed, [RequestProps.BALANCE]: isNewUser ? 100 : 10, [RequestProps.VALID_CAPTCHA]: validCaptcha}, true);
+  const imageUrl = generateUrl(`api/frames/${FrameNames.CLAIM_DICE}/image`, {[RequestProps.HAS_CLAIMED]: hasClaimed, [RequestProps.BALANCE]: isNewUser ? 100 : 10, [RequestProps.VALID_CAPTCHA]: validCaptcha}, true);
 
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: !validCaptcha ? [] : isFollowing ? [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
+    buttons: !validCaptcha ? [] : [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}],
     postUrl: `${process.env['HOST']}/api/frames/${FrameNames.CLAIM_DICE}`,
   };
 
@@ -87,14 +98,14 @@ export async function GET(req: NextRequest): Promise<Response> {
       },
     ],
     image: imageUrl,
-    postUrl: `${process.env['HOST']}/api/frames/${FrameNames.CAPTCHA}`
+    postUrl: generateUrl(`api/frames/${FrameNames.CAPTCHA}`, {}, false),
   };
 
   return new NextResponse(
     getFrameHtml(frame),
     {
       headers: {
-        'content-type': 'application/json',
+        'content-type': 'text/html',
       },
     },
   );

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import FrameBase from '../../../../../src/components/FrameBase'
-import NotFollowing from '../../../../../src/components/NotFollowing';
 import { RequestProps, getRequestProps } from '../../../../../src/utils';
 
 // Fonts
@@ -14,15 +13,15 @@ const plusJakartaSans = fetch(
 
 export async function GET(req: NextRequest) {
     try {
-        const {isFollowing, rank, username, avatarUrl, wins, losses, balance, streak, numBets} = getRequestProps(req, [RequestProps.IS_FOLLOWING, 
-                                                                                                                        RequestProps.RANK, 
-                                                                                                                        RequestProps.USERNAME, 
-                                                                                                                        RequestProps.AVATAR_URL, 
-                                                                                                                        RequestProps.WINS, 
-                                                                                                                        RequestProps.LOSSES, 
-                                                                                                                        RequestProps.BALANCE, 
-                                                                                                                        RequestProps.STREAK,
-                                                                                                                        RequestProps.NUM_BETS]);
+        const {rank, username, avatarUrl, wins, losses, balance, streak, numBets} = getRequestProps(req, [
+                                                                                                        RequestProps.RANK, 
+                                                                                                        RequestProps.USERNAME, 
+                                                                                                        RequestProps.AVATAR_URL, 
+                                                                                                        RequestProps.WINS, 
+                                                                                                        RequestProps.LOSSES, 
+                                                                                                        RequestProps.BALANCE, 
+                                                                                                        RequestProps.STREAK,
+                                                                                                        RequestProps.NUM_BETS]);
         
         let pfpURL = undefined;
         let shortUsername = undefined;
@@ -34,7 +33,7 @@ export async function GET(req: NextRequest) {
 
         const imageResponse = new ImageResponse(
             <FrameBase>
-                {isFollowing ?
+                    {
                     (rank === -1 && !shortUsername && !pfpURL) ?
                     <h2 style={{color: 'white', fontSize:50, textAlign:'center'}}> No profile found!</h2>
                     :
@@ -53,9 +52,7 @@ export async function GET(req: NextRequest) {
                             <h2 style={{color: 'white', fontSize:40}}> 🎰 Total Bets: {numBets} ({wins}W - {losses}L)</h2>
                         </div>
                     </div>
-                    :
-                    <NotFollowing/>
-                }
+                    }
             </FrameBase>
             ,
             {

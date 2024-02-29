@@ -2,16 +2,21 @@ import { getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { Event, User, Bet } from '../../../types';
-import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
+import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, notFollowingResponse } from '../../../../src/utils';
 
-async function getResponse(req: NextRequest): Promise<NextResponse> {
+export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
-  const message = await validateFrameMessage(req);
+  const message = await getFrameMessage(req);
 
   const {followingBookies: isFollowing, button, fid} = message;
 
   // Get eventName from req
   let {eventName, stake, pick} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK]);
+
+  if (!isFollowing) {
+    // Call fetch to get not following thumbnail
+    return notFollowingResponse(generateUrl(`/api/frames/events/${eventName}`, {}, false))
+  }
 
   // Wait for both user to be found and event to be found
   let user : User | null = null;
@@ -105,21 +110,18 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     console.log('FAILED TO PLACE BET')
   }
 
-  const imageUrl = generateUrl(`api/frames/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventName, [RequestProps.OPTIONS]: event.options, [RequestProps.TIME]: now, [RequestProps.RESULT]: event.result}, true);
+  const imageUrl = generateUrl(`api/frames/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventName, [RequestProps.OPTIONS]: event.options, [RequestProps.TIME]: now, [RequestProps.RESULT]: event.result}, true);
 
   return new NextResponse(
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-      buttons: isFollowing ? [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label: pick === -1 ? 'Try Again' : 'Place Another Bet', action:'link', target: 'https://warpcast.com/bookies/0x29e3c835'}] : [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
+      buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label: pick === -1 ? 'Try Again' : 'Place Another Bet', action:'link', target: 'https://warpcast.com/bookies/0x29e3c835'}],
       postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BET_CONFIRMATION}`,
     }),
   );
 }
 
-      export async function POST(req: NextRequest): Promise<Response> {
-        return getResponse(req);
-      } 
 
 export const revalidate = 0;
 // export const dynamic = 'force-dynamic';

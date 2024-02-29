@@ -37,9 +37,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchCache = exports.dynamic = exports.revalidate = exports.calculatePayout = exports.convertImpliedProbabilityToAmerican = exports.validateFrameMessage = exports.checkIsFollowingBookies = exports.neynarClient = exports.generateUrl = exports.getRequestProps = exports.DEFAULT_FRAME_VALIDATION_DATA = exports.DEFAULT_BET = exports.DEFAULT_USER = exports.BOOKIES_FID = exports.RequestPropsTypes = exports.DatabaseKeys = exports.FrameNames = exports.RequestProps = void 0;
+exports.fetchCache = exports.dynamic = exports.revalidate = exports.calculatePayout = exports.convertImpliedProbabilityToAmerican = exports.getFrameMessage = exports.checkIsFollowingBookies = exports.neynarClient = exports.generateUrl = exports.notFollowingResponse = exports.getRequestProps = exports.DEFAULT_FRAME_VALIDATION_DATA = exports.DEFAULT_BET = exports.DEFAULT_USER = exports.BOOKIES_FID = exports.DatabaseKeys = exports.FrameNames = exports.RequestPropsTypes = exports.RequestProps = void 0;
+var server_1 = require("next/server");
 var nodejs_sdk_1 = require("@neynar/nodejs-sdk");
 var onchainkit_1 = require("@coinbase/onchainkit");
+var frames_js_1 = require("frames.js");
 var RequestProps;
 (function (RequestProps) {
     RequestProps["FID"] = "fid";
@@ -65,6 +67,7 @@ var RequestProps;
     RequestProps["BALANCE"] = "balance";
     RequestProps["POLL"] = "poll";
     RequestProps["VALID_CAPTCHA"] = "validCaptcha";
+    RequestProps["CAPTCHA_INDEX"] = "captchaIndex";
     RequestProps["INDEX"] = "index";
     RequestProps["ARRAY"] = "array";
     RequestProps["ODD"] = "odd";
@@ -73,29 +76,8 @@ var RequestProps;
     RequestProps["OFFSET"] = "offset";
     RequestProps["COUNT"] = "count";
     RequestProps["BOOLEAN"] = "boolean";
+    RequestProps["URL"] = "url";
 })(RequestProps || (exports.RequestProps = RequestProps = {}));
-var FrameNames;
-(function (FrameNames) {
-    FrameNames["CLAIM_DICE"] = "claim-dice";
-    FrameNames["PROFILE_FINDER"] = "profile-finder";
-    FrameNames["SBLVIII_ML"] = "sblviii-ml";
-    FrameNames["BETSLIP"] = "betslip";
-    FrameNames["BET_CONFIRMATION"] = "bet-confirmation";
-    FrameNames["TRIVIA"] = "trivia";
-    FrameNames["CAPTCHA"] = "captcha";
-    FrameNames["LUTON_CITY_SPREAD"] = "luton-city-spread";
-    FrameNames["EVENT_THUMBNAIL"] = "event-thumbnail";
-    FrameNames["LEADERBOARD"] = "leaderboard";
-    FrameNames["BETS"] = "bets";
-    FrameNames["INFO"] = "info";
-    FrameNames["LAL_LAC_ML"] = "lal-lac-ml";
-})(FrameNames || (exports.FrameNames = FrameNames = {}));
-var DatabaseKeys;
-(function (DatabaseKeys) {
-    DatabaseKeys["LEADERBOARD"] = "leaderboard";
-    DatabaseKeys["BETS"] = "bets";
-    DatabaseKeys["POLL"] = "poll";
-})(DatabaseKeys || (exports.DatabaseKeys = DatabaseKeys = {}));
 exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.FID] = 0,
     _a[RequestProps.IS_FOLLOWING] = true,
@@ -120,6 +102,7 @@ exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.BALANCE] = 0.0,
     _a[RequestProps.POLL] = [],
     _a[RequestProps.VALID_CAPTCHA] = true,
+    _a[RequestProps.CAPTCHA_INDEX] = 0,
     _a[RequestProps.INDEX] = 0,
     _a[RequestProps.ARRAY] = [],
     _a[RequestProps.ODD] = 0.5,
@@ -128,7 +111,30 @@ exports.RequestPropsTypes = (_a = {},
     _a[RequestProps.OFFSET] = 0,
     _a[RequestProps.COUNT] = 0,
     _a[RequestProps.BOOLEAN] = true,
+    _a[RequestProps.URL] = "",
     _a);
+var FrameNames;
+(function (FrameNames) {
+    FrameNames["CLAIM_DICE"] = "claim-dice";
+    FrameNames["PROFILE_FINDER"] = "profile-finder";
+    FrameNames["SBLVIII_ML"] = "sblviii-ml";
+    FrameNames["BETSLIP"] = "betslip";
+    FrameNames["BET_CONFIRMATION"] = "bet-confirmation";
+    FrameNames["TRIVIA"] = "trivia";
+    FrameNames["CAPTCHA"] = "captcha";
+    FrameNames["LUTON_CITY_SPREAD"] = "luton-city-spread";
+    FrameNames["EVENT_THUMBNAIL"] = "event-thumbnail";
+    FrameNames["LEADERBOARD"] = "leaderboard";
+    FrameNames["BETS"] = "bets";
+    FrameNames["INFO"] = "info";
+    FrameNames["LAL_LAC_ML"] = "lal-lac-ml";
+})(FrameNames || (exports.FrameNames = FrameNames = {}));
+var DatabaseKeys;
+(function (DatabaseKeys) {
+    DatabaseKeys["LEADERBOARD"] = "leaderboard";
+    DatabaseKeys["BETS"] = "bets";
+    DatabaseKeys["POLL"] = "poll";
+})(DatabaseKeys || (exports.DatabaseKeys = DatabaseKeys = {}));
 exports.BOOKIES_FID = 244367;
 exports.DEFAULT_USER = {
     balance: 100,
@@ -194,6 +200,26 @@ function getRequestProps(req, params) {
     return returnParams;
 }
 exports.getRequestProps = getRequestProps;
+function notFollowingResponse(url) {
+    return new server_1.NextResponse((0, frames_js_1.getFrameHtml)({
+        version: "vNext",
+        image: "".concat(process.env['HOST'], "/thumbnails/not-following.gif"),
+        buttons: [
+            {
+                label: 'Try Again',
+                action: 'post',
+                target: url
+            },
+            {
+                label: "Follow Us!",
+                action: 'link',
+                target: 'https://warpcast.com/bookies'
+            }
+        ],
+        postUrl: url,
+    }));
+}
+exports.notFollowingResponse = notFollowingResponse;
 function generateUrl(extension, props, addTimestamp) {
     var _a, _b;
     if (addTimestamp === void 0) { addTimestamp = false; }
@@ -237,9 +263,9 @@ function checkIsFollowingBookies(fid) {
     });
 }
 exports.checkIsFollowingBookies = checkIsFollowingBookies;
-function validateFrameMessage(req, checkFollowingBookies) {
+function getFrameMessage(req, validate) {
     var _a, _b, _c, _d, _e, _f, _g, _h;
-    if (checkFollowingBookies === void 0) { checkFollowingBookies = true; }
+    if (validate === void 0) { validate = true; }
     return __awaiter(this, void 0, void 0, function () {
         var body, message, data, _j;
         return __generator(this, function (_k) {
@@ -248,6 +274,7 @@ function validateFrameMessage(req, checkFollowingBookies) {
                 case 1:
                     body = _k.sent();
                     message = exports.DEFAULT_FRAME_VALIDATION_DATA;
+                    if (!validate) return [3 /*break*/, 4];
                     return [4 /*yield*/, (0, onchainkit_1.getFrameMessage)(body, { neynarApiKey: process.env['NEYNAR_API_KEY'] || "" })];
                 case 2:
                     data = _k.sent();
@@ -262,18 +289,28 @@ function validateFrameMessage(req, checkFollowingBookies) {
                     message.verified_accounts = ((_f = data === null || data === void 0 ? void 0 : data.message) === null || _f === void 0 ? void 0 : _f.interactor.verified_accounts) || [];
                     message.liked = ((_g = data === null || data === void 0 ? void 0 : data.message) === null || _g === void 0 ? void 0 : _g.liked) || false;
                     message.recasted = ((_h = data === null || data === void 0 ? void 0 : data.message) === null || _h === void 0 ? void 0 : _h.recasted) || false;
-                    if (!checkFollowingBookies) return [3 /*break*/, 4];
                     _j = message;
                     return [4 /*yield*/, checkIsFollowingBookies(message.fid)];
                 case 3:
                     _j.followingBookies = _k.sent();
-                    _k.label = 4;
-                case 4: return [2 /*return*/, message];
+                    return [3 /*break*/, 5];
+                case 4:
+                    console.log('Not validating frame message');
+                    message.button = body.untrustedData.buttonIndex;
+                    message.following = body.untrustedData.following || false;
+                    message.input = body.untrustedData.input;
+                    message.fid = body.untrustedData.fid;
+                    message.custody_address = body.untrustedData.custody_address;
+                    message.verified_accounts = body.untrustedData.verified_accounts;
+                    message.liked = body.untrustedData.liked;
+                    message.recasted = body.untrustedData.recasted;
+                    _k.label = 5;
+                case 5: return [2 /*return*/, message];
             }
         });
     });
 }
-exports.validateFrameMessage = validateFrameMessage;
+exports.getFrameMessage = getFrameMessage;
 function convertImpliedProbabilityToAmerican(impliedProbability) {
     if (impliedProbability <= 0 || impliedProbability >= 1) {
         throw new Error('Implied probability must be between 0 and 1 (exclusive).');

@@ -1,20 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Frame, getFrameHtml } from "frames.js";
-import { DEFAULT_USER, generateUrl, RequestProps, validateFrameMessage, neynarClient, BOOKIES_FID, FrameNames, getRequestProps, DatabaseKeys } from '../../../../src/utils';
+import { DEFAULT_USER, generateUrl, RequestProps, getFrameMessage, neynarClient, BOOKIES_FID, FrameNames, getRequestProps, DatabaseKeys, notFollowingResponse } from '../../../../src/utils';
 import { User } from '../../../types';
 import { kv } from '@vercel/kv';
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
-  const message = await validateFrameMessage(req);
+  const message = await getFrameMessage(req);
 
   const {followingBookies: isFollowing, fid, input} = message;
   console.log('FID: ', fid.toString())
 
   let {fid: profileFID} = getRequestProps(req, [RequestProps.FID]);
 
-  if (profileFID === -1) {     // Show profile-finder thumbnail
+  if (profileFID === -1) { // Show profile-finder thumbnail
     return await GET(req);
+  }
+
+  if (!isFollowing) {
+    // Call fetch to get not following thumbnail
+    return notFollowingResponse(generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: -1}, false))
   }
 
   let user : User = DEFAULT_USER;
@@ -23,7 +28,9 @@ export async function POST(req: NextRequest): Promise<Response> {
   let eventNames: string[] = [];
 
   let imageUrl: string = "";
-  let postUrl = generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: '', [RequestProps.IS_FOLLOWING]: isFollowing}, false)
+  let postUrl = generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: ''}, false)
+  let offset = 0;
+  let count = 5;
 
   const username : string = (req.nextUrl.searchParams.get("username") || input || '')?.toLowerCase();
   if (!profileFID) { // Not coming from bets page
@@ -76,6 +83,19 @@ export async function POST(req: NextRequest): Promise<Response> {
       await kv.zadd(DatabaseKeys.LEADERBOARD, {score: user.balance, member: profile?.fid});
       rank = await kv.zrevrank(DatabaseKeys.LEADERBOARD, profile?.fid || "");
     }
+
+    // Get rank in leaderboard 
+    if (rank) {
+      if (rank <= 5) {
+        offset = -1;
+        count = 5;
+      }
+      else {
+        // Get nearest 5 ranks
+        offset = Math.floor(rank / 5) * 5;
+        count = 10;
+      }
+    }
   }
 
   imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, 
@@ -91,7 +111,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: isFollowing ? (rank === -1 || eventNames.length === 0 ? // No user or no bets
+    buttons: (rank === -1 || eventNames.length === 0 ? // No user or no bets
     [
       {
         label: 'Search',
@@ -103,16 +123,19 @@ export async function POST(req: NextRequest): Promise<Response> {
       {
         label: 'Search Again',
         action: 'post',
-        target: generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: -1, [RequestProps.IS_FOLLOWING]: isFollowing}, false)
+        target: generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: -1}, false)
       },
       {
         label: "Bets",
         action: 'post',
         target: generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}`, {[RequestProps.FID]: profile?.fid, [RequestProps.INDEX]: 0, [RequestProps.ARRAY]: eventNames}, false)
+      },
+      {
+        label: "Leaderboard",
+        action: 'post',
+        target: generateUrl(`/api/frames/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: offset, [RequestProps.COUNT]: count}, false)
       }
-    ])
-    :
-    [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
+    ]),
     inputText: rank === -1 || eventNames.length === 0 ? "Enter another username or fid" : undefined,
     postUrl: postUrl,
   };
@@ -135,14 +158,14 @@ export async function GET(req: NextRequest): Promise<Response> {
     ],
     inputText: 'Enter a username or fid',
     image: imageUrl,
-    postUrl: `${process.env['HOST']}/api/frames/profile-finder?fid=`,
+    postUrl: generateUrl(`api/frames/profile-finder`, {[RequestProps.FID]: ''}, false),
   };
 
   return new NextResponse(
     getFrameHtml(frame),
     {
       headers: {
-        'content-type': 'application/json',
+        'content-type': 'text/html',
       },
     },
   );

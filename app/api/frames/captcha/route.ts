@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, validateFrameMessage } from '../../../../src/utils';
+import { FrameNames, RequestProps, generateUrl, getFrameMessage } from '../../../../src/utils';
 import { getFrameHtml} from "frames.js";
 
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
-  const message = await validateFrameMessage(req);
     
   const images = ['🎩', '🏆', '🤑', '🏇'] 
 
@@ -19,7 +18,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       version: "vNext",
       image: imageUrl,
       buttons: [{label:'🎩', action:'post'}, {label:'🏆', action:'post'}, {label:'🤑', action:'post'}, {label:'🏇', action:'post'}],
-      postUrl: `${process.env['HOST']}/api/frames/${FrameNames.CLAIM_DICE}?captcha=${randomIndex}`,
+      postUrl: generateUrl(`api/frames/${FrameNames.CLAIM_DICE}`, {[RequestProps.CAPTCHA_INDEX]: randomIndex}, false),
     }),
   );
 }

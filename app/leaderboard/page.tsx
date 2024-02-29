@@ -10,14 +10,14 @@ export async function generateMetadata(): Promise<Metadata> {
       version: "vNext",
       buttons: [{label: '>', action:'post'}],
       image: imageUrl,
-      postUrl: generateUrl(`api/frames/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: 0, [RequestProps.COUNT]:5}, false)
+      postUrl: generateUrl(`api/frames/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: 0, [RequestProps.COUNT]: 5}, false)
     };
     
     const metadata: Metadata = {
       title: FrameNames.LEADERBOARD,
       description: 'Leaderboard',
       openGraph: {
-        title: FrameNames.CLAIM_DICE,
+        title: FrameNames.LEADERBOARD,
         description: 'Leaderboard', 
         images: [{url: imageUrl}],
       },

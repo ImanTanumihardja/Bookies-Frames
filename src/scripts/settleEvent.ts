@@ -22,9 +22,9 @@ async function settleEvent(eventName="", result=-1) {
       throw new Error('Event has not started yet')
     }
 
-    if (parseInt(event?.result.toString()) !== -1) {
-      throw new Error('Event has already been settled')
-    } 
+    // if (parseInt(event?.result.toString()) !== -1) {
+    //   throw new Error('Event has already been settled')
+    // } 
 
     if (result === -1) {
       throw new Error('Result is invalid')

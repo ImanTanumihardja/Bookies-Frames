@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
         const usersInfo = profiles.map((profile:any, index: number) => {
             if (profile) {
                 const shortUsername = profile.username?.length > 7 ? profile.username?.substring(0, 7) + "... " : profile.username;  
-                return `${offset + index + 1}. ${shortUsername}: ${scores[index]}`
+                return `${offset + index + 1}. ${shortUsername}: ${Math.round(scores[index])}`
             }
         })
 
@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
                                 <h3 key={index} style={{color: 'white', fontSize: 35, marginBottom:0}}> 
                                     {`${offset + index + 1}.` }
                                     <img style={{ width: 40, maxHeight: 40, marginLeft: 15, marginRight: 10, borderRadius: 50, top:5 }} src={`https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(profiles[index].pfp_url)}`} alt={`${process.env['HOST']}/generic_pfp.png`} /> 
-                                    {`${shortUsername}: ${scores[index]}`}
+                                    {`${shortUsername}: ${Math.round(scores[index])}`}
                                 </h3>
                             )
                         })}

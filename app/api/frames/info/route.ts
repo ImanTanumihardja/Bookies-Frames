@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, RequestProps, generateUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
+import { FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage } from '../../../../src/utils';
 import { Frame, getFrameHtml} from "frames.js";
 
 const MAX_INDEX:number = 8;
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
-  const {button} = await validateFrameMessage(req);
+  const {button} = await getFrameMessage(req, false);
 
   const {index: lastIndex} = getRequestProps(req, [RequestProps.INDEX]);
 
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest): Promise<Response> {
     getFrameHtml(frame),
     {
       headers: {
-        'content-type': 'application/json',
+        'content-type': 'text/html',
       },
     },
   );

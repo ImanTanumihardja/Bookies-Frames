@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Frame, getFrameHtml } from "frames.js";
-import { generateUrl, RequestProps, validateFrameMessage, FrameNames } from '../../../../src/utils';
+import { generateUrl, RequestProps, getFrameMessage, FrameNames } from '../../../../src/utils';
 import { kv } from '@vercel/kv';
 
 const MAX_QUESTIONS = 10;
@@ -117,7 +117,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   // Verify the frame request
-  const message = await validateFrameMessage(req);
+  const message = await getFrameMessage(req);
   
   const {followingBookies: isFollowing, fid , button} = message;
   console.log('FID: ', fid.toString())
@@ -233,7 +233,7 @@ export async function GET(req: NextRequest): Promise<Response> {
     getFrameHtml(frame),
     {
       headers: {
-        'content-type': 'application/json',
+        'content-type': 'text/html',
       },
     },
   );

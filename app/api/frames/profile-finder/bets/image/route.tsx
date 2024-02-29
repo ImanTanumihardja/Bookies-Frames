@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import FrameBase from '../../../../../../src/components/FrameBase'
-import NotFollowing from '../../../../../../src/components/NotFollowing';
 import { RequestProps, getRequestProps } from '../../../../../../src/utils';
-import { User, Event, Bet } from '../../../../../types';
+import { Event, Bet } from '../../../../../types';
 import { kv } from '@vercel/kv';
 
 // Fonts
@@ -16,7 +14,7 @@ const plusJakartaSans = fetch(
 
 export async function GET(req: NextRequest) {
     try {
-        const {isFollowing, fid, eventName} = getRequestProps(req, [RequestProps.IS_FOLLOWING, RequestProps.FID, RequestProps.EVENT_NAME]); 
+        const {fid, eventName} = getRequestProps(req, [RequestProps.FID, RequestProps.EVENT_NAME]); 
         
         // Wait for both user to be found and event to be found
         let bets : Record<string , Bet[]> | null = null;
@@ -43,7 +41,6 @@ export async function GET(req: NextRequest) {
         const date = new Date(parseInt(event.startDate.toString()));
 
         const imageResponse = new ImageResponse(
-            isFollowing ?
             <div style={{display: 'flex', flexDirection:'row', height:'100%', width:'100%'}}>
                 <div style={{
                         display: 'flex',
@@ -73,11 +70,7 @@ export async function GET(req: NextRequest) {
                 :
                 <div></div>
                 }
-            </div>
-            :    
-            <FrameBase>
-                <NotFollowing/>
-            </FrameBase>,
+            </div>,
             {
                 width: 764, 
                 height: 400, 
