@@ -68,7 +68,7 @@ async function settleEvent(eventName="", result=-1) {
 
             console.log(`Payout: ${payout}`)
 
-            user.balance = parseFloat(user?.balance.toString()) + payout;
+            user.balance = Math.round(parseFloat(user?.balance.toString()) + payout);
             user.streak = parseInt(user?.streak.toString()) + 1;
             user.wins = parseInt(user?.wins.toString()) + 1;
           }

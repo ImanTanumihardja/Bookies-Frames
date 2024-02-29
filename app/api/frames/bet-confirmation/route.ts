@@ -64,7 +64,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     const bet : Bet = {pick:pick, odd: event.odds[pick], stake:stake, timeStamp: now, settled: false} as Bet;
 
     // Adjust user available balance
-    user.balance = Math.ceil((balance - stake) * 100) / 100;
+    user.balance = Math.round(balance - stake);
 
     if (user.bets[eventName] === undefined) user.bets[eventName] = [];
     user.bets[eventName].push(bet)
