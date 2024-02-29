@@ -3,7 +3,7 @@ import { FrameNames, validateFrameMessage } from '../../../../src/utils';
 import { getFrameHtml} from "frames.js";
 
 
-async function getResponse(req: NextRequest): Promise<NextResponse> {
+export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await validateFrameMessage(req);
     
@@ -23,10 +23,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }),
   );
 }
-
-export async function POST(req: NextRequest): Promise<Response> {
-  return getResponse(req);
-} 
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;

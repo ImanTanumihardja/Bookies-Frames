@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
     ],
     inputText: 'Enter a username or fid',
     image: imageUrl,
-    postUrl: `${process.env['HOST']}/api/frames/profile-finder?fid=&index=-1&array=&boolean=false`,
+    postUrl: `${process.env['HOST']}/api/frames/profile-finder?fid=`,
   };
 
   return {

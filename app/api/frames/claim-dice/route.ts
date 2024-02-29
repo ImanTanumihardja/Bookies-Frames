@@ -5,7 +5,7 @@ import { RequestProps, generateUrl, DEFAULT_USER, validateFrameMessage, Database
 import { getFrameHtml, Frame} from "frames.js";
 import { FrameNames } from '../../../../src/utils';
 
-async function getResponse(req: NextRequest): Promise<NextResponse> {
+export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await validateFrameMessage(req);
 
@@ -75,11 +75,32 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   );
 }
 
-export async function POST(req: NextRequest): Promise<Response> {
-  return getResponse(req);
-} 
+export async function GET(req: NextRequest): Promise<Response> {
+  const imageUrl = generateUrl(`thumbnails/${FrameNames.CLAIM_DICE}.gif`, [], false)
+
+  const frame : Frame = {
+    version: "vNext",
+    buttons: [
+      {
+        label: 'Claim Dice',
+        action: 'post'
+      },
+    ],
+    image: imageUrl,
+    postUrl: `${process.env['HOST']}/api/frames/${FrameNames.CAPTCHA}`
+  };
+
+  return new NextResponse(
+    getFrameHtml(frame),
+    {
+      headers: {
+        'content-type': 'application/json',
+      },
+    },
+  );
+}
 
 
-export const revalidate = 0;
+export const revalidate = 60;
 // export const dynamic = 'force-dynamic';
 // export const fetchCache = 'force-no-store';

@@ -6,7 +6,7 @@ import { kv } from '@vercel/kv';
 const MAX_QUESTIONS = 10;
 const EASY_QUESTION_INDEXES = encodeURIComponent([0, 1, 2, 3, 4, 5, 6, 7].toString()) // Make sure matchs with the amount of questions in easy category
 
-async function getResponse(req: NextRequest): Promise<NextResponse> {
+export async function POST(req: NextRequest): Promise<Response> {
   const questions : Record<string, any> = {
     'easy': [
       {
@@ -213,9 +213,31 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   );
 }
 
-export async function POST(req: NextRequest): Promise<Response> {
-  return getResponse(req);
-} 
+export async function GET(req: NextRequest): Promise<Response> {
+  const imageUrl = generateUrl(`thumbnails/${FrameNames.TRIVIA}.png`, [], false)
+  const questionIndexes = encodeURIComponent([0, 1, 2, 3, 4, 5, 6, 7].toString()) // Make sure matchs with the amount of questions in easy category
+
+  const frame : Frame = {
+    version: "vNext",
+    buttons: [
+      {
+        label: 'Start',
+        action: 'post',
+      },
+    ],
+    image: imageUrl,
+    postUrl: `${process.env['HOST']}/api/frames/${FrameNames.TRIVIA}?count=-1&array=${questionIndexes}`,
+  };
+
+  return new NextResponse(
+    getFrameHtml(frame),
+    {
+      headers: {
+        'content-type': 'application/json',
+      },
+    },
+  );
+}
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;

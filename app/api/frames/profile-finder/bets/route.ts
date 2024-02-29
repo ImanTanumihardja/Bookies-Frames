@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Frame, getFrameHtml } from "frames.js";
 import { generateUrl, RequestProps, validateFrameMessage, FrameNames, getRequestProps } from '../../../../../src/utils';
-import { User } from '../../../../types';
-import { kv } from '@vercel/kv';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -12,31 +10,46 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const {fid, index:lastEventIndex, array:eventNames} = getRequestProps(req, [RequestProps.FID, RequestProps.INDEX, RequestProps.ARRAY]);
 
-  console.log('FID: ', fid.toString())
+  console.log('Searched FID: ', fid.toString())
 
   // Get next eventName
   if (!eventNames[lastEventIndex] && lastEventIndex !== -1) {
     throw new Error('Invalid event name');
   }
 
-  let currentIndex = 0
-  if (eventNames && lastEventIndex < eventNames.length) {
-    if (button === 2 || button === 3 || lastEventIndex === -1 || lastEventIndex === 0) {
-      currentIndex = lastEventIndex + 1;
-    }
-    else if (button === 1){
-      currentIndex = lastEventIndex - 1;
-    }
+// If on bets page figure out which event to show based on button press
+let currentEventIndex = lastEventIndex
+if (eventNames && lastEventIndex !== -1) {
+  if (button === 1){
+    currentEventIndex = lastEventIndex - 1;
   }
+  else if (button === 3) { // Increment index if not coming from profile page
+    currentEventIndex = lastEventIndex + 1;
+  }
+}
 
-  console.log('Current Index: ', currentIndex)
+  console.log('Current Index: ', currentEventIndex)
     
-  const imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventNames[currentIndex]}, true);
+  const imageUrl = generateUrl(`api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}/image`, {[RequestProps.IS_FOLLOWING]: isFollowing, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventNames[currentEventIndex]}, true);
 
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: isFollowing ? currentIndex === eventNames.length - 1 ? 
+    buttons: isFollowing ? currentEventIndex === 0 && eventNames.length === 1 ? // First event and no others
+    [
+      {
+        label: 'Back to Profile',
+        action: 'post',
+        target: generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: fid, [RequestProps.IS_FOLLOWING]: isFollowing}, false)
+      },
+      {
+        label: 'Search Again',
+        action: 'link',
+        target: generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: -1, [RequestProps.IS_FOLLOWING]: isFollowing}, false)
+      },
+    ] 
+    :
+    currentEventIndex === eventNames.length - 1 ? // Last event with others
     [
       {
         label: '<',
@@ -45,28 +58,25 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       {
         label: 'Search Again',
         action: 'link',
-        target: 'https://warpcast.com/bookies'
+        target: generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: -1, [RequestProps.IS_FOLLOWING]: isFollowing}, false)
       },
     ]
     :
-    currentIndex === 0 && eventNames.length !== 1 ? [
+    currentEventIndex === 0 && eventNames.length !== 1 ? // First event with others
+    [
+      {
+        label: 'Back to Profile',
+        action: 'post'
+      },
       {
         label: 'Search Again',
         action: 'link',
-        target: 'https://warpcast.com/bookies'
+        target: generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: -1, [RequestProps.IS_FOLLOWING]: isFollowing}, false)
       },
       {
         label: '>',
         action: 'post'
       }
-    ] 
-    :
-    currentIndex === 0 && eventNames.length === 1 ? [
-      {
-        label: 'Search Again',
-        action: 'link',
-        target: 'https://warpcast.com/bookies'
-      }
     ]
     :
     [
@@ -77,7 +87,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       {
         label: 'Search Again',
         action: 'link',
-        target: 'https://warpcast.com/bookies'
+        target: generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: -1, [RequestProps.IS_FOLLOWING]: isFollowing}, false)
       },
       {
         label: '>',
@@ -86,7 +96,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     ]
     :
     [{ label: "Follow Us!", action: 'link', target: 'https://warpcast.com/bookies'}],
-    postUrl: generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}`, {[RequestProps.FID]: fid, [RequestProps.INDEX]: currentIndex, [RequestProps.ARRAY]: eventNames}, false),
+    postUrl: generateUrl(`/api/frames/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}`, {[RequestProps.FID]: fid, [RequestProps.INDEX]: currentEventIndex, [RequestProps.ARRAY]: eventNames}, false),
   };
 
   return new NextResponse(

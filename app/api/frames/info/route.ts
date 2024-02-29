@@ -4,7 +4,7 @@ import { Frame, getFrameHtml} from "frames.js";
 
 const MAX_INDEX:number = 8;
 
-async function getResponse(req: NextRequest): Promise<NextResponse> {
+export async function POST(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
   const {button} = await validateFrameMessage(req);
 
@@ -27,10 +27,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     }),
   );
 }
-
-export async function POST(req: NextRequest): Promise<Response> {
-  return getResponse(req);
-} 
 
 export async function GET(req: NextRequest): Promise<Response> {
   const imageUrl = generateUrl(`thumbnails/${FrameNames.CLAIM_DICE}.gif`, {}, false)

@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FrameNames, RequestProps, generateUrl, getRequestProps, validateFrameMessage } from '../../../../src/utils';
-import { getFrameHtml} from "frames.js";
+import { Frame, getFrameHtml} from "frames.js";
 
-
-async function getResponse(req: NextRequest): Promise<NextResponse> {
+export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await validateFrameMessage(req);
   let {offset} = getRequestProps(req, [RequestProps.OFFSET]);
@@ -28,11 +27,28 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       postUrl: `${process.env['HOST']}/api/frames/${FrameNames.LEADERBOARD}?offset=${offset}`,
     }),
   );
+} 
+
+export async function GET(req: NextRequest): Promise<Response> {
+  const imageUrl = generateUrl(`thumbnails/${FrameNames.CLAIM_DICE}.gif`, {}, false)
+
+  const frame : Frame = {
+    version: "vNext",
+    buttons: [{label: 'Learn More', action:'post'}],
+    image: imageUrl,
+    postUrl: `${process.env['HOST']}/api/frames/${FrameNames.INFO}?index=0`
+  };
+
+  return new NextResponse(
+    getFrameHtml(frame),
+    {
+      headers: {
+        'content-type': 'application/json',
+      },
+    },
+  );
 }
 
-export async function POST(req: NextRequest): Promise<Response> {
-  return getResponse(req);
-} 
 export const revalidate = 0;
 // export const dynamic = 'force-dynamic';
 // export const fetchCache = 'force-no-store';
