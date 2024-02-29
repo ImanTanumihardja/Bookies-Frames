@@ -257,13 +257,8 @@ export async function getFrameMessage(req: NextRequest, validate=true) {
     else {
         console.log('Not validating frame message')
         message.button = body.untrustedData.buttonIndex
-        message.following = body.untrustedData.following || false
-        message.input = body.untrustedData.input
+        message.input = body.untrustedData.inputText
         message.fid = body.untrustedData.fid
-        message.custody_address = body.untrustedData.custody_address
-        message.verified_accounts = body.untrustedData.verified_accounts
-        message.liked = body.untrustedData.liked
-        message.recasted = body.untrustedData.recasted
     }
 
     return message
