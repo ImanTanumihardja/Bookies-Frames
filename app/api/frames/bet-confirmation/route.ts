@@ -116,7 +116,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-      buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label: pick === -1 ? 'Try Again' : 'Place Another Bet', action:'link', target: 'https://warpcast.com/bookies/0x29e3c835'}],
+      buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label: 'Place Another Bet', action:'post', target: generateUrl(`/api/frames/events/${FrameNames.MIA_DEN_ML}`, {}, false)}],
       postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BET_CONFIRMATION}`,
     }),
   );

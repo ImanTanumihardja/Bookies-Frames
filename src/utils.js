@@ -128,6 +128,7 @@ var FrameNames;
     FrameNames["BETS"] = "bets";
     FrameNames["INFO"] = "info";
     FrameNames["LAL_LAC_ML"] = "lal-lac-ml";
+    FrameNames["MIA_DEN_ML"] = "mia-den-ml";
 })(FrameNames || (exports.FrameNames = FrameNames = {}));
 var DatabaseKeys;
 (function (DatabaseKeys) {
@@ -297,13 +298,8 @@ function getFrameMessage(req, validate) {
                 case 4:
                     console.log('Not validating frame message');
                     message.button = body.untrustedData.buttonIndex;
-                    message.following = body.untrustedData.following || false;
-                    message.input = body.untrustedData.input;
+                    message.input = body.untrustedData.inputText;
                     message.fid = body.untrustedData.fid;
-                    message.custody_address = body.untrustedData.custody_address;
-                    message.verified_accounts = body.untrustedData.verified_accounts;
-                    message.liked = body.untrustedData.liked;
-                    message.recasted = body.untrustedData.recasted;
                     _k.label = 5;
                 case 5: return [2 /*return*/, message];
             }
@@ -330,7 +326,7 @@ exports.convertImpliedProbabilityToAmerican = convertImpliedProbabilityToAmerica
 function calculatePayout(multiplier, impliedProbability, stake, streak) {
     if (streak === void 0) { streak = 0; }
     var payout = multiplier * (1 / impliedProbability) * (stake); // TODO add streak
-    return Math.ceil(payout * 100) / 100;
+    return Math.round(payout);
 }
 exports.calculatePayout = calculatePayout;
 exports.revalidate = 0;

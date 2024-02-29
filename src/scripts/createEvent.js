@@ -44,12 +44,12 @@ var kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
 });
 function createEvent(eventName, startDate, odds, multiplier, options, prompt) {
-    if (eventName === void 0) { eventName = 'lal-lac-ml'; }
-    if (startDate === void 0) { startDate = 1709175600000; }
-    if (odds === void 0) { odds = [0.4202, 0.5798]; }
+    if (eventName === void 0) { eventName = 'mia-den-ml'; }
+    if (startDate === void 0) { startDate = 1709262000000; }
+    if (odds === void 0) { odds = [0.3635, 0.6365]; }
     if (multiplier === void 0) { multiplier = 1; }
-    if (options === void 0) { options = ["Lakers", "Clippers"]; }
-    if (prompt === void 0) { prompt = "Lakers vs Clippers"; }
+    if (options === void 0) { options = ["MIA", "DEN"]; }
+    if (prompt === void 0) { prompt = "Miami vs Nuggets"; }
     return __awaiter(this, void 0, void 0, function () {
         var eventExists, event, poll, _a, _b, _c, _d, _e, _f;
         return __generator(this, function (_g) {

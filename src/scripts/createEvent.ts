@@ -8,7 +8,7 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
   });
 
-async function createEvent(eventName='lal-lac-ml', startDate=1709175600000, odds=[0.4202, 0.5798], multiplier=1, options=["LAL", "LAC"], prompt="Lakers vs Clippers") {
+async function createEvent(eventName='mia-den-ml', startDate=1709262000000, odds=[0.3635, 0.6365], multiplier=1, options=["MIA", "DEN"], prompt="Miami vs Nuggets") {
   // Check if event already exists
   const eventExists = await kv.exists(`${eventName}`)
   if (eventExists) {

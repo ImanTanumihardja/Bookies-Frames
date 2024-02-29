@@ -92,6 +92,7 @@ export enum FrameNames {
     BETS = 'bets',
     INFO = 'info',
     LAL_LAC_ML = 'lal-lac-ml',
+    MIA_DEN_ML = 'mia-den-ml',
 
 }
 
@@ -285,7 +286,7 @@ export function convertImpliedProbabilityToAmerican(impliedProbability: number) 
 
 export function calculatePayout(multiplier: number, impliedProbability: number, stake: number, streak: number = 0){
     const payout = multiplier * (1 / impliedProbability) * (stake) // TODO add streak
-    return Math.round(payout * 100)
+    return Math.round(payout)
 }
 
 export const revalidate = 0;
