@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     other: getFrameFlattened(frame),
   };
-  }
+} 
 
 export default function Page() {
   // redirect('https://bookies-rho.vercel.app/');
