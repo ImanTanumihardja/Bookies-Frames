@@ -109,7 +109,7 @@ function settleEvent(eventName, result) {
                                                 console.log("User: ".concat(fid, " won bet: ").concat(JSON.stringify(bet)));
                                                 payout = (0, utils_1.calculatePayout)(event.multiplier, event.odds[result], bet.stake, user === null || user === void 0 ? void 0 : user.streak);
                                                 console.log("Payout: ".concat(payout));
-                                                user.balance = parseFloat(user === null || user === void 0 ? void 0 : user.balance.toString()) + payout;
+                                                user.balance = Math.round(parseFloat(user === null || user === void 0 ? void 0 : user.balance.toString()) + payout);
                                                 user.streak = parseInt(user === null || user === void 0 ? void 0 : user.streak.toString()) + 1;
                                                 user.wins = parseInt(user === null || user === void 0 ? void 0 : user.wins.toString()) + 1;
                                             }

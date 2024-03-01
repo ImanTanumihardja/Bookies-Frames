@@ -296,7 +296,6 @@ function getFrameMessage(req, validate) {
                     _j.followingBookies = _k.sent();
                     return [3 /*break*/, 5];
                 case 4:
-                    console.log('Not validating frame message');
                     message.button = body.untrustedData.buttonIndex;
                     message.input = body.untrustedData.inputText;
                     message.fid = body.untrustedData.fid;

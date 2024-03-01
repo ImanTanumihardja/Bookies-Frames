@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
                             {shortUsername} {rank !== -1 ? `(#${rank + 1})` : ''}
                         </h1>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start', alignSelf:'center', top: -50}}>
-                            <h2 style={{color: 'white', marginBottom:-10, fontSize:40}}> 🎲 Dice: {Math.round(balance)} </h2>
+                            <h2 style={{color: 'white', marginBottom:-10, fontSize:40}}> 🎲 Balance: {Math.round(balance)} </h2>
                             <h2 style={{color: 'white', marginBottom:-10, fontSize:40}}> 🔥 Streak: {streak} </h2>
                             <h2 style={{color: 'white', fontSize:40}}> 🎰 Total Bets: {numBets} ({wins}W - {losses}L)</h2>
                         </div>

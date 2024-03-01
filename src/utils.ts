@@ -255,8 +255,7 @@ export async function getFrameMessage(req: NextRequest, validate=true) {
 
         message.followingBookies = await checkIsFollowingBookies(message.fid)
     }
-    else {
-        console.log('Not validating frame message')
+    else { // Not validating frame message
         message.button = body.untrustedData.buttonIndex
         message.input = body.untrustedData.inputText
         message.fid = body.untrustedData.fid
