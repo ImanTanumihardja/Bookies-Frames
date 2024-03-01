@@ -122,11 +122,12 @@ var FrameNames;
     FrameNames["BET_CONFIRMATION"] = "bet-confirmation";
     FrameNames["TRIVIA"] = "trivia";
     FrameNames["CAPTCHA"] = "captcha";
-    FrameNames["LUTON_CITY_SPREAD"] = "luton-city-spread";
     FrameNames["EVENT_THUMBNAIL"] = "event-thumbnail";
     FrameNames["LEADERBOARD"] = "leaderboard";
     FrameNames["BETS"] = "bets";
     FrameNames["INFO"] = "info";
+    FrameNames["PLACE_BET"] = "place-bet";
+    FrameNames["LUTON_CITY_SPREAD"] = "luton-city-spread";
     FrameNames["LAL_LAC_ML"] = "lal-lac-ml";
     FrameNames["MIA_DEN_ML"] = "mia-den-ml";
     FrameNames["BOS_DAL_ML"] = "bos-dal-ml";
@@ -202,7 +203,7 @@ function getRequestProps(req, params) {
     return returnParams;
 }
 exports.getRequestProps = getRequestProps;
-function notFollowingResponse(url) {
+function notFollowingResponse(returnUrl) {
     return new server_1.NextResponse((0, frames_js_1.getFrameHtml)({
         version: "vNext",
         image: "".concat(process.env['HOST'], "/thumbnails/not-following.gif"),
@@ -210,7 +211,7 @@ function notFollowingResponse(url) {
             {
                 label: 'Try Again',
                 action: 'post',
-                target: url
+                target: returnUrl
             },
             {
                 label: "Follow Us!",
@@ -218,7 +219,7 @@ function notFollowingResponse(url) {
                 target: 'https://warpcast.com/bookies'
             }
         ],
-        postUrl: url,
+        postUrl: returnUrl,
     }));
 }
 exports.notFollowingResponse = notFollowingResponse;

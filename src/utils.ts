@@ -86,11 +86,12 @@ export enum FrameNames {
     BET_CONFIRMATION = 'bet-confirmation',
     TRIVIA = 'trivia',
     CAPTCHA = 'captcha',
-    LUTON_CITY_SPREAD = 'luton-city-spread',
     EVENT_THUMBNAIL = 'event-thumbnail',
     LEADERBOARD = 'leaderboard',
     BETS = 'bets',
     INFO = 'info',
+    PLACE_BET = 'place-bet',
+    LUTON_CITY_SPREAD = 'luton-city-spread',
     LAL_LAC_ML = 'lal-lac-ml',
     MIA_DEN_ML = 'mia-den-ml',
     BOS_DAL_ML = 'bos-dal-ml',
@@ -172,7 +173,7 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
     return returnParams
 }
 
-export function notFollowingResponse(url:string) {
+export function notFollowingResponse(returnUrl:string) {
     return new NextResponse(
         getFrameHtml({
           version: "vNext",
@@ -181,7 +182,7 @@ export function notFollowingResponse(url:string) {
             {
               label:'Try Again', 
               action:'post',
-              target: url
+              target: returnUrl
             },
             { 
               label: "Follow Us!", 
@@ -189,7 +190,7 @@ export function notFollowingResponse(url:string) {
               target: 'https://warpcast.com/bookies'
             }
           ],
-          postUrl: url,
+          postUrl: returnUrl,
         }),
       );
 }
@@ -264,7 +265,7 @@ export async function getFrameMessage(req: NextRequest, validate=true) {
     return message
 }
 
-export function convertImpliedProbabilityToAmerican(impliedProbability: number) {
+export function convertImpliedProbabilityToAmerican(impliedProbability: number):number {
     if (impliedProbability <= 0 || impliedProbability >= 1) {
       throw new Error('Implied probability must be between 0 and 1 (exclusive).');
     }
