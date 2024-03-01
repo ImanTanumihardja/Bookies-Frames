@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { FrameNames, RequestProps, generateUrl, getFrameMessage } from '../../../../../src/utils';
 import { Frame, getFrameHtml} from "frames.js";
 
+const options = ["Celtics", "Mavericks"]
+const imageUrl = generateUrl(`api/frames/${FrameNames.EVENT_THUMBNAIL}/image`, {[RequestProps.EVENT_NAME]: FrameNames.BOS_DAL_ML}, true)
+
 
 export async function POST(req: NextRequest): Promise<Response> {
-  const options = ["Celtics", "Mavericks"]
-  const imageUrl = generateUrl(`api/frames/${FrameNames.EVENT_THUMBNAIL}/image`, {[RequestProps.EVENT_NAME]: FrameNames.BOS_DAL_ML}, true)
-
   const frame : Frame = {
     version: "vNext",
     inputText: 'Amount of dice you want to bet',
@@ -35,9 +35,6 @@ export async function POST(req: NextRequest): Promise<Response> {
 }
 
 export async function GET(req: NextRequest): Promise<Response> {
-  const options = ["Heat", "Nuggets"]
-  const imageUrl = generateUrl(`api/frames/${FrameNames.EVENT_THUMBNAIL}/image`, {[RequestProps.EVENT_NAME]: FrameNames.BOS_DAL_ML}, true)
-
   const frame : Frame = {
     version: "vNext",
     inputText: 'Amount of dice you want to bet',
