@@ -93,7 +93,7 @@ export enum FrameNames {
     INFO = 'info',
     LAL_LAC_ML = 'lal-lac-ml',
     MIA_DEN_ML = 'mia-den-ml',
-
+    BOS_DAL_ML = 'bos-dal-ml',
 }
 
 export enum DatabaseKeys {

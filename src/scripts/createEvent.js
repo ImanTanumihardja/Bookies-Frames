@@ -39,17 +39,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var createClient = require("@vercel/kv").createClient;
 var dotenv = require("dotenv");
 dotenv.config({ path: ".env" });
+var utils_1 = require("../utils");
 var kv = createClient({
     url: process.env['KV_REST_API_URL'],
     token: process.env['KV_REST_API_TOKEN'],
 });
 function createEvent(eventName, startDate, odds, multiplier, options, prompt) {
-    if (eventName === void 0) { eventName = 'mia-den-ml'; }
-    if (startDate === void 0) { startDate = 1709262000000; }
-    if (odds === void 0) { odds = [0.3635, 0.6365]; }
+    if (eventName === void 0) { eventName = "".concat(utils_1.FrameNames.BOS_DAL_ML); }
+    if (startDate === void 0) { startDate = 1709339400000; }
+    if (odds === void 0) { odds = [0.7639, 0.2361]; }
     if (multiplier === void 0) { multiplier = 1; }
-    if (options === void 0) { options = ["MIA", "DEN"]; }
-    if (prompt === void 0) { prompt = "Miami vs Nuggets"; }
+    if (options === void 0) { options = ["BOS", "DAL"]; }
+    if (prompt === void 0) { prompt = "Celtics vs Mavericks"; }
     return __awaiter(this, void 0, void 0, function () {
         var eventExists, event, poll, _a, _b, _c, _d, _e, _f;
         return __generator(this, function (_g) {

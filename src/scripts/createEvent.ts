@@ -2,13 +2,14 @@ const { createClient  } = require("@vercel/kv");
 const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 import { Event } from '../../app/types';
+import {FrameNames} from '../utils';
 
 const kv = createClient({
     url: process.env['KV_REST_API_URL'],
     token: process.env['KV_REST_API_TOKEN'],
   });
 
-async function createEvent(eventName='mia-den-ml', startDate=1709262000000, odds=[0.3635, 0.6365], multiplier=1, options=["MIA", "DEN"], prompt="Miami vs Nuggets") {
+async function createEvent(eventName=`${FrameNames.BOS_DAL_ML}`, startDate=1709339400000, odds=[0.7639, 0.2361], multiplier=1, options=["BOS", "DAL"], prompt="Celtics vs Mavericks") {
   // Check if event already exists
   const eventExists = await kv.exists(`${eventName}`)
   if (eventExists) {

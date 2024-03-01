@@ -129,6 +129,7 @@ var FrameNames;
     FrameNames["INFO"] = "info";
     FrameNames["LAL_LAC_ML"] = "lal-lac-ml";
     FrameNames["MIA_DEN_ML"] = "mia-den-ml";
+    FrameNames["BOS_DAL_ML"] = "bos-dal-ml";
 })(FrameNames || (exports.FrameNames = FrameNames = {}));
 var DatabaseKeys;
 (function (DatabaseKeys) {
