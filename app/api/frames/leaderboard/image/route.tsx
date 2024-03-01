@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
                         {usersInfo.map((userInfo: string | undefined, index: number) => {
                             return (
                                 userInfo && 
-                                <h3 key={index} style={{color: 'white', fontSize: 30, marginRight: index < profiles.length - 1 ? '100px' : '0', marginBottom:-5}}>{userInfo}</h3>
+                                <h3 key={index} style={{color: 'white', fontSize: 30, marginRight: index < profiles.length ? '100px' : '0', marginBottom:-5}}>{userInfo}</h3>
                             )
                         })}
                     </div>
