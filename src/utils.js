@@ -127,6 +127,7 @@ var FrameNames;
     FrameNames["BETS"] = "bets";
     FrameNames["INFO"] = "info";
     FrameNames["PLACE_BET"] = "place-bet";
+    FrameNames["EVENT"] = "event";
     FrameNames["LUTON_CITY_SPREAD"] = "luton-city-spread";
     FrameNames["LAL_LAC_ML"] = "lal-lac-ml";
     FrameNames["MIA_DEN_ML"] = "mia-den-ml";

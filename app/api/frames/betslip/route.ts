@@ -102,7 +102,8 @@ export async function POST(req: NextRequest): Promise<Response> {
                   label: "Reject", 
                   action: 'post'
                 }
-              ]:
+              ]
+              :
               [
                 { 
                   label: "Check out /bookies!", 

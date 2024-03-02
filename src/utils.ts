@@ -91,6 +91,7 @@ export enum FrameNames {
     BETS = 'bets',
     INFO = 'info',
     PLACE_BET = 'place-bet',
+    EVENT = 'event',
     LUTON_CITY_SPREAD = 'luton-city-spread',
     LAL_LAC_ML = 'lal-lac-ml',
     MIA_DEN_ML = 'mia-den-ml',

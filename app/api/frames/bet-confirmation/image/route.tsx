@@ -54,6 +54,7 @@ export async function GET(req: NextRequest) {
                         background: 'linear-gradient(to right, orange, #aa3855, purple)',
                         justifyContent: 'center',
                 }}>
+                    <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', padding:25}}> {text} </h1>
                 </div>
                 <div style={{

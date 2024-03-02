@@ -42,25 +42,56 @@ export async function POST(req: NextRequest): Promise<Response> {
   if (result !== -1) {
     console.log('Event has already been settled');
   }
-  
-  const buttons = event.options.map((option, index) => {
-    if (event === null) throw new Error('Event not found');
-    const probability = event.odds[index];
-    const odd = convertImpliedProbabilityToAmerican(event.odds[index]);
-    const probString = `${probability > 0.5 ? '-' : '+'} ${odd.toString()}`; 
 
-    return {
-      label: `${option} (${probString})`,
-      action: 'post'
-    } as FrameButton
-  })
+  let imageUrl = '';
+  let buttons = undefined;
+
+  const now = new Date().getTime();
+  if (event.startDate < now || result !== -1) {
+    const pick = -1;
+    const stake = -1;
+
+    buttons =
+      [
+        { 
+          label: "Check out /bookies!", 
+          action: 'link', 
+          target: 'https://warpcast.com/~/channel/bookies'
+        }
+      ]
+    imageUrl = generateUrl(`api/frames/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, 
+                                                                              [RequestProps.PICK]: pick, 
+                                                                              [RequestProps.BUTTON_INDEX]: 0, 
+                                                                              [RequestProps.FID]: fid, 
+                                                                              [RequestProps.EVENT_NAME]: eventName, 
+                                                                              [RequestProps.OPTIONS]: event.options, 
+                                                                              [RequestProps.TIME]: now, 
+                                                                              [RequestProps.RESULT]: result}, true);
+                                                                      
+  }
+  else {
+    buttons = event.options.map((option, index) => {
+      if (event === null) throw new Error('Event not found');
+      const probability = event.odds[index];
+      const odd = convertImpliedProbabilityToAmerican(event.odds[index]);
+      const probString = `${probability > 0.5 ? '-' : '+'}${odd.toString()}`; 
+  
+      return {
+        label: `${option} (${probString})`,
+        action: 'post'
+      } as FrameButton
+    })
+    imageUrl = generateUrl(`api/frames/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, [RequestProps.BALANCE]: user.balance, [RequestProps.TIME]: event.startDate}, true);
+  }
+  
+
 
   const frame : Frame = {
     version: "vNext",
     inputText: 'Amount of dice you want to bet',
 
     buttons: buttons as FrameButtonsType,
-    image: generateUrl(`api/frames/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, [RequestProps.BALANCE]: user.balance, [RequestProps.TIME]: event.startDate}, true),
+    image: imageUrl,
     postUrl: generateUrl(`api/frames/${FrameNames.BETSLIP}`, {[RequestProps.EVENT_NAME]: FrameNames.BOS_DAL_ML}, false),
   };
   return new NextResponse(

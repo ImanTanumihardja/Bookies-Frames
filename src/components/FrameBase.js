@@ -17,7 +17,7 @@ const FrameBase = ({ children }) => {
                 left: 15,
                 alignItems: 'center',
             }}>
-                <img src={`${process.env['HOST']}/Full_logo.png`} style={{ width: 120, height: 40 }}/>
+                <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
             </div>
                 {/* Render the children components or content */}
                 {children}
