@@ -1,8 +1,8 @@
 {
-    "eventName": "lal-den-ml", 
-    "startDate": 1709429400000, 
-    "odds": [0.4950, 0.5050],
+    "eventName": "ala-tenn-ou", 
+    "startDate": 1709427600000, 
+    "odds": [0.5, 0.5],
     "multiplier":1, 
-    "options":["LAL", "DEN"],
-    "prompt":"Lakers (LAL) vs Nuggets (DEN)"
+    "options":["Over", "Under"],
+    "prompt":"Will ALA and TENN score over or under 169.5 points?"
 }
