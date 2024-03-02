@@ -4,5 +4,5 @@
     "odds": [0.5, 0.5],
     "multiplier":1, 
     "options":["Over", "Under"],
-    "prompt":"Will ALA and TENN score over or under 169.5 points?"
+    "prompt":"Will ALA and TENN score over or under 169.5 points🏀?"
 }
