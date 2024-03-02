@@ -1,8 +1,8 @@
 {
-    "eventName": "city-manu-ml", 
-    "startDate": 1709479800000, 
-    "odds": [0.7778, 0.1053, 0.1667 ],
+    "eventName": "min-lac-ml", 
+    "startDate": 1709497800000, 
+    "odds": [0.4878, 0.5122],
     "multiplier":1, 
-    "options":["Man City", "Man United", "Draw"],
-    "prompt":"Man City vs Man United?"
+    "options":["MIN", "LAC"],
+    "prompt":"Timberwolves (MIN) vs Clippers (LAC)?"
 }
