@@ -117,7 +117,6 @@ var FrameNames;
 (function (FrameNames) {
     FrameNames["CLAIM_DICE"] = "claim-dice";
     FrameNames["PROFILE_FINDER"] = "profile-finder";
-    FrameNames["SBLVIII_ML"] = "sblviii-ml";
     FrameNames["BETSLIP"] = "betslip";
     FrameNames["BET_CONFIRMATION"] = "bet-confirmation";
     FrameNames["TRIVIA"] = "trivia";
@@ -128,9 +127,6 @@ var FrameNames;
     FrameNames["INFO"] = "info";
     FrameNames["PLACE_BET"] = "place-bet";
     FrameNames["EVENT"] = "event";
-    FrameNames["LUTON_CITY_SPREAD"] = "luton-city-spread";
-    FrameNames["LAL_LAC_ML"] = "lal-lac-ml";
-    FrameNames["MIA_DEN_ML"] = "mia-den-ml";
     FrameNames["BOS_DAL_ML"] = "bos-dal-ml";
 })(FrameNames || (exports.FrameNames = FrameNames = {}));
 var DatabaseKeys;

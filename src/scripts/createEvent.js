@@ -38,29 +38,53 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var createClient = require("@vercel/kv").createClient;
 var dotenv = require("dotenv");
+var fs = require('fs');
+var path = require('path');
 dotenv.config({ path: ".env" });
-var utils_1 = require("../utils");
 var kv = createClient({
     url: process.env['KV_REST_API_URL'],
     token: process.env['KV_REST_API_TOKEN'],
 });
 function createEvent(eventName, startDate, odds, multiplier, options, prompt) {
-    if (eventName === void 0) { eventName = "".concat(utils_1.FrameNames.BOS_DAL_ML); }
-    if (startDate === void 0) { startDate = 1709339400000; }
+    if (eventName === void 0) { eventName = ""; }
+    if (startDate === void 0) { startDate = 0; }
     if (odds === void 0) { odds = [0.7639, 0.2361]; }
     if (multiplier === void 0) { multiplier = 1; }
-    if (options === void 0) { options = ["BOS", "DAL"]; }
-    if (prompt === void 0) { prompt = "Celtics vs Mavericks"; }
+    if (options === void 0) { options = ["", ""]; }
+    if (prompt === void 0) { prompt = ""; }
     return __awaiter(this, void 0, void 0, function () {
-        var eventExists, event, poll, _a, _b, _c, _d, _e, _f;
+        var filePath, eventData, eventExists, event, poll, _a, _b, _c, _d, _e, _f;
         return __generator(this, function (_g) {
             switch (_g.label) {
-                case 0: return [4 /*yield*/, kv.exists("".concat(eventName))];
+                case 0:
+                    filePath = path.join(__dirname, "../../event.json");
+                    eventData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+                    if (eventData) {
+                        eventName = eventData.eventName;
+                        startDate = eventData.startDate;
+                        odds = eventData.odds;
+                        multiplier = eventData.multiplier;
+                        options = eventData.options;
+                        prompt = eventData.prompt;
+                    }
+                    if (startDate < new Date().getTime()) {
+                        throw new Error('Start date is invalid');
+                    }
+                    if (odds.length != options.length) {
+                        throw new Error('Odds and options length do not match');
+                    }
+                    // Check if any of the options are empty
+                    if (options.some(function (option) { return option === ""; })) {
+                        throw new Error('Options cannot be empty');
+                    }
+                    if (odds.reduce(function (a, b) { return a + b; }, 0) != 1) {
+                        throw new Error('The sum of odds is not equal to 1');
+                    }
+                    return [4 /*yield*/, kv.exists("".concat(eventName))];
                 case 1:
                     eventExists = _g.sent();
                     if (eventExists) {
-                        console.log("Event ".concat(eventName, " already exists"));
-                        return [2 /*return*/];
+                        throw new Error("Event ".concat(eventName, " already exists"));
                     }
                     event = { startDate: startDate, result: -1, odds: odds, multiplier: multiplier, options: options, prompt: prompt };
                     return [4 /*yield*/, kv.hset("".concat(eventName), event)];
@@ -99,7 +123,6 @@ function createEvent(eventName, startDate, odds, multiplier, options, prompt) {
 }
 if (require.main === module) {
     // Read in cli arguments
-    var args = require('minimist')(process.argv.slice(2), { string: ['e'] });
     createEvent().then(function () { return process.exit(0); })
         .catch(function (error) {
         console.error(error);

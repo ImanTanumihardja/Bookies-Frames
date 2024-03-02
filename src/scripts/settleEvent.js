@@ -62,9 +62,9 @@ function settleEvent(eventName, result) {
                     if ((event === null || event === void 0 ? void 0 : event.startDate) > new Date().getTime()) {
                         throw new Error('Event has not started yet');
                     }
-                    // if (parseInt(event?.result.toString()) !== -1) {
-                    //   throw new Error('Event has already been settled')
-                    // } 
+                    if (parseInt(event === null || event === void 0 ? void 0 : event.result.toString()) !== -1) {
+                        throw new Error('Event has already been settled');
+                    }
                     if (result === -1) {
                         throw new Error('Result is invalid');
                     }

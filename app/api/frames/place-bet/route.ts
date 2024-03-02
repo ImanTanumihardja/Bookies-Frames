@@ -17,7 +17,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   if (!followingBookies) {
     // Call fetch to get not following thumbnail
-    return notFollowingResponse(generateUrl(`/api/frames/${FrameNames.PLACE_BET}/${eventName}`, {}, false))
+    return notFollowingResponse(generateUrl(`/api/frames/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false))
   }
 
   await Promise.all([kv.hgetall(fid.toString()), kv.hgetall(eventName)]).then( (res) => {
@@ -45,11 +45,12 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   let imageUrl = '';
   let buttons = undefined;
+  let inputText : string | undefined = 'Amount of dice you want to bet';
 
   const now = new Date().getTime();
   if (event.startDate < now || result !== -1) {
     const pick = -1;
-    const stake = -1;
+    inputText = undefined
 
     buttons =
       [
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest): Promise<Response> {
           target: 'https://warpcast.com/~/channel/bookies'
         }
       ]
-    imageUrl = generateUrl(`api/frames/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, 
+    imageUrl = generateUrl(`api/frames/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: 0, 
                                                                               [RequestProps.PICK]: pick, 
                                                                               [RequestProps.BUTTON_INDEX]: 0, 
                                                                               [RequestProps.FID]: fid, 
@@ -88,11 +89,11 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const frame : Frame = {
     version: "vNext",
-    inputText: 'Amount of dice you want to bet',
+    inputText: inputText,
 
     buttons: buttons as FrameButtonsType,
     image: imageUrl,
-    postUrl: generateUrl(`api/frames/${FrameNames.BETSLIP}`, {[RequestProps.EVENT_NAME]: FrameNames.BOS_DAL_ML}, false),
+    postUrl: generateUrl(`api/frames/${FrameNames.BETSLIP}`, {[RequestProps.EVENT_NAME]: eventName}, false),
   };
   return new NextResponse(
     getFrameHtml(frame),

@@ -81,7 +81,6 @@ export const RequestPropsTypes = {
 export enum FrameNames {
     CLAIM_DICE = 'claim-dice',
     PROFILE_FINDER = 'profile-finder',
-    SBLVIII_ML = 'sblviii-ml',
     BETSLIP = 'betslip',
     BET_CONFIRMATION = 'bet-confirmation',
     TRIVIA = 'trivia',
@@ -92,9 +91,6 @@ export enum FrameNames {
     INFO = 'info',
     PLACE_BET = 'place-bet',
     EVENT = 'event',
-    LUTON_CITY_SPREAD = 'luton-city-spread',
-    LAL_LAC_ML = 'lal-lac-ml',
-    MIA_DEN_ML = 'mia-den-ml',
     BOS_DAL_ML = 'bos-dal-ml',
 }
 

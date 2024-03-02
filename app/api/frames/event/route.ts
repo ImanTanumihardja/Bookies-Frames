@@ -25,7 +25,7 @@ export async function GET(req: NextRequest): Promise<Response> {
       },
     ],
     image: imageUrl,
-    postUrl: generateUrl(`api/frames/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: FrameNames.BOS_DAL_ML}, false),
+    postUrl: generateUrl(`api/frames/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false),
   };
   return new NextResponse(
     getFrameHtml(frame),

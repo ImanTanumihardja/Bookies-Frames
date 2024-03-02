@@ -71,7 +71,7 @@ export async function GET(req: NextRequest) {
                         })}
                     </div>
                     :
-                    <div style={{display:'flex', height:'75%', flexDirection:'column', justifyContent:'flex-start', flexWrap: 'wrap', top:70, left:50}}>
+                    <div style={{display:'flex', height:'75%', flexDirection:'column', justifyContent:'flex-start', flexWrap: 'wrap', top:60, left:50}}>
                         {usersInfo.map((userInfo: string | undefined, index: number) => {
                             return (
                                 userInfo && 

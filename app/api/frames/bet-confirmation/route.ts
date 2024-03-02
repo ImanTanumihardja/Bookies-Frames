@@ -116,7 +116,18 @@ export async function POST(req: NextRequest): Promise<Response> {
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-      buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}, {label: 'Place Another Bet', action:'post', target: generateUrl(`/api/frames/events/${eventName}`, {}, false)}],
+      buttons: 
+      [
+        { 
+          label: "Check out /bookies!", 
+          action: 'link', 
+          target: 'https://warpcast.com/~/channel/bookies'
+        }, 
+        {
+          label: 'Place Another Bet', 
+          action:'post', 
+          target: generateUrl(`/api/frames/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false)}
+        ],
       postUrl: `${process.env['HOST']}/api/frames/${FrameNames.BET_CONFIRMATION}`,
     }),
   );
