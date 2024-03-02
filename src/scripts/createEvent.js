@@ -53,7 +53,7 @@ function createEvent(eventName, startDate, odds, multiplier, options, prompt) {
     if (options === void 0) { options = ["", ""]; }
     if (prompt === void 0) { prompt = ""; }
     return __awaiter(this, void 0, void 0, function () {
-        var filePath, eventData, event, poll, _a, _b, _c, _d, _e, _f;
+        var filePath, eventData, eventExists, event, poll, _a, _b, _c, _d, _e, _f;
         return __generator(this, function (_g) {
             switch (_g.label) {
                 case 0:
@@ -77,38 +77,44 @@ function createEvent(eventName, startDate, odds, multiplier, options, prompt) {
                     if (options.some(function (option) { return option === ""; })) {
                         throw new Error('Options cannot be empty');
                     }
-                    if (odds.reduce(function (a, b) { return a + b; }, 0) != 1) {
+                    if (odds.reduce(function (a, b) { return a + b; }, 0) != 1 && odds.length === 2) {
                         throw new Error('The sum of odds is not equal to 1');
+                    }
+                    return [4 /*yield*/, kv.exists("".concat(eventName))];
+                case 1:
+                    eventExists = _g.sent();
+                    if (eventExists) {
+                        throw new Error("Event ".concat(eventName, " already exists"));
                     }
                     event = { startDate: startDate, result: -1, odds: odds, multiplier: multiplier, options: options, prompt: prompt };
                     return [4 /*yield*/, kv.hset("".concat(eventName), event)];
-                case 1:
+                case 2:
                     _g.sent();
                     poll = { 0: 0, 1: 0, 2: 0, 3: 0 };
                     return [4 /*yield*/, kv.hset("".concat(eventName, ":poll"), poll)
                         // Create bets list 
                     ];
-                case 2:
+                case 3:
                     _g.sent();
                     // Create bets list 
                     return [4 /*yield*/, kv.del("".concat(eventName, ":bets"))];
-                case 3:
+                case 4:
                     // Create bets list 
                     _g.sent();
                     return [4 /*yield*/, kv.hgetall("".concat(eventName))];
-                case 4:
+                case 5:
                     event = _g.sent();
                     console.log("Event: ".concat(eventName));
                     console.log(event);
                     _b = (_a = console).log;
                     _c = ["Poll"];
                     return [4 /*yield*/, kv.hgetall("".concat(eventName, ":poll"))];
-                case 5:
+                case 6:
                     _b.apply(_a, _c.concat([_g.sent()]));
                     _e = (_d = console).log;
                     _f = ["Bets"];
                     return [4 /*yield*/, kv.smembers("".concat(eventName, ":bets"))];
-                case 6:
+                case 7:
                     _e.apply(_d, _f.concat([_g.sent()]));
                     return [2 /*return*/];
             }

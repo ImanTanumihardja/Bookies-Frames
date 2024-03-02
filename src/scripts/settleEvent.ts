@@ -19,7 +19,7 @@ async function settleEvent(eventName="", result=-1) {
     }
     
     if (event?.startDate > new Date().getTime()) {
-      throw new Error('Event has not started yet')
+      throw new Error('Event has not closed yet')
     }
 
     if (parseInt(event?.result.toString()) !== -1) {
@@ -27,6 +27,10 @@ async function settleEvent(eventName="", result=-1) {
     } 
 
     if (result === -1) {
+      throw new Error('Result is invalid')
+    }
+
+    if (result >= event?.options.length) {
       throw new Error('Result is invalid')
     }
 

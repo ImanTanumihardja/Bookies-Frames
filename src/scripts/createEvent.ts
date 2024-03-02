@@ -37,7 +37,7 @@ async function createEvent(eventName=``, startDate=0, odds=[0.7639, 0.2361], mul
     throw new Error('Options cannot be empty')
   }
 
-  if (odds.reduce((a, b) => a + b, 0) != 1) {
+  if (odds.reduce((a, b) => a + b, 0) != 1 && odds.length === 2) {
     throw new Error('The sum of odds is not equal to 1')
   }
 

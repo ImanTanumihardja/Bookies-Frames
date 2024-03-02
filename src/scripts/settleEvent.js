@@ -60,12 +60,15 @@ function settleEvent(eventName, result) {
                         throw new Error("Event: ".concat(eventName, " does not exist"));
                     }
                     if ((event === null || event === void 0 ? void 0 : event.startDate) > new Date().getTime()) {
-                        throw new Error('Event has not started yet');
+                        throw new Error('Event has not closed yet');
                     }
                     if (parseInt(event === null || event === void 0 ? void 0 : event.result.toString()) !== -1) {
                         throw new Error('Event has already been settled');
                     }
                     if (result === -1) {
+                        throw new Error('Result is invalid');
+                    }
+                    if (result >= (event === null || event === void 0 ? void 0 : event.options.length)) {
                         throw new Error('Result is invalid');
                     }
                     console.log("Event: ".concat(eventName));
