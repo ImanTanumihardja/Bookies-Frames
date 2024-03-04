@@ -1,8 +1,0 @@
-{
-    "eventName": "city-manu-ml", 
-    "startDate": 1709479800000, 
-    "odds": [0.7778, 0.1667, 0.1053],
-    "multiplier":1, 
-    "options":["Man City", "Draw", "Man United"],
-    "prompt":"Man City vs Man United?"
-}

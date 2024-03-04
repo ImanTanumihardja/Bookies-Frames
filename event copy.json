@@ -1,8 +1,0 @@
-{
-    "eventName": "lal-den-ml", 
-    "startDate": 1709429400000, 
-    "odds": [0.4762, 0.5238],
-    "multiplier":1, 
-    "options":["LAL", "DEN"],
-    "prompt":"Lakers (LAL) vs Nuggets (DEN)"
-}

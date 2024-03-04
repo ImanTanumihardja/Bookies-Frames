@@ -1,8 +1,8 @@
 {
-    "eventName": "min-lac-ml", 
-    "startDate": 1709497800000, 
-    "odds": [0.4878, 0.5122],
+    "eventName": "mil-lac-ml", 
+    "startDate": 1709609400000, 
+    "odds": [0.6429, 0.3571],
     "multiplier":1, 
-    "options":["MIN", "LAC"],
-    "prompt":"Timberwolves (MIN) vs Clippers (LAC)?"
+    "options":["MIL", "LAC"],
+    "prompt":"Bucks (MIL) vs Clippers (LAC)?"
 }
