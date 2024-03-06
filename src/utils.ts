@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { NeynarAPIClient } from "@neynar/nodejs-sdk";
 import { User, Bet} from '../app/types';
-import { getFrameMessage as validateFrameMessage } from '@coinbase/onchainkit'
+// import { getFrameMessage as validateFrameMessage } from '@coinbase/onchainkit'
 import { FrameValidationData } from '../app/types';
-import { getFrameHtml } from 'frames.js';
+import { getFrameHtml, getFrameMessage as validateFrameMessage } from 'frames.js';
 
 
 export enum RequestProps {
@@ -236,20 +236,20 @@ export async function getFrameMessage(req: NextRequest, validate=true) {
 
     // Use onchainkit to validate the frame message
     if (validate) {
-        const data = await validateFrameMessage(body, {neynarApiKey: process.env['NEYNAR_API_KEY'] || ""});
+        const data = await validateFrameMessage(body);
 
         if (!data.isValid) {
             throw new Error('Invalid frame message');
         }
 
-        message.button = data?.message?.button || 0
-        message.following = data?.message?.following || false
-        message.input = data?.message?.input || ""
-        message.fid = data?.message?.interactor.fid || 0
-        message.custody_address = data?.message?.interactor.custody_address || ""
-        message.verified_accounts = data?.message?.interactor.verified_accounts || []
-        message.liked = data?.message?.liked || false
-        message.recasted = data?.message?.recasted || false
+        message.button = data?.buttonIndex || 0
+        message.following = data.requesterFollowsCaster || false
+        message.input = data?.inputText || ""
+        message.fid = data?.requesterFid || 0
+        message.custody_address = data?.requesterCustodyAddress || ""
+        message.verified_accounts = data?.requesterVerifiedAddresses|| []
+        message.liked = data?.likedCast || false
+        message.recasted = data?.recastedCast || false
 
         message.followingBookies = await checkIsFollowingBookies(message.fid)
     }
