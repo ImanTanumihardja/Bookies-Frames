@@ -285,7 +285,3 @@ export function calculatePayout(multiplier: number, impliedProbability: number, 
     const payout = multiplier * (1 / impliedProbability) * (stake) // TODO add streak
     return Math.round(payout)
 }
-
-export const revalidate = 0;
-export const dynamic = 'force-dynamic';
-export const fetchCache = 'force-no-store';

@@ -1,7 +1,7 @@
 {
-    "eventName": "mil-lac-ml", 
-    "startDate": 1709609400000, 
-    "odds": [0.6429, 0.3571],
+    "eventName": "test2", 
+    "startDate": 1709777045000, 
+    "odds": [0.5, 0.5],
     "multiplier":1, 
     "options":["MIL", "LAC"],
     "prompt":"Bucks (MIL) vs Clippers (LAC)?"

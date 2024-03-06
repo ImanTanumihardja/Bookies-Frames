@@ -53,20 +53,10 @@ function createEvent(eventName, startDate, odds, multiplier, options, prompt) {
     if (options === void 0) { options = ["", ""]; }
     if (prompt === void 0) { prompt = ""; }
     return __awaiter(this, void 0, void 0, function () {
-        var filePath, eventData, eventExists, event, poll, _a, _b, _c, _d, _e, _f;
+        var eventExists, event, poll, _a, _b, _c, _d, _e, _f;
         return __generator(this, function (_g) {
             switch (_g.label) {
                 case 0:
-                    filePath = path.join(__dirname, "../../event.json");
-                    eventData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-                    if (eventData) {
-                        eventName = eventData.eventName;
-                        startDate = eventData.startDate;
-                        odds = eventData.odds;
-                        multiplier = eventData.multiplier;
-                        options = eventData.options;
-                        prompt = eventData.prompt;
-                    }
                     if (startDate < new Date().getTime()) {
                         throw new Error('Start date is invalid');
                     }
@@ -121,12 +111,23 @@ function createEvent(eventName, startDate, odds, multiplier, options, prompt) {
         });
     });
 }
+exports.default = createEvent;
 if (require.main === module) {
-    // Read in cli arguments
-    createEvent().then(function () { return process.exit(0); })
+    // Read event file using fs
+    var filePath = path.join(__dirname, "../../event.json");
+    var eventData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    if (eventData === null) {
+        throw new Error('Event data is null');
+    }
+    var eventName = eventData.eventName;
+    var startDate = eventData.startDate;
+    var odds = eventData.odds;
+    var multiplier = eventData.multiplier;
+    var options = eventData.options;
+    var prompt_1 = eventData.prompt;
+    createEvent(eventName, startDate, odds, multiplier, options, prompt_1).then(function () { return process.exit(0); })
         .catch(function (error) {
         console.error(error);
         process.exit(1);
     });
 }
-module.exports = createEvent;

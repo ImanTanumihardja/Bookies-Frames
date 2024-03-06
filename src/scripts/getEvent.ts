@@ -1,7 +1,7 @@
 const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
-import { DEFAULT_BET, DatabaseKeys, calculatePayout } from "../utils";
+import { DatabaseKeys, calculatePayout } from "../utils";
 import { Event, Bet, User } from '../../app/types';
 import { createClient  } from "@vercel/kv";
 
@@ -10,23 +10,30 @@ const kv = createClient({
   token: process.env['KV_REST_API_TOKEN'] || '',
 });
 
-async function getEvent(eventName = "sblviii-ml") {
+export default async function getEvent(eventName="") {
   let eventData: Event | null = await kv.hgetall(`${eventName}`);
   console.log(`Event: ${eventName}`);
   console.log(eventData);
   
   // Get all bets
-  let betsData = (await kv.zscan(DatabaseKeys.LEADERBOARD, 0, { count: 150 }))
+  let betsData = (await kv.sscan(`${eventName}:${DatabaseKeys.BETS}`, 0, { count: 150 }))
   let cursor = betsData[0]
-  let fids : Bet[] = betsData[1] as unknown as Bet[]
+  let fids : number[] = betsData[1] as unknown as number[]
 
   while (cursor) {
-    betsData = (await kv.zscan(DatabaseKeys.LEADERBOARD, cursor, { count: 150 }))
+    betsData = (await kv.sscan(`${eventName}:${DatabaseKeys.BETS}`, cursor, { count: 150 }))
     cursor = betsData[0]
-    fids = fids.concat(betsData[1] as unknown as Bet[])
+    fids = fids.concat(betsData[1] as unknown as number[])
   }
 
-  console.log(`Total bets: ${fids.length/2}`);
+  // Get poll data
+  const pollData : Record<number, number> | null = await kv.hgetall(`${eventName}:${DatabaseKeys.POLL}`);
+  if (pollData === null) {
+    throw new Error(`Poll: ${eventName} does not exist`)
+  }
+  console.log(`Poll: ${pollData.toString()}`);
+
+  console.log(`Total bets: ${fids.length}`);
 
   if (eventData?.result != -1) {
     let maxValue = 0;
@@ -62,6 +69,8 @@ async function getEvent(eventName = "sblviii-ml") {
     console.log(`MAX WINNERS: ${fids}`);
     console.log(`MAX WINNERS PAYOUT: ${maxValue}`);
   }
+
+  return {...eventData, bettors: fids, pollData: pollData}
 }
 
 
@@ -74,5 +83,3 @@ if (require.main === module) {
       process.exit(1)
     })
 }
-
-module.exports = getEvent

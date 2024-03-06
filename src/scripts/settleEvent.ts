@@ -3,7 +3,7 @@ const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
 import { calculatePayout, DatabaseKeys } from "../utils";
-import { Event, Bet, User } from '../../app/types';
+import { Event, User } from '../../app/types';
 import { createClient  } from "@vercel/kv";
 
 const kv = createClient({
@@ -11,16 +11,16 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'] || '',
   });
 
-async function settleEvent(eventName="", result=-1) {
+export default async function settleEvent(eventName="", result=-1) {
     let event: Event | null = await kv.hgetall(`${eventName}`);
 
     if (event === null) {
       throw new Error(`Event: ${eventName} does not exist`)
     }
     
-    if (event?.startDate > new Date().getTime()) {
-      throw new Error('Event has not closed yet')
-    }
+    // if (event?.startDate > new Date().getTime()) {
+    //   throw new Error('Event has not closed yet')
+    // }
 
     if (parseInt(event?.result.toString()) !== -1) {
       throw new Error('Event has already been settled')
@@ -64,6 +64,7 @@ async function settleEvent(eventName="", result=-1) {
         console.log(`User: ${fid} does not exist`)
         continue
       }
+      let toWinAmount = 0;
       for (const bet of user?.bets[eventName]) {
         if (!bet.settled) {
           if (bet.pick === result) {  // Won
@@ -73,6 +74,7 @@ async function settleEvent(eventName="", result=-1) {
             console.log(`Payout: ${payout}`)
 
             user.balance = Math.round(parseFloat(user?.balance.toString()) + payout);
+            toWinAmount += payout - bet.stake;
             user.streak = parseInt(user?.streak.toString()) + 1;
             user.wins = parseInt(user?.wins.toString()) + 1;
           }
@@ -80,6 +82,7 @@ async function settleEvent(eventName="", result=-1) {
             console.log(`User: ${fid} lost bet: ${JSON.stringify(bet)}`)
             user.streak = 0;
             user.losses = parseInt(user.losses.toString()) + 1;
+            toWinAmount -= bet.stake;
           }
           bet.settled = true;
           user.numBets = parseInt(user?.numBets.toString()) + 1;
@@ -90,9 +93,11 @@ async function settleEvent(eventName="", result=-1) {
       // Update user and database
       await kv.hset(fid.toString(), user).then( async () => {
         console.log(`Settled user: ${fid}\n`)
-        await kv.zadd(DatabaseKeys.LEADERBOARD, {score:user.balance, member:fid});
+        await kv.zincrby(DatabaseKeys.LEADERBOARD, toWinAmount, fid).catch((error) => {
+          throw new Error(`Error updating leaderboard: ${fid}\n${error}`)
+        })
       }).catch((error) => {
-        throw new Error(`Error updating user: ${fid}`)
+        throw new Error(`Error updating user: ${fid}\n${error}`)
       });
     }
 }
@@ -106,5 +111,3 @@ if (require.main === module) {
         process.exit(1)
       })
   }
-
-  module.exports = settleEvent

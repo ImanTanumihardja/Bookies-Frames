@@ -4,7 +4,7 @@ import { kv } from '@vercel/kv';
 
 const PASSWORD: string = 'bookies123';
 
-async function getResponse(req: NextRequest): Promise<NextResponse> {
+export async function GET(req: NextRequest): Promise<Response> {
   console.log("Resetting user")
   const {string : password, fid} = getRequestProps(req, [RequestProps.STRING, RequestProps.FID]);  
 
@@ -16,12 +16,4 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   await kv.zrem(FrameNames.LEADERBOARD, fid.toString());
 
   return new NextResponse('User reset', {status: 200});
-}
-
-export async function GET(req: NextRequest): Promise<Response> {
-  return getResponse(req);
 } 
-
-export const revalidate = 0;
-// export const dynamic = 'force-dynamic';
-// export const fetchCache = 'force-no-store';

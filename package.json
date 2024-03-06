@@ -12,22 +12,24 @@
   "author": "Emmaniii",
   "license": "MIT",
   "dependencies": {
-    "@coinbase/onchainkit": "^0.9.5",
-    "@fontsource/plus-jakarta-sans": "^5.0.18",
-    "@neynar/nodejs-sdk": "^1.10.0",
+    "@coinbase/onchainkit": "^0.9.10",
+    "@fontsource/plus-jakarta-sans": "^5.0.19",
+    "@neynar/nodejs-sdk": "^1.11.0",
     "@vercel/kv": "^1.0.1",
     "dotenv": "^16.4.5",
-    "frames.js": "^0.5.3",
+    "frames.js": "^0.8.0",
     "install": "^0.13.0",
     "minimist": "^1.2.8",
     "next": "14.1.0",
     "npm": "^10.5.0",
     "react-dom": "^18.2.0",
-    "vercel": "^33.5.3"
+    "vercel": "^33.5.3",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/node": "^20.11.22",
-    "@types/react": "18.2.60",
+    "@types/node": "^20.11.24",
+    "@types/react": "18.2.63",
+    "@types/react-dom": "^18.2.20",
     "prettier": "^3.2.5",
     "typescript": "^5.3.3"
   }

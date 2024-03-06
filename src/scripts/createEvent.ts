@@ -10,20 +10,7 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
   });
 
-async function createEvent(eventName=``, startDate=0, odds=[0.7639, 0.2361], multiplier=1, options=["", ""], prompt="") {
-  // Read event file using fs
-  const filePath = path.join(__dirname, `../../event.json`);
-  const eventData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-
-  if (eventData) {
-    eventName = eventData.eventName;
-    startDate = eventData.startDate;
-    odds = eventData.odds;
-    multiplier = eventData.multiplier;
-    options = eventData.options;
-    prompt = eventData.prompt;
-  }
-
+export default async function createEvent(eventName=``, startDate=0, odds=[0.7639, 0.2361], multiplier=1, options=["", ""], prompt="") {
   if (startDate < new Date().getTime()) {
     throw new Error('Start date is invalid')
   }
@@ -66,12 +53,24 @@ async function createEvent(eventName=``, startDate=0, odds=[0.7639, 0.2361], mul
 }
 
 if (require.main === module) {
-    // Read in cli arguments
-    createEvent().then(() => process.exit(0))
-      .catch(error => {
-        console.error(error)
-        process.exit(1)
-      })
+  // Read event file using fs
+  const filePath = path.join(__dirname, `../../event.json`);
+  const eventData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+
+  if (eventData === null) {
+    throw new Error('Event data is null')
   }
 
-  module.exports = createEvent
+  const eventName = eventData.eventName;
+  const startDate = eventData.startDate;
+  const odds = eventData.odds;
+  const multiplier = eventData.multiplier;
+  const options = eventData.options;
+  const prompt = eventData.prompt;
+
+  createEvent(eventName, startDate, odds, multiplier, options, prompt).then(() => process.exit(0))
+    .catch(error => {
+      console.error(error)
+      process.exit(1)
+    })
+}
