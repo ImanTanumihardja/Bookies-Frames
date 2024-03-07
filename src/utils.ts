@@ -232,30 +232,30 @@ export async function getFrameMessage(req: NextRequest, validate=true) {
 
     let message: FrameValidationData = DEFAULT_FRAME_VALIDATION_DATA
 
-    // Use onchainkit to validate the frame message
-    if (validate) {
-        const data = await validateFrameMessage(body);
+    // // Use onchainkit to validate the frame message
+    // if (validate) {
+    //     const data = await validateFrameMessage(body);
 
-        if (!data.isValid) {
-            throw new Error('Invalid frame message');
-        }
+    //     if (!data.isValid) {
+    //         throw new Error('Invalid frame message');
+    //     }
 
-        message.button = data?.buttonIndex || 0
-        message.following = data.requesterFollowsCaster || false
-        message.input = data?.inputText || ""
-        message.fid = data?.requesterFid || 0
-        message.custody_address = data?.requesterCustodyAddress || ""
-        message.verified_accounts = data?.requesterVerifiedAddresses|| []
-        message.liked = data?.likedCast || false
-        message.recasted = data?.recastedCast || false
+    //     message.button = data?.buttonIndex || 0
+    //     message.following = data.requesterFollowsCaster || false
+    //     message.input = data?.inputText || ""
+    //     message.fid = data?.requesterFid || 0
+    //     message.custody_address = data?.requesterCustodyAddress || ""
+    //     message.verified_accounts = data?.requesterVerifiedAddresses|| []
+    //     message.liked = data?.likedCast || false
+    //     message.recasted = data?.recastedCast || false
 
-        message.followingBookies = await checkIsFollowingBookies(message.fid)
-    }
-    else { // Not validating frame message
-        message.button = body.untrustedData.buttonIndex
-        message.input = body.untrustedData.inputText
-        message.fid = body.untrustedData.fid
-    }
+    //     message.followingBookies = await checkIsFollowingBookies(message.fid)
+    // }
+    // else { // Not validating frame message
+    //     message.button = body.untrustedData.buttonIndex
+    //     message.input = body.untrustedData.inputText
+    //     message.fid = body.untrustedData.fid
+    // }
 
     return message
 }
