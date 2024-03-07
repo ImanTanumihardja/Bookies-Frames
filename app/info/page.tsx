@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: 'Learn about the Dice Games', 
       images: [{url: imageUrl}],
     },
-    // other: getFrameFlattened(frame),
+    other: getFrameFlattened(frame) as Record<string, string>,
   };
 } 
 

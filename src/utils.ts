@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { NeynarAPIClient } from "@neynar/nodejs-sdk";
 import { User, Bet} from '../app/types';
 import { FrameValidationData } from '../app/types';
-const { getFrameHtml, getFrameMessage: validateFrameMessage } = require('frames.js');
+const { getFrameHtml } = require('frames.js');
 
 export enum RequestProps {
   FID = 'fid',
