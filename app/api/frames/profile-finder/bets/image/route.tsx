@@ -3,14 +3,12 @@ import { ImageResponse } from 'next/og';
 import { RequestProps, getRequestProps } from '../../../../../../src/utils';
 import { Event, Bet } from '../../../../../types';
 import { kv } from '@vercel/kv';
+import * as fs from "fs";
+import { join } from 'path';
 
 // Fonts
-const plusJakartaSans = fetch(
-    new URL(
-      '@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff',
-      import.meta.url,
-    ),
-  ).then((res) => res.arrayBuffer());
+const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
+let fontData = fs.readFileSync(fontPath)
 
 export async function GET(req: NextRequest) {
     try {
@@ -73,7 +71,7 @@ export async function GET(req: NextRequest) {
             {
                 width: 764, 
                 height: 400, 
-                fonts: [{ name: 'Plus_Jakarta_Sans_700', data: await plusJakartaSans, weight: 400 }],
+                fonts: [{ name: 'Plus_Jakarta_Sans_700', data: fontData, weight: 400 }],
                 headers:{
                     'CDN-Cache-Control': 'public, s-maxage=60',
                     'Vercel-CDN-Cache-Control': 'public, s-maxage=60'
