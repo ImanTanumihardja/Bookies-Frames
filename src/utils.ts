@@ -3,7 +3,7 @@ import { NeynarAPIClient } from "@neynar/nodejs-sdk";
 import { User, Bet} from '../app/types';
 import { FrameValidationData } from '../app/types';
 import { getFrameMessage as validateFrameMessage } from '@coinbase/onchainkit'
-const { getFrameHtml, getFrameMessage: validateFrameMessages } = require('frames.js');
+const { getFrameHtml } = require('frames.js');
 
 export enum RequestProps {
   FID = 'fid',
