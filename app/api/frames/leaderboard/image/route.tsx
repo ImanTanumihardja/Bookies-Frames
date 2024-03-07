@@ -54,7 +54,8 @@ export async function GET(req: NextRequest) {
 
         let imageResponse = new ImageResponse(
             <FrameBase>
-                <div style={{display:'flex', flexDirection:'row', width:'100%', height:'100%', justifyContent:'center'}}>
+                <p></p>
+                {/* <div style={{display:'flex', flexDirection:'row', width:'100%', height:'100%', justifyContent:'center'}}>
                     <h1 style={{color: 'white', fontSize:55, padding:10, position:'absolute', top: -25, left: 15}}>Leaderboard</h1>
                     {offset === 0 ?
                     <div style={{display:'flex', height:'85%', flexDirection:'column', justifyContent:'center', flexWrap: 'wrap', top:50}}>
@@ -80,7 +81,7 @@ export async function GET(req: NextRequest) {
                         })}
                     </div>
                     }
-                </div>
+                </div> */}
             </FrameBase>
             ,
             {
