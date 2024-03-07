@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { FrameNames, RequestProps, generateUrl } from '../../src/utils';
-import { getFrameFlattened, Frame } from 'frames.js';import { get } from 'https';
+import { FrameNames, generateUrl } from '../../src/utils';
+import { getFrameFlattened, Frame } from 'frames.js';
 
 export async function generateMetadata(): Promise<Metadata> {
   const imageUrl = generateUrl(`thumbnails/${FrameNames.CLAIM_DICE}.gif`, {}, false)

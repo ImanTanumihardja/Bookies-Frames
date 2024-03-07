@@ -12,7 +12,6 @@
   "author": "Emmaniii",
   "license": "MIT",
   "dependencies": {
-    "@coinbase/onchainkit": "^0.9.12",
     "@fontsource/plus-jakarta-sans": "^5.0.19",
     "@neynar/nodejs-sdk": "^1.11.2",
     "@vercel/kv": "^1.0.1",
