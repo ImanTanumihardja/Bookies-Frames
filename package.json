@@ -2,7 +2,7 @@
   "name": "Bookies-Frames",
   "version": "0.1.2",
   "scripts": {
-    "build": "rm -rf .next && next build",
+    "build": "next build",
     "dev": "next dev",
     "format": "prettier --log-level warn --write .",
     "start": "next start",

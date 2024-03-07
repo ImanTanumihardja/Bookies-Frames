@@ -49,35 +49,6 @@ async function updateUserType() {
           }
 
           let updatedUser : User = DEFAULT_USER
-          // Delete points
-          if (user.points !== undefined) {
-              console.log(`Deleting points for User: ${fid}`)
-              await kv.hdel(fid.toString(), 'points')
-              // Convert old User object to new User object
-              updatedUser = {
-                balance: user.points,
-                hasClaimed: user.hasClaimed,
-                wins: user.wins,
-                losses: user.losses,
-                streak: user.streak,
-                numBets: user.numBets,
-                bets: []
-            }
-          }
-          else if (user.availableBalance !== undefined) {
-              // Convert old User object to new User object
-              await kv.hdel(fid.toString(), 'availableBalance')
-              console.log(`Converting User: ${fid}`)
-              updatedUser = {
-                balance: user.balance,
-                hasClaimed: user.hasClaimed,
-                wins: user.wins,
-                losses: user.losses,
-                streak: user.streak,
-                numBets: user.numBets,
-                bets: [],
-              }
-          }
 
           console.log(`Changed User: ${JSON.stringify(updatedUser)}\n`)
           
