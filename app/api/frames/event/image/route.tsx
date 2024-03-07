@@ -3,6 +3,7 @@ import { ImageResponse } from 'next/og';
 import { RequestProps, generateUrl, getRequestProps } from '../../../../../src/utils';
 import * as fs from "fs";
 import { join } from 'path';
+import { getCldImageUrl } from 'next-cloudinary';
 
 // Fonts
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
@@ -18,7 +19,14 @@ export async function GET(req: NextRequest) {
         const till = startDate - now;
         const hours = Math.ceil(((till) / (1000 * 60 * 60)) * 10) / 10;
 
-        const imageUrl:string = generateUrl(`thumbnails/events/${eventName}.png`, {}, false)
+
+        const imageUrl = getCldImageUrl({
+            width: 960,
+            height: 600,
+            src: eventName
+          });
+
+        // const imageUrl:string = generateUrl(`thumbnails/events/${eventName}.png`, {}, false)
 
         let imageResponse =  new ImageResponse(
             <div style={{display:'flex'}}>
@@ -46,3 +54,5 @@ export async function GET(req: NextRequest) {
 }
 
 // export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;

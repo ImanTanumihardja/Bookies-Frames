@@ -2,6 +2,7 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import {createEventAction} from "../actions"
+import { CldUploadWidget } from 'next-cloudinary';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -39,6 +40,16 @@ export function CreateEventForm() {
         <label htmlFor="prompt">Prompt</label>
         <input type="text" id="prompt" name="prompt" required />
         <SubmitButton />
+
+        <CldUploadWidget uploadPreset="thumbnails">
+        {({ open }) => {
+          return (
+            <button onClick={() => open()}>
+              Upload Thumbnail
+            </button>
+          );
+        }}
+      </CldUploadWidget>
       </form>
     </div>
   );

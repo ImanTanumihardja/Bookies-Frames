@@ -98,4 +98,5 @@ export async function GET(req: NextRequest) {
 }
 
 // export const runtime = 'edge';
-export const revalidate = 0;
+export const revalidate = 60;
+export const dynamic = 'force-dynamic';
