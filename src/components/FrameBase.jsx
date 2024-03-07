@@ -1,5 +1,3 @@
-// YourComponent.js
-
 const FrameBase = ({ children }) => {
     return (
         <div style={{
