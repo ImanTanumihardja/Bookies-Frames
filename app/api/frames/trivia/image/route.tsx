@@ -57,4 +57,4 @@ export async function GET(req: NextRequest) {
     }
 }
 
-export const runtime = 'edge';
+// export const runtime = 'edge';
