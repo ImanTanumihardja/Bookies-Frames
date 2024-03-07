@@ -12,7 +12,6 @@
   "author": "Emmaniii",
   "license": "MIT",
   "dependencies": {
-    "@fontsource/plus-jakarta-sans": "^5.0.19",
     "@neynar/nodejs-sdk": "^1.11.2",
     "@vercel/kv": "^1.0.1",
     "frames.js": "^0.8.0",
