@@ -8,7 +8,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   const message = await getFrameMessage(req, true);
 
   const txData = {
-      chainId: `eip155:8453`,
+      chainId: `eip155:84532`,
       method: 'eth_sendTransaction',
       params: {
         abi: [],
