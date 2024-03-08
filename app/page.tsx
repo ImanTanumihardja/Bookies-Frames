@@ -6,20 +6,27 @@
 
 import { getFrameMetadata } from '@coinbase/onchainkit/frame';
 import type { Metadata } from 'next';
+import { NEXT_PUBLIC_URL } from './config';
 
 const frameMetadata = getFrameMetadata({
   buttons: [
     {
+      label: 'Story time',
+    },
+    {
       action: 'tx',
       label: 'Send Base Sepolia',
-      target: `${process.env.HOST}/api/send-ether`,
+      target: `${NEXT_PUBLIC_URL}/api/send-ether`,
     },
   ],
   image: {
-    src: `${process.env.HOST}/thumbnails/claim-dice.gif`,
+    src: `${NEXT_PUBLIC_URL}/park-3.png`,
     aspectRatio: '1:1',
   },
-  postUrl: `${process.env.HOST}/api/frame`,
+  input: {
+    text: 'Tell me a story',
+  },
+  postUrl: `${NEXT_PUBLIC_URL}/api/frame`,
 });
 
 export const metadata: Metadata = {
@@ -28,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'zizzamia.xyz',
     description: 'LFG',
-    images: [`${process.env.HOST}/thumbnails/claim-dice.gif`],
+    images: [`${NEXT_PUBLIC_URL}/park-1.png`],
   },
   other: {
     ...frameMetadata,
