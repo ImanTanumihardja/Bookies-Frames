@@ -242,15 +242,15 @@ export async function getFrameMessage(req: NextRequest, validate=true) {
             throw new Error('Invalid frame message');
         }
 
-        message.button = data?.buttonIndex || 0
-        message.following = data.requesterFollowsCaster || false
-        message.input = data?.inputText || ""
-        message.fid = data?.requesterFid || 0
-        message.custody_address = data?.requesterCustodyAddress || ""
-        message.verified_accounts = data?.requesterVerifiedAddresses|| []
-        message.liked = data?.likedCast || false
-        message.recasted = data?.recastedCast || false
-        message.transactionId = data.transactionId || 0
+        message.button = data?.buttonIndex
+        message.following = data.requesterFollowsCaster
+        message.input = data?.inputText
+        message.fid = data?.requesterFid
+        message.custody_address = data?.requesterCustodyAddress
+        message.verified_accounts = data?.requesterVerifiedAddresses
+        message.liked = data?.likedCast
+        message.recasted = data?.recastedCast
+        message.transactionId = body?.transaction_id // TODO hopefuly change once added to framesjs
 
         message.followingBookies = await checkIsFollowingBookies(message.fid)
     }
@@ -258,6 +258,7 @@ export async function getFrameMessage(req: NextRequest, validate=true) {
         message.button = body.untrustedData.buttonIndex
         message.input = body.untrustedData.inputText
         message.fid = body.untrustedData.fid
+        message.transactionId = body.transaction_id 
     }
 
     return message

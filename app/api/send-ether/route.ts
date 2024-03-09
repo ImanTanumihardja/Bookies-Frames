@@ -5,10 +5,11 @@ import {parseEther} from 'ethers';
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
-  const message = await getFrameMessage(req, true);
+  const message = await getFrameMessage(req, false);
 
-  if (message.transactionId !== 0) {
-    console.log(`Transaction ID: ${message.transactionId}`);
+  console.log(`Transaction ID: ${message.transactionId}`);
+  if (!message.transactionId) {
+    // console.log(`Transaction ID: ${message.transactionId}`);
     const imageUrl = generateUrl(`thumbnails/claim-dice.gif`, {}, true);
 
     const frame : Frame = {
