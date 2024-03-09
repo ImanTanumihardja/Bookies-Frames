@@ -7,6 +7,26 @@ export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req, true);
 
+  if (message.transactionId !== 0) {
+    console.log(`Transaction ID: ${message.transactionId}`);
+    const imageUrl = generateUrl(`thumbnails/claim-dice.gif`, {}, true);
+
+    const frame : Frame = {
+      version: "vNext",
+      buttons: undefined,
+      image: imageUrl,
+      postUrl: `${process.env['HOST']}/api/send-ether`,
+    };
+
+    return new NextResponse(
+      getFrameHtml(frame),
+      {
+        headers: {
+          'content-type': 'text/html',
+        },
+      },
+    );}
+
   const txData = {
       chainId: `eip155:8453`,
       method: 'eth_sendTransaction',
@@ -21,7 +41,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 } 
 
 export async function GET(req: NextRequest): Promise<Response> {
-  const imageUrl = generateUrl(`claim-dice.gif`, {}, true);
+  const imageUrl = generateUrl(`thumbnails/claim-dice.gif`, {}, true);
 
     const frame : Frame = {
       version: "vNext",

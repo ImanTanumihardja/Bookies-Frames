@@ -129,6 +129,7 @@ export const DEFAULT_FRAME_VALIDATION_DATA: FrameValidationData = {
     verified_accounts: [],
     liked: false,
     recasted: false,
+    transactionId: 0
   };
 
 export function getRequestProps(req: NextRequest, params: RequestProps[]): Record<string, any> {
@@ -249,6 +250,7 @@ export async function getFrameMessage(req: NextRequest, validate=true) {
         message.verified_accounts = data?.requesterVerifiedAddresses|| []
         message.liked = data?.likedCast || false
         message.recasted = data?.recastedCast || false
+        message.transactionId = data.transactionId || 0
 
         message.followingBookies = await checkIsFollowingBookies(message.fid)
     }
