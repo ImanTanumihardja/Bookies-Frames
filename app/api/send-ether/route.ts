@@ -8,7 +8,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   const message = await getFrameMessage(req, false);
 
   console.log(`Transaction ID: ${message.transactionId}`);
-  if (!message.transactionId) {
+  if (message.transactionId) {
     // console.log(`Transaction ID: ${message.transactionId}`);
     const imageUrl = generateUrl(`thumbnails/claim-dice.gif`, {}, true);
 

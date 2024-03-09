@@ -119,19 +119,6 @@ export const DEFAULT_BET: Bet = {
     settled: false
 }
 
-export const DEFAULT_FRAME_VALIDATION_DATA: FrameValidationData = {
-    button: 0,
-    following: false,
-    followingBookies: false,
-    input: "",
-    fid: 0,
-    custody_address: "",
-    verified_accounts: [],
-    liked: false,
-    recasted: false,
-    transactionId: 0
-  };
-
 export function getRequestProps(req: NextRequest, params: RequestProps[]): Record<string, any> {
     // Loop throug each RequestParams
     let returnParams: Record<string, any> = {}
@@ -232,7 +219,7 @@ export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
 export async function getFrameMessage(req: NextRequest, validate=true) {
     const body = await req.json();
 
-    let message: FrameValidationData = DEFAULT_FRAME_VALIDATION_DATA
+    let message: FrameValidationData = {} as FrameValidationData;
 
     // Use onchainkit to validate the frame message
     if (validate) {
