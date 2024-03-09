@@ -5,7 +5,7 @@ import {parseEther} from 'ethers';
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
-  const message = await getFrameMessage(req, false);
+  const message = await getFrameMessage(req, true);
 
   console.log(`Transaction ID: ${message.transactionId}`);
   if (message.transactionId) {
