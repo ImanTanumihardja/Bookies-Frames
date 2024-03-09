@@ -237,7 +237,7 @@ export async function getFrameMessage(req: NextRequest, validate=true) {
         message.verified_accounts = data?.requesterVerifiedAddresses
         message.liked = data?.likedCast
         message.recasted = data?.recastedCast
-        message.transactionId = body?.transaction_id // TODO hopefuly change once added to framesjs
+        message.transactionId = body?.untrustedData.transactionId // TODO hopefuly change once added to framesjs
 
         message.followingBookies = await checkIsFollowingBookies(message.fid)
     }
@@ -245,7 +245,7 @@ export async function getFrameMessage(req: NextRequest, validate=true) {
         message.button = body.untrustedData.buttonIndex
         message.input = body.untrustedData.inputText
         message.fid = body.untrustedData.fid
-        message.transactionId = body.transaction_id 
+        message.transactionId = body.untrustedData.transactionId 
     }
 
     return message
