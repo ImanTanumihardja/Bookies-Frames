@@ -90,7 +90,8 @@ export enum FrameNames {
     INFO = 'info',
     PLACE_BET = 'place-bet',
     EVENT = 'event',
-    BOS_DAL_ML = 'bos-dal-ml',
+    TRANSACTIONS = 'transactions',
+    APPROVE = 'approve',
 }
 
 export enum DatabaseKeys {
@@ -237,7 +238,7 @@ export async function getFrameMessage(req: NextRequest, validate=true) {
         message.verified_accounts = data?.requesterVerifiedAddresses
         message.liked = data?.likedCast
         message.recasted = data?.recastedCast
-        message.transactionId = data?.transaction_id // TODO hopefuly change once added to framesjs
+        message.transactionId = body.untrustedData.transactionId  // TODO hopefuly change once added to framesjs
 
         message.followingBookies = await checkIsFollowingBookies(message.fid)
     }
