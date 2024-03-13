@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getFrameMessage } from '../../../../../../src/utils';
 import {ethers} from 'ethers';
 import IERC20ABI from '../../../../../contracts/IERC20ABI';
+import { USDC_ADDRESS } from '../../../../../config';
 
 export async function POST(req: NextRequest): Promise<Response> {
+  const provider = new ethers.JsonRpcProvider('https://opt-mainnet.g.alchemy.com/v2/4Hef5Sdtt6yaKhEwtoOWuoaI6Jg80ccr');
+  const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, IERC20ABI, provider)).decimals();
+  console.log(typeof DECIMALS)
   // Verify the frame request
   const message = await getFrameMessage(req, false);
 
@@ -16,7 +20,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   const ierc20 = new ethers.Interface(IERC20ABI)
-  const data = ierc20.encodeFunctionData('approve', ['0x7dcEe2642828fA342fAfA2Bd93b7dF3AE61929E3', stake])
+  const data = ierc20.encodeFunctionData('approve', ['0x7dcEe2642828fA342fAfA2Bd93b7dF3AE61929E3', BigInt(stake) * BigInt(10) ** DECIMALS])
 
   console.log(data)
 
@@ -26,7 +30,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       params: {
         abi: IERC20ABI,
         data: data,
-        to: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+        to: USDC_ADDRESS,
         // value: ethers.parseEther('0').toString(),
       },
     };
