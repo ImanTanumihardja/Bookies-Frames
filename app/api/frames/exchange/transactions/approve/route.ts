@@ -20,7 +20,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const txData = {
       chainId: `eip155:10`,
-      method: 'approve',
+      method: 'eth_sendTransaction',
       params: {
         abi: IERC20ABI,
         data: data,
