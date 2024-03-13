@@ -25,7 +25,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         abi: IERC20ABI,
         data: data,
         to: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-        value: ethers.parseEther('0'),
+        value: ethers.parseEther('0').toString(),
       },
     };
     return NextResponse.json(txData);
