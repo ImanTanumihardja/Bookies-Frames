@@ -10,13 +10,15 @@ export async function POST(req: NextRequest): Promise<Response> {
   const {input} = message
 
   // Check if input is valid amount
-  const ethAmount = parseFloat(input);
-  if (!ethAmount || ethAmount < 0 || Number.isNaN(ethAmount) || typeof ethAmount !== 'number' || !Number.isFinite(ethAmount)) {
+  const stake = parseFloat(input);
+  if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake)) {
     throw new Error(`Invalid wager amount STAKE: ${input}`);  
   }
 
   const ierc20 = new ethers.Interface(IERC20ABI)
-  const data = ierc20.encodeFunctionData('approve', ['0x7dcEe2642828fA342fAfA2Bd93b7dF3AE61929E3', ethers.parseEther(`${ethAmount}`).toString()])
+  const data = ierc20.encodeFunctionData('approve', ['0x7dcEe2642828fA342fAfA2Bd93b7dF3AE61929E3', stake])
+
+  console.log(data)
 
   const txData = {
       chainId: `eip155:10`,
