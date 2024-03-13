@@ -16,7 +16,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   const ierc20 = new ethers.Interface(IERC20ABI)
-  const data = ierc20.encodeFunctionData('approve', ['0x7dcEe2642828fA342fAfA2Bd93b7dF3AE61929E3', ethers.parseEther(`${ethAmount}`)])
+  const data = ierc20.encodeFunctionData('approve', ['0x7dcEe2642828fA342fAfA2Bd93b7dF3AE61929E3', ethers.parseEther(`${ethAmount}`).toString()])
 
   const txData = {
       chainId: `eip155:10`,
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         abi: IERC20ABI,
         data: data,
         to: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-        value: ethers.parseEther('0').toString(),
+        // value: ethers.parseEther('0').toString(),
       },
     };
     return NextResponse.json(txData);
