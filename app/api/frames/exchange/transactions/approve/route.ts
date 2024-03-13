@@ -24,7 +24,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       params: {
         abi: IERC20ABI,
         data: data,
-        to: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+        to: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
         // value: 0,
       },
     };
