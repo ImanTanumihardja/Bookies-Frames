@@ -33,7 +33,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     );}
 
   const txData = {
-      chainId: `eip155:8453`,
+      chainId: `eip155:10`,
       method: 'eth_sendTransaction',
       params: {
         abi: [],
