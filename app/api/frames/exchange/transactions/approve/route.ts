@@ -5,7 +5,7 @@ import IERC20ABI from '../../../../../contracts/IERC20ABI';
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
-  const message = await getFrameMessage(req, true);
+  const message = await getFrameMessage(req, false);
 
   const {input} = message
 

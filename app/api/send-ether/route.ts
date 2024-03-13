@@ -11,6 +11,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const ethAmount = parseFloat(input);
   console.log(`Transaction ID: ${message.transactionId}`);
+  console.log(`Button: ${message.button}`)
   if (message.transactionId) {
     // console.log(`Transaction ID: ${message.transactionId}`);
     const imageUrl = generateUrl(`thumbnails/claim-dice.gif`, {}, true);
