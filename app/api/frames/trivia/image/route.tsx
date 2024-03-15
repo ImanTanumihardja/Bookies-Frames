@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse, userAgent } from 'next/server';
 import { ImageResponse } from 'next/og';
-import FrameBase from '../../../../../src/components/FrameBase'
+import FrameBase from '../../../../../src/components/AleaFrameBase'
 import NotFollowing from '../../../../../src/components/NotFollowing';
 import { RequestProps, getRequestProps } from '../../../../../src/utils';
 import * as fs from "fs";

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import FrameBase from '../../../../../../src/components/FrameBase'
+import FrameBase from '../../../../../../src/components/AleaFrameBase'
 import { RequestProps, getRequestProps } from '../../../../../../src/utils';
 import * as fs from "fs";
 import { join } from 'path';

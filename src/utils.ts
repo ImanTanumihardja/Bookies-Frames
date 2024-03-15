@@ -224,7 +224,7 @@ export async function getFrameMessage(req: NextRequest, validate=true) {
 
     // Use onchainkit to validate the frame message
     if (validate) {
-        const data = await validateFrameMessage(body);
+        const data = await validateFrameMessage(body, true, process.env['HUB_HTTP_URL'], {headers: {api_key: process.env['NEYNAR_API_KEY']}}  );
 
         if (!data.isValid) {
             throw new Error('Invalid frame message');
@@ -238,7 +238,7 @@ export async function getFrameMessage(req: NextRequest, validate=true) {
         message.verified_accounts = data?.requesterVerifiedAddresses
         message.liked = data?.likedCast
         message.recasted = data?.recastedCast
-        message.transactionId = body.untrustedData.transactionId  // TODO hopefuly change once added to framesjs
+        message.transactionId = body.untrustedData.transactionId
 
         message.followingBookies = await checkIsFollowingBookies(message.fid)
     }

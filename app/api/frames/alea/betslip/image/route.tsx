@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
                         alignItems: 'center',
                         width: '65%',
                         height: '100%',
-                        background: 'linear-gradient(to right, orange, #aa3855, purple)',
+                        background: 'linear-gradient(to right, #68b876, #457e8b, #0000b4)',
                         justifyContent: 'center',
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
                                         flexDirection: 'column',
                                         marginRight: 10,
                                         marginLeft: 10,
-                                        background: 'linear-gradient(to top, orange, #aa3855, purple)',
+                                        background: 'linear-gradient(to top, #68b876, #457e8b, #0000b4)',
                                         borderRadius: 4,
                                         width:'20%',
                                         height: `${Math.min(opt.percent + 18, 100)}%`,

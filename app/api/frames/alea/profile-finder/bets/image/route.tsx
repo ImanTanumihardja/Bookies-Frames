@@ -45,7 +45,7 @@ export async function GET(req: NextRequest) {
                         alignItems: 'center',
                         width: '65%',
                         height: '100%',
-                        background: 'linear-gradient(to right, orange, #aa3855, purple)',
+                        background: 'linear-gradient(to right, #68b876, #457e8b, #0000b4)',
                         justifyContent: 'center',
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
