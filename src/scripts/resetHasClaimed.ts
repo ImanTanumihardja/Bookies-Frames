@@ -2,8 +2,6 @@ const { createClient  } = require("@vercel/kv");
 const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
-import { Event } from '../../app/types';
-
 const kv = createClient({
   url: process.env['KV_REST_API_URL'] || '',
   token: process.env['KV_REST_API_TOKEN'] || '',

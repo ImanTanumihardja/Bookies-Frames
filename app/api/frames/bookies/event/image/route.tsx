@@ -4,6 +4,7 @@ import { RequestProps, getRequestProps } from '../../../../../../src/utils';
 import * as fs from "fs";
 import { join } from 'path';
 import { getCldImageUrl } from 'next-cloudinary';
+import FrameBase from '../../../../../../src/components/AleaFrameBase';
 
 // Fonts
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
@@ -27,10 +28,12 @@ export async function GET(req: NextRequest) {
           });
 
         let imageResponse =  new ImageResponse(
-            <div style={{display:'flex'}}>
-                <img src={imageUrl} />
-                <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:15, textAlign:'start', textDecoration:'underline'}}>{now > startDate ? `Event Closed` : `Closes in: ${hours} hrs`}</h1>
-            </div>
+            <FrameBase>
+                <div style={{display:'flex'}}>
+                    <img src={imageUrl} />
+                    <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:15, textAlign:'start', textDecoration:'underline'}}>{now > startDate ? `Event Closed` : `Closes in: ${hours} hrs`}</h1>
+                </div>
+            </FrameBase>
             ,
             {
                 width: 764, 

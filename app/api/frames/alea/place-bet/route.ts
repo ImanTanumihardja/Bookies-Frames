@@ -73,12 +73,9 @@ export async function POST(req: NextRequest): Promise<Response> {
   else {
     buttons = event.options.map((option, index) => {
       if (event === null) throw new Error('Event not found');
-      const probability = event.odds[index];
-      const odd = convertImpliedProbabilityToAmerican(event.odds[index]);
-      const probString = `${probability > 0.5 ? '-' : '+'}${odd.toString()}`; 
   
       return {
-        label: `${option} (${probString})`,
+        label: `${option}`,
         action: 'post'
       } as FrameButton
     })
