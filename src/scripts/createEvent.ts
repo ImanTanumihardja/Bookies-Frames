@@ -4,13 +4,14 @@ const fs = require('fs')
 const path = require('path');
 dotenv.config({ path: ".env"})
 import { Event } from '../../app/types';
+import {Accounts} from '../../src/utils'
 
 const kv = createClient({
     url: process.env['KV_REST_API_URL'],
     token: process.env['KV_REST_API_TOKEN'],
   });
 
-export default async function createEvent(eventName=``, startDate=0, odds=[0.7639, 0.2361], multiplier=1, options=["", ""], prompt="") {
+export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 0.5], multiplier=1, options=["", ""], prompt="", host="") {
   if (startDate < new Date().getTime()) {
     throw new Error('Start date is invalid')
   }
@@ -34,7 +35,11 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.763
     throw new Error(`Event ${eventName} already exists`)
   }
 
-  let event: Event = {startDate: startDate, result: -1, odds: odds, multiplier: multiplier, options: options, prompt: prompt} as Event;
+  if (host !== Accounts.ALEA && host !== Accounts.BOOKIES && host !== Accounts.BOTH) {
+    throw new Error('Invalid availableOn value')
+  }
+
+  let event: Event = {startDate: startDate, result: -1, odds: odds, multiplier: multiplier, options: options, prompt: prompt, host} as Event;
   await kv.hset(`${eventName}`, event);
 
   // Create poll

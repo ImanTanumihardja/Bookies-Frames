@@ -16,15 +16,17 @@ export async function createEventAction(
         odds: z.string(),
         multiplier: z.number(),
         options: z.string(),
-        prompt: z.string()
+        prompt: z.string(),
+        host: z.string()
     })
-    const {eventName, startDate, odds, multiplier, options, prompt} = schema.parse({
+    const {eventName, startDate, odds, multiplier, options, prompt, host} = schema.parse({
         eventName: formData.get('eventName'),
         startDate: parseInt(formData.get('startDate') as string),
         odds: formData.get('odds'),
         multiplier: parseInt(formData.get('multiplier') as string),
         options: formData.get('options'),
-        prompt: formData.get('prompt')
+        prompt: formData.get('prompt'),
+        host: formData.get('host')
     })
 
     // Parse odds to be float array
@@ -36,13 +38,13 @@ export async function createEventAction(
     console.log(optionsArray)
 
     try {
-        await createEvent(eventName, startDate, oddsArray, multiplier, optionsArray, prompt)
+        await createEvent(eventName, startDate, oddsArray, multiplier, optionsArray, prompt, host)
         revalidatePath('/')
         return {message: `Created event: ${eventName}`}
     }
     catch (e) {
         console.error(e)
-        return {message: `Failed to create event: ${eventName}`}
+        return {message: `Failed to create event: ${e}`}
     }
 
 }
@@ -68,7 +70,7 @@ export async function settleEventAction(
     }
     catch (e) {
         console.error(e)
-        return {message: `Failed to settle event: ${eventName}`}
+        return {message: `Failed to settle event: ${e}`}
     }
 }
 
@@ -91,6 +93,6 @@ export async function getEventAction(
     }
     catch (e) {
         console.error(e)
-        return {message: `Failed to settle event: ${eventName}`, eventName: eventName, eventData: null}
+        return {message: `Failed to settle event: ${e}`, eventName: eventName, eventData: null}
     }
 }

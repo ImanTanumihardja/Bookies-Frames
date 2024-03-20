@@ -4,7 +4,6 @@ import { User, Bet} from '../app/types';
 import { FrameValidationData } from '../app/types';
 const { getFrameHtml, getFrameMessage: validateFrameMessage } = require('frames.js');
 
-
 export enum RequestProps {
   FID = 'fid',
   IS_FOLLOWING = 'isFollowing',
@@ -39,6 +38,12 @@ export enum RequestProps {
   COUNT = 'count',
   BOOLEAN = 'boolean',
   URL = 'url'
+}
+
+export enum Accounts {
+    BOOKIES = 'bookies',
+    ALEA = 'alea',
+    BOTH = 'both'
 }
 
 export const RequestPropsTypes = {
@@ -101,6 +106,7 @@ export enum DatabaseKeys {
 }
 
 export const BOOKIES_FID = 244367;
+export const ALEA_FID = 391387;
 
 export const DEFAULT_USER: User = {
     balance: 100,
@@ -200,10 +206,10 @@ export function generateUrl(extension: string, props: Record<string, any>, addTi
 // don't have an API key yet? get one at neynar.com
 export const neynarClient = new NeynarAPIClient(process.env['NEYNAR_API_KEY'] || "");
 
-export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
+export async function checkIsFollowingBookies(fid: number, viewerFid=BOOKIES_FID): Promise<boolean> {
     let isFollowing = false; // TEMPORARY FIX
 
-    await neynarClient.fetchBulkUsers([fid], {viewerFid: BOOKIES_FID})
+    await neynarClient.fetchBulkUsers([fid], {viewerFid: viewerFid})
     .then(response => {
         isFollowing = response?.users[0]?.viewer_context?.followed_by || false; // TEMPORARY FIX
 
@@ -217,7 +223,7 @@ export async function checkIsFollowingBookies(fid: number): Promise<boolean> {
 }
 
 
-export async function getFrameMessage(req: NextRequest, validate=true) {
+export async function getFrameMessage(req: NextRequest, validate=true, viewerFid=BOOKIES_FID) {
     const body = await req.json();
 
     let message: FrameValidationData = {} as FrameValidationData;
@@ -240,7 +246,7 @@ export async function getFrameMessage(req: NextRequest, validate=true) {
         message.recasted = data?.recastedCast
         message.transactionId = body.untrustedData.transactionId
 
-        message.followingBookies = await checkIsFollowingBookies(message.fid)
+        message.followingBookies = await checkIsFollowingBookies(message.fid, viewerFid)
     }
     else { // Not validating frame message
         message.button = body.untrustedData.buttonIndex

@@ -6,6 +6,7 @@ export type Event = {
     multiplier: number
     options: string[]
     prompt: string
+    host: string
 }
 
 export type User = {

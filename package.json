@@ -21,6 +21,7 @@
     "next-cloudinary": "^6.2.0",
     "puppeteer": "^22.5.0",
     "react-dom": "^18.2.0",
+    "viem": "^2.8.14",
     "zod": "^3.22.4"
   },
   "devDependencies": {

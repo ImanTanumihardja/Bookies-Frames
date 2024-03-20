@@ -31,10 +31,11 @@ export function GetEventForm() {
           <p>Start Date: {(new Date(parseInt(state.eventData?.startDate?.toString() || ''))).toString()}</p>
           <p>Multiplier: {state.eventData.multiplier}</p>
           <p>Prompt: {state.eventData.prompt}</p>
+          <p>Host: {state.eventData.host}</p>
           <p>Result: {state.eventData.result}</p>
           <div>Options: 
             <ul>{state.eventData?.options?.map((option:string, index:number) => 
-              <li>
+              <li key={index}>
                 {`${option} (odd=${state.eventData?.odds?.[index]}) (votes=${state.eventData?.pollData?.[index]})`}
               </li>)}
             </ul>

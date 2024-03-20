@@ -1,5 +1,6 @@
 {
     "fids": [313859, 241573],
     "message": "Hello, Testing Notifications!",
-    "browserWSEndpoint": "ws://127.0.0.1:9222/devtools/browser/fe95f29c-d83b-4647-a04e-e6ee16dedff0"
+    "browserWSEndpoint": "ws://127.0.0.1:9222/devtools/browser/fe95f29c-d83b-4647-a04e-e6ee16dedff0",
+    "parentHash": "0x860f91e9054bad766b8667cb43aac56eb94a6a73"
 }

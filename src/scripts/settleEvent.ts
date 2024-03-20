@@ -67,9 +67,14 @@ export default async function settleEvent(eventName="", result=-1) {
       let toWinAmount = 0;
       for (const bet of user?.bets[eventName]) {
         if (!bet.settled) {
-          if (bet.pick === result) {  // Won
+          // Check for Ties
+          if (result == 0.5) {
+            console.log(`Event settled with a tie: ${eventName}`)
+            user.balance = Math.round(parseFloat(user?.balance.toString()) + bet.stake);
+          }
+          else if (bet.pick === result) {  // Won
             console.log(`User: ${fid} won bet: ${JSON.stringify(bet)}`)
-            const payout = calculatePayout(event.multiplier, event.odds[result], bet.stake, user?.streak);
+            const payout = calculatePayout(event.multiplier, bet.odd, bet.stake, user?.streak);
 
             console.log(`Payout: ${payout}`)
 
