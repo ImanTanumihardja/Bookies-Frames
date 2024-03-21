@@ -60,7 +60,7 @@ export function CreateEventForm() {
 
       <br />
 
-      <CldUploadWidget uploadPreset="thumbnails">
+      <CldUploadWidget uploadPreset="thumbnails" signatureEndpoint={"../api/sign-image"}>
         {({ open }) => {
           return (
             <button onClick={() => open()}>
