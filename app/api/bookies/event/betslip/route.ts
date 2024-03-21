@@ -68,7 +68,6 @@ export async function POST(req: NextRequest): Promise<Response> {
   else
   {
     const impliedProbability = event.odds[pick]
-    const multiplier = event.multiplier;
     const streak = parseInt(user.streak.toString());
     const availableBal = parseFloat(user?.balance.toString());
     const poll = Object.values(await kv.hgetall(`${eventName}:${DatabaseKeys.POLL}`) as Record<number, number>)
@@ -79,13 +78,9 @@ export async function POST(req: NextRequest): Promise<Response> {
     imageUrl = generateUrl(`api/bookies/${FrameNames.EVENT}/${FrameNames.BETSLIP}/image`, {[RequestProps.PICK]: pick, 
                                                                       [RequestProps.STAKE]: stake, 
                                                                       [RequestProps.ODD]: impliedProbability,
-                                                                      [RequestProps.MULTIPLIER]: multiplier,
-                                                                      [RequestProps.STREAK]: streak,
-                                                                      [RequestProps.BALANCE]: availableBal,
                                                                       [RequestProps.POLL]: poll,
                                                                       [RequestProps.PROMPT]: prompt, 
-                                                                      [RequestProps.OPTIONS]: options,
-                                                                      [RequestProps.RESULT]: result}, true);
+                                                                      [RequestProps.OPTIONS]: options}, true);
   }
 
   return new NextResponse(

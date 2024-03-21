@@ -277,7 +277,7 @@ export function convertImpliedProbabilityToAmerican(impliedProbability: number):
     return americanOdds;
   }
 
-export function calculatePayout(multiplier: number, impliedProbability: number, stake: number, streak: number = 0){
-    const payout = multiplier * (1 / impliedProbability) * (stake) // TODO add streak
+export function calculatePayout(impliedProbability: number, stake: number){
+    const payout = (1 / impliedProbability) * (stake)
     return Math.round(payout)
 }

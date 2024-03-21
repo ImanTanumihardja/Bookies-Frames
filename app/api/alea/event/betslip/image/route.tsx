@@ -13,24 +13,16 @@ export async function GET(req: NextRequest) {
         let {
             pick, 
             stake, 
-            odd : impliedProbability, 
-            multiplier, 
-            streak, 
-            balance: availableBalance, 
             poll, 
             prompt, 
             options} 
                 = getRequestProps(req, [RequestProps.PICK, 
                                         RequestProps.STAKE, 
-                                        RequestProps.ODD,
-                                        RequestProps.MULTIPLIER,
-                                        RequestProps.STREAK,
-                                        RequestProps.BALANCE,
                                         RequestProps.POLL,
                                         RequestProps.PROMPT,
                                         RequestProps.OPTIONS]);
         
-        const payout = calculatePayout(multiplier, 1/options.length, stake, streak)
+        const payout = calculatePayout(1/options.length, stake)
 
         let pollData = [];
         // Get total votes

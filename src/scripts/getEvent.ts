@@ -38,7 +38,6 @@ export default async function getEvent(eventName="") {
   if (eventData?.result != -1) {
     let maxValue = 0;
     let fids: number[] = [];
-    let streak = 0;
     let payout = 0;
 
     // Find the max winners
@@ -53,7 +52,7 @@ export default async function getEvent(eventName="") {
       const bets : Bet[] = user?.bets[eventName]
       for (const bet of bets) {
         if (bet.pick === eventData?.result) {
-          payout = calculatePayout(eventData?.multiplier || 1, eventData?.odds[eventData?.result] || 0.5, bet.stake, streak);
+          payout = calculatePayout(eventData?.odds[eventData?.result] || 0.5, bet.stake);
   
           if (payout > maxValue) {
             fids = [fid];

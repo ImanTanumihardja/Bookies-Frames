@@ -14,24 +14,18 @@ export async function GET(req: NextRequest) {
             pick, 
             stake, 
             odd : impliedProbability, 
-            multiplier, 
-            streak, 
-            balance: availableBalance, 
             poll, 
             prompt, 
             options} 
                 = getRequestProps(req, [RequestProps.PICK, 
                                         RequestProps.STAKE, 
                                         RequestProps.ODD,
-                                        RequestProps.MULTIPLIER,
-                                        RequestProps.STREAK,
-                                        RequestProps.BALANCE,
                                         RequestProps.POLL,
                                         RequestProps.PROMPT,
                                         RequestProps.OPTIONS]);
         
         const odd = convertImpliedProbabilityToAmerican(impliedProbability)
-        const payout = calculatePayout(multiplier, impliedProbability, stake, streak)
+        const payout = calculatePayout(impliedProbability, stake)
 
         let pollData = [];
         // Get total votes
@@ -55,7 +49,6 @@ export async function GET(req: NextRequest) {
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize:55, position:'absolute', top:-10, textDecoration:"underline" }}>Betslip</h1>
-                    <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-5, right:5, textAlign:'start'}}>Balance: {availableBalance - stake} <img style={{width: 22, height: 22, marginLeft:5, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/> </h1>
                     <div style={{display: 'flex', flexDirection: 'column', width:'100%', alignItems:'center', justifyItems:"center"}}>
                         <div style={{display: 'flex', flexDirection: 'column', alignItems:'flex-start', justifyItems:"center", padding:10}}> 
                             <h1 style={{color: 'white', fontSize:30, margin:10}}> PICK: {options[pick]}</h1>

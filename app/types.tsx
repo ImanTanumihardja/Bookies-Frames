@@ -3,7 +3,6 @@ export type Event = {
     startDate: number;
     result: number 
     odds : number[]
-    multiplier: number
     options: string[]
     prompt: string
     host: string

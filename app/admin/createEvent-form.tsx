@@ -39,10 +39,6 @@ export function CreateEventForm() {
         <input type="text" id="odds" name="odds" placeholder="0.5, 0.5" required />
         <br />
         <br />
-        <label htmlFor="multiplier">Multiplier </label>
-        <input type="number" id="multiplier" name="multiplier" placeholder='1' required />
-        <br />
-        <br />
         <label htmlFor="options">Options </label>
         <input type="text" id="options" name="options" placeholder="LAL, LAC" required />
         <br />
