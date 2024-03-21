@@ -16,7 +16,11 @@ function SubmitButton() {
 export function SettleEventForm() {
   const [state, formAction] = useFormState(settleEventAction, {message: ""});
 
-  if (state.message !== "") alert(state.message)
+  if (state.message !== "") 
+  {
+    alert(state.message)
+    state.message = ""
+  }
   return (
     <div>
       <h1>Settle Event</h1>
@@ -26,7 +30,7 @@ export function SettleEventForm() {
         <br />
         <br />
         <label htmlFor="result">Result </label>
-        <input type="number" id="result" name="result" required />
+        <input type="decimal" id="result" name="result" required />
         <br />
         <br />
         <SubmitButton />

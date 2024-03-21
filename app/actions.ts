@@ -58,7 +58,7 @@ export async function settleEventAction(
     })
     const {eventName, result} = schema.parse({
         eventName: formData.get('eventName'),
-        result: parseInt(formData.get('result') as string),
+        result: parseFloat(formData.get('result') as string),
     })
 
     try {
