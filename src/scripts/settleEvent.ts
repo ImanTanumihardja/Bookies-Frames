@@ -22,7 +22,7 @@ export default async function settleEvent(eventName="", result=-1) {
     //   throw new Error('Event has not closed yet')
     // }
 
-    if (parseInt(event?.result.toString()) !== -1) {
+    if (parseFloat(event?.result.toString()) !== -1) {
       throw new Error('Event has already been settled')
     } 
 
@@ -72,7 +72,7 @@ export default async function settleEvent(eventName="", result=-1) {
             console.log(`Event settled with a tie: ${eventName}`)
             user.balance = Math.round(parseFloat(user?.balance.toString()) + bet.stake);
           }
-          else if (bet.pick === result) {  // Won
+          else if (bet.pick == result) {  // Won
             console.log(`User: ${fid} won bet: ${JSON.stringify(bet)}`)
             const payout = calculatePayout(event.multiplier, bet.odd, bet.stake, user?.streak);
 

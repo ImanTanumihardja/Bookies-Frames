@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage, getRequestProps, notFollowingResponse } from '../../../../../src/utils';
+import { ALEA_FID, DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage, getRequestProps, notFollowingResponse } from '../../../../../src/utils';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { User, Event } from '../../../../types';
 import { kv } from '@vercel/kv';
@@ -11,7 +11,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   let user : User | null = null;
   let event : Event | null = null;
 
-  const message = await getFrameMessage(req);
+  const message = await getFrameMessage(req, true, ALEA_FID);
 
   const {followingBookies, fid} = message;
 

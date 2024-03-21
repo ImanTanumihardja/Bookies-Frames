@@ -2,11 +2,11 @@ import { getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { Event, User, Bet } from '../../../../types';
-import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, notFollowingResponse } from '../../../../../src/utils';
+import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, notFollowingResponse, ALEA_FID } from '../../../../../src/utils';
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
-  const message = await getFrameMessage(req);
+  const message = await getFrameMessage(req, true, ALEA_FID);
 
   const {followingBookies: isFollowing, button, fid} = message;
 

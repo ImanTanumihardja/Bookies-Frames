@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Frame, getFrameHtml } from "frames.js";
-import { DEFAULT_USER, generateUrl, RequestProps, getFrameMessage, neynarClient, BOOKIES_FID, FrameNames, getRequestProps, DatabaseKeys, notFollowingResponse } from '../../../../src/utils';
+import { DEFAULT_USER, generateUrl, RequestProps, getFrameMessage, neynarClient, BOOKIES_FID, FrameNames, getRequestProps, DatabaseKeys, notFollowingResponse, ALEA_FID } from '../../../../src/utils';
 import { User } from '../../../types';
 import { kv } from '@vercel/kv';
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
-  const message = await getFrameMessage(req);
+  const message = await getFrameMessage(req, true, ALEA_FID);
 
   const {followingBookies: isFollowing, fid, input} = message;
   console.log('FID: ', fid.toString())
