@@ -8,7 +8,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req, true, ALEA_FID);
 
-  const {followingBookies: isFollowing, fid, input} = message;
+  const {followingHost: isFollowing, fid, input} = message;
   console.log('FID: ', fid.toString())
 
   let {fid: profileFID} = getRequestProps(req, [RequestProps.FID]);

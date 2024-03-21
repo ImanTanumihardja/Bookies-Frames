@@ -246,7 +246,7 @@ export async function getFrameMessage(req: NextRequest, validate=true, viewerFid
         message.recasted = data?.recastedCast
         message.transactionId = body.untrustedData.transactionId
 
-        message.followingBookies = await checkIsFollowing(message.fid, viewerFid)
+        message.followingHost = await checkIsFollowing(message.fid, viewerFid)
     }
     else { // Not validating frame message
         message.button = body.untrustedData.buttonIndex

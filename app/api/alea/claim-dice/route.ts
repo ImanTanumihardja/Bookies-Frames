@@ -9,7 +9,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req, true, ALEA_FID);
 
-  const {followingBookies: isFollowing, fid, button} = message;
+  const {followingHost: isFollowing, fid, button} = message;
   console.log('FID: ', fid.toString())
 
   var validCaptcha = true;

@@ -8,7 +8,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req, true, ALEA_FID);
 
-  const {followingBookies: isFollowing, button, fid} = message;
+  const {followingHost: isFollowing, button, fid} = message;
 
   // Get eventName from req
   let {eventName, stake, pick} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK]);

@@ -30,7 +30,7 @@ export type Bet = {
 export type FrameValidationData = {
     button: number;
     following: boolean;
-    followingBookies: boolean; // Check if following Bookies
+    followingHost: boolean; // Check if following Bookies
     input: string;
     fid: number;
     custody_address: string;

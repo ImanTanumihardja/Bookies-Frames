@@ -13,7 +13,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const message = await getFrameMessage(req, true, ALEA_FID);
 
-  const {followingBookies, fid} = message;
+  const {followingHost: followingBookies, fid} = message;
 
   if (!followingBookies) {
     // Call fetch to get not following thumbnail
