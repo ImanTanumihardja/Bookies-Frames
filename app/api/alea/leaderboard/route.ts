@@ -7,7 +7,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   const message = await getFrameMessage(req, false);
   let {offset} = getRequestProps(req, [RequestProps.OFFSET]);
 
-  if (offset === -1) { // Coming from profile finder aand looking for top 5
+  if (offset === -1) { // Coming from profile finder and looking for top 5
     offset = 0;
   }
   else if (offset === 0){

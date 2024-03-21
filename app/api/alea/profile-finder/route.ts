@@ -85,7 +85,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     }
 
     // Get rank in leaderboard 
-    if (rank) {
+    if (rank != null) {
       if (rank <= 5) {
         offset = -1;
         count = 5;
