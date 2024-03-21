@@ -20,7 +20,7 @@ export function GetEventForm() {
     <div>
       <h1>Get Event</h1>
       <form action={formAction}>
-        <label htmlFor="eventName">Event Name</label>
+        <label htmlFor="eventName">Event Name </label>
         <input type="text" id="eventName" name="eventName" required />
         <SubmitButton />
       </form>

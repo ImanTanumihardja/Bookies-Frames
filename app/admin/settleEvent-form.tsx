@@ -21,11 +21,14 @@ export function SettleEventForm() {
     <div>
       <h1>Settle Event</h1>
       <form action={formAction}>
-        <label htmlFor="eventName">Event Name</label>
+        <label htmlFor="eventName">Event Name </label>
         <input type="text" id="eventName" name="eventName" required />
-        <label htmlFor="result">Result</label>
+        <br />
+        <br />
+        <label htmlFor="result">Result </label>
         <input type="number" id="result" name="result" required />
-      
+        <br />
+        <br />
         <SubmitButton />
       </form>
     </div>
