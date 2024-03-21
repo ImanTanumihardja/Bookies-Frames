@@ -60,11 +60,11 @@ export function CreateEventForm() {
         <br />
         <br />
         <SubmitButton />
+      </form>
 
-        <br />
-        <br />
+      <br />
 
-        <CldUploadWidget uploadPreset="thumbnails">
+      <CldUploadWidget uploadPreset="thumbnails">
         {({ open }) => {
           return (
             <button onClick={() => open()}>
@@ -73,7 +73,6 @@ export function CreateEventForm() {
           );
         }}
       </CldUploadWidget>
-      </form>
     </div>
   );
 }
