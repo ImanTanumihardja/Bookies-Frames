@@ -146,7 +146,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 }
 
 export async function GET(req: NextRequest): Promise<Response> {
-  const imageUrl = generateUrl(`thumbnails/${FrameNames.PROFILE_FINDER}.gif`, [], true)
+  const imageUrl = generateUrl(`thumbnails/${FrameNames.PROFILE_FINDER}.gif`, {}, true)
 
   const frame : Frame = {
     version: "vNext",
