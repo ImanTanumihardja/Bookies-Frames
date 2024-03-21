@@ -21,15 +21,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   return new NextResponse(
     getFrameHtml({
       version: "vNext",
-      image: generateUrl(`${FrameNames.INFO}/${currentIndex}.png`, {}, false),
-      buttons: undefined,
+      image: generateUrl(`${FrameNames.INFO}/${currentIndex}.png`, {}, true),
+      buttons: [{ label: "Check out /bookies!", action: 'link', target: 'https://warpcast.com/~/channel/bookies'}],
       postUrl: generateUrl(`api/alea/${FrameNames.INFO}`, {[RequestProps.INDEX] : currentIndex}, false),
     }),
   );
 }
 
 export async function GET(req: NextRequest): Promise<Response> {
-  const imageUrl = generateUrl(`info/march-madness.gif`, {}, false)
+  const imageUrl = generateUrl(`info/march-madness.gif`, {}, true)
 
   const frame : Frame = {
     version: "vNext",
