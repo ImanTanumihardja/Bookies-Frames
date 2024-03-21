@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path');
 dotenv.config({ path: ".env"})
 import { Event } from '../../app/types';
-import {Accounts} from '../../src/utils'
+import {Accounts, DatabaseKeys} from '../../src/utils'
 
 const kv = createClient({
     url: process.env['KV_REST_API_URL'],
@@ -44,17 +44,22 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
 
   // Create poll
   const poll = {0: 0, 1: 0, 2: 0, 3: 0} as Record<number, number>
-  await kv.hset(`${eventName}:poll`, poll)
+  await kv.hset(`${eventName}:${DatabaseKeys.POLL}`, poll)
 
-  // Create bets list 
-  await kv.del(`${eventName}:bets`)
+  if (host === Accounts.ALEA) {
+    // Create alea bets list 
+    await kv.del(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`)
+  }
+
+  if (host === Accounts.BOOKIES) {
+    // Create bookies bets list 
+    await kv.del(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`)
+  }
 
   event = await kv.hgetall(`${eventName}`)
 
   console.log(`Event: ${eventName}`)
   console.log(event)
-  console.log(`Poll`, await kv.hgetall(`${eventName}:poll`))
-  console.log(`Bets`, await kv.smembers(`${eventName}:bets`))
 }
 
 if (require.main === module) {

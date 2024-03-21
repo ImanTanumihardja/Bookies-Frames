@@ -44,6 +44,10 @@ export async function POST(req: NextRequest): Promise<Response> {
   // Get info for bet
   if (event === null) throw new Error('Event not found');
 
+  if (stake > user.balance) {
+    throw new Error(`Invalid wager amount STAKE: ${stake}`);
+  }
+
   // Check if result has been set
   const result = parseInt(event.result.toString())
   if (result !== -1) {

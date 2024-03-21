@@ -1,7 +1,7 @@
 const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
-import { DatabaseKeys, calculatePayout } from "../utils";
+import { Accounts, DatabaseKeys, calculatePayout } from "../utils";
 import { Event, Bet, User } from '../../app/types';
 import { createClient  } from "@vercel/kv";
 
@@ -16,12 +16,12 @@ export default async function getEvent(eventName="") {
   console.log(eventData);
   
   // Get all bets
-  let betsData = (await kv.sscan(`${eventName}:${DatabaseKeys.BETS}`, 0, { count: 150 }))
+  let betsData = (await kv.sscan(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, 0, { count: 150 }))
   let cursor = betsData[0]
   let fids : number[] = betsData[1] as unknown as number[]
 
   while (cursor) {
-    betsData = (await kv.sscan(`${eventName}:${DatabaseKeys.BETS}`, cursor, { count: 150 }))
+    betsData = (await kv.sscan(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, cursor, { count: 150 }))
     cursor = betsData[0]
     fids = fids.concat(betsData[1] as unknown as number[])
   }

@@ -101,7 +101,7 @@ export enum FrameNames {
 
 export enum DatabaseKeys {
     LEADERBOARD = 'leaderboard',
-    BETS = 'bets',
+    BETTORS = 'bettors',
     POLL = 'poll',
 }
 

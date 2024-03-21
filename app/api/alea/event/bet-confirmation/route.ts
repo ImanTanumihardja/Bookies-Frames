@@ -2,7 +2,7 @@ import { getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { Event, User, Bet } from '../../../../types';
-import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, notFollowingResponse, ALEA_FID } from '../../../../../src/utils';
+import { Accounts, DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, notFollowingResponse, ALEA_FID } from '../../../../../src/utils';
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
@@ -72,10 +72,10 @@ export async function POST(req: NextRequest): Promise<Response> {
     // Set user
     await kv.hset(fid.toString(), user).then( async () => {
       // Set event
-      await kv.sadd(`${eventName}:${DatabaseKeys.BETS}`, fid).catch(async (error) => {
+      await kv.sadd(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
         console.error('Error adding user to event:', error);
         // Try again
-        await kv.sadd(`${eventName}:${DatabaseKeys.BETS}`, fid).catch((error) => {
+        await kv.sadd(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
           throw new Error('Error creating bet');
         })
       })

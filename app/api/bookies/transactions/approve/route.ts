@@ -7,7 +7,6 @@ import { USDC_ADDRESS } from '../../../../addresses';
 export async function POST(req: NextRequest): Promise<Response> {
   const provider = new ethers.JsonRpcProvider('https://opt-mainnet.g.alchemy.com/v2/4Hef5Sdtt6yaKhEwtoOWuoaI6Jg80ccr');
   const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, IERC20ABI, provider)).decimals();
-  console.log(typeof DECIMALS)
   // Verify the frame request
   const message = await getFrameMessage(req, false);
 
@@ -22,8 +21,6 @@ export async function POST(req: NextRequest): Promise<Response> {
   const ierc20 = new ethers.Interface(IERC20ABI)
   const data = ierc20.encodeFunctionData('approve', ['0x7dcEe2642828fA342fAfA2Bd93b7dF3AE61929E3', BigInt(stake) * BigInt(10) ** DECIMALS])
 
-  console.log(data)
-
   const txData = {
       chainId: `eip155:10`,
       method: 'eth_sendTransaction',
@@ -32,7 +29,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         abi: IERC20ABI,
         data: data,
         to: USDC_ADDRESS,
-        // value: ethers.parseEther('0').toString(),
+        value: ethers.parseEther('0').toString(),
       },
     };
     return NextResponse.json(txData);
