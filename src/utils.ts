@@ -206,7 +206,7 @@ export function generateUrl(extension: string, props: Record<string, any>, addTi
 // don't have an API key yet? get one at neynar.com
 export const neynarClient = new NeynarAPIClient(process.env['NEYNAR_API_KEY'] || "");
 
-export async function checkIsFollowingBookies(fid: number, viewerFid=BOOKIES_FID): Promise<boolean> {
+export async function checkIsFollowing(fid: number, viewerFid=BOOKIES_FID): Promise<boolean> {
     let isFollowing = false; // TEMPORARY FIX
 
     await neynarClient.fetchBulkUsers([fid], {viewerFid: viewerFid})
@@ -246,7 +246,7 @@ export async function getFrameMessage(req: NextRequest, validate=true, viewerFid
         message.recasted = data?.recastedCast
         message.transactionId = body.untrustedData.transactionId
 
-        message.followingBookies = await checkIsFollowingBookies(message.fid, viewerFid)
+        message.followingBookies = await checkIsFollowing(message.fid, viewerFid)
     }
     else { // Not validating frame message
         message.button = body.untrustedData.buttonIndex
