@@ -18,9 +18,9 @@ export default async function settleEvent(eventName="", result=-1) {
       throw new Error(`Event: ${eventName} does not exist`)
     }
     
-    // if (event?.startDate > new Date().getTime()) {
-    //   throw new Error('Event has not closed yet')
-    // }
+    if (event?.startDate > new Date().getTime()) {
+      throw new Error('Event has not closed yet')
+    }
 
     if (parseFloat(event?.result.toString()) !== -1) {
       throw new Error('Event has already been settled')
