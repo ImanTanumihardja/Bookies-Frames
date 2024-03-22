@@ -37,6 +37,7 @@ const {fids, message, browserWSEndpoint} = require('./config.json');
 
   for (let i = 0; i < usernames.length; i++) {
     const username = usernames[i];
+    console.log(`Sending to ${username}`);
     // Navigate the page to a URL
     await page.goto(`https://warpcast.com/${username}`);
 
@@ -44,13 +45,30 @@ const {fids, message, browserWSEndpoint} = require('./config.json');
     await page.setViewport({width: 1080, height: 1024});
 
     // Check if the button exists
-    const dmButton = await page.waitForSelector('#root > div > div > div > main > div > div > div.p-4 > div > div > div.flex.flex-row.items-center.justify-between > div.flex.flex-row.gap-1 > button:nth-child(1)');
+    let dmButton;
+    try {
+      dmButton = await page.waitForSelector('#root > div > div > div > main > div > div > div.p-4 > div > div > div.flex.flex-row.items-center.justify-between > div.flex.flex-row.gap-1 > button:nth-child(1)', {timeout: 1000});
+    }
+    catch (error) {
+      console.log('Button does not exist');
+      continue;
+    }
+    
 
     if (dmButton) {
       // Click the button if it exists
       await dmButton.click();
 
-      const input = await page.waitForSelector('.DraftEditor-editorContainer [contenteditable=true]');
+      let input;
+      try
+      {
+        input = await page.waitForSelector('.DraftEditor-editorContainer [contenteditable=true]', {timeout: 1000});
+      }
+      catch (error)
+      {
+        console.log('Input does not exist');
+        continue;
+      }
       await input.type(message);
 
       // Click enter
