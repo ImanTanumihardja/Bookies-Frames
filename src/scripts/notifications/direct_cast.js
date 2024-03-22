@@ -1,11 +1,12 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const { NeynarAPIClient } = require("@neynar/nodejs-sdk");
 const dotenv = require("dotenv");
 const {fids, message, browserWSEndpoint} = require('./config.json');
 
 (async () => {
   dotenv.config({ path: ".env"});
-  console.log(fids, message)
+  console.log('Fids:', fids)
+  console.log('Message:', message)
 
   // Get the username
   let usernames= [];
@@ -27,13 +28,11 @@ const {fids, message, browserWSEndpoint} = require('./config.json');
 
   console.log(usernames);
 
-  const browser = await puppeteer.connect
-  ({
-    browserWSEndpoint: browserWSEndpoint,
-  });
+  const browser = await puppeteer.launch
+  ({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe', headless:false, args:['--profile-directory="Profile 4"']});
 
   const page = await browser.newPage();
-
+  return;
 
   for (let i = 0; i < usernames.length; i++) {
     const username = usernames[i];
