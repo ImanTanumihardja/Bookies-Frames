@@ -32,9 +32,10 @@ export type FrameValidationData = {
     followingHost: boolean; // Check if following Bookies
     input: string;
     fid: number;
-    custody_address: string;
-    verified_accounts: string[];
+    custodyAddress: string;
+    verifiedAccounts: string[];
     liked: boolean;
     recasted: boolean;
     transactionId: number;
+    connectedAddress: number;
 }

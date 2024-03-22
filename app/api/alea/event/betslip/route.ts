@@ -79,6 +79,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     imageUrl = generateUrl(`api/alea/${FrameNames.EVENT}/${FrameNames.BETSLIP}/image`, {[RequestProps.PICK]: pick, 
                                                                       [RequestProps.STAKE]: stake, 
                                                                       [RequestProps.POLL]: poll,
+                                                                      [RequestProps.ODD]: event.odds[pick],
                                                                       [RequestProps.PROMPT]: prompt, 
                                                                       [RequestProps.OPTIONS]: options,}, true);
   }

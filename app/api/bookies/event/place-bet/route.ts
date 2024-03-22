@@ -11,7 +11,9 @@ export async function POST(req: NextRequest): Promise<Response> {
   let user : User | null = null;
   let event : Event | null = null;
 
-  const {fid} = await getFrameMessage(req);
+  const {fid, connectedAddress} = await getFrameMessage(req);
+
+  console.log(connectedAddress)
 
   await Promise.all([kv.hgetall(fid.toString()), kv.hgetall(eventName)]).then( (res) => {
     user = res[0] as User || null;

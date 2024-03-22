@@ -8,7 +8,9 @@ export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req, false);
 
-  const {button, fid, input} = message;
+  const {button, fid, input, connectedAddress} = message;
+
+  console.log(connectedAddress)
 
   let {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
   
@@ -72,8 +74,6 @@ export async function POST(req: NextRequest): Promise<Response> {
   else
   {
     const impliedProbability = event.odds[pick]
-    const streak = parseInt(user.streak.toString());
-    const availableBal = parseFloat(user?.balance.toString());
     const poll = Object.values(await kv.hgetall(`${eventName}:${DatabaseKeys.POLL}`) as Record<number, number>)
     const prompt = event.prompt;
     const options = event.options;

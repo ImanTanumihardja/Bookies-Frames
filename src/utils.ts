@@ -228,6 +228,12 @@ export async function getFrameMessage(req: NextRequest, validate=true, viewerFid
 
     let message: FrameValidationData = {} as FrameValidationData;
 
+    message.button = body.untrustedData.buttonIndex
+    message.input = body.untrustedData.inputText
+    message.fid = body.untrustedData.fid
+    message.transactionId = body.untrustedData.transactionId 
+    message.connectedAddress = body.untrustedData.address
+
     // Use onchainkit to validate the frame message
     if (validate) {
         const data = await validateFrameMessage(body, true, process.env['HUB_HTTP_URL'], {headers: {api_key: process.env['NEYNAR_API_KEY']}}  );
@@ -236,23 +242,12 @@ export async function getFrameMessage(req: NextRequest, validate=true, viewerFid
             throw new Error('Invalid frame message');
         }
 
-        message.button = data?.buttonIndex
         message.following = data.requesterFollowsCaster
-        message.input = data?.inputText
-        message.fid = data?.requesterFid
-        message.custody_address = data?.requesterCustodyAddress
-        message.verified_accounts = data?.requesterVerifiedAddresses
+        message.custodyAddress = data?.requesterCustodyAddress
+        message.verifiedAccounts = data?.requesterVerifiedAddresses
         message.liked = data?.likedCast
         message.recasted = data?.recastedCast
-        message.transactionId = body.untrustedData.transactionId
-
         message.followingHost = await checkIsFollowing(message.fid, viewerFid)
-    }
-    else { // Not validating frame message
-        message.button = body.untrustedData.buttonIndex
-        message.input = body.untrustedData.inputText
-        message.fid = body.untrustedData.fid
-        message.transactionId = body.untrustedData.transactionId 
     }
 
     return message

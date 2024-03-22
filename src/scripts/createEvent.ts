@@ -46,12 +46,12 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
   const poll = {0: 0, 1: 0, 2: 0, 3: 0} as Record<number, number>
   await kv.hset(`${eventName}:${DatabaseKeys.POLL}`, poll)
 
-  if (host === Accounts.ALEA) {
+  if (host === Accounts.ALEA || host === Accounts.BOTH) {
     // Create alea bets list 
     await kv.del(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`)
   }
 
-  if (host === Accounts.BOOKIES) {
+  if (host === Accounts.BOOKIES || host === Accounts.BOTH) {
     // Create bookies bets list 
     await kv.del(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`)
   }

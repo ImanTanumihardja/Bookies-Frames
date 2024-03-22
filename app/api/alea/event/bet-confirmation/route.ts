@@ -61,7 +61,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   // Need to check bet does not exists, time is not past, and stake >= 1 and not rejected
   if (now < event?.startDate && stake > 0 && parseInt(event?.result.toString()) === -1 && button != 2) {
     // Can bet
-    const bet : Bet = {pick:pick, odd: 1/event.options.length, stake:stake, timeStamp: now, settled: false} as Bet;
+    const bet : Bet = {pick:pick, odd: event.odds[pick], stake:stake, timeStamp: now, settled: false} as Bet;
 
     // Adjust user available balance
     user.balance = Math.round(balance - stake);

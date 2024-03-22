@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import { RequestProps, getRequestProps, calculatePayout } from '../../../../../../src/utils';
+import { RequestProps, getRequestProps, calculatePayout, convertImpliedProbabilityToAmerican } from '../../../../../../src/utils';
 import * as fs from "fs";
 import { join } from 'path';
 
@@ -14,15 +14,18 @@ export async function GET(req: NextRequest) {
             pick, 
             stake, 
             poll, 
+            odd : impliedProbability,
             prompt, 
             options} 
                 = getRequestProps(req, [RequestProps.PICK, 
                                         RequestProps.STAKE, 
                                         RequestProps.POLL,
+                                        RequestProps.ODD,
                                         RequestProps.PROMPT,
                                         RequestProps.OPTIONS]);
         
-        const payout = calculatePayout(1/options.length, stake)
+        const odd = convertImpliedProbabilityToAmerican(impliedProbability)
+        const payout = calculatePayout(odd, stake)
 
         let pollData = [];
         // Get total votes
