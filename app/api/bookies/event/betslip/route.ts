@@ -8,9 +8,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req, false);
 
-  const {button, fid, input, connectedAddress} = message;
-
-  console.log(connectedAddress)
+  const {button, fid, input} = message;
 
   let {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
   
