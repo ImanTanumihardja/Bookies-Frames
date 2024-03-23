@@ -32,7 +32,6 @@ const {fids, message, browserWSEndpoint} = require('./config.json');
   ({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe', headless:false, args:['--profile-directory="Profile 4"']});
 
   const page = await browser.newPage();
-  return;
 
   for (let i = 0; i < usernames.length; i++) {
     const username = usernames[i];

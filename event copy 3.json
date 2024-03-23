@@ -1,8 +1,0 @@
-{
-    "eventName": "okc-lal-ml", 
-    "startDate": 1709609400000, 
-    "odds": [0.5, 0.5],
-    "multiplier":1, 
-    "options":["OKC", "LAL"],
-    "prompt":"Thunder (OKC) vs Lakers (LAL)?"
-}
