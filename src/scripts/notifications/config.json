@@ -1,6 +1,6 @@
 {
-    "fids": [313859, 241573],
+    "fids": [313859], 
     "message": "Day 2's bets are live! Come bet @alea.eth",
-    "browserWSEndpoint": "ws://127.0.0.1:9222/devtools/browser/424b9d02-64f3-4135-aad5-2971d6151b12",
+    "browserWSEndpoint": "ws://127.0.0.1:9222/devtools/browser/59dd30e4-c725-457b-94cb-873c6f717917",
     "parentHash": "0x860f91e9054bad766b8667cb43aac56eb94a6a73"
 }

@@ -28,8 +28,9 @@ const {fids, message, browserWSEndpoint} = require('./config.json');
 
   console.log(usernames);
 
-  const browser = await puppeteer.launch
-  ({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe', headless:false, args:['--profile-directory="Profile 4"']});
+  // const browser = await puppeteer.launch({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe', headless:false, args:['--profile-directory="Profile 4"']});
+
+  const browser = await puppeteer.connect({browserWSEndpoint});
 
   const page = await browser.newPage();
 
@@ -40,7 +41,7 @@ const {fids, message, browserWSEndpoint} = require('./config.json');
     await page.goto(`https://warpcast.com/${username}`);
 
     // Set screen size
-    await page.setViewport({width: 1080, height: 1024});
+    // await page.setViewport({width: 1080, height: 1024});
 
     // Check if the button exists
     let dmButton;
