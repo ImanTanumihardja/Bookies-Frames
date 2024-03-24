@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
             pick, 
             stake, 
             poll, 
-            odd : impliedProbability,
+            odd: impliedProbability,
             prompt, 
             options} 
                 = getRequestProps(req, [RequestProps.PICK, 

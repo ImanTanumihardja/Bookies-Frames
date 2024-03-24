@@ -126,7 +126,18 @@ export async function POST(req: NextRequest): Promise<Response> {
         {
           label: 'Place Another Bet', 
           action:'post', 
-          target: generateUrl(`/api/alea/${FrameNames.EVENT}/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false)}
+          target: generateUrl(`/api/alea/${FrameNames.EVENT}/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false)
+        },
+        {
+          label: 'Profile Finder', 
+          action:'post', 
+          target: generateUrl(`/api/alea/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: -1}, false)
+        },
+        {
+          label: 'Leaderboard', 
+          action:'post', 
+          target: generateUrl(`/api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: -1, [RequestProps.COUNT]: 5}, false)
+        },
         ],
       postUrl: generateUrl(`/api/alea/${FrameNames.EVENT}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName}, false),
     }),
