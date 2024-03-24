@@ -233,7 +233,6 @@ export async function getFrameMessage(req: NextRequest, validate=true, viewerFid
     message.fid = body.untrustedData.fid
     message.transactionId = body.untrustedData.transactionId 
     message.connectedAddress = body.untrustedData.address
-    console.log(body.untrustedData.address)
 
     // Use onchainkit to validate the frame message
     if (validate) {

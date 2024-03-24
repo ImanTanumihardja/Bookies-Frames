@@ -72,7 +72,6 @@ export async function POST(req: NextRequest): Promise<Response> {
   else
   {
     const odd = event.odds[pick]
-    console.log(odd)
     const poll = Object.values(await kv.hgetall(`${eventName}:${DatabaseKeys.POLL}`) as Record<number, number>)
     const prompt = event.prompt;
     const options = event.options;

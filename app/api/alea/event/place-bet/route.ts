@@ -55,7 +55,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     buttons =
       [
         { 
-          label: "Check out /bookies!", 
+          label: "/bookies!", 
           action: 'link', 
           target: 'https://warpcast.com/~/channel/bookies'
         },
