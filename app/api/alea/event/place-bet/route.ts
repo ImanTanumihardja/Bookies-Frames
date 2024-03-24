@@ -58,7 +58,17 @@ export async function POST(req: NextRequest): Promise<Response> {
           label: "Check out /bookies!", 
           action: 'link', 
           target: 'https://warpcast.com/~/channel/bookies'
-        }
+        },
+        {
+          label: 'Profile Finder', 
+          action:'post', 
+          target: generateUrl(`/api/alea/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: -1}, false)
+        },
+        {
+          label: 'Leaderboard', 
+          action:'post', 
+          target: generateUrl(`/api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: -1, [RequestProps.COUNT]: 5}, false)
+        },
       ]
     imageUrl = generateUrl(`api/alea/${FrameNames.EVENT}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: 0, 
                                                                               [RequestProps.PICK]: pick, 
