@@ -30,7 +30,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         abi: erc20ABI,
         data: data,
         to: USDC_ADDRESS,
-        // value: ethers.parseEther('0').toString(),
+        value: ethers.parseEther('0').toString(),
       },
     };
     return NextResponse.json(txData);
