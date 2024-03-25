@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
                 <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        width: '65%',
+                        width: '100%',
                         height: '100%',
                         background: 'linear-gradient(to right, orange, #aa3855, purple)',
                         justifyContent: 'center',
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
                     <h1 style={{color: 'white', fontSize:25, position: 'absolute', top: 0, left:20}}> {`(${date.toLocaleDateString()})`} </h1>
                     <h1 style={{color: 'white', fontSize:50, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25}}> {prompt} </h1>
                 </div>
-                <div style={{
+                {/* <div style={{
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
                         background: 'white'}}>
                     <h3 style={{color: 'black', fontSize:20, padding:25, textAlign:'center', position:'absolute', top:10}}> Available Balance:</h3>
                     <h3 style={{color: 'black', fontSize:50, padding:25, textAlign:'center'}}> {balance} </h3>
-                </div>
+                </div> */}
             </div>
             ,
             {

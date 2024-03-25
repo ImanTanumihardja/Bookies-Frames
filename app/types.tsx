@@ -36,6 +36,6 @@ export type FrameValidationData = {
     verifiedAccounts: string[];
     liked: boolean;
     recasted: boolean;
-    transactionId: number;
+    transactionId: string;
     connectedAddress: number;
 }

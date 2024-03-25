@@ -1,4 +1,4 @@
-const IERC20ABI = [
+const erc20ABI = [
     {
       "anonymous": false,
       "inputs": [
@@ -197,4 +197,4 @@ const IERC20ABI = [
     }
   ] as const;
 
-  export default IERC20ABI;
+  export default erc20ABI;

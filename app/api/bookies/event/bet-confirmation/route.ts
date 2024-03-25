@@ -54,7 +54,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   const now = new Date().getTime();
 
   // Need to check bet does not exists, time is not past, and stake >= 1 and not rejected
-  if (now < event?.startDate && stake > 0 && parseInt(event?.result.toString()) === -1 && button != 2) {
+  if (now < event?.startDate && stake > 0 && parseInt(event?.result.toString()) === -1 && button != 1) {
     // Can bet
     const bet : Bet = {pick:pick, odd: event.odds[pick], stake:stake, timeStamp: now, settled: false} as Bet;
 
@@ -65,16 +65,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     user.bets[eventName].push(bet)
 
     // Set user
-    await kv.hset(fid.toString(), user).then( async () => {
-      // Set event
-      await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
-        console.error('Error adding user to event:', error);
-        // Try again
-        await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
-          throw new Error('Error creating bet');
-        })
-      })
-
+    await kv.sadd(`${fid.toString()}:addresses`, user).then( async () => {
       // Update poll
       await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(async (error) => {
         console.error('Error adding user to event:', error);
@@ -84,16 +75,6 @@ export async function POST(req: NextRequest): Promise<Response> {
         })
       })
 
-      // If new user add to leaderboard
-      if (isNewUser) {
-        if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: DEFAULT_USER.balance, member: fid}).catch(async (error) => {
-          console.error('Error adding user to leaderboard:', error);
-          // Try again
-          if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: DEFAULT_USER.balance, member: fid}).catch((error) => {
-            throw new Error('Error adding user to leaderboard');
-          })
-        });
-      }
     }).catch((error) => {
       throw new Error('Error creating bet');
     });   
@@ -110,7 +91,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   return new NextResponse(
     getFrameHtml({
       version: "vNext",
-      image: `${imageUrl}`,
+      image: imageUrl,
       buttons: 
       [
         { 

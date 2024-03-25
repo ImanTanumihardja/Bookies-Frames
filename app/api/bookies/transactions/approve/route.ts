@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFrameMessage } from '../../../../../src/utils';
 import {ethers} from 'ethers';
-import IERC20ABI from '../../../../contracts/IERC20ABI';
-import { USDC_ADDRESS } from '../../../../addresses';
+import erc20ABI from '../../../../contracts-abi/erc20';
+import { USDC_ADDRESS, ORDERBOOKIE_ADDRESS } from '../../../../addresses';
 
 export async function POST(req: NextRequest): Promise<Response> {
-  const provider = new ethers.JsonRpcProvider('https://opt-mainnet.g.alchemy.com/v2/4Hef5Sdtt6yaKhEwtoOWuoaI6Jg80ccr');
-  const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, IERC20ABI, provider)).decimals();
   // Verify the frame request
   const message = await getFrameMessage(req);
 
   const {input} = message
+
+  const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
+  const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, erc20ABI, provider)).decimals();
 
   // Check if input is valid amount
   const stake = parseFloat(input);
@@ -18,18 +19,18 @@ export async function POST(req: NextRequest): Promise<Response> {
     throw new Error(`Invalid wager amount STAKE: ${input}`);  
   }
 
-  const ierc20 = new ethers.Interface(IERC20ABI)
-  const data = ierc20.encodeFunctionData('approve', ['0x7dcEe2642828fA342fAfA2Bd93b7dF3AE61929E3', BigInt(stake) * BigInt(10) ** DECIMALS])
+  const ierc20 = new ethers.Interface(erc20ABI)
+  const data = ierc20.encodeFunctionData('approve', [ORDERBOOKIE_ADDRESS, BigInt(stake) * BigInt(10) ** DECIMALS])
 
   const txData = {
       chainId: `eip155:10`,
-      method: 'eth_sendTransaction',
+      method: 'approve',
       attribution: false,
       params: {
-        abi: IERC20ABI,
+        abi: erc20ABI,
         data: data,
         to: USDC_ADDRESS,
-        // value: ethers.parseEther('0').toString(),
+        value: ethers.parseEther('0').toString(),
       },
     };
     return NextResponse.json(txData);

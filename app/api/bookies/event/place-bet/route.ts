@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage, getRequestProps, notFollowingResponse } from '../../../../../src/utils';
+import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, Transactions, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage, getRequestProps, notFollowingResponse } from '../../../../../src/utils';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { User, Event } from '../../../../types';
 import { kv } from '@vercel/kv';
@@ -8,24 +8,15 @@ export async function POST(req: NextRequest): Promise<Response> {
   let {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
 
   // Wait for both user to be found and event to be found
-  let user : User | null = null;
   let event : Event | null = null;
 
   const {fid} = await getFrameMessage(req);
 
-  await Promise.all([kv.hgetall(fid.toString()), kv.hgetall(eventName)]).then( (res) => {
-    user = res[0] as User || null;
-    event = res[1] as Event || null;
+  await Promise.all([kv.hgetall(eventName)]).then( (res) => {
+    event = res[0] as Event || null;
   });
 
   event = event as unknown as Event || null;
-
-  if (!user || (user as User)?.hasClaimed === undefined || await kv.zscore(DatabaseKeys.LEADERBOARD, fid.toString()) === null) {
-    // New user
-    user = DEFAULT_USER
-  }
-
-  if (user === null) throw new Error('User is null');
 
   // Get info for bet
   if (event === null) throw new Error('Event not found');
@@ -73,10 +64,10 @@ export async function POST(req: NextRequest): Promise<Response> {
       return {
         label: `${option} (${probString})`,
         action: 'tx',
-        target: generateUrl(`api/bookies/${FrameNames.TRANSACTIONS}/${FrameNames.APPROVE}`, {}, false),
+        target: generateUrl(`api/bookies/transactions/${Transactions.APPROVE}`, {}, false),
       } as FrameButton
     })
-    imageUrl = generateUrl(`api/bookies/${FrameNames.EVENT}/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, [RequestProps.BALANCE]: user.balance, [RequestProps.TIME]: event.startDate}, true);
+    imageUrl = generateUrl(`api/bookies/${FrameNames.EVENT}/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, [RequestProps.BALANCE]: 0, [RequestProps.TIME]: event.startDate}, true);
   }
 
   const frame : Frame = {

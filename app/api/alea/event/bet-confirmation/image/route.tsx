@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
         // TODO: format the string for each bet
 
 
-        if (buttonIndex === 2) {
+        if (buttonIndex === 1) {
             text = 'You rejected the bet!'
         } 
         else if (stake <= -1){

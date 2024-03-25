@@ -89,14 +89,14 @@ export async function POST(req: NextRequest): Promise<Response> {
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-      postUrl: generateUrl(`api/alea/${FrameNames.EVENT}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake, [RequestProps.PICK]: button-1}, false),
+      postUrl: generateUrl(`api/alea/${FrameNames.EVENT}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick}, false),
       buttons: pick !== -1 ? [
                 {
-                  label: "Confirm", 
+                  label: "Reject", 
                   action: 'post'
                 },
                 {
-                  label: "Reject", 
+                  label: "Confirm", 
                   action: 'post'
                 }
               ]

@@ -1,14 +1,17 @@
 import { getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
-import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage } from '../../../../../src/utils';
+import {  DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, Transactions } from '../../../../../src/utils';
 import { kv } from "@vercel/kv";
 import { User, Event } from "../../../../types";
+import {ethers} from 'ethers';
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req, false);
 
-  const {button, fid, input} = message;
+  const {button, fid, input, transactionId} = message;
+
+  const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
 
   let {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
   
@@ -17,36 +20,21 @@ export async function POST(req: NextRequest): Promise<Response> {
   let stake = parseFloat(input);
 
   // Check if stake is not float
-  if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake) || stake % 1 !== 0) {
+  if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake)) {
     throw new Error(`Invalid wager amount STAKE: ${input}`);  
   }
 
-  stake = Math.floor(stake);
-
   // Wait for both user to be found and event to be found
-  let user : User | null = null;
   let event : Event | null = null;
 
-  await Promise.all([kv.hgetall(fid.toString()), kv.hgetall(eventName)]).then( (res) => {
-    user = res[0] as User || null;
-    event = res[1] as Event || null;
+  await Promise.all([kv.hgetall(eventName)]).then( (res) => {
+    event = res[0] as Event || null;
   });
 
   event = event as unknown as Event || null;
 
-  if (!user || (user as User)?.hasClaimed === undefined || await kv.zscore(DatabaseKeys.LEADERBOARD, fid.toString()) === null) {
-    // New user
-    user = DEFAULT_USER
-  }
-
-  if (user === null) throw new Error('User is null');
-
   // Get info for bet
   if (event === null) throw new Error('Event not found');
-
-  if (stake > user.balance) {
-    throw new Error(`Invalid wager amount STAKE: ${stake}`);
-  }
 
   // Check if result has been set
   const result = parseInt(event.result.toString())
@@ -54,8 +42,12 @@ export async function POST(req: NextRequest): Promise<Response> {
     console.log('Event has already been settled');
   }
 
+  const txReceipt = await provider.getTransaction(transactionId)
+  // Need to check if approve tx is mined
+
   let imageUrl = ''
   let pick = button - 1;
+  const impliedProbability = event.odds[pick]
   const now = new Date().getTime();
   // Check if event has already passed
   if (event.startDate < now || result !== -1) {
@@ -71,7 +63,6 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
   else
   {
-    const impliedProbability = event.odds[pick]
     const poll = Object.values(await kv.hgetall(`${eventName}:${DatabaseKeys.POLL}`) as Record<number, number>)
     const prompt = event.prompt;
     const options = event.options;
@@ -89,15 +80,16 @@ export async function POST(req: NextRequest): Promise<Response> {
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-      postUrl: generateUrl(`api/bookies/${FrameNames.EVENT}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake, [RequestProps.PICK]: button-1}, false),
+      postUrl: generateUrl(`api/bookies/${FrameNames.EVENT}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick}, false),
       buttons: pick !== -1 ? [
-                {
-                  label: "Confirm", 
-                  action: 'post'
-                },
                 {
                   label: "Reject", 
                   action: 'post'
+                },
+                {
+                  label: "Confirm", 
+                  action: 'tx',
+                  target: generateUrl(`api/bookies/transactions/${Transactions.PLACE_BET}`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.ODD]: impliedProbability}, false)
                 }
               ]
               :

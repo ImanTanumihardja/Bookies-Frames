@@ -95,8 +95,11 @@ export enum FrameNames {
     INFO = 'info',
     PLACE_BET = 'place-bet',
     EVENT = 'event',
-    TRANSACTIONS = 'transactions',
+}
+
+export enum Transactions {
     APPROVE = 'approve',
+    PLACE_BET = 'place-bet',
 }
 
 export enum DatabaseKeys {

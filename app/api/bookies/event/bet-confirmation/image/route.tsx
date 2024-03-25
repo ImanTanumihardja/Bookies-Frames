@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
         const {pick, stake, buttonIndex, fid, eventName, options, time, result} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.TIME, RequestProps.RESULT]);
 
         // Get bets for this event by filtering the bets array for the eventName
-        const bets : Record<string, Bet[]> = (await kv.hget(fid?.toString(), 'bets') || {});
+        const bets : Record<string, Bet[]> = {} // TODO
 
         console.log('BETS: ', bets)
 
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
         // TODO: format the string for each bet
 
 
-        if (buttonIndex === 2) {
+        if (buttonIndex === 1) {
             text = 'You rejected the bet!'
         } 
         else if (stake <= -1){

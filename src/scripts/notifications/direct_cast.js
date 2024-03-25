@@ -1,9 +1,9 @@
 const puppeteer = require('puppeteer-core');
 const { NeynarAPIClient } = require("@neynar/nodejs-sdk");
 const dotenv = require("dotenv");
-const {fids, message, browserWSEndpoint} = require('./config.json');
+const {fids, message, executablePath, headless, userDataDirPath, profileName} = require('./config.json');
 
-(async () => {
+async function notifyDC(browserWSEndpoint="") {
   dotenv.config({ path: ".env"});
   console.log('Fids:', fids)
   console.log('Message:', message)
@@ -28,12 +28,26 @@ const {fids, message, browserWSEndpoint} = require('./config.json');
 
   console.log(usernames);
 
-  // const browser = await puppeteer.launch({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe', headless:false, args:['--profile-directory="Profile 4"']});
-
-  const browser = await puppeteer.connect({browserWSEndpoint});
+  let browser;
+  if (!browserWSEndpoint)
+  {
+    // Launch the browser
+    console.log('Launching browser');
+    console.log('Executable Path:', executablePath);
+    console.log('Headless:', headless);
+    console.log('User Data Dir:', userDataDirPath);
+    console.log('Profile Name:', profileName, "\n");
+    browser = await puppeteer.launch({executablePath:executablePath, headless:headless, args:[`--user-data-dir=${userDataDirPath}`, `--profile-directory=${profileName}`]});
+  }
+  else 
+  {
+    // Connect to the browser
+    console.log('Connecting to browser: ', browserWSEndpoint);
+    browser = await puppeteer.connect({browserWSEndpoint});
+  }
 
   const page = await browser.newPage();
-
+  
   for (let i = 0; i < usernames.length; i++) {
     const username = usernames[i];
     console.log(`Sending to ${username}`);
@@ -49,7 +63,7 @@ const {fids, message, browserWSEndpoint} = require('./config.json');
       dmButton = await page.waitForSelector('#root > div > div > div > main > div > div > div.p-4 > div > div > div.flex.flex-row.items-center.justify-between > div.flex.flex-row.gap-1 > button:nth-child(1)', {timeout: 1000});
     }
     catch (error) {
-      console.log('Button does not exist');
+      console.log('Cannot DC');
       continue;
     }
     
@@ -74,8 +88,17 @@ const {fids, message, browserWSEndpoint} = require('./config.json');
       await page.keyboard.press('Enter');
     } else {
       // Cannot direct message them
-      console.log('Button does not exist');
+      console.log('Cannot DC');
     }
   }
+}
 
-})();
+if (require.main === module) {
+  // Read in cli arguments
+  const args = require('minimist')(process.argv.slice(2), {boolean: ['b']})
+  notifyDC(args['b']).then(() => process.exit(0))
+    .catch(error => {
+      console.error(error)
+      process.exit(1)
+    })
+}
