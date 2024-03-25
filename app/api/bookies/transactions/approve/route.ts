@@ -24,13 +24,13 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const txData = {
       chainId: `eip155:10`,
-      method: 'approve',
+      method: 'eth_sendTransaction',
       attribution: false,
       params: {
         abi: erc20ABI,
         data: data,
         to: USDC_ADDRESS,
-        value: ethers.parseEther('0').toString(),
+        // value: ethers.parseEther('0').toString(),
       },
     };
     return NextResponse.json(txData);

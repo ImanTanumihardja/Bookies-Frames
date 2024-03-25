@@ -36,7 +36,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const txData = {
       chainId: `eip155:10`,
-      method: 'placeBet',
+      method: 'eth_sendTransaction',
       attribution: false,
       params: {
         abi: orderbookieABI,
