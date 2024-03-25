@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFrameMessage } from '../../../../../src/utils';
 import {ethers} from 'ethers';
-import erc20ABI from '../../../../contracts-abi/erc20';
+import erc20ABI from '../../../../contract-abis/erc20';
 import { USDC_ADDRESS, ORDERBOOKIE_ADDRESS } from '../../../../addresses';
 
 export async function POST(req: NextRequest): Promise<Response> {

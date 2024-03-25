@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFrameMessage, getRequestProps, RequestProps } from '../../../../../src/utils';
 import {ethers} from 'ethers';
-import orderbookieABI from '../../../../contracts-abi/orderbookie';
-import erc20ABI from '../../../../contracts-abi/erc20';
+import orderbookieABI from '../../../../contract-abis/orderbookie';
+import erc20ABI from '../../../../contract-abis/erc20';
 import { USDC_ADDRESS, ORDERBOOKIE_ADDRESS } from '../../../../addresses';
 
 const ODDS_DECIMALS = 4
