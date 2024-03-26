@@ -11,7 +11,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req, true, ALEA_FID);
 
-  const {followingHost: isFollowing, fid, button} = message;
+  const {followingHost: isFollowing, fid, button, liked} = message;
   console.log('FID: ', fid.toString())
 
   var validCaptcha = true;
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     return await GET(req); 
   }
 
-  if (!isFollowing) {
+  if (!isFollowing || !liked) {
     // Call fetch to get not following
     return notFollowingResponse(generateUrl(`/api/alea/${FrameNames.CLAIM_DICE}`, {[RequestProps.CAPTCHA_INDEX]: -1}, false))
   }
