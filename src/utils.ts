@@ -251,7 +251,6 @@ export async function getFrameMessage(req: NextRequest, validate=true, viewerFid
         message.custodyAddress = data?.requesterCustodyAddress
         message.verifiedAccounts = data?.requesterVerifiedAddresses
         message.liked = data?.likedCast
-        console.log('LIKED: ', message.liked)
         message.recasted = data?.recastedCast
         message.followingHost = await checkIsFollowing(message.fid, viewerFid)
     }
