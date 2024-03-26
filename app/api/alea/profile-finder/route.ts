@@ -30,7 +30,6 @@ export async function POST(req: NextRequest): Promise<Response> {
   let imageUrl: string = "";
   let postUrl = generateUrl(`/api/alea/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: ''}, false)
   let offset = 0;
-  let count = 5;
 
   const username : string = (req.nextUrl.searchParams.get("username") || input || '')?.toLowerCase();
   if (!profileFID) { // Not coming from bets page
@@ -88,12 +87,10 @@ export async function POST(req: NextRequest): Promise<Response> {
     if (rank != null) {
       if (rank <= 5) {
         offset = -1;
-        count = 5;
       }
       else {
-        // Get nearest 5 ranks
-        offset = Math.floor(rank / 5) * 5;
-        count = 10;
+        // Get nearest page
+        offset = (Math.floor(rank / 5) * 5);
       }
     }
   }
@@ -111,12 +108,26 @@ export async function POST(req: NextRequest): Promise<Response> {
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: (rank === -1 || eventNames.length === 0 ? // No user or no bets
+    buttons: (rank === -1 && eventNames.length === 0 ? // No user or no bets
     [
       {
         label: 'Search',
         action: 'post',
       },
+    ]
+    :
+    rank !== -1 && eventNames.length === 0 ?
+    [
+      {
+        label: 'Search Again',
+        action: 'post',
+        target: generateUrl(`/api/alea/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: -1}, false)
+      },
+      {
+        label: "Leaderboard",
+        action: 'post',
+        target: generateUrl(`/api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: offset, [RequestProps.REDIRECT]: true}, false)
+      }
     ]
     :
     [
@@ -133,10 +144,10 @@ export async function POST(req: NextRequest): Promise<Response> {
       {
         label: "Leaderboard",
         action: 'post',
-        target: generateUrl(`/api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: offset, [RequestProps.COUNT]: count}, false)
+        target: generateUrl(`/api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: offset, [RequestProps.REDIRECT]: true}, false)
       }
     ]),
-    inputText: rank === -1 || eventNames.length === 0 ? "Enter another username or fid" : undefined,
+    inputText: rank === -1 ? "Enter another username or fid" : undefined,
     postUrl: postUrl,
   };
 

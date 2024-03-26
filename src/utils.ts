@@ -37,7 +37,8 @@ export enum RequestProps {
   OFFSET = 'offset',
   COUNT = 'count',
   BOOLEAN = 'boolean',
-  URL = 'url'
+  URL = 'url',
+  REDIRECT = 'redirect'
 }
 
 export enum Accounts {
@@ -79,7 +80,8 @@ export const RequestPropsTypes = {
     [RequestProps.OFFSET] : 0,
     [RequestProps.COUNT] : 0,
     [RequestProps.BOOLEAN] : true,
-    [RequestProps.URL] : ""
+    [RequestProps.URL] : "",
+    [RequestProps.REDIRECT] : true
 }
 
 export enum FrameNames {

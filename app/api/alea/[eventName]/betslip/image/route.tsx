@@ -24,6 +24,7 @@ export async function GET(req: NextRequest) {
                                         RequestProps.PROMPT,
                                         RequestProps.OPTIONS]);
         
+        const odd = convertImpliedProbabilityToAmerican(impliedProbability)
         const payout = calculatePayout(impliedProbability, stake)
 
         let pollData = [];
@@ -50,11 +51,16 @@ export async function GET(req: NextRequest) {
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize:55, position:'absolute', top:-10, left:20 }}>Betslip</h1>
-                        <div style={{display: 'flex', width:'100%', flexDirection: 'column', alignItems:'center', justifyItems:"center", padding:10}}> 
-                            <h1 style={{color: 'white', fontSize:40, margin:10}}> PICK: {options[pick]}</h1>
-                            <h1 style={{color: 'white', fontSize:40, margin:10}}> STAKE: {stake} <img style={{width: 35, height: 35, marginTop: 10, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
-                            <h1 style={{color: 'white', fontSize:40, margin:10}}> PAYOUT: {payout}<img style={{width: 35, height: 35, marginTop: 10, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
-                        </div>
+                    <div style={{display: 'flex', width:'75%', height:'60%', flexDirection: 'column', alignSelf:'center', alignItems:'flex-start', justifyItems:"flex-start", flexWrap: 'wrap', padding:10}}> 
+                        <h1 style={{color: 'white', fontSize:40, margin:10, marginRight:50, textDecoration:'underline'}}> Pick:</h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:10, marginRight:50, textDecoration:'underline'}}> Stake:</h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:10, marginRight:50, textDecoration:'underline'}}> Payout:</h1>
+
+                        <h1 style={{color: 'white', fontSize:40, margin:10}}>{options[pick]}</h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:10}}>{stake} <img style={{width: 35, height: 35, marginTop: 10, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:10}}>{payout}<img style={{width: 35, height: 35, marginTop: 10, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
+                    </div>
+                    <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, bottom:10, right: 10}}> Odds: {impliedProbability > 0.5 ? '-' : '+'}{odd}</h1>
                 </div>
                 <div style={{display: 'flex', flexDirection:'column', width:'35%', height:'100%', alignItems:'center', background: 'white'}}>
                     <div style={{display: 'flex', flexDirection:'row', height:'100%', transform: 'scaleY(-1)', bottom:-5}}>

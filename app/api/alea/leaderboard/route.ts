@@ -5,7 +5,7 @@ import { Frame, getFrameHtml} from "frames.js";
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req, false);
-  let {offset} = getRequestProps(req, [RequestProps.OFFSET]);
+  let {offset, redirect} = getRequestProps(req, [RequestProps.OFFSET, RequestProps.REDIRECT]);
 
   if (offset === -1) { // Coming from profile finder and looking for top 5
     offset = 0;
@@ -13,10 +13,10 @@ export async function POST(req: NextRequest): Promise<Response> {
   else if (offset === 0){
     offset += 5
   }
-  else if (message.button === 2) {
+  else if (message.button === 2 && !redirect) {
     offset += 10;
   }
-  else if (message.button === 1) {
+  else if (message.button === 1 && !redirect) {
     offset = Math.max(0, offset - 10);
   }
 
@@ -27,19 +27,19 @@ export async function POST(req: NextRequest): Promise<Response> {
       version: "vNext",
       image: imageUrl,
       buttons: (offset !== 0 ?  [{label: '<', action:'post'} , {label: '>', action:'post'}] : [{label: '>', action:'post'}]),
-      postUrl: generateUrl(`api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: offset}, false)
+      postUrl: generateUrl(`api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: offset, [RequestProps.REDIRECT]: false}, false)
     }),
   );
 } 
 
 export async function GET(req: NextRequest): Promise<Response> {
-  const imageUrl = generateUrl(`api/alea/${FrameNames.LEADERBOARD}/image`, {[RequestProps.OFFSET]: 0}, true)
+  const imageUrl = generateUrl(`api/alea/${FrameNames.LEADERBOARD}/image`, {[RequestProps.OFFSET]: 0, [RequestProps.REDIRECT]: false}, true)
 
     const frame : Frame = {
       version: "vNext",
       buttons: [{label: '>', action:'post'}],
       image: imageUrl,
-      postUrl: generateUrl(`api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: 0, [RequestProps.COUNT]: 5}, false)
+      postUrl: generateUrl(`api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: 0, [RequestProps.REDIRECT]: false}, false)
     };
 
   return new NextResponse(
