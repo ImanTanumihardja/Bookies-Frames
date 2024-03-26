@@ -15,7 +15,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   if (!isFollowing) {
     // Call fetch to get not following thumbnail
-    return notFollowingResponse(generateUrl(`/api/alea/${FrameNames.EVENT}/${eventName}`, {}, false))
+    return notFollowingResponse(generateUrl(`/api/alea/${eventName}/${eventName}`, {}, false))
   }
 
   // Wait for both user to be found and event to be found
@@ -110,7 +110,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     console.log('FAILED TO PLACE BET')
   }
 
-  const imageUrl = generateUrl(`api/alea/${FrameNames.EVENT}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventName, [RequestProps.OPTIONS]: event.options, [RequestProps.TIME]: now, [RequestProps.RESULT]: event.result}, true);
+  const imageUrl = generateUrl(`api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventName, [RequestProps.OPTIONS]: event.options, [RequestProps.TIME]: now, [RequestProps.RESULT]: event.result}, true);
 
   return new NextResponse(
     getFrameHtml({
@@ -126,7 +126,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         {
           label: 'Place Another Bet', 
           action:'post', 
-          target: generateUrl(`/api/alea/${FrameNames.EVENT}/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false)
+          target: generateUrl(`/api/alea/${eventName}/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false)
         },
         {
           label: 'Profile Finder', 
@@ -139,7 +139,7 @@ export async function POST(req: NextRequest): Promise<Response> {
           target: generateUrl(`/api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: -1, [RequestProps.COUNT]: 5}, false)
         },
         ],
-      postUrl: generateUrl(`/api/alea/${FrameNames.EVENT}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName}, false),
+      postUrl: generateUrl(`/api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName}, false),
     }),
   );
 }

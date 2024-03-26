@@ -36,6 +36,8 @@ export async function GET(req: NextRequest) {
             pollData.push({votes: poll[i], percent:percent, text: `${options[i]}`})
         }
 
+        
+
         const imageResponse = new ImageResponse((
             <div style={{display: 'flex', flexDirection:'row', height:'100%', width:'100%'}}>
                 <div style={{

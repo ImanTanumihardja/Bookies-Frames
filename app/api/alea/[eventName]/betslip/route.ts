@@ -1,17 +1,14 @@
 import { getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
-import {  DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, Transactions } from '../../../../../src/utils';
+import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage } from '../../../../../src/utils';
 import { kv } from "@vercel/kv";
 import { User, Event } from "../../../../types";
-import {ethers} from 'ethers';
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req, false);
 
-  const {button, fid, input, transactionId} = message;
-
-  const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
+  const {button, fid, input} = message;
 
   let {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
   
@@ -20,21 +17,36 @@ export async function POST(req: NextRequest): Promise<Response> {
   let stake = parseFloat(input);
 
   // Check if stake is not float
-  if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake)) {
+  if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake) || stake % 1 !== 0) {
     throw new Error(`Invalid wager amount STAKE: ${input}`);  
   }
 
+  stake = Math.floor(stake);
+
   // Wait for both user to be found and event to be found
+  let user : User | null = null;
   let event : Event | null = null;
 
-  await Promise.all([kv.hgetall(eventName)]).then( (res) => {
-    event = res[0] as Event || null;
+  await Promise.all([kv.hgetall(fid.toString()), kv.hgetall(eventName)]).then( (res) => {
+    user = res[0] as User || null;
+    event = res[1] as Event || null;
   });
 
   event = event as unknown as Event || null;
 
+  if (!user || (user as User)?.hasClaimed === undefined || await kv.zscore(DatabaseKeys.LEADERBOARD, fid.toString()) === null) {
+    // New user
+    user = DEFAULT_USER
+  }
+
+  if (user === null) throw new Error('User is null');
+
   // Get info for bet
   if (event === null) throw new Error('Event not found');
+
+  if (stake > user.balance) {
+    throw new Error(`Invalid wager amount STAKE: ${stake}`);
+  }
 
   // Check if result has been set
   const result = parseInt(event.result.toString())
@@ -42,17 +54,13 @@ export async function POST(req: NextRequest): Promise<Response> {
     console.log('Event has already been settled');
   }
 
-  const txReceipt = await provider.getTransaction(transactionId)
-  // Need to check if approve tx is mined
-
   let imageUrl = ''
   let pick = button - 1;
-  const impliedProbability = event.odds[pick]
   const now = new Date().getTime();
   // Check if event has already passed
   if (event.startDate < now || result !== -1) {
     pick = -1;
-    imageUrl = generateUrl(`api/bookies/${FrameNames.EVENT}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, 
+    imageUrl = generateUrl(`api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, 
                                                                               [RequestProps.PICK]: pick, 
                                                                               [RequestProps.BUTTON_INDEX]: button, 
                                                                               [RequestProps.FID]: fid, 
@@ -63,24 +71,25 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
   else
   {
+    const odd = event.odds[pick]
     const poll = Object.values(await kv.hgetall(`${eventName}:${DatabaseKeys.POLL}`) as Record<number, number>)
     const prompt = event.prompt;
     const options = event.options;
 
 
-    imageUrl = generateUrl(`api/bookies/${FrameNames.EVENT}/${FrameNames.BETSLIP}/image`, {[RequestProps.PICK]: pick, 
+    imageUrl = generateUrl(`api/alea/${eventName}/${FrameNames.BETSLIP}/image`, {[RequestProps.PICK]: pick, 
                                                                       [RequestProps.STAKE]: stake, 
-                                                                      [RequestProps.ODD]: impliedProbability,
                                                                       [RequestProps.POLL]: poll,
+                                                                      [RequestProps.ODD]: odd,
                                                                       [RequestProps.PROMPT]: prompt, 
-                                                                      [RequestProps.OPTIONS]: options}, true);
+                                                                      [RequestProps.OPTIONS]: options,}, true);
   }
 
   return new NextResponse(
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-      postUrl: generateUrl(`api/bookies/${FrameNames.EVENT}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick}, false),
+      postUrl: generateUrl(`api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick}, false),
       buttons: pick !== -1 ? [
                 {
                   label: "Reject", 
@@ -88,8 +97,7 @@ export async function POST(req: NextRequest): Promise<Response> {
                 },
                 {
                   label: "Confirm", 
-                  action: 'tx',
-                  target: generateUrl(`api/bookies/transactions/${Transactions.PLACE_BET}`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.ODD]: impliedProbability}, false)
+                  action: 'post'
                 }
               ]
               :

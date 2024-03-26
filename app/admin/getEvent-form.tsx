@@ -32,6 +32,7 @@ export function GetEventForm() {
           <p>Prompt: {state.eventData.prompt}</p>
           <p>Host: {state.eventData.host}</p>
           <p>Result: {state.eventData.result}</p>
+          <p>Address: {state.eventData.address}</p>
           <div>Options: 
             <ul>{state.eventData?.options?.map((option:string, index:number) => 
               <li key={index}>

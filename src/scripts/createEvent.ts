@@ -11,7 +11,7 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
   });
 
-export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 0.5], options=["", ""], prompt="", host="") {
+export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 0.5], options=["", ""], prompt="", host="", address='') {
   if (startDate < new Date().getTime()) {
     throw new Error('Start date is invalid')
   }
@@ -39,7 +39,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
     throw new Error('Invalid host')
   }
 
-  let event: Event = {startDate: startDate, result: -1, odds: odds, options: options, prompt: prompt, host} as Event;
+  let event: Event = {startDate: startDate, result: -1, odds: odds, options: options, prompt: prompt, host, address} as Event;
   await kv.hset(`${eventName}`, event);
 
   // Create poll

@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, RequestProps, generateUrl, getRequestProps, Accounts } from '../../../../src/utils';
+import { FrameNames, RequestProps, generateUrl, Accounts } from '../../../../src/utils';
 import { Frame, getFrameHtml} from "frames.js";
 import { kv } from '@vercel/kv';
 import {  } from '../../../../src/utils';
 import { Event } from '../../../types';
 
-export async function POST(req: NextRequest): Promise<Response> {
-  return await GET(req);
+export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
+  return await GET(req, { params: { eventName } });
 }
 
-export async function GET(req: NextRequest): Promise<Response> {
-  const {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
+export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
+  console.log('Event Name: ', eventName)
   const event : Event | null = await kv.hgetall(eventName)
   if (event === null) throw new Error('Event not found');
 
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest): Promise<Response> {
 
   const startDate : number = event?.startDate
 
-  const imageUrl:string = generateUrl(`api/bookies/${FrameNames.EVENT}/image`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.TIME]: startDate}, true)
+  const imageUrl:string = generateUrl(`api/bookies/${eventName}/image`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.TIME]: startDate}, true)
   
   const frame : Frame = {
     version: "vNext",
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest): Promise<Response> {
       },
     ],
     image: imageUrl,
-    postUrl: generateUrl(`api/bookies/${FrameNames.EVENT}/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false),
+    postUrl: generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false),
   };
   return new NextResponse(
     getFrameHtml(frame),

@@ -86,7 +86,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     console.log('FAILED TO PLACE BET')
   }
 
-  const imageUrl = generateUrl(`api/bookies/${FrameNames.EVENT}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventName, [RequestProps.OPTIONS]: event.options, [RequestProps.TIME]: now, [RequestProps.RESULT]: event.result}, true);
+  const imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.EVENT_NAME]: eventName, [RequestProps.OPTIONS]: event.options, [RequestProps.TIME]: now, [RequestProps.RESULT]: event.result}, true);
 
   return new NextResponse(
     getFrameHtml({
@@ -102,9 +102,9 @@ export async function POST(req: NextRequest): Promise<Response> {
         {
           label: 'Place Another Bet', 
           action:'post', 
-          target: generateUrl(`/api/bookies/${FrameNames.EVENT}/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false)}
+          target: generateUrl(`/api/bookies/${eventName}/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false)}
         ],
-      postUrl: `${process.env['HOST']}/api/bookies/${FrameNames.EVENT}/${FrameNames.BET_CONFIRMATION}`,
+      postUrl: `${process.env['HOST']}/api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`,
     }),
   );
 }

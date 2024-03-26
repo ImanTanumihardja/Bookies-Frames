@@ -47,12 +47,16 @@ export function CreateEventForm() {
         <input type="text" id="prompt" name="prompt" placeholder="Lakers vs Clippers" required />
         <br />
         <br />
-        <label htmlFor="prompt">Host </label>
+        <label htmlFor="host">Host </label>
         <select id="host" name="host">
           <option value="bookies">Bookies</option>
           <option value="alea">Alea</option>
           <option value="both">Both</option>
         </select>
+        <br />
+        <br />
+        <label htmlFor="address">Address (*bookies only*) </label>
+        <input type="text" id="address" name="address" placeholder="0x..." required />
         <br />
         <br />
         <SubmitButton />
