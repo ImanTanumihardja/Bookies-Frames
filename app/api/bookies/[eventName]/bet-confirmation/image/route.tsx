@@ -71,18 +71,18 @@ export async function GET(req: NextRequest) {
                         background: 'white'}}>
                             <h1 style={{color: 'black', fontSize:35, justifyContent:'center', margin:5, marginTop: 20}}>Your Bets: </h1>
                             <div style={{display: 'flex', flexDirection:'column', alignItems: 'center'}}>
-                                {filteredBets.reverse().slice(0, 5).map((bet: Bet, index: number) => { 
+                                {/* {filteredBets.reverse().slice(0, 5).map((bet: Bet, index: number) => { 
                                 return (
                                     <h3 key={index} style={{color: 'black', fontSize:30, justifyContent:'center', margin:10, whiteSpace: 'pre'}}>
                                         {options[bet.pick]} | {bet.stake} { result === -1 ? '' : bet.pick === result ? '✅' : '❌'}
                                     </h3>
-                                )})}
+                                )})} */}
                             </div>
-                            {filteredBets.length > 5 ?
+                            {/* {filteredBets.length > 5 ?
                             <h2 style={{color: 'black', fontSize:35, justifyContent:'center', margin:-10}}>. . .</h2>
                             :
                             <div></div>
-                            }
+                            } */}
                 </div>
             </div>
             ), {
