@@ -44,7 +44,7 @@ var kv = createClient({
 // Create a script that access kv storage and reset the hasClaimed value
 function updateHasClaimed() {
     return __awaiter(this, void 0, void 0, function () {
-        var result, cursor, users, _i, users_1, fid, user;
+        var result, cursor, users, _loop_1, _i, users_1, fid;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, kv.zscan("leaderboard", 0, { count: 150 })];
@@ -65,28 +65,41 @@ function updateHasClaimed() {
                     // Filter out every other element
                     users = users.filter(function (fid, index) { return index % 2 === 0; });
                     console.log("Total users: ".concat(users.length, "\n"));
-                    users = users.filter(function (fid) { return fid === 313859; }); // Testing
+                    _loop_1 = function (fid) {
+                        var user;
+                        return __generator(this, function (_b) {
+                            switch (_b.label) {
+                                case 0: return [4 /*yield*/, kv.hgetall(fid)];
+                                case 1:
+                                    user = _b.sent();
+                                    if (user === null) {
+                                        console.log("User: ".concat(fid, " does not exist"));
+                                        return [2 /*return*/, "continue"];
+                                    }
+                                    return [4 /*yield*/, kv.hset(fid, { hasClaimed: false }).catch(function (error) {
+                                            console.error("Error updating user: ".concat(fid), error);
+                                            throw new Error('Error updating user');
+                                        })];
+                                case 2:
+                                    _b.sent();
+                                    console.log("User: ".concat(fid, " has been updated"));
+                                    return [2 /*return*/];
+                            }
+                        });
+                    };
                     _i = 0, users_1 = users;
                     _a.label = 5;
                 case 5:
-                    if (!(_i < users_1.length)) return [3 /*break*/, 9];
+                    if (!(_i < users_1.length)) return [3 /*break*/, 8];
                     fid = users_1[_i];
-                    return [4 /*yield*/, kv.hgetall(fid)];
+                    return [5 /*yield**/, _loop_1(fid)];
                 case 6:
-                    user = _a.sent();
-                    if (user === null) {
-                        console.log("User: ".concat(fid, " does not exist"));
-                        return [3 /*break*/, 8];
-                    }
-                    return [4 /*yield*/, kv.hset(fid, { hasClaimed: true })];
-                case 7:
                     _a.sent();
-                    console.log("User: ".concat(fid, " has been updated"));
-                    _a.label = 8;
-                case 8:
+                    _a.label = 7;
+                case 7:
                     _i++;
                     return [3 /*break*/, 5];
-                case 9: return [2 /*return*/];
+                case 8: return [2 /*return*/];
             }
         });
     });

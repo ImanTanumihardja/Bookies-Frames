@@ -189,7 +189,7 @@ export function notFollowingResponse(returnUrl:string) {
             { 
               label: "Follow Us!", 
               action: 'link', 
-              target: 'https://warpcast.com/bookies'
+              target: 'https://warpcast.com/alea.eth'
             }
           ],
           postUrl: returnUrl,

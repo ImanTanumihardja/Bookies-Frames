@@ -25,7 +25,7 @@ async function updateHasClaimed() {
 
     console.log(`Total users: ${users.length}\n`)
 
-    users = users.filter((fid:number) => fid === 313859) // Testing
+    // users = users.filter((fid:number) => fid === 313859) // Testing
 
       for (const fid of users) {
           const user = await kv.hgetall(fid)
@@ -34,7 +34,10 @@ async function updateHasClaimed() {
               continue
           }
 
-          await kv.hset(fid, {hasClaimed: true})
+          await kv.hset(fid, {hasClaimed: false}).catch((error:any) => {
+              console.error(`Error updating user: ${fid}`, error)
+              throw new Error('Error updating user')
+          })
           console.log(`User: ${fid} has been updated`)
       }
     }

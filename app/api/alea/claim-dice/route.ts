@@ -21,7 +21,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     return await GET(req); 
   }
 
-  if (!isFollowing /*|| !liked*/) {
+  if (!isFollowing || !liked) {
     // Call fetch to get not following
     return notFollowingResponse(generateUrl(`/api/alea/${FrameNames.CLAIM_DICE}`, {[RequestProps.CAPTCHA_INDEX]: -1}, false))
   }
