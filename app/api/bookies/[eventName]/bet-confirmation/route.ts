@@ -18,23 +18,14 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const txReceipt = await provider.getTransactionReceipt(transactionId)
 
-  // Check if mind
-  if (!txReceipt) {
-    // Redirect to not-mined frame
-    
-  }
-
   // Wait for both user to be found and event to be found
-  let addresses : string[] | null = null;
   let event : Event | null = null;
 
-  await Promise.all([kv.hgetall(`${fid.toString()}:addresses`), kv.hgetall(eventName)]).then( (res) => {
-    addresses = res[0] as unknown as string[] || null;
+  await Promise.all([, kv.hgetall(eventName)]).then( (res) => {
     event = res[1] as Event || null;
   });
 
   event = event as unknown as Event || null;
-  addresses = addresses as unknown as string[] || null;
 
   if (event === null) throw new Error('Event not found');
 
@@ -92,7 +83,13 @@ export async function POST(req: NextRequest): Promise<Response> {
         {
           label: 'Place Another Bet', 
           action:'post', 
-          target: generateUrl(`/api/bookies/${eventName}/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false)}
+          target: generateUrl(`/api/bookies/${eventName}/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false)
+        },
+        {
+          label: 'Refresh', 
+          action:'post', 
+          target: generateUrl(`/api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick}, false)
+        },
         ],
       postUrl: `${process.env['HOST']}/api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`,
     }),

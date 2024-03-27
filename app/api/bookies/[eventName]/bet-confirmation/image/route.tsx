@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import { RequestProps, getRequestProps } from '../../../../../../src/utils';
+import orderbookieABI from '../../../../../contract-abis/orderbookie';
 import { kv } from '@vercel/kv';
 import { Bet } from '../../../../../types';
 import * as fs from "fs";
 import { join } from 'path';
+import {ethers} from 'ethers';
 
 // Fonts
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
@@ -13,19 +15,23 @@ let fontData = fs.readFileSync(fontPath)
 export async function GET(req: NextRequest) {
     try {
         let text='' // Default empty React element
-        const {pick, stake, buttonIndex, fid, eventName, options, time, result} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.TIME, RequestProps.RESULT]);
+        const {pick, stake, buttonIndex, fid, address: orderBookieAddress, options, result} = getRequestProps(req, [RequestProps.ADDRESS, RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.RESULT]);
+
+        const addresses = await kv.sscan(`${fid}:addresses`, 0)
+
+        const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
+
+        const orderBookie = new ethers.Contract(orderBookieAddress, orderbookieABI, provider)
+
+        let bets;
+        // go through each address and get the bets
+        for (const address of addresses) {
+            bets = await orderBookie.getBets(address)
+        }
 
         // Get bets for this event by filtering the bets array for the eventName
-        const bets : Record<string, Bet[]> = {} // TODO
 
         console.log('BETS: ', bets)
-
-        // Ensure bets is an array before calling filter
-        const filteredBets : Bet[] = bets[eventName] || []
-
-        if (filteredBets === null) throw new Error('Bets not found');
-
-        // TODO: format the string for each bet
 
 
         if (buttonIndex === 1) {
@@ -67,7 +73,7 @@ export async function GET(req: NextRequest) {
                             <div style={{display: 'flex', flexDirection:'column', alignItems: 'center'}}>
                                 {filteredBets.reverse().slice(0, 5).map((bet: Bet, index: number) => { 
                                 return (
-                                    <h3 key={index} style={{color: 'black', fontSize:30, justifyContent:'center', margin:10, whiteSpace: 'pre', textDecoration: bet.timeStamp === time ? "underline" :'none'}}>
+                                    <h3 key={index} style={{color: 'black', fontSize:30, justifyContent:'center', margin:10, whiteSpace: 'pre'}}>
                                         {options[bet.pick]} | {bet.stake} { result === -1 ? '' : bet.pick === result ? '✅' : '❌'}
                                     </h3>
                                 )})}

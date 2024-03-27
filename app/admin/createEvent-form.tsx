@@ -56,7 +56,7 @@ export function CreateEventForm() {
         <br />
         <br />
         <label htmlFor="address">Address (*bookies only*) </label>
-        <input type="text" id="address" name="address" placeholder="0x..." required />
+        <input type="text" id="address" name="address" placeholder="0x..." />
         <br />
         <br />
         <SubmitButton />

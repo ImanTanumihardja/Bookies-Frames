@@ -15,18 +15,19 @@ async function notifyDC(browserWSEndpoint="") {
   let fidIndex = 0;
   let batch = fids.slice(fidIndex, Math.min(100, fids.length));
   
-  while (fidIndex < fids.length) {
+  while (fidIndex < fids.length && batch.length > 0) {
     const neynarClient = new NeynarAPIClient(process.env['NEYNAR_API_KEY'] || "");
-    await neynarClient.fetchBulkUsers(fids).then((result) => {
+    await neynarClient.fetchBulkUsers(batch).then((result) => {
       // Appned usernames to the array
       usernames = usernames.concat(result.users.map((user) => user.username));
     })
 
     fidIndex += batch.length;
-    batch = fids.slice(fidIndex, Math.min(100, fids.length));
+    batch = fids.slice(fidIndex, Math.min(100 + fidIndex, fids.length));
   }
 
-  console.log(usernames);
+  console.log('Number of Usernames: ', usernames.length);
+  console.log('Usernames: ', usernames);
 
   let browser;
   if (!browserWSEndpoint)
@@ -95,7 +96,7 @@ async function notifyDC(browserWSEndpoint="") {
 
 if (require.main === module) {
   // Read in cli arguments
-  const args = require('minimist')(process.argv.slice(2), {boolean: ['b']})
+  const args = require('minimist')(process.argv.slice(2), {string: ['b']})
   notifyDC(args['b']).then(() => process.exit(0))
     .catch(error => {
       console.error(error)
