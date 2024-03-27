@@ -21,7 +21,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     return await GET(req); 
   }
 
-  if (!isFollowing || !liked) {
+  if (!isFollowing /*|| !liked*/) {
     // Call fetch to get not following
     return notFollowingResponse(generateUrl(`/api/alea/${FrameNames.CLAIM_DICE}`, {[RequestProps.CAPTCHA_INDEX]: -1}, false))
   }
@@ -34,35 +34,31 @@ export async function POST(req: NextRequest): Promise<Response> {
   var hasClaimed: boolean = true;
 
   if (validCaptcha) {
-    user = await kv.hgetall(fid.toString()) || null;
     
-    isNewUser = !user || user.hasClaimed === undefined || user.balance === undefined || await kv.zscore(DatabaseKeys.LEADERBOARD, fid.toString()) === null;
+    isNewUser = await kv.zscore(DatabaseKeys.LEADERBOARD, fid.toString()) === null;
 
     if (isNewUser) {
         // New user
-        hasClaimed = false;
         user = structuredClone(DEFAULT_USER);
         user.hasClaimed = false;
+
         console.log('NEW USER: ', user)
         // console.log('CLAIMED 100 DICE')
     }
-
-    if (user !== null && user.hasClaimed !== undefined) {
+    else 
+    {
+      user = await kv.hgetall(fid.toString()) || null;
       console.log('USER: ', user)
-      
-      hasClaimed = user.hasClaimed;
-      if (!hasClaimed) {
-        // Get daily 10 dice for old user
-        user.balance = parseFloat(user.balance.toString()) + CLAIM_AMOUNT;
-        console.log(`CLAIMED ${CLAIM_AMOUNT} DICE`)
-      } else {
-        console.log('ALREADY CLAIMED')
-      }
     }
 
     if (user === null) throw new Error('User is null');
-    
+ 
+    hasClaimed = user.hasClaimed;
     if (!hasClaimed) {
+      // Claim dice
+      user.balance = parseFloat(user.balance.toString()) + CLAIM_AMOUNT;
+      console.log(`CLAIMED ${CLAIM_AMOUNT} DICE`)
+
       user.hasClaimed = true;
       await kv.hset(fid.toString(), user).then( async () => {
        if (user !== null) await kv.zincrby(DatabaseKeys.LEADERBOARD, CLAIM_AMOUNT, fid).catch(async (error) => {
@@ -73,6 +69,8 @@ export async function POST(req: NextRequest): Promise<Response> {
       }).catch((error) => {
         throw new Error('Error updating user');
       });
+    } else {
+      console.log('ALREADY CLAIMED')
     }
   }
 

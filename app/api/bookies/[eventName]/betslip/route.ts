@@ -42,6 +42,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   let imageUrl = ''
   let pick = button - 1;
   const impliedProbability = event.odds[pick]
+  const orderBookieAddress = event.address;
   const now = new Date().getTime();
   // Check if event has already passed
   if (event.startDate < now || result !== -1) {
@@ -83,7 +84,7 @@ export async function POST(req: NextRequest): Promise<Response> {
                 {
                   label: "Confirm", 
                   action: 'tx',
-                  target: generateUrl(`api/bookies/transactions/${Transactions.PLACE_BET}`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.ODD]: impliedProbability, [RequestProps.TRANSACTION_HASH]: transactionId}, false)
+                  target: generateUrl(`api/bookies/transactions/${Transactions.PLACE_BET}`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.ODD]: impliedProbability, [RequestProps.ADDRESS]: orderBookieAddress, [RequestProps.TRANSACTION_HASH]: transactionId}, false)
                 }
               ]
               :

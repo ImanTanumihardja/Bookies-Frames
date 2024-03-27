@@ -39,7 +39,8 @@ export enum RequestProps {
   BOOLEAN = 'boolean',
   URL = 'url',
   REDIRECT = 'redirect',
-  TRANSACTION_HASH = 'transactionHash'
+  TRANSACTION_HASH = 'transactionHash',
+  ADDRESS = 'address'
 }
 
 export enum Accounts {
@@ -83,7 +84,8 @@ export const RequestPropsTypes = {
     [RequestProps.BOOLEAN] : true,
     [RequestProps.URL] : "",
     [RequestProps.REDIRECT] : true,
-    [RequestProps.TRANSACTION_HASH] : ""
+    [RequestProps.TRANSACTION_HASH] : "",
+    [RequestProps.ADDRESS] : ""
 }
 
 export enum FrameNames {
@@ -180,7 +182,7 @@ export function notFollowingResponse(returnUrl:string) {
           image: `${process.env['HOST']}/thumbnails/not-following.gif`,
           buttons: [
             {
-              label:'Try Again', 
+              label:'Refresh', 
               action:'post',
               target: returnUrl
             },
@@ -199,7 +201,7 @@ export function notMinedResponse(returnUrl:string) {
     return new NextResponse(
         getFrameHtml({
           version: "vNext",
-          image: `${process.env['HOST']}/thumbnails/not-following.gif`,
+          image: `${process.env['HOST']}/thumbnails/not-mined.gif`,
           buttons: [
             {
               label:'Refresh', 
