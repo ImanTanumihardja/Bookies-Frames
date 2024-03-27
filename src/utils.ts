@@ -38,7 +38,8 @@ export enum RequestProps {
   COUNT = 'count',
   BOOLEAN = 'boolean',
   URL = 'url',
-  REDIRECT = 'redirect'
+  REDIRECT = 'redirect',
+  TRANSACTION_HASH = 'transactionHash'
 }
 
 export enum Accounts {
@@ -81,7 +82,8 @@ export const RequestPropsTypes = {
     [RequestProps.COUNT] : 0,
     [RequestProps.BOOLEAN] : true,
     [RequestProps.URL] : "",
-    [RequestProps.REDIRECT] : true
+    [RequestProps.REDIRECT] : true,
+    [RequestProps.TRANSACTION_HASH] : ""
 }
 
 export enum FrameNames {
@@ -169,6 +171,8 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
     return returnParams
 }
 
+// Frames
+
 export function notFollowingResponse(returnUrl:string) {
     return new NextResponse(
         getFrameHtml({
@@ -188,7 +192,29 @@ export function notFollowingResponse(returnUrl:string) {
           ],
           postUrl: returnUrl,
         }),
-      );
+    );
+}
+
+export function notMinedResponse(returnUrl:string) {
+    return new NextResponse(
+        getFrameHtml({
+          version: "vNext",
+          image: `${process.env['HOST']}/thumbnails/not-following.gif`,
+          buttons: [
+            {
+              label:'Refresh', 
+              action:'post',
+              target: returnUrl
+            },
+            { 
+              label: "Follow Us!", 
+              action: 'link', 
+              target: 'https://warpcast.com/bookies'
+            }
+          ],
+          postUrl: returnUrl,
+        }),
+    );
 }
 
 export function generateUrl(extension: string, props: Record<string, any>, addTimestamp: boolean = false): string {

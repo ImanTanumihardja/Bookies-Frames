@@ -1,85 +1,75 @@
 import { getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
-import { Event, User, Bet } from '../../../../types';
-import { Accounts, DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, notFollowingResponse } from '../../../../../src/utils';
+import { Event } from '../../../../types';
+import { Accounts, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage } from '../../../../../src/utils';
+import {ethers} from 'ethers';
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req);
 
-  const {button, fid} = message;
+  const {button, fid, transactionId} = message;
+
+  const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
 
   // Get eventName from req
   let {eventName, stake, pick} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK]);
 
-  // Wait for both user to be found and event to be found
-  let user : User | null = null;
-  let event : Event | null = null;
-  let isNewUser: boolean = false;
+  const txReceipt = await provider.getTransactionReceipt(transactionId)
 
-  await Promise.all([kv.hgetall(fid.toString()), kv.hgetall(eventName)]).then( (res) => {
-    user = res[0] as User || null;
+  // Check if mind
+  if (!txReceipt) {
+    // Redirect to not-mined frame
+    
+  }
+
+  // Wait for both user to be found and event to be found
+  let addresses : string[] | null = null;
+  let event : Event | null = null;
+
+  await Promise.all([kv.hgetall(`${fid.toString()}:addresses`), kv.hgetall(eventName)]).then( (res) => {
+    addresses = res[0] as unknown as string[] || null;
     event = res[1] as Event || null;
   });
 
   event = event as unknown as Event || null;
-  user = user as unknown as User || null;
-
-  console.log('FID: ', fid.toString())
-
-  // Check if new user if so add new user
-  isNewUser = !user || (user as User).hasClaimed === undefined || (user as User).balance === undefined || (await kv.zscore(DatabaseKeys.LEADERBOARD, fid.toString())) === null;
-
-  if (isNewUser) {
-      // New user
-      user = structuredClone(DEFAULT_USER)
-
-      console.log('NEW USER: ', user)
-  }
-  else {
-    console.log('USER: ', user)
-  }
-
-  if (user === null) throw new Error('User is null');
-
-  const balance = parseFloat(user?.balance.toString());
+  addresses = addresses as unknown as string[] || null;
 
   if (event === null) throw new Error('Event not found');
 
-  if (stake <= 0 || stake > balance) {
-    stake = -1
-  }
+  console.log('FID: ', fid.toString())
+  console.log('EVENT: ', event)
 
   const now = new Date().getTime();
 
   // Need to check bet does not exists, time is not past, and stake >= 1 and not rejected
-  if (now < event?.startDate && stake > 0 && parseInt(event?.result.toString()) === -1 && button != 1) {
-    // Can bet
-    const bet : Bet = {pick:pick, odd: event.odds[pick], stake:stake, timeStamp: now, settled: false} as Bet;
+  if (now < event?.startDate && stake > 0 && parseInt(event?.result.toString()) === -1 && button != 1 && txReceipt) {
 
-    // Adjust user available balance
-    user.balance = Math.round(balance - stake);
+    // Add users connect address
+    await kv.sadd(`${fid.toString()}:addresses`, txReceipt.from).then( async () => {
+      // Set event
+      await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
+        console.error('Error adding user to event:', error);
+        // Try again
+        await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
+          throw new Error('Error creating bet');
+        })
+      })
 
-    if (user.bets[eventName] === undefined) user.bets[eventName] = [];
-    user.bets[eventName].push(bet)
-
-    // Set user
-    await kv.sadd(`${fid.toString()}:addresses`, user).then( async () => {
       // Update poll
       await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(async (error) => {
-        console.error('Error adding user to event:', error);
+        console.error('Error adding user to poll:', error);
         // Try again
         await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch((error) => {
           throw new Error('Error creating bet');
         })
       })
 
+      // Add to event bettors list
     }).catch((error) => {
       throw new Error('Error creating bet');
     });   
-
-    console.log('NEW BET: ', bet)
   } 
   else {
     pick = -1

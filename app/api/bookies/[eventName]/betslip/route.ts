@@ -2,16 +2,13 @@ import { getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
 import {  DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, Transactions } from '../../../../../src/utils';
 import { kv } from "@vercel/kv";
-import { User, Event } from "../../../../types";
-import {ethers} from 'ethers';
+import { Event } from "../../../../types";
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req, false);
 
   const {button, fid, input, transactionId} = message;
-
-  const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
 
   let {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
   
@@ -41,9 +38,6 @@ export async function POST(req: NextRequest): Promise<Response> {
   if (result !== -1) {
     console.log('Event has already been settled');
   }
-
-  const txReceipt = await provider.getTransaction(transactionId)
-  // Need to check if approve tx is mined
 
   let imageUrl = ''
   let pick = button - 1;
@@ -89,7 +83,7 @@ export async function POST(req: NextRequest): Promise<Response> {
                 {
                   label: "Confirm", 
                   action: 'tx',
-                  target: generateUrl(`api/bookies/transactions/${Transactions.PLACE_BET}`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.ODD]: impliedProbability}, false)
+                  target: generateUrl(`api/bookies/transactions/${Transactions.PLACE_BET}`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.ODD]: impliedProbability, [RequestProps.TRANSACTION_HASH]: transactionId}, false)
                 }
               ]
               :

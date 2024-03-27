@@ -13,14 +13,22 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const {input} = message
 
-  let {stake, pick, odd: impliedProb} = getRequestProps(req, [RequestProps.STAKE, RequestProps.PICK, RequestProps.ODD]);
+  const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
+
+  let {stake, pick, odd: impliedProb, transactionHash} = getRequestProps(req, [RequestProps.STAKE, RequestProps.PICK, RequestProps.ODD, RequestProps.TRANSACTION_HASH]);
 
   // Check if input is valid amount
   if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake)) {
     throw new Error(`Invalid wager amount STAKE: ${input}`);  
   }
 
-  const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
+  const txReceipt = await provider.getTransactionReceipt(transactionHash)
+
+  // Check if mind
+  if (!txReceipt) {
+    throw new Error('Approve transaction is not yet mined');
+  }
+
   const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, erc20ABI, provider)).decimals();
 
   impliedProb =  BigInt((impliedProb * 10 ** ODDS_DECIMALS).toString())
