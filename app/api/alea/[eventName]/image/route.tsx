@@ -12,9 +12,8 @@ let fontData = fs.readFileSync(fontPath)
 
 export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }) {
     try {
-        // const {eventName, time:startDate} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.TIME]);
-        const startDate = 1711678200000;
-        
+        const {time:startDate} = getRequestProps(req, [RequestProps.TIME]);
+
         const now = new Date().getTime();
 
         // Get hrs and mins till event
