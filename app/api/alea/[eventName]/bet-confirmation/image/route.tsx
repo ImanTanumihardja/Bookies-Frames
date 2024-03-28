@@ -10,10 +10,10 @@ import { join } from 'path';
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
 let fontData = fs.readFileSync(fontPath)
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }) {
     try {
         let text='' // Default empty React element
-        const {pick, stake, buttonIndex, fid, eventName, options, time, result} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.TIME, RequestProps.RESULT]);
+        const {pick, stake, buttonIndex, fid, options, time, result} = getRequestProps(req, [RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.TIME, RequestProps.RESULT]);
 
         // Get bets for this event by filtering the bets array for the eventName
         const bets : Record<string, Bet[]> = (await kv.hget(fid?.toString(), 'bets') || {});

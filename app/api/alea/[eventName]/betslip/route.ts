@@ -4,13 +4,11 @@ import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getR
 import { kv } from "@vercel/kv";
 import { User, Event } from "../../../../types";
 
-export async function POST(req: NextRequest): Promise<Response> {
+export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req, false);
 
   const {button, fid, input} = message;
-
-  let {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
   
   console.log('FID: ', fid.toString())
 

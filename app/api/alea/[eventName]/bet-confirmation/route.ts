@@ -4,14 +4,14 @@ import { kv } from "@vercel/kv";
 import { Event, User, Bet } from '../../../../types';
 import { Accounts, DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, notFollowingResponse, ALEA_FID } from '../../../../../src/utils';
 
-export async function POST(req: NextRequest): Promise<Response> {
+export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req, true, ALEA_FID);
 
   const {followingHost: isFollowing, button, fid} = message;
 
   // Get eventName from req
-  let {eventName, stake, pick} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK]);
+  let {stake, pick} = getRequestProps(req, [RequestProps.STAKE, RequestProps.PICK]);
 
   if (!isFollowing) {
     // Call fetch to get not following thumbnail

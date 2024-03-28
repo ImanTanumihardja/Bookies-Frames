@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ALEA_FID, DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage, getRequestProps, notFollowingResponse } from '../../../../../src/utils';
+import { ALEA_FID, DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getFrameMessage, getRequestProps, notFollowingResponse } from '../../../../../src/utils';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { User, Event } from '../../../../types';
 import { kv } from '@vercel/kv';
 
-export async function POST(req: NextRequest): Promise<Response> {
-  let {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
-
+export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   // Wait for both user to be found and event to be found
   let user : User | null = null;
   let event : Event | null = null;
