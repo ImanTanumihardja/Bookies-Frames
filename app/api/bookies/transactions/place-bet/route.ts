@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFrameMessage, getRequestProps, RequestProps } from '../../../../../src/utils';
+import { ODDS_DECIMALS, getFrameMessage, getRequestProps, RequestProps } from '../../../../../src/utils';
 import {ethers} from 'ethers';
 import orderbookieABI from '../../../../contract-abis/orderbookie';
 import erc20ABI from '../../../../contract-abis/erc20';
 import { USDC_ADDRESS } from '../../../../addresses';
-
-const ODDS_DECIMALS = 4
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
@@ -29,10 +27,12 @@ export async function POST(req: NextRequest): Promise<Response> {
     throw new Error('Approve transaction is not yet mined');
   }
 
+  console.log('TX RECEIPT: ', txReceipt)
+
   const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, erc20ABI, provider)).decimals();
 
-  const convertedImpliedProb =  BigInt((impliedProb * 10 ** ODDS_DECIMALS).toString())
-  const convertedStake = BigInt(stake) * BigInt(10) ** DECIMALS
+  const convertedImpliedProb =  BigInt(impliedProb * 10 ** ODDS_DECIMALS)
+  const convertedStake = BigInt(stake * 10 ** Number(DECIMALS))
   const convertedPick = ethers.parseEther((pick).toString()) 
 
   console.log('STAKE: ', stake)
@@ -41,6 +41,8 @@ export async function POST(req: NextRequest): Promise<Response> {
   
   const iOrderBookie = new ethers.Interface(orderbookieABI)
   const data = iOrderBookie.encodeFunctionData('placeBet', [convertedPick, convertedStake, convertedImpliedProb])
+
+  console.log(`Orderbookie Address: ${orderBookieAddress}`)
 
   const txData = {
       chainId: `eip155:10`,

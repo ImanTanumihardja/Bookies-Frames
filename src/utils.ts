@@ -117,6 +117,9 @@ export enum DatabaseKeys {
 export const BOOKIES_FID = 244367;
 export const ALEA_FID = 391387;
 
+export const ODDS_DECIMALS = 4
+export const PICK_DECIMALS = 18
+
 export const DEFAULT_USER: User = {
     balance: 100,
     streak: 0,
@@ -307,5 +310,5 @@ export function convertImpliedProbabilityToAmerican(impliedProbability: number):
 
 export function calculatePayout(impliedProbability: number, stake: number){
     const payout = (1 / impliedProbability) * (stake)
-    return Math.round(payout)
+    return payout
 }

@@ -43,16 +43,16 @@ export async function GET(req: NextRequest) {
                 <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        width: '65%',
+                        width: '35%',
                         height: '100%',
                         background: 'linear-gradient(to right, #68b876, #457e8b, #0000b4)',
                         justifyContent: 'center',
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize:25, position: 'absolute', top: 0, left:20}}> {`(${date.toLocaleDateString()})`} </h1>
-                    <h1 style={{color: 'white', fontSize:50, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25}}> {event.prompt} </h1>
+                    <h1 style={{color: 'white', fontSize:40, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25}}> {event.prompt} </h1>
                 </div>
-                <div style={{display:'flex', width:'35%', flexDirection:'column', alignItems: 'center', background:'white'}}>
+                <div style={{display:'flex', width:'65%', flexDirection:'column', alignItems: 'center', background:'white'}}>
                     {eventBets.reverse().slice(0, 7).map((bet: Bet | undefined, index: number) => {
                         return (
                             bet && 

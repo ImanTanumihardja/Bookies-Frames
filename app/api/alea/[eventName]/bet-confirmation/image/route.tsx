@@ -25,9 +25,6 @@ export async function GET(req: NextRequest) {
 
         if (filteredBets === null) throw new Error('Bets not found');
 
-        // TODO: format the string for each bet
-
-
         if (buttonIndex === 1) {
             text = 'You rejected the bet!'
         } 
@@ -47,33 +44,32 @@ export async function GET(req: NextRequest) {
                 <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        width: '65%',
+                        width: '45%',
                         height: '100%',
                         background: 'linear-gradient(to right, #68b876, #457e8b, #0000b4)',
                         justifyContent: 'center',
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
-                    <h1 style={{color: 'white', fontSize:55, justifyContent:'center', alignItems:'center', padding:25}}> {text} </h1>
+                    <h1 style={{color: 'white', fontSize:45, justifyContent:'center', alignItems:'center', padding:25}}> {"You don't have enough dice!"} </h1>
                 </div>
                 <div style={{
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyItems:'flex-start',
-                        width: '35%',
+                        width: '55%',
                         height: '100%',
                         background: 'white'}}>
-                            <h1 style={{color: 'black', fontSize:35, justifyContent:'center', margin:5, marginTop: 20}}>Your Bets: </h1>
-                            <div style={{display: 'flex', flexDirection:'column', alignItems: 'center'}}>
-                                {filteredBets.reverse().slice(0, 5).map((bet: Bet, index: number) => { 
+                            <div style={{display: 'flex', flexDirection:'column', alignItems: 'center', padding:10}}>
+                                {filteredBets.reverse().slice(0, 6).map((bet: Bet, index: number) => { 
                                 return (
                                     <h3 key={index} style={{color: 'black', fontSize:30, justifyContent:'center', margin:10, whiteSpace: 'pre', textDecoration: bet.timeStamp === time ? "underline" :'none'}}>
                                         {options[bet.pick]} | {bet.stake} { result === -1 ? '' : bet.pick === result ? '✅' : '❌'}
                                     </h3>
                                 )})}
                             </div>
-                            {filteredBets.length > 5 ?
-                            <h2 style={{color: 'black', fontSize:35, justifyContent:'center', margin:-10}}>. . .</h2>
+                            {filteredBets.length > 6 ?
+                            <h2 style={{color: 'black', fontSize:35, justifyContent:'center', marginTop: -25}}>. . .</h2>
                             :
                             <div></div>
                             }

@@ -40,7 +40,8 @@ export function GetEventForm() {
               </li>)}
             </ul>
           </div>
-          <p>Bettors(n={state.eventData.bettors.length}): {state.eventData.bettors.toString()}</p>
+          <p>Alea Bettors(n={state.eventData.aleaBettors.length}): {state.eventData.aleaBettors.toString()}</p>
+          <p>Bookies Bettors(n={state.eventData.bookiesBettors.length}): {state.eventData.bookiesBettors.toString()}</p>
         </div>    
       }
     </div>

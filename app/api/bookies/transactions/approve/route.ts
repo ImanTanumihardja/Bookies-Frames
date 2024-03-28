@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFrameMessage } from '../../../../../src/utils';
-import {ethers} from 'ethers';
+import { getFrameMessage, getRequestProps, RequestProps } from '../../../../../src/utils';
+import {ethers } from 'ethers';
 import erc20ABI from '../../../../contract-abis/erc20';
-import { USDC_ADDRESS, ORDERBOOKIE_ADDRESS } from '../../../../addresses';
+import { USDC_ADDRESS } from '../../../../addresses';
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
@@ -13,6 +13,8 @@ export async function POST(req: NextRequest): Promise<Response> {
   const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
   const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, erc20ABI, provider)).decimals();
 
+  const {address: orderBookieAddress } = getRequestProps(req, [RequestProps.ADDRESS]);
+
   // Check if input is valid amount
   const stake = parseFloat(input);
   if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake)) {
@@ -20,7 +22,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   const ierc20 = new ethers.Interface(erc20ABI)
-  const data = ierc20.encodeFunctionData('approve', [ORDERBOOKIE_ADDRESS, BigInt(stake) * BigInt(10) ** DECIMALS])
+  const data = ierc20.encodeFunctionData('approve', [orderBookieAddress, BigInt(stake * 10 ** Number(DECIMALS))])
 
   const txData = {
       chainId: `eip155:10`,

@@ -18,12 +18,22 @@ export default async function getEvent(eventName="") {
   // Get all bets
   let betsData = (await kv.sscan(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, 0, { count: 150 }))
   let cursor = betsData[0]
-  let fids : number[] = betsData[1] as unknown as number[]
+  let aleaFIDs : number[] = betsData[1] as unknown as number[]
 
   while (cursor) {
     betsData = (await kv.sscan(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, cursor, { count: 150 }))
     cursor = betsData[0]
-    fids = fids.concat(betsData[1] as unknown as number[])
+    aleaFIDs = aleaFIDs.concat(betsData[1] as unknown as number[])
+  }
+
+  betsData = (await kv.sscan(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, 0, { count: 150 }))
+  cursor = betsData[0]
+  let bookiesFIDs : number[] = betsData[1] as unknown as number[]
+
+  while (cursor) {
+    betsData = (await kv.sscan(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, cursor, { count: 150 }))
+    cursor = betsData[0]
+    bookiesFIDs = aleaFIDs.concat(betsData[1] as unknown as number[])
   }
 
   // Get poll data
@@ -33,7 +43,7 @@ export default async function getEvent(eventName="") {
   }
   console.log(`Poll: ${pollData.toString()}`);
 
-  console.log(`Total bets: ${fids.length}`);
+  console.log(`Total bets: ${aleaFIDs.length}`);
 
   if (eventData?.result != -1) {
     let maxValue = 0;
@@ -69,7 +79,7 @@ export default async function getEvent(eventName="") {
     console.log(`MAX WINNERS PAYOUT: ${maxValue}`);
   }
 
-  return {...eventData, bettors: fids, pollData: pollData}
+  return {...eventData, aleaBettors: aleaFIDs, bookiesBettors: bookiesFIDs, pollData: pollData}
 }
 
 

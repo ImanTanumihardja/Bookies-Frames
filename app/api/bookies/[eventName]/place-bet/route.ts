@@ -64,7 +64,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       return {
         label: `${option} (${probString})`,
         action: 'tx',
-        target: generateUrl(`api/bookies/transactions/${Transactions.APPROVE}`, {}, false),
+        target: generateUrl(`api/bookies/transactions/${Transactions.APPROVE}`, {[RequestProps.ADDRESS]: event.address}, false),
       } as FrameButton
     })
     imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, [RequestProps.BALANCE]: 0, [RequestProps.TIME]: event.startDate}, true);

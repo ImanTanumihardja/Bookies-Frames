@@ -10,10 +10,11 @@ import AleaFrameBase from '../../../../../src/components/AleaFrameBase';
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
 let fontData = fs.readFileSync(fontPath)
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }) {
     try {
-        const {eventName, time:startDate} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.TIME]);
-
+        // const {eventName, time:startDate} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.TIME]);
+        const startDate = 1711678200000;
+        
         const now = new Date().getTime();
 
         // Get hrs and mins till event
