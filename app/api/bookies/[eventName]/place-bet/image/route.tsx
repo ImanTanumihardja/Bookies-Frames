@@ -8,7 +8,7 @@ import { join } from 'path';
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
 let fontData = fs.readFileSync(fontPath)
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }) {
     try {
         const {prompt, balance, time:startDate} = getRequestProps(req, [RequestProps.PROMPT, RequestProps.BALANCE, RequestProps.TIME]);
         const date = new Date(parseInt(startDate.toString()));

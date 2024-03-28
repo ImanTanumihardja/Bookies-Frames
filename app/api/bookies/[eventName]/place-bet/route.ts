@@ -4,8 +4,7 @@ import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { User, Event } from '../../../../types';
 import { kv } from '@vercel/kv';
 
-export async function POST(req: NextRequest): Promise<Response> {
-  let {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
+export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
 
   // Wait for both user to be found and event to be found
   let event : Event | null = null;
@@ -47,8 +46,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: 0, 
                                                                               [RequestProps.PICK]: pick, 
                                                                               [RequestProps.BUTTON_INDEX]: 0, 
-                                                                              [RequestProps.FID]: fid, 
-                                                                              [RequestProps.EVENT_NAME]: eventName, 
+                                                                              [RequestProps.FID]: fid,  
                                                                               [RequestProps.OPTIONS]: event.options, 
                                                                               [RequestProps.TIME]: now, 
                                                                               [RequestProps.RESULT]: result}, true);                                                          
@@ -76,7 +74,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
     buttons: buttons as FrameButtonsType,
     image: imageUrl,
-    postUrl: generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}`, {[RequestProps.EVENT_NAME]: eventName}, false),
+    postUrl: generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}`, {}, false),
   };
   return new NextResponse(
     getFrameHtml(frame),

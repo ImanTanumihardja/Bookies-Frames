@@ -10,9 +10,9 @@ import FrameBase from '../../../../../src/components/AleaFrameBase';
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
 let fontData = fs.readFileSync(fontPath)
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }) {
     try {
-        const {eventName, time:startDate} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.TIME]);
+        const {time:startDate} = getRequestProps(req, [RequestProps.TIME]);
 
         const now = new Date().getTime();
 

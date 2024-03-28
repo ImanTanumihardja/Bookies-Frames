@@ -1,16 +1,14 @@
 import { getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
-import {  DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, Transactions } from '../../../../../src/utils';
+import {  DatabaseKeys, FrameNames, RequestProps, generateUrl, getFrameMessage, Transactions } from '../../../../../src/utils';
 import { kv } from "@vercel/kv";
 import { Event } from "../../../../types";
 
-export async function POST(req: NextRequest): Promise<Response> {
+export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req, false);
 
   const {button, fid, input, transactionId} = message;
-
-  let {eventName} = getRequestProps(req, [RequestProps.EVENT_NAME]);
   
   console.log('FID: ', fid.toString())
 
@@ -50,8 +48,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, 
                                                                               [RequestProps.PICK]: pick, 
                                                                               [RequestProps.BUTTON_INDEX]: button, 
-                                                                              [RequestProps.FID]: fid, 
-                                                                              [RequestProps.EVENT_NAME]: eventName, 
+                                                                              [RequestProps.FID]: fid,  
                                                                               [RequestProps.OPTIONS]: event.options, 
                                                                               [RequestProps.TIME]: now, 
                                                                               [RequestProps.RESULT]: result}, true);
@@ -75,7 +72,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-      postUrl: generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick}, false),
+      postUrl: generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick}, false),
       buttons: pick !== -1 ? [
                 {
                   label: "Reject", 

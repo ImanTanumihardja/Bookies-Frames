@@ -21,7 +21,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
 
   const startDate : number = event?.startDate
 
-  const imageUrl:string = generateUrl(`api/bookies/${eventName}/image`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.TIME]: startDate}, true)
+  const imageUrl:string = generateUrl(`api/bookies/${eventName}/image`, {[RequestProps.TIME]: startDate}, true)
   
   const frame : Frame = {
     version: "vNext",
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
       },
     ],
     image: imageUrl,
-    postUrl: generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false),
+    postUrl: generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}`, {}, false),
   };
   return new NextResponse(
     getFrameHtml(frame),

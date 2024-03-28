@@ -7,7 +7,7 @@ import {ethers} from 'ethers';
 import orderbookieABI from '../../../../contract-abis/orderbookie';
 import BigNumber from "bignumber.js";
 
-export async function POST(req: NextRequest): Promise<Response> {
+export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req);
 
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
 
   // Get eventName from req
-  let {eventName, stake, pick} = getRequestProps(req, [RequestProps.EVENT_NAME, RequestProps.STAKE, RequestProps.PICK]);
+  let {stake, pick} = getRequestProps(req, [ RequestProps.STAKE, RequestProps.PICK]);
 
   let txReceipt
   if (transactionId) 
