@@ -62,7 +62,6 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
                                                                               [RequestProps.PICK]: pick, 
                                                                               [RequestProps.BUTTON_INDEX]: button, 
                                                                               [RequestProps.FID]: fid, 
-                                                                              [RequestProps.EVENT_NAME]: eventName, 
                                                                               [RequestProps.OPTIONS]: event.options, 
                                                                               [RequestProps.TIME]: now, 
                                                                               [RequestProps.RESULT]: result}, true);
@@ -87,7 +86,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-      postUrl: generateUrl(`api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick}, false),
+      postUrl: generateUrl(`api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick}, false),
       buttons: pick !== -1 ? [
                 {
                   label: "Reject", 

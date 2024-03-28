@@ -15,7 +15,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   if (!followingBookies) {
     // Call fetch to get not following thumbnail
-    return notFollowingResponse(generateUrl(`/api/alea/${eventName}/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false))
+    return notFollowingResponse(generateUrl(`/api/alea/${eventName}/${FrameNames.PLACE_BET}`, {}, false))
   }
 
   await Promise.all([kv.hgetall(fid.toString()), kv.hgetall(eventName)]).then( (res) => {
@@ -72,7 +72,6 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
                                                                               [RequestProps.PICK]: pick, 
                                                                               [RequestProps.BUTTON_INDEX]: 0, 
                                                                               [RequestProps.FID]: fid, 
-                                                                              [RequestProps.EVENT_NAME]: eventName, 
                                                                               [RequestProps.OPTIONS]: event.options, 
                                                                               [RequestProps.TIME]: now, 
                                                                               [RequestProps.RESULT]: result}, true);
@@ -98,7 +97,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
     buttons: buttons as FrameButtonsType,
     image: imageUrl,
-    postUrl: generateUrl(`api/alea/${eventName}/${FrameNames.BETSLIP}`, {[RequestProps.EVENT_NAME]: eventName}, false),
+    postUrl: generateUrl(`api/alea/${eventName}/${FrameNames.BETSLIP}`, {}, false),
   };
   return new NextResponse(
     getFrameHtml(frame),
