@@ -44,20 +44,20 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                 <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        width: '45%',
+                        width: '35%',
                         height: '100%',
                         background: 'linear-gradient(to right, #68b876, #457e8b, #0000b4)',
                         justifyContent: 'center',
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
-                    <h1 style={{color: 'white', fontSize:45, justifyContent:'center', alignItems:'center', padding:25}}> {text} </h1>
+                    <h1 style={{color: 'white', fontSize:45, justifyContent:'center', alignItems:'center', padding:25, top:25}}> {text} </h1>
                 </div>
                 <div style={{
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyItems:'flex-start',
-                        width: '55%',
+                        width: '65%',
                         height: '100%',
                         background: 'white'}}>
                             <div style={{display: 'flex', flexDirection:'column', alignItems: 'center', padding:10}}>

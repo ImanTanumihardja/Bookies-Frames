@@ -28,7 +28,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   let imageUrl = '';
   let buttons = undefined;
-  let inputText : string | undefined = 'Amount of dice you want to bet';
+  let inputText : string | undefined = 'Wager Amount ($USDC)';
 
   const now = new Date().getTime();
   if (event.startDate < now || result !== -1) {
