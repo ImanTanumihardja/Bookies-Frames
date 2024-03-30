@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, Transactions, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage, getRequestProps, notFollowingResponse } from '../../../../../src/utils';
+import { FrameNames, PICK_DECIMALS, RequestProps, Transactions, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage, getRequestProps, notFollowingResponse } from '../../../../../src/utils';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
-import { User, Event } from '../../../../types';
+import { Event } from '../../../../types';
 import { kv } from '@vercel/kv';
+import { ethers } from 'ethers';
+import orderbookieABI from '../../../../contract-abis/orderbookie';
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
 
@@ -10,6 +12,8 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   let event : Event | null = null;
 
   const {fid} = await getFrameMessage(req);
+
+  const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
 
   await Promise.all([kv.hgetall(eventName)]).then( (res) => {
     event = res[0] as Event || null;
@@ -21,18 +25,17 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   if (event === null) throw new Error('Event not found');
 
   // Check if result has been set
-  const result = parseInt(event.result.toString())
-  if (result !== -1) {
-    console.log('Event has already been settled');
-  }
+  const orderBookie = new ethers.Contract(event.address, orderbookieABI, provider)
+  const orderBookieInfo = await orderBookie.getBookieInfo()
+  const result = parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS))
 
   let imageUrl = '';
   let buttons = undefined;
   let inputText : string | undefined = 'Wager Amount ($USDC)';
+  let postUrl;
 
   const now = new Date().getTime();
-  if (event.startDate < now || result !== -1) {
-    const pick = -1;
+  if (now > Number(orderBookieInfo.startDate) || result !== -1) { // Event has already passed and 
     inputText = undefined
 
     buttons =
@@ -41,15 +44,39 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
           label: "/bookies!", 
           action: 'link', 
           target: 'https://warpcast.com/~/channel/bookies'
-        }
+        },
+        {
+          label: 'Refresh', 
+          action:'post', 
+          target: generateUrl(`/api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, 
+                                                                                           [RequestProps.STAKE]: 0,
+                                                                                           [RequestProps.PICK]: -1,
+                                                                                           [RequestProps.TRANSACTION_HASH]: ""}, false)
+        },
       ]
+
+    if (result !== -1) { // Add collect button if settled
+      buttons.push({
+        label: 'Collect', 
+        action:'post', 
+        target: 'https://warpcast.com/bookies'
+      })
+      console.log('Event has already been settled');
+    }
+    
+    postUrl = "" // Collect payout page
+
     imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: 0, 
-                                                                              [RequestProps.PICK]: pick, 
-                                                                              [RequestProps.BUTTON_INDEX]: 0, 
-                                                                              [RequestProps.FID]: fid,  
-                                                                              [RequestProps.OPTIONS]: event.options, 
-                                                                              [RequestProps.TIME]: now, 
-                                                                              [RequestProps.RESULT]: result}, true);                                                          
+                                                                                            [RequestProps.PICK]: -1, 
+                                                                                            [RequestProps.BUTTON_INDEX]: 0, 
+                                                                                            [RequestProps.FID]: fid,  
+                                                                                            [RequestProps.OPTIONS]: event.options, 
+                                                                                            [RequestProps.ADDRESS]: event.address,
+                                                                                            [RequestProps.TIME]: now, 
+                                                                                            [RequestProps.RESULT]: result,
+                                                                                            [RequestProps.PROMPT]: event.prompt,
+                                                                                            [RequestProps.TRANSACTION_HASH]: "",
+                                                                                            [RequestProps.IS_MINED]: false}, true);                                                          
   }
   else 
   {
@@ -65,16 +92,16 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
         target: generateUrl(`api/bookies/transactions/${Transactions.APPROVE}`, {[RequestProps.ADDRESS]: event.address}, false),
       } as FrameButton
     })
+    postUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}`, {}, false),
     imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, [RequestProps.BALANCE]: 0, [RequestProps.TIME]: event.startDate}, true);
   }
 
   const frame : Frame = {
     version: "vNext",
     inputText: inputText,
-
     buttons: buttons as FrameButtonsType,
     image: imageUrl,
-    postUrl: generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}`, {}, false),
+    postUrl: postUrl
   };
   return new NextResponse(
     getFrameHtml(frame),

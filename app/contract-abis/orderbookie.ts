@@ -9,7 +9,7 @@ const OrderBookieABI =
   },
   {
     "inputs": [],
-    "name": "collectAll",
+    "name": "collect",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -27,18 +27,13 @@ const OrderBookieABI =
       {
         "components": [
           {
-            "internalType": "bytes32",
-            "name": "betID",
-            "type": "bytes32"
-          },
-          {
             "internalType": "address",
             "name": "owner",
             "type": "address"
           },
           {
             "internalType": "int256",
-            "name": "prediction",
+            "name": "pick",
             "type": "int256"
           },
           {
@@ -48,12 +43,12 @@ const OrderBookieABI =
           },
           {
             "internalType": "uint256",
-            "name": "amount",
+            "name": "stake",
             "type": "uint256"
           },
           {
             "internalType": "uint256",
-            "name": "amountUsed",
+            "name": "stakeUsed",
             "type": "uint256"
           },
           {
@@ -106,7 +101,7 @@ const OrderBookieABI =
           },
           {
             "internalType": "int256",
-            "name": "outcome",
+            "name": "result",
             "type": "int256"
           },
           {
@@ -152,7 +147,7 @@ const OrderBookieABI =
     "inputs": [
       {
         "internalType": "int256",
-        "name": "prediction",
+        "name": "pick",
         "type": "int256"
       },
       {
@@ -183,12 +178,12 @@ const OrderBookieABI =
     "inputs": [
       {
         "internalType": "int256",
-        "name": "prediction",
+        "name": "pick",
         "type": "int256"
       },
       {
         "internalType": "uint256",
-        "name": "wagerAmount",
+        "name": "stake",
         "type": "uint256"
       },
       {
@@ -198,6 +193,26 @@ const OrderBookieABI =
       }
     ],
     "name": "placeBet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "int256",
+        "name": "result",
+        "type": "int256"
+      }
+    ],
+    "name": "setResult",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawAll",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

@@ -22,7 +22,8 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   const ierc20 = new ethers.Interface(erc20ABI)
-  const data = ierc20.encodeFunctionData('approve', [orderBookieAddress, BigInt(stake * 10 ** Number(DECIMALS))])
+
+  const data = ierc20.encodeFunctionData('approve', [orderBookieAddress, ethers.parseUnits(stake.toString(), DECIMALS)])
 
   const txData = {
       chainId: `eip155:10`,

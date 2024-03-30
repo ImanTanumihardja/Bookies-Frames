@@ -5,7 +5,6 @@ import { Event } from '../../../../types';
 import { Accounts, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, PICK_DECIMALS } from '../../../../../src/utils';
 import {ethers} from 'ethers';
 import orderbookieABI from '../../../../contract-abis/orderbookie';
-import BigNumber from "bignumber.js";
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   // Verify the frame request
@@ -16,14 +15,20 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
 
   // Get eventName from req
-  let {stake, pick} = getRequestProps(req, [ RequestProps.STAKE, RequestProps.PICK]);
+  let {stake, pick, transactionHash} = getRequestProps(req, [ RequestProps.STAKE, RequestProps.PICK, RequestProps.TRANSACTION_HASH]);
 
-  let txReceipt
+  let isMined = false;
+
+  let txReceipt;
   if (transactionId) 
   {
-    txReceipt = await provider.getTransaction(transactionId);
+    transactionHash = transactionId // Coming from betslip
+    txReceipt = await provider.getTransactionReceipt(transactionId);
+  } 
+  else if (transactionHash) 
+  {
+    txReceipt = await provider.getTransactionReceipt(transactionHash);
   }
-
 
   // Wait for both user to be found and event to be found
   let event : Event | null = null;
@@ -45,41 +50,52 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   const now = new Date().getTime();
 
-  // Need to check bet does not exists, time is not past, and stake >= 1 and not rejected
-  if (now < event?.startDate && stake > 0 && parseInt(event?.result.toString()) === -1 && button != 1 && txReceipt) {
-    console.log('PLACING BET')
-    // Add users connect address
-    await kv.sadd(`${fid.toString()}:addresses`, txReceipt.from).then( async () => {
-      // Set event
-      await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
-        console.error('Error adding user to event:', error);
-        // Try again
-        await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
-          throw new Error('Error creating bet');
+  // Check if past startdate and event has not been settled
+  if (now >= Number(orderBookieInfo?.startDate) || parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS)) !== -1) {
+    pick = -1
+    console.log('EVENT CLOSED')
+  }
+  else if (button != 1) { // Need to check bet not rejected
+    if (txReceipt){
+      console.log('PLACED BET')
+      // Add users connect address
+      await kv.sadd(`${fid.toString()}:addresses`, txReceipt.from).then( async () => {
+        // Set event
+        await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
+          console.error('Error adding user to event:', error);
+          // Try again
+          await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
+            throw new Error('Error creating bet');
+          })
         })
-      })
 
-      // Update poll
-      await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(async (error) => {
-        console.error('Error adding user to poll:', error);
-        // Try again
-        await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch((error) => {
-          throw new Error('Error creating bet');
+        // Update poll
+        await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(async (error) => {
+          console.error('Error adding user to poll:', error);
+          // Try again
+          await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch((error) => {
+            throw new Error('Error creating bet');
+          })
         })
-      })
 
-      // Add to event bettors list
-    }).catch((error) => {
-      throw new Error('Error creating bet');
-    });   
+        isMined = true
+        // Add to event bettors list
+      }).catch((error) => {
+        throw new Error('Error creating bet');
+      });   
+    }
+    else {
+      console.log('Waiting for transaction to be mined')
+    }
   } 
   else {
-    pick = -1
-    console.log('FAILED TO PLACE BET')
+    // Rejected bet
+    console.log('REJECTED BET')
   }
 
-  const imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.ADDRESS]: event.address, [RequestProps.OPTIONS]: event.options, [RequestProps.RESULT]: event.result}, true);
+  const imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.ADDRESS]: event.address, [RequestProps.OPTIONS]: event.options, [RequestProps.RESULT]: event.result, [RequestProps.PROMPT]: event.prompt, [RequestProps.TRANSACTION_HASH]: transactionHash, [RequestProps.IS_MINED]: isMined}, true);
 
+  // Create buttons for frame
   let buttons : FrameButtonsType = [
     { 
       label: "/bookies!", 
@@ -89,7 +105,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     {
       label: 'Refresh', 
       action:'post', 
-      target: generateUrl(`/api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick}, false)
+      target: generateUrl(`/api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.TRANSACTION_HASH]: !isMined ? transactionHash : ""}, false)
     },
   ];
 
@@ -101,7 +117,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     })
   }
 
-  if ((BigNumber(orderBookieInfo.outcome).dividedBy(BigNumber(10 ** PICK_DECIMALS))).toNumber() !== -1) {
+  if (parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS)) !== -1) {
     buttons.push({
       label: 'Collect', 
       action:'post', 

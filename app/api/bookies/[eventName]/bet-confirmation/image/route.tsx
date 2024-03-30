@@ -17,9 +17,9 @@ let fontData = fs.readFileSync(fontPath)
 export async function GET(req: NextRequest) {
     try {
         let text='' // Default empty React element
-        const {pick, stake, buttonIndex, fid, address: orderBookieAddress, options, result} = getRequestProps(req, [RequestProps.ADDRESS, RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.RESULT]);
+        const {pick, buttonIndex, fid, address: orderBookieAddress, options, result, prompt, transactionHash, isMined} = getRequestProps(req, [RequestProps.ADDRESS, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.RESULT, RequestProps.PROMPT, RequestProps.TRANSACTION_HASH, RequestProps.IS_MINED]);
 
-        const addresses = (await kv.sscan(`${fid}:addresses`, 0))[1]
+        const addresses = (await kv.sscan(`${fid}:addresses`, 0))[1] || [];
 
         const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
         const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, erc20ABI, provider)).decimals();
@@ -32,11 +32,14 @@ export async function GET(req: NextRequest) {
         for (const address of addresses) {
             // Concatenate the bets array with the bets for this address
             bets = bets.concat((await orderBookie.getBets(address)).map((bet: any) => {
+                const stake = parseFloat(ethers.formatUnits(bet.stake, DECIMALS))
+                const stakeUsed = parseFloat(ethers.formatUnits(bet.stakeUsed, DECIMALS))
+
                 return {
-                    pick: Number(bet.prediction) / 10 ** PICK_DECIMALS,
-                    stake: Number(bet.amount) / 10 ** Number(DECIMALS),
-                    filledPercent: Math.floor(BigNumber(bet.amountUsed).dividedBy(BigNumber(bet.amount)).toNumber() * 100),
-                    odd: (Number(bet.odd) / 10 ** ODDS_DECIMALS),
+                    pick: parseInt(ethers.formatUnits(bet.pick, PICK_DECIMALS)),
+                    stake: stake,
+                    filledPercent: Math.floor(stakeUsed / stake * 100),
+                    odd: ethers.formatUnits(bet.odd, ODDS_DECIMALS),
                     timeStamp: 0,
                     settled: false
                 }
@@ -48,17 +51,20 @@ export async function GET(req: NextRequest) {
         console.log('BETS: ', bets)
 
 
-        if (buttonIndex === 1) {
+        if (buttonIndex === 1 && !transactionHash) {
             text = 'You rejected the bet!'
         } 
-        else if (stake <= -1){
-            text =  "You don't have enough!"
-        }
         else if (pick === -1) {
             text = "Event is closed!"
         }
-        else {
+        else if (transactionHash && !isMined) {
+            text = "Transaction is pending!"
+        }
+        else if (transactionHash && isMined) {
             text = "Bet confirmed!"
+        }
+        else {
+            text = prompt
         }
 
         const imageResponse = new ImageResponse(
@@ -73,7 +79,7 @@ export async function GET(req: NextRequest) {
                         justifyContent: 'center',
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
-                    <h1 style={{color: 'white', fontSize:40, justifyContent:'center', alignItems:'center', padding:25}}> {text} </h1>
+                    <h1 style={{color: 'white', fontSize: text.length > 50 ? 30 : text.length > 40 ? 35 : 40, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25}}> {text} </h1>
                 </div>
                 <div style={{
                         display: 'flex',

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ODDS_DECIMALS, getFrameMessage, getRequestProps, RequestProps } from '../../../../../src/utils';
+import { ODDS_DECIMALS, getFrameMessage, getRequestProps, RequestProps, PICK_DECIMALS } from '../../../../../src/utils';
 import {ethers} from 'ethers';
 import orderbookieABI from '../../../../contract-abis/orderbookie';
 import erc20ABI from '../../../../contract-abis/erc20';
@@ -31,9 +31,9 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, erc20ABI, provider)).decimals();
 
-  const convertedImpliedProb =  BigInt(impliedProb * 10 ** ODDS_DECIMALS)
-  const convertedStake = BigInt(stake * 10 ** Number(DECIMALS))
-  const convertedPick = ethers.parseEther((pick).toString()) 
+  const convertedImpliedProb = ethers.parseUnits(impliedProb.toString(), ODDS_DECIMALS)
+  const convertedStake = ethers.parseUnits(stake.toString(), Number(DECIMALS))
+  const convertedPick = ethers.parseUnits(pick.toString(), PICK_DECIMALS) 
 
   console.log('STAKE: ', stake)
   console.log('PICK: ', pick)
