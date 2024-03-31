@@ -50,7 +50,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         justifyContent: 'center',
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
-                    <h1 style={{color: 'white', fontSize:45, justifyContent:'center', alignItems:'center', padding:25, top:25, textAlign:'center'}}> {text} </h1>
+                    <h1 style={{color: 'white', fontSize: text.length > 50 ? 30 : text.length > 40 ? 35 : 45, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25, bottom:10}}> {text} </h1>
                 </div>
                 <div style={{
                         display: 'flex',

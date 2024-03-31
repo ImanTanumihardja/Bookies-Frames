@@ -14,7 +14,6 @@
   "dependencies": {
     "@neynar/nodejs-sdk": "^1.13.0",
     "@vercel/kv": "^1.0.1",
-    "bignumber.js": "^9.1.2",
     "cloudinary": "^2.0.3",
     "ethers": "^6.11.1",
     "frames.js": "^0.8.5",

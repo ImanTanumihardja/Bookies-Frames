@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize:25, position: 'absolute', top: 0, left:20}}> {`(${date.toLocaleDateString()})`} </h1>
-                    <h1 style={{color: 'white', fontSize: event.prompt.length > 50 ? 30 : event.prompt.length > 40 ? 35 : 40, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25}}> {event.prompt} </h1>
+                    <h1 style={{color: 'white', fontSize: event.prompt.length > 50 ? 30 : event.prompt.length > 40 ? 35 : 45, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25}}> {event.prompt} </h1>
                 </div>
                 <div style={{display:'flex', width:'65%', flexDirection:'column', alignItems: 'center', background:'white'}}>
                     {eventBets.reverse().slice(0, 7).map((bet: Bet | undefined, index: number) => {
