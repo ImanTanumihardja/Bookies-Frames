@@ -55,14 +55,14 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
         },
       ]
 
-    if (result !== -1) { // Add collect button if settled
-      buttons.push({
-        label: 'Collect', 
-        action:'post', 
-        target: 'https://warpcast.com/bookies'
-      })
-      console.log('Event has already been settled');
-    }
+    // if (result !== -1) { // Add collect button if settled
+    //   buttons.push({
+    //     label: 'Collect', 
+    //     action:'post', 
+    //     target: 'https://warpcast.com/bookies'
+    //   })
+    //   console.log('Event has already been settled');
+    // }
     
     postUrl = "" // Collect payout page
 

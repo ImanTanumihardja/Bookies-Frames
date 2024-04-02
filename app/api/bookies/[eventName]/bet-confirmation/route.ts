@@ -47,11 +47,12 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   const orderBookie = new ethers.Contract(event.address, orderbookieABI, provider)
   const orderBookieInfo = await orderBookie.getBookieInfo()
   console.log('ORDERBOOKIE INFO: ', orderBookieInfo)
+  const result = parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS))
 
   const now = new Date().getTime();
 
   // Check if past startdate and event has not been settled
-  if (now >= Number(orderBookieInfo?.startDate) || parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS)) !== -1) {
+  if (now >= Number(orderBookieInfo?.startDate) || result !== -1) {
     pick = -1
     console.log('EVENT CLOSED')
   }
@@ -93,7 +94,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     console.log('REJECTED BET')
   }
 
-  const imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.ADDRESS]: event.address, [RequestProps.OPTIONS]: event.options, [RequestProps.RESULT]: event.result, [RequestProps.PROMPT]: event.prompt, [RequestProps.TRANSACTION_HASH]: transactionHash, [RequestProps.IS_MINED]: isMined}, true);
+  const imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.ADDRESS]: event.address, [RequestProps.OPTIONS]: event.options, [RequestProps.RESULT]: result, [RequestProps.PROMPT]: event.prompt, [RequestProps.TRANSACTION_HASH]: transactionHash, [RequestProps.IS_MINED]: isMined}, true);
 
   // Create buttons for frame
   let buttons : FrameButtonsType = [
@@ -117,13 +118,13 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     })
   }
 
-  if (parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS)) !== -1) {
-    buttons.push({
-      label: 'Collect', 
-      action:'post', 
-      target: 'https://warpcast.com/bookies'
-    })
-  }
+  // if (parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS)) !== -1) {
+  //   buttons.push({
+  //     label: 'Collect', 
+  //     action:'post', 
+  //     target: 'https://warpcast.com/bookies'
+  //   })
+  // }
   
   return new NextResponse(
     getFrameHtml({
