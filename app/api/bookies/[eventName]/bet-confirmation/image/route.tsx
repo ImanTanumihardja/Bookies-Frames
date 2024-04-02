@@ -93,13 +93,13 @@ export async function GET(req: NextRequest) {
                         justifyContent: 'center',
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
-                    {result !== -1 
+                    {result === -1 
                     ?
                     <div style={{display: 'flex', flexDirection:'column', height:'100%', width:'100%', justifyContent: 'center', alignItems: 'center'}}>
                         <h1 style={{color: 'white', 
                                     fontSize: text.length > 50 ? 30 : text.length > 40 ? 35 : 45, 
                                     textAlign:'center', 
-                                    padding:25}}> Bet confirmed! </h1>
+                                    padding:25}}> {text} </h1>
                     </div>
                     :
                     <div style={{display: 'flex', flexDirection:'column', height:'100%', width:'100%', justifyContent: 'center', alignItems: 'center'}}>
