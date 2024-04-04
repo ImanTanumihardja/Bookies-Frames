@@ -131,7 +131,7 @@ export async function GET(req: NextRequest) {
                         width: '65%',
                         height: '100%',
                         background: 'white'}}>
-                            {/* <div style={{display: 'flex', flexDirection:'column', alignItems: 'center', padding:10}}>
+                            <div style={{display: 'flex', flexDirection:'column', alignItems: 'center', padding:10}}>
                                 {bets.reverse().slice(0, 6).map((bet: any, index: number) => { 
                                 return (
                                     <h3 key={index} style={{color: 'black', fontSize:30, justifyContent:'center', margin:10, whiteSpace: 'pre'}}>
@@ -143,8 +143,7 @@ export async function GET(req: NextRequest) {
                             <h2 style={{color: 'black', fontSize:35, justifyContent:'center', marginTop: -25}}>. . .</h2>
                             :
                             <div></div>
-                            } */}
-                            
+                            }
                 </div>
             </div>
             ), {

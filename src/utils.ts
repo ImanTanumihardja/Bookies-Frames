@@ -274,8 +274,9 @@ export async function getFrameMessage(req: NextRequest, validate=true, viewerFid
 
     // Use onchainkit to validate the frame message
     if (validate) {
-        const data = await validateFrameMessage(body, true, process.env['HUB_HTTP_URL'], {headers: {api_key: process.env['NEYNAR_API_KEY']}}  );
+        const data = await validateFrameMessage(body, {fetchHubContext: true, hubHttpUrl:process.env['HUB_HTTP_URL'], hubRequestOptions:{headers: {api_key: process.env['NEYNAR_API_KEY']}}}  );
 
+        console.log('Frame Data:', data)
         if (!data.isValid) {
             throw new Error('Invalid frame message');
         }
