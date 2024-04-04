@@ -15,7 +15,7 @@ export default async function getEvent(eventName="") {
   console.log(`Event: ${eventName}`);
   console.log(eventData);
   
-  // Get all bets
+  // Get all alea bettors
   let betsData = (await kv.sscan(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, 0, { count: 150 }))
   let cursor = betsData[0]
   let aleaFIDs : number[] = betsData[1] as unknown as number[]
@@ -26,6 +26,7 @@ export default async function getEvent(eventName="") {
     aleaFIDs = aleaFIDs.concat(betsData[1] as unknown as number[])
   }
 
+  // Get all bookies bettors
   betsData = (await kv.sscan(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, 0, { count: 150 }))
   cursor = betsData[0]
   let bookiesFIDs : number[] = betsData[1] as unknown as number[]
@@ -41,7 +42,6 @@ export default async function getEvent(eventName="") {
   if (pollData === null) {
     throw new Error(`Poll: ${eventName} does not exist`)
   }
-  console.log(`Poll: ${pollData.toString()}`);
 
   console.log(`Total bets: ${aleaFIDs.length}`);
 

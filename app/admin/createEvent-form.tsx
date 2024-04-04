@@ -55,8 +55,8 @@ export function CreateEventForm() {
         </select>
         <br />
         <br />
-        <label htmlFor="address">Address (*bookies only*) </label>
-        <input type="text" id="address" name="address" placeholder="0x..." />
+        <label htmlFor="ancillaryData">Ancillary Data (*bookies only*) </label>
+        <input type="text" id="ancillaryData" name="ancillaryData" />
         <br />
         <br />
         <SubmitButton />

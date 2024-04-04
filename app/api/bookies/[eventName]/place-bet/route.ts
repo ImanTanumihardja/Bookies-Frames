@@ -4,7 +4,7 @@ import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { Event } from '../../../../types';
 import { kv } from '@vercel/kv';
 import { ethers } from 'ethers';
-import orderbookieABI from '../../../../contract-abis/orderbookie';
+import orderbookieABI from '../../../../contract-abis/OrderBookie';
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
 

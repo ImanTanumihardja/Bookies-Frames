@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFrameMessage, getRequestProps, RequestProps } from '../../../../../src/utils';
 import {ethers } from 'ethers';
-import erc20ABI from '../../../../contract-abis/erc20';
+import erc20ABI from '../../../../contract-abis/ERC20';
 import { USDC_ADDRESS } from '../../../../addresses';
+
+const STAKE_LIMIT = 100
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
@@ -17,7 +19,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   // Check if input is valid amount
   const stake = parseFloat(input);
-  if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake)) {
+  if (!stake || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake) || stake > Number.MAX_SAFE_INTEGER || stake < 0 || stake > STAKE_LIMIT) {
     throw new Error(`Invalid wager amount STAKE: ${input}`);  
   }
 

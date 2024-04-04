@@ -4,7 +4,7 @@ import { kv } from "@vercel/kv";
 import { Event } from '../../../../types';
 import { Accounts, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, PICK_DECIMALS } from '../../../../../src/utils';
 import {ethers} from 'ethers';
-import orderbookieABI from '../../../../contract-abis/orderbookie';
+import orderbookieABI from '../../../../contract-abis/OrderBookie';
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   // Verify the frame request
