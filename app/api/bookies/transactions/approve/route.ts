@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFrameMessage, getRequestProps, RequestProps } from '../../../../../src/utils';
 import {ethers } from 'ethers';
-import erc20ABI from '../../../../contract-abis/ERC20';
+import erc20ABI from '../../../../contract-abis/erc20';
 import { USDC_ADDRESS } from '../../../../addresses';
 
 const STAKE_LIMIT = 100

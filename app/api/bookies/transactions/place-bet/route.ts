@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ODDS_DECIMALS, getFrameMessage, getRequestProps, RequestProps, PICK_DECIMALS } from '../../../../../src/utils';
 import {ethers} from 'ethers';
 import orderbookieABI from '../../../../contract-abis/orderBookie';
-import erc20ABI from '../../../../contract-abis/ERC20';
+import erc20ABI from '../../../../contract-abis/erc20';
 import { USDC_ADDRESS } from '../../../../addresses';
 
 export async function POST(req: NextRequest): Promise<Response> {

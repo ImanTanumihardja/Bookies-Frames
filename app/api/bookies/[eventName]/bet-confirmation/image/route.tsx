@@ -7,7 +7,7 @@ import * as fs from "fs";
 import { join } from 'path';
 import {ethers} from 'ethers';
 import { USDC_ADDRESS } from '../../../../../addresses';
-import erc20ABI from '../../../../../contract-abis/ERC20';
+import erc20ABI from '../../../../../contract-abis/erc20';
 
 // Fonts
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
