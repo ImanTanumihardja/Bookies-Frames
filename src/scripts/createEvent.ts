@@ -5,13 +5,16 @@ const path = require('path');
 dotenv.config({ path: ".env"})
 import { Event } from '../../app/types';
 import {Accounts, DatabaseKeys} from '../../src/utils'
+import {ethers} from 'ethers';
+import  orderBookieFactoryABI  from '../../app/contract-abis/OrderBookieFactory';
+import { ORDERBOOKIE_FACTORY_ADDRESS, USDC_ADDRESS } from '../../app/addresses'
 
 const kv = createClient({
     url: process.env['KV_REST_API_URL'],
     token: process.env['KV_REST_API_TOKEN'],
   });
 
-export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 0.5], options=["", ""], prompt="", host="", address='') {
+export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 0.5], options=["", ""], prompt="", host="", ancillaryData='') {
   if (startDate < new Date().getTime()) {
     throw new Error('Start date is invalid')
   }
@@ -39,7 +42,37 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
     throw new Error('Invalid host')
   }
 
-  let event: Event = {startDate: startDate, result: -1, odds: odds, options: options, prompt: prompt, host, address} as Event;
+  // Deploy Orderbookie smart contract
+  let address = ""
+  if (host === Accounts.BOOKIES || host === Accounts.BOTH) { // If bookies is the host deploy smart contract
+    if (ancillaryData) {
+        const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
+        const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
+        const orderBookiefactory = new ethers.Contract(ORDERBOOKIE_FACTORY_ADDRESS, orderBookieFactoryABI, signer);
+
+        const tx = await orderBookiefactory.createOrderBookie(ethers.toUtf8Bytes(ancillaryData), startDate, 0, 0, 7200, USDC_ADDRESS, ethers.encodeBytes32String("NUMERICAL"), signer.getAddress(), false)
+
+        // Get address of create contract
+        const txReceipt = await tx.wait()
+
+        console.log('TX RECEIPT: ', txReceipt.hash)
+        
+        const logs:any = txReceipt?.logs.map((log:any) => orderBookiefactory.interface.parseLog(log))
+
+        // Find event with Name OrderBookieEvent
+        const event = logs?.find((log:any) => log?.name === "OrderBookieCreated")
+
+        // Print the arg
+        console.log('OrderBookie Address: ', event?.args[0])
+        address = event?.args[0]
+    }
+    else {  
+      throw new Error(`Ancillary data is required for bookies`)
+    }
+   
+}
+
+  let event: Event = {startDate, result: -1, odds, options, prompt, host, address} as Event;
   await kv.hset(`${eventName}`, event);
 
   // Create poll
