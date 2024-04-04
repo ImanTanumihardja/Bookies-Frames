@@ -6,7 +6,7 @@ dotenv.config({ path: ".env"})
 import { Event } from '../../app/types';
 import {Accounts, DatabaseKeys} from '../../src/utils'
 import {ethers} from 'ethers';
-import  orderBookieFactoryABI  from '../../app/contract-abis/OrderBookieFactory';
+import  orderBookieFactoryABI  from '../../app/contract-abis/orderBookieFactory';
 import { ORDERBOOKIE_FACTORY_ADDRESS, USDC_ADDRESS } from '../../app/addresses'
 
 const kv = createClient({

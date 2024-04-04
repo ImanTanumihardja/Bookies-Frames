@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import { ODDS_DECIMALS, PICK_DECIMALS, RequestProps, getRequestProps } from '../../../../../../src/utils';
-import orderbookieABI from '../../../../../contract-abis/OrderBookie';
+import orderbookieABI from '../../../../../contract-abis/orderBookie';
 import { kv } from '@vercel/kv';
 import * as fs from "fs";
 import { join } from 'path';
