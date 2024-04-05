@@ -60,19 +60,17 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         width: '65%',
                         height: '100%',
                         background: 'white'}}>
-                            <div style={{display: 'flex', flexDirection:'column', alignItems: 'center', padding:10}}>
-                                {filteredBets.reverse().slice(0, 6).map((bet: Bet, index: number) => { 
-                                return (
-                                    <h3 key={index} style={{color: 'black', fontSize:30, justifyContent:'center', margin:10, whiteSpace: 'pre', textDecoration: bet.timeStamp === time ? "underline" :'none'}}>
-                                        {options[bet.pick]} | {bet.stake} { result === -1 ? '' : bet.pick === result ? '✅' : '❌'}
-                                    </h3>
-                                )})}
-                            </div>
-                            {filteredBets.length > 6 ?
-                            <h2 style={{color: 'black', fontSize:35, justifyContent:'center', marginTop: -25}}>. . .</h2>
-                            :
-                            <div></div>
-                            }
+                    {filteredBets.reverse().slice(0, 7).map((bet: Bet, index: number) => { 
+                    return (
+                        <h3 key={index} style={{color: 'black', fontSize: 25, marginBottom:-5}}>
+                            {result != -1 ? (bet.pick == result ? '✅' : '❌') : ''} {options[bet.pick]} | {bet.stake}
+                        </h3>
+                    )})}
+                    {filteredBets.length > 7 ?
+                    <h2 style={{color: 'black', fontSize:30, justifyContent:'center'}}>. . .</h2>
+                    :
+                    <div></div>
+                    }
                 </div>
             </div>
             ), {

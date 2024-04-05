@@ -52,21 +52,28 @@ export async function GET(req: NextRequest) {
                     <h1 style={{color: 'white', fontSize:25, position: 'absolute', top: 0, left:20}}> {`(${date.toLocaleDateString()})`} </h1>
                     <h1 style={{color: 'white', fontSize: event.prompt.length > 50 ? 30 : event.prompt.length > 40 ? 35 : 40, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25}}> {event.prompt} </h1>
                 </div>
-                <div style={{display:'flex', width:'65%', flexDirection:'column', alignItems: 'center', background:'white'}}>
+                <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyItems:'flex-start',
+                        width: '65%',
+                        height: '100%',
+                        background: 'white'}}>
                     {eventBets.reverse().slice(0, 7).map((bet: Bet | undefined, index: number) => {
                         return (
                             bet && 
-                            <h3 key={index} style={{color: 'black', fontSize: 30, marginBottom:-5}}>
-                                {event?.options[bet.pick]} | {bet.stake} {event?.result != -1 ? (bet.pick == event?.result ? '✅' : '❌') : ''}
+                            <h3 key={index} style={{color: 'black', fontSize: 25, marginBottom:-5}}>
+                                {event?.result != -1 ? (bet.pick == event?.result ? '✅' : '❌') : ''} {event?.options[bet.pick]} | {bet.stake}
                             </h3>
                         )
                     })}
+                    {eventBets.length > 7 ?
+                    <h2 style={{color: 'black', position:'absolute', bottom:10, fontSize:30, justifyContent:'center'}}>. . .</h2>
+                    :
+                    <div></div>
+                    }
                 </div>
-                {eventBets.length > 7 ?
-                <h2 style={{color: 'black', fontSize:35, justifyContent:'center', margin:-10}}>. . .</h2>
-                :
-                <div></div>
-                }
             </div>,
             {
                 width: 764, 
