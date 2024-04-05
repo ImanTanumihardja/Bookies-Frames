@@ -90,6 +90,11 @@ export async function POST(req: NextRequest): Promise<Response> {
       action:'post', 
       target: generateUrl(`/api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: -1, [RequestProps.REDIRECT]: false}, false)
     },
+    {
+      label: 'Place Bet', 
+      action:'post', 
+      target: generateUrl(`/api/alea/conn-bama-spread`, {}, false)
+    },
   ]
 
   const imageUrl = generateUrl(`api/alea/${FrameNames.CLAIM_DICE}/image`, {[RequestProps.HAS_CLAIMED]: hasClaimed, [RequestProps.BALANCE]: CLAIM_AMOUNT, [RequestProps.VALID_CAPTCHA]: validCaptcha}, true);
