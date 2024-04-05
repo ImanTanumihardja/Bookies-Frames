@@ -23,7 +23,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   if (!isFollowing || !liked) {
     // Call fetch to get not following
-    return notFollowingResponse(generateUrl(`/api/alea/${FrameNames.CLAIM_DICE}`, {[RequestProps.CAPTCHA_INDEX]: -1}, false))
+    return notFollowingResponse(generateUrl(`/api/alea/${FrameNames.CAPTCHA}`, {}, false))
   }
 
   if (captchaIndex !== (button - 1)) {
@@ -32,9 +32,15 @@ export async function POST(req: NextRequest): Promise<Response> {
   var user : User | null = null;
   var isNewUser: boolean = false;
   var hasClaimed: boolean = true;
+  var buttons = [
+    {
+      label: "Try Again", 
+      action: 'post', 
+      target: generateUrl(`/api/alea/${FrameNames.CAPTCHA}`, {}, false),
+    }
+  ];
 
   if (validCaptcha) {
-    
     isNewUser = await kv.zscore(DatabaseKeys.LEADERBOARD, fid.toString()) === null;
 
     if (isNewUser) {
@@ -72,37 +78,37 @@ export async function POST(req: NextRequest): Promise<Response> {
     } else {
       console.log('ALREADY CLAIMED')
     }
-  }
 
-  const buttons = 
-  [
-    { 
-      label: "/bookies!", 
-      action: 'link', 
-      target: 'https://warpcast.com/~/channel/bookies'
-    }, 
-    { 
-      label: "Profile Finder", 
-      action: 'post', 
-      target: generateUrl(`/api/alea/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: -1}, false)},
-    {
-      label: 'Leaderboard', 
-      action:'post', 
-      target: generateUrl(`/api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: -1, [RequestProps.REDIRECT]: false}, false)
-    },
-    {
-      label: 'Place Bet', 
-      action:'post', 
-      target: generateUrl(`/api/alea/conn-bama-spread`, {}, false)
-    },
-  ]
+    buttons = [
+      { 
+        label: "/bookies!", 
+        action: 'link', 
+        target: 'https://warpcast.com/~/channel/bookies'
+      }, 
+      { 
+        label: "Profile Finder", 
+        action: 'post', 
+        target: generateUrl(`/api/alea/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: -1}, false)},
+      {
+        label: 'Leaderboard', 
+        action:'post', 
+        target: generateUrl(`/api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: -1, [RequestProps.REDIRECT]: false}, false)
+      },
+      {
+        label: 'Place Bet', 
+        action:'post', 
+        target: generateUrl(`/api/alea/conn-bama-spread`, {}, false)
+      },
+    ]
+  }
+  
 
   const imageUrl = generateUrl(`api/alea/${FrameNames.CLAIM_DICE}/image`, {[RequestProps.HAS_CLAIMED]: hasClaimed, [RequestProps.BALANCE]: CLAIM_AMOUNT, [RequestProps.VALID_CAPTCHA]: validCaptcha}, true);
 
   const frame: Frame = {
     version: "vNext",
     image: imageUrl,
-    buttons: !validCaptcha ? [] : buttons as FrameButtonsType,
+    buttons: buttons as FrameButtonsType,
     postUrl: generateUrl(`api/alea/${FrameNames.CLAIM_DICE}`, {}, false),
   };
 
