@@ -62,7 +62,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         background: 'white'}}>
                     {filteredBets.reverse().slice(0, 7).map((bet: Bet, index: number) => { 
                     return (
-                        <h3 key={index} style={{color: 'black', fontSize: 25, marginBottom:-5}}>
+                        <h3 key={index} style={{color: 'black', fontSize: 25, marginBottom:-5, textDecoration: bet.timeStamp === time ? "underline" :'none'}}>
                             {result != -1 ? (bet.pick == result ? '✅' : '❌') : ''} {options[bet.pick]} | {bet.stake}
                         </h3>
                     )})}
