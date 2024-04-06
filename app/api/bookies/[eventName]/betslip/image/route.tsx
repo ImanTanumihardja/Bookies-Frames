@@ -25,7 +25,9 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                                         RequestProps.OPTIONS]);
         
         const odd = convertImpliedProbabilityToAmerican(impliedProbability)
-        const payout = calculatePayout(impliedProbability, stake)
+
+        // Round payout to 2 decimal places
+        const payout = calculatePayout(stake, odd).toFixed(2);
 
         let pollData = [];
         // Get total votes
