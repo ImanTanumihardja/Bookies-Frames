@@ -26,7 +26,7 @@ const OrderBookieFactoryABI =
         "type": "address"
       }
     ],
-    "name": "OrderBookieEvent",
+    "name": "OrderBookieCreated",
     "type": "event"
   },
   {

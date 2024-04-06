@@ -1,6 +1,26 @@
 const OrderBookieABI = 
 [
   {
+    "inputs": [
+      {
+        "internalType": "int256",
+        "name": "result",
+        "type": "int256"
+      }
+    ],
+    "name": "adminSettle",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "adminWithdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "cancelBookie",
     "outputs": [],
@@ -193,26 +213,6 @@ const OrderBookieABI =
       }
     ],
     "name": "placeBet",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "int256",
-        "name": "result",
-        "type": "int256"
-      }
-    ],
-    "name": "setResult",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "withdrawAll",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
