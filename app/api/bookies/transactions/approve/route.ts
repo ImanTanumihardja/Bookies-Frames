@@ -28,7 +28,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   const data = ierc20.encodeFunctionData('approve', [orderBookieAddress, ethers.parseUnits(stake.toString(), DECIMALS)])
 
   const txData = {
-      chainId: `eip155:10`,
+      chainId: `eip155:8453`,
       method: 'eth_sendTransaction',
       attribution: false,
       params: {
