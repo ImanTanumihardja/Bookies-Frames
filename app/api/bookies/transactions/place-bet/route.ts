@@ -11,7 +11,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const {input} = message
 
-  const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
+  const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
   const {stake, pick, odd: impliedProb, address: orderBookieAddress, transactionHash} = getRequestProps(req, [RequestProps.STAKE, RequestProps.PICK, RequestProps.ODD, RequestProps.ADDRESS, RequestProps.TRANSACTION_HASH]);
 

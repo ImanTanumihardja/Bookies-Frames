@@ -12,7 +12,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const {input} = message
 
-  const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
+  const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
   const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, erc20ABI, provider)).decimals();
 
   const {address: orderBookieAddress } = getRequestProps(req, [RequestProps.ADDRESS]);

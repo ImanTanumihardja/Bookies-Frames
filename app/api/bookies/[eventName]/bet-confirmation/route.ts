@@ -12,7 +12,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   const {button, fid, transactionId} = message;
 
-  const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
+  const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
   // Get eventName from req
   let {stake, pick, transactionHash} = getRequestProps(req, [ RequestProps.STAKE, RequestProps.PICK, RequestProps.TRANSACTION_HASH]);

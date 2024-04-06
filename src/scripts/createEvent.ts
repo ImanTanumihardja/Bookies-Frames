@@ -46,9 +46,11 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
   let address = ""
   if (host === Accounts.BOOKIES || host === Accounts.BOTH) { // If bookies is the host deploy smart contract
     if (ancillaryData) {
-        const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
+        const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
         const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
         const orderBookiefactory = new ethers.Contract(ORDERBOOKIE_FACTORY_ADDRESS, orderBookieFactoryABI, signer);
+
+        console.log('Creating OrderBookie Contract...')
 
         const tx = await orderBookiefactory.createOrderBookie(ethers.toUtf8Bytes(ancillaryData), startDate, 0, 0, 7200, USDC_ADDRESS, ethers.encodeBytes32String("NUMERICAL"), signer.getAddress(), false)
 

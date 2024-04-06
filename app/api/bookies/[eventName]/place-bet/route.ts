@@ -13,7 +13,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   const {fid} = await getFrameMessage(req);
 
-  const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
+  const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
   await Promise.all([kv.hgetall(eventName)]).then( (res) => {
     event = res[0] as Event || null;

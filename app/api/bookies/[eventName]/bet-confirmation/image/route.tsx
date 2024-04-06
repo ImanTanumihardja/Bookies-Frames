@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
 
         const addresses = (await kv.sscan(`${fid}:addresses`, 0))[1] || [];
 
-        const provider = new ethers.JsonRpcProvider(process.env.OPTIMISM_PROVIDER_URL);
+        const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
         const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, erc20ABI, provider)).decimals();
 
         const orderBookie = new ethers.Contract(orderBookieAddress, orderbookieABI, provider)
