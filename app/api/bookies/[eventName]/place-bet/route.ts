@@ -6,7 +6,7 @@ import { kv } from '@vercel/kv';
 import { ethers } from 'ethers';
 import orderbookieABI from '../../../../contract-abis/orderBookie';
 
-const whitelist = [313859, 3300, 13640, 14364, 18723, 240832, 241573, 243204, 252741, 270091, 280715, 285875, 347833, 388566, 389633] 
+const whitelist = [313859, 3300, 13640, 14364, 18723, 240832, 241573, 243204, 252741, 270091, 280715, 285875, 347833, 388566, 389633, 391387] 
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   const {fid} = await getFrameMessage(req);
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   let inputText : string | undefined = 'Wager Amount ($USDC)';
   let postUrl;
 
-  const now = new Date().getTime();
+  const now = new Date().getTime() / 1000;
   if (now > Number(orderBookieInfo.startDate) || result !== -1) { // Event has already passed and 
     inputText = undefined
 
@@ -70,13 +70,11 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     
     postUrl = "" // Collect payout page
 
-    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: 0, 
-                                                                                            [RequestProps.PICK]: -1, 
+    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.PICK]: -1, 
                                                                                             [RequestProps.BUTTON_INDEX]: 0, 
                                                                                             [RequestProps.FID]: fid,  
                                                                                             [RequestProps.OPTIONS]: event.options, 
                                                                                             [RequestProps.ADDRESS]: event.address,
-                                                                                            [RequestProps.TIME]: now, 
                                                                                             [RequestProps.RESULT]: result,
                                                                                             [RequestProps.PROMPT]: event.prompt,
                                                                                             [RequestProps.TRANSACTION_HASH]: "",

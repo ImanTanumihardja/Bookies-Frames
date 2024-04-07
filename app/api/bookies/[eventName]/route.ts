@@ -30,6 +30,11 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
         label: 'Place Bet',
         action: 'post',
       },
+      {
+        label: 'View Bets',
+        action: 'post',
+        target: generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.STAKE]: 0, [RequestProps.PICK]: 0, [RequestProps.TRANSACTION_HASH]: ""}, false)
+      }
     ],
     image: imageUrl,
     postUrl: generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}`, {}, false),

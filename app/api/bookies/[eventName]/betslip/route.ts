@@ -1,4 +1,4 @@
-import { getFrameHtml} from "frames.js";
+import { FrameButtonsType, getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
 import {  DatabaseKeys, FrameNames, RequestProps, generateUrl, getFrameMessage, Transactions } from '../../../../../src/utils';
 import { kv } from "@vercel/kv";
@@ -39,19 +39,39 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   let imageUrl = ''
   let pick = button - 1;
+  let buttons;
   const impliedProbability = event.odds[pick]
   const orderBookieAddress = event.address;
   const now = new Date().getTime();
   // Check if event has already passed
   if (event.startDate < now || result !== -1) {
     pick = -1;
-    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, 
-                                                                              [RequestProps.PICK]: pick, 
-                                                                              [RequestProps.BUTTON_INDEX]: button, 
-                                                                              [RequestProps.FID]: fid,  
-                                                                              [RequestProps.OPTIONS]: event.options, 
-                                                                              [RequestProps.TIME]: now, 
-                                                                              [RequestProps.RESULT]: result}, true);
+    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.PICK]: -1, 
+                                                                                            [RequestProps.BUTTON_INDEX]: 0, 
+                                                                                            [RequestProps.FID]: fid,  
+                                                                                            [RequestProps.OPTIONS]: event.options, 
+                                                                                            [RequestProps.ADDRESS]: event.address,
+                                                                                            [RequestProps.RESULT]: result,
+                                                                                            [RequestProps.PROMPT]: event.prompt,
+                                                                                            [RequestProps.TRANSACTION_HASH]: "",
+                                                                                            [RequestProps.IS_MINED]: false}, true);
+
+    buttons =
+    [
+      { 
+        label: "/bookies!", 
+        action: 'link', 
+        target: 'https://warpcast.com/~/channel/bookies'
+      },
+      {
+        label: 'Refresh', 
+        action:'post', 
+        target: generateUrl(`/api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, 
+                                                                                        [RequestProps.STAKE]: 0,
+                                                                                        [RequestProps.PICK]: -1,
+                                                                                        [RequestProps.TRANSACTION_HASH]: ""}, false)
+      },
+    ]
   }
   else
   {
@@ -66,32 +86,25 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
                                                                       [RequestProps.POLL]: poll,
                                                                       [RequestProps.PROMPT]: prompt, 
                                                                       [RequestProps.OPTIONS]: options}, true);
+    buttons = [
+      {
+        label: "Reject", 
+        action: 'post'
+      },
+      {
+        label: "Confirm", 
+        action: 'tx',
+        target: generateUrl(`api/bookies/transactions/${Transactions.PLACE_BET}`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.ODD]: impliedProbability, [RequestProps.ADDRESS]: orderBookieAddress, [RequestProps.TRANSACTION_HASH]: transactionId}, false)
+      }
+    ]
   }
 
   return new NextResponse(
     getFrameHtml({
       version: "vNext",
-      image: `${imageUrl}`,
+      image: imageUrl,
       postUrl: generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.TRANSACTION_HASH]: ""}, false),
-      buttons: pick !== -1 ? [
-                {
-                  label: "Reject", 
-                  action: 'post'
-                },
-                {
-                  label: "Confirm", 
-                  action: 'tx',
-                  target: generateUrl(`api/bookies/transactions/${Transactions.PLACE_BET}`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.ODD]: impliedProbability, [RequestProps.ADDRESS]: orderBookieAddress, [RequestProps.TRANSACTION_HASH]: transactionId}, false)
-                }
-              ]
-              :
-              [
-                { 
-                  label: "Check out /bookies!", 
-                  action: 'link', 
-                  target: 'https://warpcast.com/~/channel/bookies'
-                }
-              ]
+      buttons: buttons as FrameButtonsType 
     }),
   );
 } 

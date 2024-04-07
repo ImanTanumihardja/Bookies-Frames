@@ -49,7 +49,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   console.log('ORDERBOOKIE INFO: ', orderBookieInfo)
   const result = parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS))
 
-  const now = new Date().getTime();
+  const now = new Date().getTime() / 1000;
 
   // Check if past startdate and event has not been settled
   if (now >= Number(orderBookieInfo?.startDate) || result !== -1) {
@@ -110,7 +110,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     },
   ];
 
-  if (orderBookieInfo.startDate >= new Date().getTime()) {
+  if (orderBookieInfo.startDate >= new Date().getTime() / 1000) {
     buttons.push({
       label: 'Place Another Bet', 
       action:'post', 
