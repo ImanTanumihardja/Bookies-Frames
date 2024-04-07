@@ -68,7 +68,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
         action:'post', 
         target: generateUrl(`/api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, 
                                                                                         [RequestProps.STAKE]: 0,
-                                                                                        [RequestProps.PICK]: -1,
+                                                                                        [RequestProps.PICK]: 0,
                                                                                         [RequestProps.TRANSACTION_HASH]: ""}, false)
       },
     ]
