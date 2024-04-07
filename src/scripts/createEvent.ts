@@ -52,7 +52,15 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
 
         console.log('Creating OrderBookie Contract...')
 
-        const tx = await orderBookiefactory.createOrderBookie(ethers.toUtf8Bytes(ancillaryData), startDate, 0, 0, 7200, USDC_ADDRESS, ethers.encodeBytes32String("NUMERICAL"), signer.getAddress(), false)
+        const tx = await orderBookiefactory.createOrderBookie(ethers.toUtf8Bytes(ancillaryData),
+                                                              (startDate / 1000), // Convert from milli-seconds to seconds
+                                                              0,
+                                                              0,
+                                                              7200,
+                                                              USDC_ADDRESS,
+                                                              ethers.encodeBytes32String("NUMERICAL"),
+                                                              signer.getAddress(),
+                                                              false)
 
         // Get address of create contract
         const txReceipt = await tx.wait()

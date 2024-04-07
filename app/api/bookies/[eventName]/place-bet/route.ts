@@ -6,15 +6,19 @@ import { kv } from '@vercel/kv';
 import { ethers } from 'ethers';
 import orderbookieABI from '../../../../contract-abis/orderBookie';
 
+const whitelist = [313859, 3300, 13640, 14364, 18723, 240832, 241573, 243204, 252741, 270091, 280715, 285875, 347833, 388566, 389633] 
+
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
-
-  // Wait for both user to be found and event to be found
-  let event : Event | null = null;
-
   const {fid} = await getFrameMessage(req);
+
+  // Chekc if fid in whitelist
+  if (!whitelist.includes(fid)) {
+    throw new Error('Not in whitelist');
+  }
 
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
+  let event : Event | null = null;
   await Promise.all([kv.hgetall(eventName)]).then( (res) => {
     event = res[0] as Event || null;
   });
