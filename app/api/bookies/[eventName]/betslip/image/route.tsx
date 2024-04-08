@@ -52,9 +52,9 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize:55, position:'absolute', top:-10, left:20 }}>Betslip</h1>
                     <div style={{display: 'flex', width:'75%', height:'60%', flexDirection: 'column', alignSelf:'center', alignItems:'flex-start', justifyItems:"flex-start", flexWrap: 'wrap', padding:10}}> 
-                        <h1 style={{color: 'white', fontSize:40, margin:10, marginRight:50, textDecoration:'underline'}}> Pick:</h1>
-                        <h1 style={{color: 'white', fontSize:40, margin:10, marginRight:50, textDecoration:'underline'}}> Stake:</h1>
-                        <h1 style={{color: 'white', fontSize:40, margin:10, marginRight:50, textDecoration:'underline'}}> Payout:</h1>
+                        <h1 style={{color: 'white', fontSize:35, margin:10, marginRight:50, textDecoration:'underline'}}> Pick:</h1>
+                        <h1 style={{color: 'white', fontSize:35, margin:10, marginRight:50, textDecoration:'underline'}}> Stake:</h1>
+                        <h1 style={{color: 'white', fontSize:35, margin:10, marginRight:50, textDecoration:'underline'}}> Payout:</h1>
 
                         <h1 style={{color: 'white', fontSize:35, margin:10}}>{options[pick]}</h1>
                         <h1 style={{color: 'white', fontSize:35, margin:10}}>{stake} $USDC</h1>
