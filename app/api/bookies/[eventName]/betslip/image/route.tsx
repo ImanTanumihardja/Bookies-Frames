@@ -43,6 +43,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
             <div style={{display: 'flex', flexDirection:'row', height:'100%', width:'100%'}}>
                 <div style={{
                         display: 'flex',
+                        flexDirection:'row',
                         alignItems: 'center',
                         width: '65%',
                         height: '100%',
@@ -51,7 +52,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize:55, position:'absolute', top:-10, left:20 }}>Betslip</h1>
-                    <div style={{display: 'flex', width:'75%', height:'60%', flexDirection: 'column', alignSelf:'center', alignItems:'flex-start', justifyItems:"flex-start", flexWrap: 'wrap', padding:10, left:20}}> 
+                    <div style={{display: 'flex', width:'75%', height:'60%', flexDirection: 'column', alignSelf:'center', alignItems:'flex-start', justifyItems:"flex-start", flexWrap: 'wrap', padding:10, left:10}}> 
                         <h1 style={{color: 'white', fontSize:30, margin:10, marginRight:50, textDecoration:'underline'}}> Pick:</h1>
                         <h1 style={{color: 'white', fontSize:30, margin:10, marginRight:50, textDecoration:'underline'}}> Stake:</h1>
                         <h1 style={{color: 'white', fontSize:30, margin:10, marginRight:50, textDecoration:'underline'}}> Payout:</h1>
