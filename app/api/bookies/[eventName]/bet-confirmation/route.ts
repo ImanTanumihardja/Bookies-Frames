@@ -106,7 +106,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     {
       label: 'Refresh', 
       action:'post', 
-      target: generateUrl(`/api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake, [RequestProps.PICK]: 0, [RequestProps.TRANSACTION_HASH]: !isMined ? transactionHash : ""}, false)
+      target: generateUrl(`/api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.TRANSACTION_HASH]: !isMined ? transactionHash : ""}, false)
     },
   ];
 
