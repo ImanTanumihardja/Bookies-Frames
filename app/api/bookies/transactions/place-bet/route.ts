@@ -10,7 +10,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req);
 
-  const {input, fid, connectedAddress} = message
+  const {input, fid} = message
 
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
@@ -28,13 +28,13 @@ export async function POST(req: NextRequest): Promise<Response> {
     throw new Error('Approve transaction is not yet mined');
   }
 
-  console.log('Wallet Address: ', connectedAddress)
+  console.log('Wallet Address: ', txReceipt.from)
 
   // Add users connect address
-  await kv.sadd(`${fid.toString()}:addresses`, connectedAddress).catch(async (e) => {
+  await kv.sadd(`${fid.toString()}:addresses`, txReceipt.from).catch(async (e) => {
     console.log('Error adding address to kv: ', e)
     // Try again
-    await kv.sadd(`${fid.toString()}:addresses`, connectedAddress)
+    await kv.sadd(`${fid.toString()}:addresses`, txReceipt.from)
   })
 
   const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, erc20ABI, provider)).decimals();
