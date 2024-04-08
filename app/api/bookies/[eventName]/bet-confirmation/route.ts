@@ -59,16 +59,13 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   else if (button !== 1) { // Need to check bet not rejected
     if (txReceipt){
       console.log('PLACED BET')
-      // Add users connect address
-      await kv.sadd(`${fid.toString()}:addresses`, txReceipt.from).then( async () => {
-        // Set event
-        await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
-          console.error('Error adding user to event:', error);
-          // Try again
-          await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
-            throw new Error('Error creating bet');
-          })
-        })
+      // Set event
+      await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
+        console.error('Error adding user to event:', error);
+        // Try again
+        await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
+          throw new Error('Error creating bet');
+      })
 
         // Update poll
         await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(async (error) => {
