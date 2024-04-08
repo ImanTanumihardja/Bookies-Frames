@@ -57,8 +57,8 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         <h1 style={{color: 'white', fontSize:40, margin:10, marginRight:50, textDecoration:'underline'}}> Payout:</h1>
 
                         <h1 style={{color: 'white', fontSize:40, margin:10}}>{options[pick]}</h1>
-                        <h1 style={{color: 'white', fontSize:40, margin:10}}>{stake}</h1>
-                        <h1 style={{color: 'white', fontSize:40, margin:10}}>{payout}</h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:10}}>{stake} $USDC</h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:10}}>{payout} $USDC</h1>
                     </div>
                     <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, bottom:10, right: 10}}> Odds: {impliedProbability > 0.5 ? '-' : '+'}{odd}</h1>
                 </div>

@@ -110,7 +110,7 @@ export async function GET(req: NextRequest) {
                         <h3 style={{color: 'white', 
                                     fontSize: 20, 
                                     textAlign:'center',
-                                    }}>Total Payout</h3>
+                                    }}>Total Payout ($USDC)</h3>
 
                         <h1 style={{color: 'white', 
                                     fontSize: 25,
@@ -119,7 +119,7 @@ export async function GET(req: NextRequest) {
                         <h3 style={{color: 'white', 
                                     fontSize: 15, 
                                     textAlign:'center',
-                                    }}>Total Unfilled</h3>
+                                    }}>Total Unfilled ($USDC)</h3>
                     </div>
                     }
                 </div>
@@ -135,7 +135,7 @@ export async function GET(req: NextRequest) {
                                 {bets.reverse().slice(0, 7).map((bet: any, index: number) => { 
                                 return (
                                     <h3 key={index} style={{color: 'black', fontSize:25, justifyContent:'center', margin:10, whiteSpace: 'pre'}}>
-                                        { result === -1 ? '' : bet.pick === result ? '✅' : '❌'} {options[bet.pick]} | {bet.stake} | {bet.filledPercent}% Filled
+                                        { result === -1 ? '' : bet.pick === result ? '✅' : '❌'} {options[bet.pick]} | {bet.stake} $USDC | {bet.filledPercent}% Filled
                                     </h3>
                                 )})}
                             </div>
