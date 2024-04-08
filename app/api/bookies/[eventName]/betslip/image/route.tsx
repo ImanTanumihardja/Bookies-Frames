@@ -52,14 +52,14 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize:55, position:'absolute', top:-10, left:20 }}>Betslip</h1>
-                    <div style={{display: 'flex', width:'75%', height:'60%', flexDirection: 'column', alignSelf:'center', alignItems:'flex-start', justifyItems:"flex-start", flexWrap: 'wrap', padding:10}}> 
-                        <h1 style={{color: 'white', fontSize:30, margin:10, marginRight:50, textDecoration:'underline'}}> Pick:</h1>
-                        <h1 style={{color: 'white', fontSize:30, margin:10, marginRight:50, textDecoration:'underline'}}> Stake:</h1>
-                        <h1 style={{color: 'white', fontSize:30, margin:10, marginRight:50, textDecoration:'underline'}}> Payout:</h1>
+                    <div style={{display: 'flex', width:'75%', height:'57%', flexDirection: 'column', alignSelf:'center', alignItems:'flex-start', flexWrap: 'wrap', padding:10}}> 
+                        <h1 style={{color: 'white', fontSize:30, margin:15, marginRight:10, textDecoration:'underline'}}> Pick:</h1>
+                        <h1 style={{color: 'white', fontSize:30, margin:15, marginRight:10, textDecoration:'underline'}}> Stake:</h1>
+                        <h1 style={{color: 'white', fontSize:30, margin:10, marginRight:10, textDecoration:'underline'}}> Payout:</h1>
 
-                        <h1 style={{color: 'white', fontSize:30, margin:10}}>{options[pick]}</h1>
-                        <h1 style={{color: 'white', fontSize:30, margin:10}}>{stake} $USDC</h1>
-                        <h1 style={{color: 'white', fontSize:30, margin:10}}>{payout} $USDC</h1>
+                        <h1 style={{color: 'white', fontSize:30, margin:15}}>{options[pick]}</h1>
+                        <h1 style={{color: 'white', fontSize:30, margin:15}}>{stake} $USDC</h1>
+                        <h1 style={{color: 'white', fontSize:30, margin:15}}>{payout} $USDC</h1>
                     </div>
                     <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, bottom:10, right: 10}}> Odds: {impliedProbability > 0.5 ? '-' : '+'}{odd}</h1>
                 </div>

@@ -132,15 +132,15 @@ export async function GET(req: NextRequest) {
                         height: '100%',
                         background: 'white'}}>
                             <div style={{display: 'flex', flexDirection:'column', alignItems: 'center', padding:10}}>
-                                {bets.reverse().slice(0, 7).map((bet: any, index: number) => { 
+                                {bets.reverse().slice(0, 6).map((bet: any, index: number) => { 
                                 return (
-                                    <h3 key={index} style={{color: 'black', fontSize:25, justifyContent:'center', margin:10, whiteSpace: 'pre'}}>
+                                    <h3 key={index} style={{color: 'black', fontSize:25, justifyContent:'center', margin:12, whiteSpace: 'pre'}}>
                                         { result === -1 ? '' : bet.pick === result ? '✅' : '❌'} {options[bet.pick]} | {bet.stake} $USDC | {bet.filledPercent}% Filled
                                     </h3>
                                 )})}
                             </div>
-                            {bets.length > 7 ?
-                            <h2 style={{color: 'black', fontSize:30, justifyContent:'center'}}>. . .</h2>
+                            {bets.length > 6 ?
+                            <h2 style={{color: 'black', position:'absolute', bottom:10, fontSize:30, justifyContent:'center'}}>. . .</h2>
                             :
                             <div></div>
                             }

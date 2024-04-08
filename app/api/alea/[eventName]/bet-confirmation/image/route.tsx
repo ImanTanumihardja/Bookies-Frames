@@ -60,14 +60,14 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         width: '65%',
                         height: '100%',
                         background: 'white'}}>
-                    {filteredBets.reverse().slice(0, 7).map((bet: Bet, index: number) => { 
+                    {filteredBets.reverse().slice(0, 6).map((bet: Bet, index: number) => { 
                     return (
-                        <h3 key={index} style={{color: 'black', fontSize: 25, marginBottom:-5, textDecoration: bet.timeStamp === time ? "underline" :'none'}}>
+                        <h3 key={index} style={{color: 'black', fontSize: 25, margin:12, textDecoration: bet.timeStamp === time ? "underline" :'none'}}>
                             {result != -1 ? (bet.pick == result ? '✅' : '❌') : ''} {options[bet.pick]} | {bet.stake}
                         </h3>
                     )})}
-                    {filteredBets.length > 7 ?
-                    <h2 style={{color: 'black', fontSize:30, justifyContent:'center'}}>. . .</h2>
+                    {filteredBets.length > 6 ?
+                    <h2 style={{color: 'black', position:'absolute', bottom:10, fontSize:30, justifyContent:'center'}}>. . .</h2>
                     :
                     <div></div>
                     }
