@@ -28,6 +28,8 @@ export async function POST(req: NextRequest): Promise<Response> {
     throw new Error('Approve transaction is not yet mined');
   }
 
+  console.log('Wallet Address: ', connectedAddress)
+
   // Add users connect address
   await kv.sadd(`${fid.toString()}:addresses`, connectedAddress).catch(async (e) => {
     console.log('Error adding address to kv: ', e)

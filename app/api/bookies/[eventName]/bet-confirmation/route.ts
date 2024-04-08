@@ -24,6 +24,24 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   {
     transactionHash = transactionId // Coming from betslip
     txReceipt = await provider.getTransactionReceipt(transactionId);
+    
+    // Add to bettors list
+    await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
+      console.error('Error adding user to bettors list:', error);
+      // Try again
+      await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
+        throw new Error('Error creating bet');
+      })
+    })
+
+    // Update poll
+    await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(async (error) => {
+      console.error('Error adding user to poll:', error);
+      // Try again
+      await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch((error) => {
+        throw new Error('Error creating bet');
+      })
+    })
   } 
   else if (transactionHash) 
   {
@@ -59,28 +77,8 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   else if (button !== 1) { // Need to check bet not rejected
     if (txReceipt){
       console.log('PLACED BET')
-      // Set event
-      await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
-        console.error('Error adding user to event:', error);
-        // Try again
-        await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
-          throw new Error('Error creating bet');
-      })
 
-        // Update poll
-        await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(async (error) => {
-          console.error('Error adding user to poll:', error);
-          // Try again
-          await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch((error) => {
-            throw new Error('Error creating bet');
-          })
-        })
-
-        isMined = true
-        // Add to event bettors list
-      }).catch((error) => {
-        throw new Error('Error creating bet');
-      });   
+      isMined = true
     }
     else {
       console.log('Waiting for transaction to be mined')
