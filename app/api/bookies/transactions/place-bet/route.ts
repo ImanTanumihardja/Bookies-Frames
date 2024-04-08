@@ -4,12 +4,13 @@ import {ethers} from 'ethers';
 import orderbookieABI from '../../../../contract-abis/orderBookie';
 import erc20ABI from '../../../../contract-abis/erc20';
 import { USDC_ADDRESS } from '../../../../addresses';
+import { kv } from '@vercel/kv';
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req);
 
-  const {input} = message
+  const {input, fid, connectedAddress} = message
 
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
@@ -22,12 +23,17 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const txReceipt = await provider.getTransactionReceipt(transactionHash)
 
-  // Check if mind
+  // Check if approve mined
   if (!txReceipt) {
     throw new Error('Approve transaction is not yet mined');
   }
 
-  console.log('TX RECEIPT: ', txReceipt)
+  // Add users connect address
+  await kv.sadd(`${fid.toString()}:addresses`, connectedAddress).catch(async (e) => {
+    console.log('Error adding address to kv: ', e)
+    // Try again
+    await kv.sadd(`${fid.toString()}:addresses`, connectedAddress)
+  })
 
   const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, erc20ABI, provider)).decimals();
 

@@ -56,7 +56,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     pick = -1
     console.log('EVENT CLOSED')
   }
-  else if (button != 1) { // Need to check bet not rejected
+  else if (button !== 1) { // Need to check bet not rejected
     if (txReceipt){
       console.log('PLACED BET')
       // Add users connect address
