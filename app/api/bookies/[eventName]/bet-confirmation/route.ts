@@ -12,6 +12,8 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   const {button, fid, transactionId} = message;
 
+  console.log('FID: ', fid.toString())
+
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
   // Get eventName from req
