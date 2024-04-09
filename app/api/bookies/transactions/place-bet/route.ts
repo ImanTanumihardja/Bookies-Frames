@@ -50,8 +50,6 @@ export async function POST(req: NextRequest): Promise<Response> {
   const iOrderBookie = new ethers.Interface(orderbookieABI)
   const data = iOrderBookie.encodeFunctionData('placeBet', [convertedPick, convertedStake, convertedImpliedProb])
 
-  console.log(`Orderbookie Address: ${orderBookieAddress}`)
-
   const txData = {
       chainId: `eip155:8453`,
       method: 'eth_sendTransaction',

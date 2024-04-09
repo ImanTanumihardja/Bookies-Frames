@@ -59,7 +59,8 @@ export async function GET(req: NextRequest) {
                         justifyItems:'flex-start',
                         width: '65%',
                         height: '100%',
-                        background: 'white'}}>
+                        background: 'white',
+                        padding: 10}}>
                     {eventBets.reverse().slice(0, 6).map((bet: Bet | undefined, index: number) => {
                         return (
                             bet && 

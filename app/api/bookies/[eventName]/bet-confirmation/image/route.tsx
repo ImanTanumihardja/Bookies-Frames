@@ -130,15 +130,14 @@ export async function GET(req: NextRequest) {
                         justifyItems:'flex-start',
                         width: '65%',
                         height: '100%',
-                        background: 'white'}}>
-                            <div style={{display: 'flex', flexDirection:'column', alignItems: 'center', padding:10}}>
-                                {bets.reverse().slice(0, 6).map((bet: any, index: number) => { 
-                                return (
-                                    <h3 key={index} style={{color: 'black', fontSize:25, justifyContent:'center', margin:12, whiteSpace: 'pre'}}>
-                                        { result === -1 ? '' : bet.pick === result ? '✅' : '❌'} {options[bet.pick]} | {bet.stake} $USDC | {bet.filledPercent}% Filled
-                                    </h3>
-                                )})}
-                            </div>
+                        background: 'white',
+                        padding: 10}}>
+                            {bets.reverse().slice(0, 6).map((bet: any, index: number) => { 
+                            return (
+                                <h3 key={index} style={{color: 'black', fontSize:25, margin:12}}>
+                                    { result === -1 ? '' : bet.pick === result ? '✅' : '❌'} {options[bet.pick]} | {bet.stake} <img style={{width: 30, height: 30, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/usdc.png`}/> | {bet.filledPercent}% Filled
+                                </h3>
+                            )})}
                             {bets.length > 6 ?
                             <h2 style={{color: 'black', position:'absolute', bottom:10, fontSize:30, justifyContent:'center'}}>. . .</h2>
                             :

@@ -59,7 +59,8 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         justifyItems:'flex-start',
                         width: '65%',
                         height: '100%',
-                        background: 'white'}}>
+                        background: 'white',
+                        padding: 10}}>
                     {filteredBets.reverse().slice(0, 6).map((bet: Bet, index: number) => { 
                     return (
                         <h3 key={index} style={{color: 'black', fontSize: 25, margin:12, textDecoration: bet.timeStamp === time ? "underline" :'none'}}>

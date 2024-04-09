@@ -60,11 +60,10 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   if (event === null) throw new Error('Event not found');
 
   console.log('FID: ', fid.toString())
-  console.log('EVENT: ', event)
+  console.log('EVENT: ', eventName)
 
   const orderBookie = new ethers.Contract(event.address, orderbookieABI, provider)
   const orderBookieInfo = await orderBookie.getBookieInfo()
-  console.log('ORDERBOOKIE INFO: ', orderBookieInfo)
   const result = parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS))
 
   const now = new Date().getTime() / 1000;
@@ -74,7 +73,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     pick = -1
     console.log('EVENT CLOSED')
   }
-  else if (button !== 1) { // Need to check bet not rejected
+  else if (button !== 1 && transactionHash) { // Need to check bet not rejected
     if (txReceipt){
       console.log('PLACED BET')
 
@@ -84,7 +83,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       console.log('Waiting for transaction to be mined')
     }
   } 
-  else {
+  else if (button === 1) {
     // Rejected bet
     console.log('REJECTED BET')
   }

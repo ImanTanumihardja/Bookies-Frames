@@ -23,6 +23,8 @@ export async function POST(req: NextRequest): Promise<Response> {
     throw new Error(`Invalid wager amount STAKE: ${input}`);  
   }
 
+  console.log('Approve: ', stake)
+
   const ierc20 = new ethers.Interface(erc20ABI)
 
   const data = ierc20.encodeFunctionData('approve', [orderBookieAddress, ethers.parseUnits(stake.toString(), DECIMALS)])
