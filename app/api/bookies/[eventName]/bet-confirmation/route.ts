@@ -106,7 +106,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     },
   ];
 
-  if (orderBookieInfo.startDate >= new Date().getTime() / 1000) {
+  if (orderBookieInfo.startDate >= now) {
     buttons.push({
       label: 'Place Another Bet', 
       action:'post', 

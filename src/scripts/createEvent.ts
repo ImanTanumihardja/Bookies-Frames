@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path');
 dotenv.config({ path: ".env"})
 import { Event } from '../../app/types';
-import {Accounts, DatabaseKeys} from '../../src/utils'
+import {Accounts, DatabaseKeys, Outcomes} from '../../src/utils'
 import {ethers} from 'ethers';
 import  orderBookieFactoryABI  from '../../app/contract-abis/orderBookieFactory';
 import { ORDERBOOKIE_FACTORY_ADDRESS, USDC_ADDRESS } from '../../app/addresses'
@@ -14,8 +14,8 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
   });
 
-export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 0.5], options=["", ""], prompt="", host="", ancillaryData='', acceptedToken='') {
-  if (startDate < new Date().getTime()) {
+export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 0.5], options=["", ""], prompt="", host="", description='', acceptedToken='') {
+  if (startDate < new Date().getTime() / 1000) {
     throw new Error('Start date is invalid')
   }
 
@@ -32,6 +32,13 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
     throw new Error('The sum of odds is not equal to 1')
   }
 
+  // Check startDate is seconds not milliseconds
+  console.log('Start Date: ', startDate.toString().length)
+  console.log('Current Date: ', Math.ceil(new Date().getTime() / 1000))
+  if (startDate.toString().length >= Math.ceil(new Date().getTime() / 1000).toString().length) {
+    throw new Error('Start date is in milliseconds')
+  }
+
   // Check if event already exists
   const eventExists = await kv.exists(`${eventName}`)
   if (eventExists) {
@@ -45,15 +52,24 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
   // Deploy Orderbookie smart contract
   let address = ""
   if (host === Accounts.BOOKIES || host === Accounts.BOTH) { // If bookies is the host deploy smart contract
-    if (ancillaryData && acceptedToken) {
+    if (description && acceptedToken) {
         const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
         const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
         const orderBookiefactory = new ethers.Contract(ORDERBOOKIE_FACTORY_ADDRESS, orderBookieFactoryABI, signer);
 
         console.log('Creating OrderBookie Contract...')
 
-        const tx = await orderBookiefactory.createOrderBookie(ethers.toUtf8Bytes(ancillaryData),
-                                                              (startDate / 1000), // Convert from milli-seconds to seconds
+        // Create ancillary data
+        const ancillaryData = {
+          title: prompt,
+          description: description,
+          options: [[options[0], Outcomes.OUTCOME1.toString()], [options[1], Outcomes.OUTCOME2.toString()], ["Tie", Outcomes.TIE.toString()]],
+        }
+
+        console.log('Ancillary Data: ', ancillaryData)
+
+        const tx = await orderBookiefactory.createOrderBookie(ethers.toUtf8Bytes(JSON.stringify(ancillaryData)),
+                                                              startDate, // Convert from milli-seconds to seconds
                                                               0,
                                                               0,
                                                               1800,

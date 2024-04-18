@@ -56,8 +56,8 @@ export function CreateEventForm() {
         </select>
         <br />
         <br />
-        <label htmlFor="ancillaryData">Ancillary Data (*bookies only*) </label>
-        <input type="text" id="ancillaryData" name="ancillaryData" />
+        <label htmlFor="description">Description (*bookies only*) </label>
+        <input type="text" id="description" name="description" />
         <br />
         <br />
         <label htmlFor="acceptedToken">Accepted Token (*bookies only*) </label>

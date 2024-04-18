@@ -17,17 +17,17 @@ export async function createEventAction(
         options: z.string(),
         prompt: z.string(),
         host: z.string(),
-        ancillaryData: z.string().optional(),
+        description: z.string().optional(),
         acceptedToken: z.string().optional(),
     })
-    const {eventName, startDate, odds, options, prompt, host, ancillaryData, acceptedToken} = schema.parse({
+    const {eventName, startDate, odds, options, prompt, host, description, acceptedToken} = schema.parse({
         eventName: formData.get('eventName'),
         startDate: parseInt(formData.get('startDate') as string),
         odds: formData.get('odds'),
         options: formData.get('options'),
         prompt: formData.get('prompt'),
         host: formData.get('host'),
-        ancillaryData: formData.get('ancillaryData'),
+        description: formData.get('description'),
         acceptedToken: formData.get('acceptedToken'),
     })
 
@@ -40,7 +40,7 @@ export async function createEventAction(
     console.log(optionsArray)
 
     try {
-        await createEvent(eventName, startDate, oddsArray, optionsArray, prompt, host, ancillaryData, acceptedToken)
+        await createEvent(eventName, startDate, oddsArray, optionsArray, prompt, host, description, acceptedToken)
         revalidatePath('/')
         return {message: `Created event: ${eventName}`}
     }

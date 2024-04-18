@@ -58,8 +58,8 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         <h1 style={{color: 'white', fontSize:30, margin:10, marginRight:10, textDecoration:'underline'}}> Payout:</h1>
 
                         <h1 style={{color: 'white', fontSize:30, margin:15}}>{options[pick]}</h1>
-                        <h1 style={{color: 'white', fontSize:30, margin:15}}>{stake.toFixed(2)} <img style={{width: 35, height: 35, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/degen.png`}/></h1>
-                        <h1 style={{color: 'white', fontSize:30, margin:15}}>{payout} <img style={{width: 35, height: 35, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/degen.png`}/></h1>
+                        <h1 style={{color: 'white', fontSize:30, margin:15}}>{stake.toFixed(2)} <img style={{width: 38, height: 38, marginLeft:5, marginRight:5}}src={`${process.env['HOST']}/degen.png`}/></h1>
+                        <h1 style={{color: 'white', fontSize:30, margin:15}}>{payout} <img style={{width: 38, height: 38, marginLeft:5, marginRight:5}}src={`${process.env['HOST']}/degen.png`}/></h1>
                     </div>
                     <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, bottom:10, right: 10}}> Odds: {impliedProbability > 0.5 ? '-' : '+'}{odd}</h1>
                 </div>

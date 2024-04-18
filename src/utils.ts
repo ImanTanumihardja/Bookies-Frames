@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { NeynarAPIClient } from "@neynar/nodejs-sdk";
 import { User, Bet} from '../app/types';
 import { FrameValidationData } from '../app/types';
+import { ethers } from 'ethers';
 const { getFrameHtml, getFrameMessage: validateFrameMessage } = require('frames.js');
 
 export enum RequestProps {
@@ -115,6 +116,14 @@ export enum DatabaseKeys {
     BETTORS = 'bettors',
     POLL = 'poll',
 }
+
+export const Outcomes = {
+    OUTCOME1 : BigInt("0"),
+    OUTCOME2 : BigInt("1000000000000000000"),
+    TIE : BigInt("500000000000000000"),
+    UNRESOLVABLE : ethers.MaxInt256,
+    UNSETTLED : BigInt("-1000000000000000000"),
+  }
 
 export const BOOKIES_FID = 244367;
 export const ALEA_FID = 391387;

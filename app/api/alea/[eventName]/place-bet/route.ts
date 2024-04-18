@@ -45,7 +45,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   let buttons = undefined;
   let inputText : string | undefined = 'Amount of dice you want to bet';
 
-  const now = new Date().getTime();
+  const now = new Date().getTime() / 1000;
   if (event.startDate < now || result !== -1) {
     const pick = -1;
     inputText = undefined

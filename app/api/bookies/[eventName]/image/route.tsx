@@ -14,11 +14,11 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
     try {
         const {time:startDate} = getRequestProps(req, [RequestProps.TIME]);
 
-        const now = new Date().getTime();
+        const now = new Date().getTime() / 1000;
 
         // Get hrs and mins till event
         const till = startDate - now;
-        const hours = Math.ceil(((till) / (1000 * 60 * 60)) * 10) / 10;
+        const hours = Math.ceil(((till) / (60 * 60)) * 10) / 10;
 
 
         const imageUrl = getCldImageUrl({

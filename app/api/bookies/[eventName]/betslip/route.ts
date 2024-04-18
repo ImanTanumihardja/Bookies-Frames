@@ -42,7 +42,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   let buttons;
   const impliedProbability = event.odds[pick]
   const orderBookieAddress = event.address;
-  const now = new Date().getTime();
+  const now = new Date().getTime() / 1000;
   // Check if event has already passed
   if (event.startDate < now || result !== -1) {
     pick = -1;

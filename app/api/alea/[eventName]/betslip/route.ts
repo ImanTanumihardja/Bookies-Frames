@@ -54,7 +54,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   let imageUrl = ''
   let pick = button - 1;
-  const now = new Date().getTime();
+  const now = new Date().getTime() / 1000;
   // Check if event has already passed
   if (event.startDate < now || result !== -1) {
     pick = -1;

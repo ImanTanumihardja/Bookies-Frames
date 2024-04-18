@@ -56,7 +56,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     stake = -1
   }
 
-  const now = new Date().getTime();
+  const now = new Date().getTime() / 1000;
 
   // Need to check bet does not exists, time is not past, and stake >= 1 and not rejected
   if (now < event?.startDate && stake > 0 && parseInt(event?.result.toString()) === -1 && button != 1) {
