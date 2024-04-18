@@ -29,8 +29,6 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
         // Round payout to 2 decimal places
         const payout = calculatePayout(impliedProbability, stake).toFixed(2);
 
-        stake = stake.toFixed(2);
-
         let pollData = [];
         // Get total votes
         let totalVotes : number = poll.reduce((a:any, b:any) => a + b, 0); 
@@ -60,7 +58,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         <h1 style={{color: 'white', fontSize:30, margin:10, marginRight:10, textDecoration:'underline'}}> Payout:</h1>
 
                         <h1 style={{color: 'white', fontSize:30, margin:15}}>{options[pick]}</h1>
-                        <h1 style={{color: 'white', fontSize:30, margin:15}}>{stake} <img style={{width: 35, height: 35, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/degen.png`}/></h1>
+                        <h1 style={{color: 'white', fontSize:30, margin:15}}>{stake.toFixed(2)} <img style={{width: 35, height: 35, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/degen.png`}/></h1>
                         <h1 style={{color: 'white', fontSize:30, margin:15}}>{payout} <img style={{width: 35, height: 35, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/degen.png`}/></h1>
                     </div>
                     <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, bottom:10, right: 10}}> Odds: {impliedProbability > 0.5 ? '-' : '+'}{odd}</h1>

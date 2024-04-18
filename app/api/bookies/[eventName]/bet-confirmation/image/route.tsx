@@ -135,7 +135,7 @@ export async function GET(req: NextRequest) {
                             {bets.reverse().slice(0, 6).map((bet: any, index: number) => { 
                             return (
                                 <h3 key={index} style={{color: 'black', fontSize:25, margin:12}}>
-                                    { result === -1 ? '' : bet.pick === result ? '✅' : '❌'} {options[bet.pick]} | {bet.stake} <img style={{width: 30, height: 30, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/degen.png`}/> | {bet.filledPercent}% Filled
+                                    { result === -1 ? '' : bet.pick === result ? '✅' : '❌'} {options[bet.pick]} | {bet.stake.toFixed(2)} <img style={{width: 32, height: 32, marginLeft:5, marginRight:5}}src={`${process.env['HOST']}/degen.png`}/> | {bet.filledPercent}% Filled
                                 </h3>
                             )})}
                             {bets.length > 6 ?

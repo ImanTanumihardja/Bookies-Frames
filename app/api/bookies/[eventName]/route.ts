@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { FrameNames, RequestProps, generateUrl, Accounts } from '../../../../src/utils';
 import { Frame, getFrameHtml} from "frames.js";
 import { kv } from '@vercel/kv';
-import {  } from '../../../../src/utils';
 import { Event } from '../../../types';
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
