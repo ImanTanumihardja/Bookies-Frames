@@ -3,6 +3,7 @@
 import { useFormState, useFormStatus } from "react-dom";
 import {createEventAction} from "../actions"
 import { CldUploadWidget } from 'next-cloudinary';
+import { DEGEN_ADDRESS, USDC_ADDRESS } from "../addresses";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -57,6 +58,13 @@ export function CreateEventForm() {
         <br />
         <label htmlFor="ancillaryData">Ancillary Data (*bookies only*) </label>
         <input type="text" id="ancillaryData" name="ancillaryData" />
+        <br />
+        <br />
+        <label htmlFor="acceptedToken">Accepted Token (*bookies only*) </label>
+        <select id="acceptedToken" name="acceptedToken">
+          <option value={`${USDC_ADDRESS}`}>USDC</option>
+          <option value={`${DEGEN_ADDRESS}`}>DEGEN</option>
+        </select>
         <br />
         <br />
         <SubmitButton />

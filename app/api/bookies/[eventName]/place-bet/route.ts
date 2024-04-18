@@ -35,7 +35,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   let imageUrl = '';
   let buttons = undefined;
-  let inputText : string | undefined = 'Wager Amount ($USDC)';
+  let inputText : string | undefined = 'Wager Amount ($DEGEN)';
   let postUrl;
 
   const now = new Date().getTime() / 1000;

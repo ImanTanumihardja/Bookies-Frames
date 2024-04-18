@@ -6,7 +6,7 @@ import { kv } from '@vercel/kv';
 import * as fs from "fs";
 import { join } from 'path';
 import {ethers} from 'ethers';
-import { USDC_ADDRESS } from '../../../../../addresses';
+import { USDC_ADDRESS, DEGEN_ADDRESS } from '../../../../../addresses';
 import erc20ABI from '../../../../../contract-abis/erc20';
 
 // Fonts
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
         const addresses = (await kv.sscan(`${fid}:addresses`, 0))[1] || [];
 
         const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
-        const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, erc20ABI, provider)).decimals();
+        const DECIMALS = await (new ethers.Contract(DEGEN_ADDRESS, erc20ABI, provider)).decimals();
 
         const orderBookie = new ethers.Contract(orderBookieAddress, orderbookieABI, provider)
 
@@ -110,7 +110,7 @@ export async function GET(req: NextRequest) {
                         <h3 style={{color: 'white', 
                                     fontSize: 20, 
                                     textAlign:'center',
-                                    }}>Total Payout ($USDC)</h3>
+                                    }}>Total Payout ($DEGEN)</h3>
 
                         <h1 style={{color: 'white', 
                                     fontSize: 25,
@@ -119,7 +119,7 @@ export async function GET(req: NextRequest) {
                         <h3 style={{color: 'white', 
                                     fontSize: 15, 
                                     textAlign:'center',
-                                    }}>Total Unfilled ($USDC)</h3>
+                                    }}>Total Unfilled ($DEGEN)</h3>
                     </div>
                     }
                 </div>
@@ -135,7 +135,7 @@ export async function GET(req: NextRequest) {
                             {bets.reverse().slice(0, 6).map((bet: any, index: number) => { 
                             return (
                                 <h3 key={index} style={{color: 'black', fontSize:25, margin:12}}>
-                                    { result === -1 ? '' : bet.pick === result ? '✅' : '❌'} {options[bet.pick]} | {bet.stake} <img style={{width: 30, height: 30, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/usdc.png`}/> | {bet.filledPercent}% Filled
+                                    { result === -1 ? '' : bet.pick === result ? '✅' : '❌'} {options[bet.pick]} | {bet.stake} <img style={{width: 30, height: 30, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/degen.png`}/> | {bet.filledPercent}% Filled
                                 </h3>
                             )})}
                             {bets.length > 6 ?

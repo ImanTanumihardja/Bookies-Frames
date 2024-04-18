@@ -3,7 +3,7 @@ import { ODDS_DECIMALS, getFrameMessage, getRequestProps, RequestProps, PICK_DEC
 import {ethers} from 'ethers';
 import orderbookieABI from '../../../../contract-abis/orderBookie';
 import erc20ABI from '../../../../contract-abis/erc20';
-import { USDC_ADDRESS } from '../../../../addresses';
+import { USDC_ADDRESS, DEGEN_ADDRESS } from '../../../../addresses';
 import { kv } from '@vercel/kv';
 
 export async function POST(req: NextRequest): Promise<Response> {
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     await kv.sadd(`${fid.toString()}:addresses`, txReceipt.from)
   })
 
-  const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, erc20ABI, provider)).decimals();
+  const DECIMALS = await (new ethers.Contract(DEGEN_ADDRESS, erc20ABI, provider)).decimals();
 
   const convertedImpliedProb = ethers.parseUnits(impliedProb.toString(), ODDS_DECIMALS)
   const convertedStake = ethers.parseUnits(stake.toString(), Number(DECIMALS))

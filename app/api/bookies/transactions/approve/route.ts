@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getFrameMessage, getRequestProps, RequestProps } from '../../../../../src/utils';
 import {ethers } from 'ethers';
 import erc20ABI from '../../../../contract-abis/erc20';
-import { USDC_ADDRESS } from '../../../../addresses';
+import { USDC_ADDRESS, DEGEN_ADDRESS } from '../../../../addresses';
 
 const STAKE_LIMIT = 100
 
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   const {input} = message
 
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
-  const DECIMALS = await (new ethers.Contract(USDC_ADDRESS, erc20ABI, provider)).decimals();
+  const DECIMALS = await (new ethers.Contract(DEGEN_ADDRESS, erc20ABI, provider)).decimals();
 
   const {address: orderBookieAddress } = getRequestProps(req, [RequestProps.ADDRESS]);
 
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       params: {
         abi: erc20ABI,
         data: data,
-        to: USDC_ADDRESS,
+        to: DEGEN_ADDRESS,
         value: ethers.parseEther('0').toString(),
       },
     };

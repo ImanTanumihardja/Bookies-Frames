@@ -6,11 +6,6 @@ const OrderBookieFactoryABI =
         "internalType": "address",
         "name": "settlementManagerAddress",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_acceptedTokenAddress",
-        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -28,19 +23,6 @@ const OrderBookieFactoryABI =
     ],
     "name": "OrderBookieCreated",
     "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "acceptedToken",
-    "outputs": [
-      {
-        "internalType": "contract IERC20Extend",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
   },
   {
     "inputs": [
@@ -72,6 +54,11 @@ const OrderBookieFactoryABI =
       {
         "internalType": "address",
         "name": "ooCurrency",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "acceptedToken",
         "type": "address"
       },
       {

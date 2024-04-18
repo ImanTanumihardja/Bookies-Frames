@@ -14,7 +14,7 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
   });
 
-export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 0.5], options=["", ""], prompt="", host="", ancillaryData='') {
+export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 0.5], options=["", ""], prompt="", host="", ancillaryData='', acceptedToken='') {
   if (startDate < new Date().getTime()) {
     throw new Error('Start date is invalid')
   }
@@ -45,7 +45,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
   // Deploy Orderbookie smart contract
   let address = ""
   if (host === Accounts.BOOKIES || host === Accounts.BOTH) { // If bookies is the host deploy smart contract
-    if (ancillaryData) {
+    if (ancillaryData && acceptedToken) {
         const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
         const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
         const orderBookiefactory = new ethers.Contract(ORDERBOOKIE_FACTORY_ADDRESS, orderBookieFactoryABI, signer);
@@ -56,9 +56,10 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
                                                               (startDate / 1000), // Convert from milli-seconds to seconds
                                                               0,
                                                               0,
-                                                              7200,
+                                                              1800,
                                                               USDC_ADDRESS,
-                                                              ethers.encodeBytes32String("NUMERICAL"),
+                                                              acceptedToken,
+                                                              ethers.encodeBytes32String("MULTIPLE_CHOICE_QUERY"),
                                                               signer.getAddress(),
                                                               false)
 
