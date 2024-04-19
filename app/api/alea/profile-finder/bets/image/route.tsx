@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
 
         console.log(`${eventName}: ${eventBets.length} bets`);
 
-        const date = new Date(parseInt(event.startDate.toString()));
+        const date = new Date(parseInt((event.startDate * 100).toString()));
 
         const imageResponse = new ImageResponse(
             <div style={{display: 'flex', flexDirection:'row', height:'100%', width:'100%'}}>
