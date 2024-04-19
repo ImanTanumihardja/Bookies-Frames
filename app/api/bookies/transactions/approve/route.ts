@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFrameMessage, getRequestProps, RequestProps } from '../../../../../src/utils';
+import { getFrameMessage, getRequestProps, RequestProps, STAKE_LIMIT } from '../../../../../src/utils';
 import {ethers } from 'ethers';
 import erc20ABI from '../../../../contract-abis/erc20';
 import { USDC_ADDRESS, DEGEN_ADDRESS } from '../../../../addresses';
-
-const STAKE_LIMIT = 100
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request

@@ -1,6 +1,6 @@
 import { FrameButtonsType, getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
-import {  DatabaseKeys, FrameNames, RequestProps, generateUrl, getFrameMessage, Transactions } from '../../../../../src/utils';
+import {  DatabaseKeys, FrameNames, RequestProps, generateUrl, getFrameMessage, Transactions, STAKE_LIMIT } from '../../../../../src/utils';
 import { kv } from "@vercel/kv";
 import { Event } from "../../../../types";
 
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   let stake = parseFloat(input);
 
   // Check if stake is not float
-  if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake)) {
+  if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake) || stake > STAKE_LIMIT) {
     throw new Error(`Invalid wager amount STAKE: ${input}`);  
   }
 
