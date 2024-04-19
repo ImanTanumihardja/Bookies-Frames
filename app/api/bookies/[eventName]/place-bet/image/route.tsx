@@ -11,7 +11,7 @@ let fontData = fs.readFileSync(fontPath)
 export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }) {
     try {
         const {prompt, balance, time:startDate} = getRequestProps(req, [RequestProps.PROMPT, RequestProps.BALANCE, RequestProps.TIME]);
-        const date = new Date(parseInt(startDate.toString()));
+        const date = new Date(parseInt((startDate * 1000).toString()));
 
         let imageResponse =  new ImageResponse(
             <div style={{display: 'flex', flexDirection:'row', height:'100%', width:'100%'}}>

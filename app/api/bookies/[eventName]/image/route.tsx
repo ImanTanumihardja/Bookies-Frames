@@ -20,7 +20,6 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
         const till = startDate - now;
         const hours = Math.ceil(((till) / (60 * 60)) * 10) / 10;
 
-
         const imageUrl = getCldImageUrl({
             width: 960,
             height: 600,
