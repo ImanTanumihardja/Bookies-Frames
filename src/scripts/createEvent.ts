@@ -33,9 +33,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
   }
 
   // Check startDate is seconds not milliseconds
-  console.log('Start Date: ', startDate.toString().length)
-  console.log('Current Date: ', Math.ceil(new Date().getTime() / 1000))
-  if (startDate.toString().length >= Math.ceil(new Date().getTime() / 1000).toString().length) {
+  if (startDate.toString().length > Math.ceil(new Date().getTime() / 1000).toString().length) {
     throw new Error('Start date is in milliseconds')
   }
 
