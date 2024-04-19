@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, PICK_DECIMALS, RequestProps, Transactions, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage, getRequestProps, notFollowingResponse } from '../../../../../src/utils';
+import { FrameNames, PICK_DECIMALS, RequestProps, Transactions, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage } from '../../../../../src/utils';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { Event } from '../../../../types';
 import { kv } from '@vercel/kv';
 import { ethers } from 'ethers';
 import orderbookieABI from '../../../../contract-abis/orderBookie';
 
-const whitelist = [313859, 3300, 13640, 14364, 18723, 240832, 241573, 243204, 252741, 270091, 280715, 285875, 347833, 388566, 389633, 391387, 243815, 18883, 2802, 319054, 248032] 
+const whitelist = [313859, 3300, 13640, 14364, 18723, 240832, 241573, 243204, 252741, 270091, 280715, 285875, 347833, 388566, 389633, 391387, 243815, 18883, 2802, 319054, 248032, 422367] 
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   const {fid} = await getFrameMessage(req);
