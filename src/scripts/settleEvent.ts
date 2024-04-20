@@ -74,7 +74,7 @@ export default async function settleEvent(eventName="", result=-1) {
           }
           else if (bet.pick === result) {  // Won
             console.log(`User: ${fid} won bet: ${JSON.stringify(bet)}`)
-            const payout = calculatePayout(bet.odd, bet.stake);
+            const payout = Math.ceil(calculatePayout(bet.odd, bet.stake));
 
             console.log(`Payout: ${payout}`)
 
