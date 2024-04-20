@@ -131,7 +131,7 @@ export const ALEA_FID = 391387;
 export const ODDS_DECIMALS = 4
 export const PICK_DECIMALS = 18
 
-export const STAKE_LIMIT = 4000;
+export const STAKE_LIMIT = 5000;
 
 export const DEFAULT_USER: User = {
     balance: 100,
