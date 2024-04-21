@@ -5,7 +5,7 @@ const path = require('path');
 dotenv.config({ path: ".env"})
 import { Event } from '../../app/types';
 import {Accounts, DatabaseKeys, Outcomes} from '../../src/utils'
-import {ethers} from 'ethers';
+import { ethers } from 'ethers';
 import  orderBookieFactoryABI  from '../../app/contract-abis/orderBookieFactory';
 import { ORDERBOOKIE_FACTORY_ADDRESS, USDC_ADDRESS } from '../../app/addresses'
 

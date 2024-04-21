@@ -19,6 +19,6 @@
       },
     ],
   },
-  "include": ["custom.d.ts", "next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/scripts/**/*.ts", "src/utils.ts"],
+  "include": ["custom.d.ts", "next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/scripts/**/*.ts", "src/utils.ts", "src/scripts/getFollowersFID.js"],
   "exclude": ["contracts", "node_modules"],
 }
