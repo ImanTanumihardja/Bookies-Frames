@@ -297,7 +297,7 @@ export async function getFrameMessage(req: NextRequest, validate=true, viewerFid
         message.verifiedAccounts = data?.requesterVerifiedAddresses
         message.liked = data?.likedCast
         message.recasted = data?.recastedCast
-        message.followingHost = await checkIsFollowing(message.fid, viewerFid)
+        message.followingHost = true //await checkIsFollowing(message.fid, viewerFid)
     }
 
     return message
