@@ -136,7 +136,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
         {
           label: 'Leaderboard', 
           action:'post', 
-          target: generateUrl(`/api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: -1,[RequestProps.REDIRECT]: true}, false)
+          target: generateUrl(`/api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: -1, [RequestProps.REDIRECT]: true}, false)
         },
         ],
       postUrl: generateUrl(`/api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}`, {}, false),
