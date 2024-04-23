@@ -253,10 +253,10 @@ export function generateUrl(extension: string, props: Record<string, any>, addTi
 }
 
 // don't have an API key yet? get one at neynar.com
-export const neynarClient = new NeynarAPIClient(process.env['NEYNAR_API_KEY'] || "");
+export const neynarClient = new NeynarAPIClient("NEYNAR_API_DOCS" || "");
 
 export async function checkIsFollowing(fid: number, viewerFid=BOOKIES_FID): Promise<boolean> {
-    let isFollowing = false; // TEMPORARY FIX
+    let isFollowing = true; // TEMPORARY FIX
 
     await neynarClient.fetchBulkUsers([fid], {viewerFid: viewerFid})
     .then(response => {
@@ -267,7 +267,7 @@ export async function checkIsFollowing(fid: number, viewerFid=BOOKIES_FID): Prom
         console.error('Error fetching user by fid:', error);
         // Handle the error or perform additional actions
     });
-    
+
     return isFollowing
 }
 
