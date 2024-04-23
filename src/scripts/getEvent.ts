@@ -34,7 +34,7 @@ export default async function getEvent(eventName="") {
   while (cursor) {
     betsData = (await kv.sscan(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, cursor, { count: 150 }))
     cursor = betsData[0]
-    bookiesFIDs = aleaFIDs.concat(betsData[1] as unknown as number[])
+    bookiesFIDs = bookiesFIDs.concat(betsData[1] as unknown as number[])
   }
 
   // Get poll data
