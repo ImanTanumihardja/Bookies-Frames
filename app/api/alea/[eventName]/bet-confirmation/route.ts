@@ -124,7 +124,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
           target: 'https://warpcast.com/~/channel/bookies'
         }, 
         {
-          label: 'Place Another Bet', 
+          label: 'Bet Again', 
           action:'post', 
           target: generateUrl(`/api/alea/${eventName}/${FrameNames.PLACE_BET}`, {}, false)
         },

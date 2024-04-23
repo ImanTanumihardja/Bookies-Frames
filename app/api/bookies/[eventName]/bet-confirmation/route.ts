@@ -108,7 +108,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   if (orderBookieInfo.startDate >= now) {
     buttons.push({
-      label: 'Place Another Bet', 
+      label: 'Bet Again', 
       action:'post', 
       target: generateUrl(`/api/bookies/${eventName}/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false)
     })
