@@ -113,14 +113,6 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       target: generateUrl(`/api/bookies/${eventName}/${FrameNames.PLACE_BET}`, {[RequestProps.EVENT_NAME]: eventName}, false)
     })
   }
-
-  // if (parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS)) !== -1) {
-  //   buttons.push({
-  //     label: 'Collect', 
-  //     action:'post', 
-  //     target: 'https://warpcast.com/bookies'
-  //   })
-  // }
   
   return new NextResponse(
     getFrameHtml({

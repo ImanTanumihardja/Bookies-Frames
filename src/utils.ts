@@ -261,7 +261,6 @@ export async function checkIsFollowing(fid: number, viewerFid=BOOKIES_FID): Prom
     await neynarClient.fetchBulkUsers([fid], {viewerFid: viewerFid})
     .then(response => {
         isFollowing = response?.users[0]?.viewer_context?.followed_by || false; // TEMPORARY FIX
-
     })
     .catch(error => {
         console.error('Error fetching user by fid:', error);
