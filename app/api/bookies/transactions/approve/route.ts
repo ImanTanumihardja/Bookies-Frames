@@ -22,7 +22,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   if (stake > STAKE_LIMIT) {
-    return new Response(JSON.stringify({ message: 'Stake amount exceeds limit' }), { status: 400, headers: { 'content-type': 'application/json' } });
+    return new Response(JSON.stringify({ message: `Stake amount exceeds ${STAKE_LIMIT} limit` }), { status: 400, headers: { 'content-type': 'application/json' } });
   }
 
   console.log('Approve: ', stake)
