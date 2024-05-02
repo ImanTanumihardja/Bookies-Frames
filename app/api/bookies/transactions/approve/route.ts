@@ -18,7 +18,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   // Check if input is valid amount
   const stake = parseFloat(input);
   if (!stake || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake) || stake > Number.MAX_SAFE_INTEGER || stake < 0 || stake > STAKE_LIMIT) {
-    throw new Error(`Invalid wager amount STAKE: ${input}`);  
+    return new Response('Invalid stake amount', {status: 400});
   }
 
   console.log('Approve: ', stake)

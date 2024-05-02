@@ -16,7 +16,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   // Check if stake is not float
   if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake) || stake % 1 !== 0) {
-    throw new Error(`Invalid wager amount STAKE: ${input}`);  
+    return new Response('Invalid stake amount', {status: 400}); 
   }
 
   stake = Math.floor(stake);
