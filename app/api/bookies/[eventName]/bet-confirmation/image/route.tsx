@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
         const addresses = (await kv.sscan(`${fid}:addresses`, 0))[1] || [];
 
         const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
-        const DECIMALS = await (new ethers.Contract(DEGEN_ADDRESS, erc20ABI, provider)).decimals();
+        const decimals = await (new ethers.Contract(DEGEN_ADDRESS, erc20ABI, provider)).decimals();
 
         const orderBookie = new ethers.Contract(orderBookieAddress, orderbookieABI, provider)
 
@@ -33,10 +33,10 @@ export async function GET(req: NextRequest) {
         for (const address of addresses) {
             // Concatenate the bets array with the bets for this address
             bets = bets.concat((await orderBookie.getBets(address)).map((bet: any) => {
-                const stake = parseFloat(ethers.formatUnits(bet.stake, DECIMALS))
-                const stakeUsed = parseFloat(ethers.formatUnits(bet.stakeUsed, DECIMALS))
-                const toWin = parseFloat(ethers.formatUnits(bet.toWin, DECIMALS))
-                const toWinFilled = parseFloat(ethers.formatUnits(bet.toWinFilled, DECIMALS))
+                const stake = parseFloat(ethers.formatUnits(bet.stake, decimals))
+                const stakeUsed = parseFloat(ethers.formatUnits(bet.stakeUsed, decimals))
+                const toWin = parseFloat(ethers.formatUnits(bet.toWin, decimals))
+                const toWinFilled = parseFloat(ethers.formatUnits(bet.toWinFilled, decimals))
                 const pick = parseInt(ethers.formatUnits(bet.pick, PICK_DECIMALS))
 
                 // Calculate the total payout if bet pick is the same as the result

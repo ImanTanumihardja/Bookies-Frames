@@ -37,10 +37,10 @@ export async function POST(req: NextRequest): Promise<Response> {
     await kv.sadd(`${fid.toString()}:addresses`, txReceipt.from)
   })
 
-  const DECIMALS = await (new ethers.Contract(DEGEN_ADDRESS, erc20ABI, provider)).decimals();
+  const decimals = await (new ethers.Contract(DEGEN_ADDRESS, erc20ABI, provider)).decimals();
 
   const convertedImpliedProb = ethers.parseUnits(impliedProb.toString(), ODDS_DECIMALS)
-  const convertedStake = ethers.parseUnits(stake.toString(), Number(DECIMALS))
+  const convertedStake = ethers.parseUnits(stake.toString(), Number(decimals))
   const convertedPick = ethers.parseUnits(pick.toString(), PICK_DECIMALS) 
 
   console.log('STAKE: ', stake)
