@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, redirectLandingPage } from '../../../../src/utils';
+import { FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage } from '../../../../src/utils';
 import { Frame, getFrameHtml} from "frames.js";
 
 export async function POST(req: NextRequest): Promise<Response> {
@@ -33,8 +33,6 @@ export async function POST(req: NextRequest): Promise<Response> {
 } 
 
 export async function GET(req: NextRequest): Promise<Response> {
-  redirectLandingPage(req);
-
   const imageUrl = generateUrl(`api/alea/${FrameNames.LEADERBOARD}/image`, {[RequestProps.OFFSET]: 0, [RequestProps.REDIRECT]: false}, true)
 
     const frame : Frame = {
