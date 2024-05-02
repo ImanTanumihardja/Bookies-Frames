@@ -17,8 +17,12 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   // Check if input is valid amount
   const stake = parseFloat(input);
-  if (!stake || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake) || stake > Number.MAX_SAFE_INTEGER || stake < 0 || stake > STAKE_LIMIT) {
-    return new Response('Invalid stake amount', {status: 400});
+  if (!stake || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake) || stake > Number.MAX_SAFE_INTEGER || stake < 0) {
+    return new Response(JSON.stringify({ message: 'Invalid stake amount' }), { status: 400, headers: { 'content-type': 'application/json' } });
+  }
+
+  if (stake > STAKE_LIMIT) {
+    return new Response(JSON.stringify({ message: 'Stake amount exceeds limit' }), { status: 400, headers: { 'content-type': 'application/json' } });
   }
 
   console.log('Approve: ', stake)

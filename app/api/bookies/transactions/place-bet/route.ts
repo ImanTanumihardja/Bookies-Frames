@@ -18,7 +18,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   // Check if input is valid amount
   if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake)) {
-    throw new Error(`Invalid wager amount STAKE: ${input}`);  
+    return new Response(JSON.stringify({ message: 'Invalid stake amount' }), { status: 400, headers: { 'content-type': 'application/json' } });
   }
 
   const txReceipt = await provider.getTransactionReceipt(transactionHash)

@@ -17,7 +17,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   // Check if stake is not float
   if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake) || stake > STAKE_LIMIT) {
     // return 400 response
-    return new Response('Invalid stake amount', {status: 400});
+    return new Response(JSON.stringify({ message: 'Invalid stake amount' }), { status: 400, headers: { 'content-type': 'application/json' } });
   }
 
   // Wait for both user to be found and event to be found
