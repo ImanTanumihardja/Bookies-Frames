@@ -270,6 +270,22 @@ export async function checkIsFollowing(fid: number, viewerFid=BOOKIES_FID): Prom
     return isFollowing
 }
 
+// Redirect to landing page
+export async function redirectLandingPage(req: NextRequest) {
+    // Verify the frame request
+    try {
+        await getFrameMessage(req);
+    }
+    catch (e) {
+        // Redirect to landing page
+        return new NextResponse('', {
+        status: 302,
+        headers : {
+            location: 'https://bookies-rho.vercel.app/'
+        }
+        });
+    }
+}
 
 export async function getFrameMessage(req: NextRequest, validate=true, viewerFid=BOOKIES_FID) {
     const body = await req.json();

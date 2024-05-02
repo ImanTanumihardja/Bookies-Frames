@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, RequestProps, generateUrl, Accounts } from '../../../../src/utils';
+import { FrameNames, RequestProps, generateUrl, Accounts, redirectLandingPage } from '../../../../src/utils';
 import { Frame, getFrameHtml} from "frames.js";
 import { kv } from '@vercel/kv';
 import { Event } from '../../../types';
@@ -9,6 +9,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 }
 
 export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
+  redirectLandingPage(req);
 
   console.log('Event Name: ', eventName)
   const event : Event | null = await kv.hgetall(eventName)
