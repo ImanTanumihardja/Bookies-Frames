@@ -18,11 +18,11 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
         // Get bets for this event by filtering the bets array for the eventName
         const bets : Record<string, Bet[]> = (await kv.hget(fid?.toString(), 'bets') || {});
 
-        console.log('BETS: ', bets)
-
         // Ensure bets is an array before calling filter
         const filteredBets : Bet[] = bets[eventName] || []
 
+        console.log('BETS: ', filteredBets)
+        
         if (filteredBets === null) throw new Error('Bets not found');
 
         if (buttonIndex === 1) {
@@ -52,6 +52,26 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize: text.length > 50 ? 30 : text.length > 40 ? 35 : 40, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25, bottom:10}}> {text} </h1>
                 </div>
+                {filteredBets.length > 0 ?
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyItems:'flex-start',
+                    width: '65%',
+                    height: '100%',
+                    background: 'white',
+                    padding: 10}}>
+                    {filteredBets.reverse().slice(0, 6).map((bet: Bet, index: number) => { 
+                    return (
+                        <h3 key={index} style={{color: 'black', fontSize: 25, margin:12, textDecoration: bet.timeStamp === time ? "underline" :'none'}}>
+                            {result != -1 ? (bet.pick == result ? '✅' : '❌') : ''} {options[bet.pick]} | {bet.stake}
+                        </h3>
+                    )})}
+                    {filteredBets.length > 6 &&
+                    <h2 style={{color: 'black', position:'absolute', bottom:10, fontSize:30, justifyContent:'center'}}>. . .</h2>}
+                </div>
+                :
                 <div style={{
                         display: 'flex',
                         flexDirection: 'column',
@@ -61,18 +81,9 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         height: '100%',
                         background: 'white',
                         padding: 10}}>
-                    {filteredBets.reverse().slice(0, 6).map((bet: Bet, index: number) => { 
-                    return (
-                        <h3 key={index} style={{color: 'black', fontSize: 25, margin:12, textDecoration: bet.timeStamp === time ? "underline" :'none'}}>
-                            {result != -1 ? (bet.pick == result ? '✅' : '❌') : ''} {options[bet.pick]} | {bet.stake}
-                        </h3>
-                    )})}
-                    {filteredBets.length > 6 ?
-                    <h2 style={{color: 'black', position:'absolute', bottom:10, fontSize:30, justifyContent:'center'}}>. . .</h2>
-                    :
-                    <div></div>
-                    }
+                        <h3 style={{color: 'black', fontSize:25, margin:12}}>No bets found!</h3>
                 </div>
+                }
             </div>
             ), {
             width: 764, 

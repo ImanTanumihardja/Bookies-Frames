@@ -24,6 +24,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   let user : User = DEFAULT_USER;
   let rank : number | null = -1;
+  let balance : number = 0;
   let profile: any = null;
   let eventNames: string[] = [];
 
@@ -83,6 +84,9 @@ export async function POST(req: NextRequest): Promise<Response> {
       rank = await kv.zrevrank(DatabaseKeys.LEADERBOARD, profile?.fid || "");
     }
 
+    // Get score in leaderboard
+    balance = await kv.zscore(DatabaseKeys.LEADERBOARD, profile?.fid || "") || user.balance;
+
     // Get rank in leaderboard 
     if (rank != null) {
       if (rank <= 5) {
@@ -101,7 +105,7 @@ export async function POST(req: NextRequest): Promise<Response> {
                                                                           [RequestProps.RANK]: rank, 
                                                                           [RequestProps.WINS]: user.wins, 
                                                                           [RequestProps.LOSSES]: user.losses, 
-                                                                          [RequestProps.BALANCE]: user.balance, 
+                                                                          [RequestProps.BALANCE]: balance, 
                                                                           [RequestProps.STREAK]: user.streak, 
                                                                           [RequestProps.NUM_BETS]: user.numBets}, true); 
 

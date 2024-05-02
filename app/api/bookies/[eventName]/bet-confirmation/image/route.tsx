@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
                     stakeUsed: stakeUsed,
                     toWin: toWin,
                     toWinUsed: toWinFilled,
-                    filledPercent: Math.floor(stakeUsed / stake * 100),
+                    filledPercent: stake != 0 ? Math.floor(stakeUsed / stake * 100) : 0,
                     odd: ethers.formatUnits(bet.odd, ODDS_DECIMALS),
                     timeStamp: 0,
                     settled: false
@@ -123,27 +123,38 @@ export async function GET(req: NextRequest) {
                     </div>
                     }
                 </div>
-                <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyItems:'flex-start',
-                        width: '65%',
-                        height: '100%',
-                        background: 'white',
-                        padding: 10}}>
+                    {bets.length !== 0 ?
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyItems:'flex-start',
+                            width: '65%',
+                            height: '100%',
+                            background: 'white',
+                            padding: 10}}>
                             {bets.reverse().slice(0, 6).map((bet: any, index: number) => { 
                             return (
                                 <h3 key={index} style={{color: 'black', fontSize:25, margin:12}}>
                                     { result === -1 ? '' : bet.pick === result ? '✅' : '❌'} {options[bet.pick]} | {bet.stake.toFixed(2)} <img style={{width: 32, height: 32, marginLeft:5, marginRight:5}}src={`${process.env['HOST']}/degen.png`}/> | {bet.filledPercent}% Filled
                                 </h3>
                             )})}
-                            {bets.length > 6 ?
-                            <h2 style={{color: 'black', position:'absolute', bottom:10, fontSize:30, justifyContent:'center'}}>. . .</h2>
-                            :
-                            <div></div>
-                            }
-                </div>
+                            {bets.length > 6 &&
+                            <h2 style={{color: 'black', position:'absolute', bottom:10, fontSize:30, justifyContent:'center'}}>. . .</h2>}
+                        </div>
+                        :
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyItems:'flex-start',
+                            width: '65%',
+                            height: '100%',
+                            background: 'white',
+                            padding: 10}}>
+                            <h3 style={{color: 'black', fontSize:25, margin:12}}>No bets found!</h3>
+                        </div>
+                    }
             </div>
             ), {
             width: 764, 

@@ -11,7 +11,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   const {input} = message
 
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
-  const DECIMALS = await (new ethers.Contract(DEGEN_ADDRESS, erc20ABI, provider)).decimals();
+  const decimals = await (new ethers.Contract(DEGEN_ADDRESS, erc20ABI, provider)).decimals();
 
   const {address: orderBookieAddress } = getRequestProps(req, [RequestProps.ADDRESS]);
 
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const ierc20 = new ethers.Interface(erc20ABI)
 
-  const data = ierc20.encodeFunctionData('approve', [orderBookieAddress, ethers.parseUnits(stake.toString(), DECIMALS)])
+  const data = ierc20.encodeFunctionData('approve', [orderBookieAddress, ethers.parseUnits(stake.toString(), decimals)])
 
   const txData = {
       chainId: `eip155:8453`,

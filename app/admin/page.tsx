@@ -2,6 +2,7 @@
 import {CreateEventForm} from './createEvent-form';
 import {SettleEventForm} from './settleEvent-form';
 import {GetEventForm} from './getEvent-form';
+import {PlaceBetForm} from './placeBet-form';
 
 export default function Page() {
 
@@ -10,6 +11,7 @@ export default function Page() {
       <GetEventForm />
       <CreateEventForm />
       <SettleEventForm />
+      <PlaceBetForm />
     </main>
   )
 }

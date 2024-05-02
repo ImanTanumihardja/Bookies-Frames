@@ -3,6 +3,7 @@
 import {z} from 'zod'
 import createEvent from '../src/scripts/createEvent'
 import settleEvent from '../src/scripts/settleEvent'
+import placeBet from '../src/scripts/placeBet'
 import getEvent from '../src/scripts/getEvent'
 import { revalidatePath } from 'next/cache'
 
@@ -97,3 +98,36 @@ export async function getEventAction(
         return {message: `Failed to settle event: ${e}`, eventName: eventName, eventData: null}
     }
 }
+
+    export async function placeBetAction(
+        prevState: any, 
+        formData: FormData
+        ) {
+            
+        const schema = z.object({
+            bettor: z.string(),
+            orderBookie: z.string(),
+            fid: z.number(),
+            stake: z.number(),
+            pick: z.number(),
+            odd: z.number(),
+        })
+        const { bettor, orderBookie, fid, stake, pick, odd } = schema.parse({
+            bettor: formData.get('bettor'),
+            orderBookie: formData.get('orderBookie'),
+            fid: parseInt(formData.get('fid') as string),
+            stake: parseFloat(formData.get('stake') as string),
+            pick: parseFloat(formData.get('pick') as string),
+            odd: parseFloat(formData.get('odd') as string),
+        })
+    
+        try {
+            revalidatePath('/')
+            placeBet(bettor, orderBookie, fid, stake, pick, odd)
+            return {message: `Placed bet for ${fid} on ${pick} with ${stake} stake and ${odd} odds`}
+        }
+        catch (e) {
+            console.error(e)
+            return {message: `Failed to place bet: ${e}` }
+        }
+    }
