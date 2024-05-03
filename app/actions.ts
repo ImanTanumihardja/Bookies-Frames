@@ -106,15 +106,15 @@ export async function getEventAction(
             
         const schema = z.object({
             bettor: z.string(),
-            orderBookie: z.string(),
+            eventName: z.string(),
             fid: z.number(),
             stake: z.number(),
             pick: z.number(),
             odd: z.number(),
         })
-        const { bettor, orderBookie, fid, stake, pick, odd } = schema.parse({
+        const { bettor, eventName, fid, stake, pick, odd } = schema.parse({
             bettor: formData.get('bettor'),
-            orderBookie: formData.get('orderBookie'),
+            eventName: formData.get('eventName'),
             fid: parseInt(formData.get('fid') as string),
             stake: parseFloat(formData.get('stake') as string),
             pick: parseFloat(formData.get('pick') as string),
@@ -122,7 +122,7 @@ export async function getEventAction(
         })
     
         try {
-            await placeBet(bettor, orderBookie, fid, stake, pick, odd)
+            await placeBet(bettor, eventName, fid, stake, pick, odd)
             revalidatePath('/')
             return {message: `Placed bet for ${fid} on ${pick} with ${stake} stake and ${odd} odds`}
         }

@@ -31,8 +31,8 @@ export function PlaceBetForm() {
         <input type="string" id="bettor" name="bettor" required />
         <br />
         <br />
-        <label htmlFor="orderBookie">OrderBookie Address </label>
-        <input type="string" id="orderBookie" name="orderBookie" required />
+        <label htmlFor="eventName">Event Name </label>
+        <input type="string" id="eventName" name="eventName" required />
         <br />
         <br />
         <label htmlFor="fid">FID </label>

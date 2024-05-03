@@ -2,6 +2,7 @@ const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
 import { Accounts, DatabaseKeys, ODDS_DECIMALS, PICK_DECIMALS } from "../utils";
+import { Event } from '../../app/types';
 import { createClient  } from "@vercel/kv";
 import { ethers } from "ethers";
 import orderbookieABI from '../../app/contract-abis/orderBookie';
@@ -12,10 +13,22 @@ const kv = createClient({
   token: process.env['KV_REST_API_TOKEN'] || '',
 });
 
-export default async function placeBet(bettorAddress:string, orderBookieAddress:string, fid:number, stake:number, pick:number, odd:number) {
+export default async function placeBet(bettorAddress:string, eventName:string, fid:number, stake:number, pick:number, odd:number) {
   // Get orderbookie info
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
   const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
+
+  // Get event info from database
+  let eventData: Event | null = await kv.hgetall(`${eventName}`);
+
+  if (eventData === null) {
+    throw new Error(`Event: ${eventName} does not exist`)
+  }
+
+  console.log(`Event: ${eventName}`);
+  console.log(eventData);
+
+  const orderBookieAddress = eventData?.address.toString()
 
   const orderBookie = new ethers.Contract(orderBookieAddress, orderbookieABI, signer)
   const orderBookieInfo = await orderBookie.getBookieInfo()
@@ -49,14 +62,14 @@ export default async function placeBet(bettorAddress:string, orderBookieAddress:
     await kv.sadd(`${fid.toString()}:addresses`, bettorAddress)
   })
 
-  // // Add user to bettors list
-  // await kv.sadd(`${Accounts.BOOKIES}:${orderBookieInfo.eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
-  //   console.error('Error adding user to bettors list: ', error);
-  //   // Try again
-  //   await kv.sadd(`${Accounts.BOOKIES}:${orderBookieInfo.eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
-  //     throw new Error('Error creating bet');
-  //   })
-  // })
+  // Add user to bettors list
+  await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
+    console.error('Error adding user to bettors list: ', error);
+    // Try again
+    await kv.sadd(`${Accounts.BOOKIES}:${orderBookieInfo.eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
+      throw new Error('Error creating bet');
+    })
+  })
 }
 
 
