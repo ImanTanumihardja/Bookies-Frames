@@ -49,14 +49,14 @@ export default async function placeBet(bettorAddress:string, orderBookieAddress:
     await kv.sadd(`${fid.toString()}:addresses`, bettorAddress)
   })
 
-  // Add user to bettors list
-  await kv.sadd(`${Accounts.BOOKIES}:${orderBookieInfo.eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
-    console.error('Error adding user to bettors list: ', error);
-    // Try again
-    await kv.sadd(`${Accounts.BOOKIES}:${orderBookieInfo.eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
-      throw new Error('Error creating bet');
-    })
-  })
+  // // Add user to bettors list
+  // await kv.sadd(`${Accounts.BOOKIES}:${orderBookieInfo.eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
+  //   console.error('Error adding user to bettors list: ', error);
+  //   // Try again
+  //   await kv.sadd(`${Accounts.BOOKIES}:${orderBookieInfo.eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
+  //     throw new Error('Error creating bet');
+  //   })
+  // })
 }
 
 
