@@ -35,6 +35,9 @@ export default async function placeBet(bettorAddress:string, orderBookieAddress:
   const stakeBigNum = ethers.parseUnits(stake.toString(), decimals)
   const oddBigNum = ethers.parseUnits(odd.toString(), ODDS_DECIMALS)
 
+  // CheckSum bettor address
+  bettorAddress = ethers.getAddress(bettorAddress)
+
   // Place bet
   const placeBetTransaction = await orderBookie.placeBetFor(bettorAddress, pickBigNum, stakeBigNum, oddBigNum)
   await placeBetTransaction.wait()
