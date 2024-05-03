@@ -1,26 +1,6 @@
 const OrderBookieABI = 
 [
   {
-    "inputs": [
-      {
-        "internalType": "int256",
-        "name": "result",
-        "type": "int256"
-      }
-    ],
-    "name": "adminSettle",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "adminWithdraw",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "cancelBookie",
     "outputs": [],
@@ -28,8 +8,14 @@ const OrderBookieABI =
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "collect",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "collectUnfilled",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -188,13 +174,6 @@ const OrderBookieABI =
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "payoutAll",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "int256",
@@ -220,12 +199,27 @@ const OrderBookieABI =
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "payoutTo",
+        "type": "address"
+      },
+      {
+        "internalType": "int256",
+        "name": "pick",
+        "type": "int256"
+      },
+      {
         "internalType": "uint256",
-        "name": "index",
+        "name": "stake",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "odd",
         "type": "uint256"
       }
     ],
-    "name": "withdrawUnfilled",
+    "name": "placeBetFor",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
