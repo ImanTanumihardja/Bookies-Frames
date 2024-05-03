@@ -94,7 +94,6 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
     else {  
       throw new Error(`Ancillary data is required for bookies`)
     }
-   
 }
 
   let event: Event = {startDate, result: -1, odds, options, prompt, host, address} as Event;
