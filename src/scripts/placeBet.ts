@@ -13,7 +13,7 @@ const kv = createClient({
   token: process.env['KV_REST_API_TOKEN'] || '',
 });
 
-export default async function placeBet(bettorAddress:string, eventName:string, fid:number, stake:number, pick:number, odd:number) {
+export default async function placeBet(bettorAddress:string, eventName:string, fid:number, stake:number, pick:number) {
   // Get orderbookie info
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
   const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
@@ -46,7 +46,7 @@ export default async function placeBet(bettorAddress:string, eventName:string, f
 
   const pickBigNum = ethers.parseUnits(pick.toString(), PICK_DECIMALS)
   const stakeBigNum = ethers.parseUnits(stake.toString(), decimals)
-  const oddBigNum = ethers.parseUnits(odd.toString(), ODDS_DECIMALS)
+  const oddBigNum = ethers.parseUnits(eventData.odds[pick].toString(), ODDS_DECIMALS)
 
   // CheckSum bettor address
   bettorAddress = ethers.getAddress(bettorAddress)

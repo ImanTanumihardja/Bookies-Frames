@@ -50,10 +50,6 @@ export function PlaceBetForm() {
         </select>
         <br />
         <br />
-        <label htmlFor="odd">Odd </label>
-        <input type="number" id="odd" name="odd"  min="0" max="1" step="0.0001" required />
-        <br />
-        <br />
         <SubmitButton />
       </form>
     </div>
