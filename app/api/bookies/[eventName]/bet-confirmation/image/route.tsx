@@ -97,7 +97,7 @@ export async function GET(req: NextRequest) {
                     ?
                     <div style={{display: 'flex', flexDirection:'column', height:'100%', width:'100%', justifyContent: 'center', alignItems: 'center'}}>
                         <h1 style={{color: 'white', 
-                                    fontSize: text.length > 50 ? 30 : text.length > 40 ? 35 : 40, 
+                                    fontSize: text.length > 50 ? 30 : text.length > 40 ? 35 : 37, 
                                     textAlign:'center', 
                                     padding:25}}> {text} </h1>
                     </div>
