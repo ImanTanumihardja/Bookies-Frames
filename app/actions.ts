@@ -122,7 +122,7 @@ export async function getEventAction(
         try {
             await placeBet(bettor, eventName, fid, stake, pick)
             revalidatePath('/')
-            return {message: `Placed bet for ${fid} on ${pick} with ${stake} stake`}
+            return {message: `Placed bet for ${fid} on option ${pick + 1} with ${stake} stake`}
         }
         catch (e) {
             console.error(e)
