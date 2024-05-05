@@ -6,11 +6,12 @@ import { Accounts } from "../../src/utils";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
-
   return (
-    <button type="submit" aria-disabled={pending}>
-      Get Event
-    </button>
+    !pending && (
+      <button type="submit" aria-disabled={pending}>
+        Get Event
+      </button>
+    )
   );
 }
 

@@ -9,6 +9,7 @@ function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
+    !pending &&
     <button type="submit" aria-disabled={pending}>
       Create
     </button>
