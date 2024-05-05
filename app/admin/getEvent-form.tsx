@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormState, useFormStatus } from "react-dom";
-import {getEventAction, placeBetAction} from "../actions"
+import {getEventAction} from "../actions"
 import { Accounts } from "../../src/utils";
 
 function SubmitButton() {
@@ -17,8 +17,6 @@ function SubmitButton() {
 
 export function GetEventForm() {
   const [eventstate, getEventFormAction] = useFormState(getEventAction, {message: "", eventName:"", eventData: null});
-
-  const [placeBetState, placeBetFormAction] = useFormState(placeBetAction, {message: ""});
   
   let isBookies = true;
   let isAlea = true;
@@ -27,12 +25,6 @@ export function GetEventForm() {
     isBookies = eventstate.eventData.host === Accounts.BOOKIES || eventstate.eventData.host === Accounts.BOTH;
     isAlea = eventstate.eventData.host === Accounts.ALEA || eventstate.eventData.host === Accounts.BOTH;
   }
-
-  if (placeBetState.message !== "") 
-    {
-      alert(placeBetState.message)
-      placeBetState.message = ""
-    }
 
   return (
     <div>
