@@ -8,6 +8,8 @@ import {Accounts, DatabaseKeys, Outcomes} from '../../src/utils'
 import { ethers } from 'ethers';
 import  orderBookieFactoryABI  from '../../app/contract-abis/orderBookieFactory';
 import { ORDERBOOKIE_FACTORY_ADDRESS, USDC_ADDRESS } from '../../app/addresses'
+import { Etherscan } from "@nomicfoundation/hardhat-verify/etherscan";
+import { sleep } from '@nomicfoundation/hardhat-verify/internal/utilities';
 
 const kv = createClient({
     url: process.env['KV_REST_API_URL'],
@@ -90,6 +92,54 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
         // Print the arg
         console.log('OrderBookie Address: ', event?.args[0])
         address = event?.args[0]
+
+        // Verify the contract
+
+        const instance = new Etherscan(
+          process.env.ETHERSCAN_API_KEY || '', // Etherscan API key
+          "https://api.basescan.org/api", // Etherscan API URL
+          "https://basescan.org/" // Etherscan browser URL
+        );
+
+        // Encode parameters using orderbookie interface
+        const encodedConstructorArgs = orderBookiefactory.interface.encodeFunctionData("createOrderBookie", [
+          ethers.toUtf8Bytes(JSON.stringify(ancillaryData)),
+          startDate, // Convert from milli-seconds to seconds
+          0,
+          0,
+          1800,
+          USDC_ADDRESS,
+          acceptedToken,
+          ethers.encodeBytes32String("MULTIPLE_CHOICE_QUERY"),
+          signer.getAddress(),
+          false
+        ]);
+
+
+        // if (!instance.isVerified(address)) {
+        //   const { message: guid } = await instance.verify(
+        //     // Contract address
+        //     address,
+        //     // Contract source code
+        //     '{"language":"Solidity","sources":{"contracts/Sample.sol":{"content":"// SPDX-Lic..."}},"settings":{ ... }}',
+        //     // Contract name
+        //     "contracts/Sample.sol:MyContract",
+        //     // Compiler version
+        //     "v0.8.19+commit.7dd6d404",
+        //     // Encoded constructor arguments
+        //     encodedConstructorArgs
+        //   );
+        
+        //   await sleep(1000);
+        //   const verificationStatus = await instance.getVerificationStatus(guid);
+        
+        //   if (verificationStatus.isSuccess()) {
+        //     const contractURL = instance.getContractUrl(address);
+        //     console.log(
+        //       `Successfully verified contract "MyContract" on Etherscan: ${contractURL}`
+        //     );
+        //   }
+        // }
     }
     else {  
       throw new Error(`Ancillary data is required for bookies`)
