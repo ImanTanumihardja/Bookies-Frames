@@ -55,6 +55,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
     if (description && acceptedToken) {
         const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
         const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
+        const signerAddress = await signer.getAddress();
         const orderBookiefactory = new ethers.Contract(ORDERBOOKIE_FACTORY_ADDRESS, orderBookieFactoryABI, signer);
 
         console.log('Creating OrderBookie Contract...')
@@ -76,7 +77,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
                                                               USDC_ADDRESS,
                                                               acceptedToken,
                                                               ethers.encodeBytes32String("MULTIPLE_CHOICE_QUERY"),
-                                                              signer.getAddress(),
+                                                              signerAddress,
                                                               false)
 
         // Get address of create contract
@@ -100,6 +101,9 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
           "https://basescan.org/" // Etherscan browser URL
         );
 
+        // Read in json file
+        const contractSourceCode = JSON.parse(fs.readFileSync('./src/orderbookieVerify.json', 'utf8'));
+
         // Encode parameters using orderbookie interface
         const encodedConstructorArgs = orderBookiefactory.interface.encodeFunctionData("createOrderBookie", [
           ethers.toUtf8Bytes(JSON.stringify(ancillaryData)),
@@ -110,19 +114,18 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
           USDC_ADDRESS,
           acceptedToken,
           ethers.encodeBytes32String("MULTIPLE_CHOICE_QUERY"),
-          signer.getAddress(),
+          signerAddress,
           false
         ]);
-
 
         if (!instance.isVerified(address)) {
           const { message: guid } = await instance.verify(
             // Contract address
             address,
             // Contract source code
-            '{"language":"Solidity","sources":{"contracts/Sample.sol":{"content":"// SPDX-Lic..."}},"settings":{ "evmVersion": "istanbul","libraries":{},"optimizer":{"enabled":true,"runs":200},"remappings":[]}',
+            contractSourceCode.stringify(),
             // Contract name
-            "contracts/Sample.sol:MyContract",
+            "contracts/OrderBookie.sol:OrderBookie",
             // Compiler version
             "v0.8.19+commit.7dd6d404",
             // Encoded constructor arguments
@@ -143,7 +146,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
     else {  
       throw new Error(`Ancillary data is required for bookies`)
     }
-}
+  }
 
   let event: Event = {startDate, result: -1, odds, options, prompt, host, address} as Event;
   await kv.hset(`${eventName}`, event);
