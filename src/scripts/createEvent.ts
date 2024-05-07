@@ -96,7 +96,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
 
         // Verify the contract on etherscan
         const instance = new Etherscan(
-          process.env.ETHERSCAN_API_KEY || '', // Etherscan API key
+          process.env.BASESCAN_API_KEY || '', // Etherscan API key
           "https://api.basescan.org/api", // Etherscan API URL
           "https://basescan.org/" // Etherscan browser URL
         );
