@@ -10,6 +10,7 @@ import  orderBookieFactoryABI  from '../../app/contract-abis/orderBookieFactory'
 import { ORDERBOOKIE_FACTORY_ADDRESS, USDC_ADDRESS } from '../../app/addresses'
 import { Etherscan } from "@nomicfoundation/hardhat-verify/etherscan";
 import { sleep } from '@nomicfoundation/hardhat-verify/internal/utilities';
+import OrderBookieABI from '../../app/contract-abis/orderBookie';
 
 const kv = createClient({
     url: process.env['KV_REST_API_URL'],
@@ -69,30 +70,34 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
 
         console.log('Ancillary Data: ', ancillaryData)
 
-        // const tx = await orderBookiefactory.createOrderBookie(ethers.toUtf8Bytes(JSON.stringify(ancillaryData)),
-        //                                                       startDate, // Convert from milli-seconds to seconds
-        //                                                       0,
-        //                                                       0,
-        //                                                       1800,
-        //                                                       USDC_ADDRESS,
-        //                                                       acceptedToken,
-        //                                                       ethers.encodeBytes32String("MULTIPLE_CHOICE_QUERY"),
-        //                                                       signerAddress,
-        //                                                       false)
+        const tx = await orderBookiefactory.createOrderBookie(ethers.toUtf8Bytes(JSON.stringify(ancillaryData)),
+                                                              startDate, // Convert from milli-seconds to seconds
+                                                              0,
+                                                              0,
+                                                              1800,
+                                                              USDC_ADDRESS,
+                                                              acceptedToken,
+                                                              ethers.encodeBytes32String("MULTIPLE_CHOICE_QUERY"),
+                                                              signerAddress,
+                                                              false)
 
-        // // Get address of create contract
-        // const txReceipt = await tx.wait()
+        // Get address of create contract
+        const txReceipt = await tx.wait()
 
-        // console.log('TX RECEIPT: ', txReceipt.hash)
+        console.log('TX RECEIPT: ', txReceipt.hash)
         
-        // const logs:any = txReceipt?.logs.map((log:any) => orderBookiefactory.interface.parseLog(log))
+        const logs:any = txReceipt?.logs.map((log:any) => orderBookiefactory.interface.parseLog(log))
 
-        // // Find event with Name OrderBookieEvent
-        // const event = logs?.find((log:any) => log?.name === "OrderBookieCreated")
+        // Find event with Name OrderBookieEvent
+        const event = logs?.find((log:any) => log?.name === "OrderBookieCreated")
 
-        // // Print the arg
-        // console.log('OrderBookie Address: ', event?.args[0])
-        // address = event?.args[0]
+        // Print the arg
+        console.log('OrderBookie Address: ', event?.args[0])
+        address = event?.args[0]
+
+        // Get orderbookie contract
+        const orderBookie = new ethers.Contract(address, OrderBookieABI, signer)
+        const orderBookieInfo = await orderBookie.getBookieInfo()
 
         // Verify the contract on etherscan
         const instance = new Etherscan(
@@ -103,29 +108,30 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
 
         // Read in json file
         const filePath = process.cwd() + '/app/json/orderbookieVerify.json';
-        console.log('File Path: ', filePath)
         const contractSourceCode = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
         // Encode parameters using orderbookie interface
-        const encodedConstructorArgs = orderBookiefactory.interface.encodeFunctionData("createOrderBookie", [
-          ethers.toUtf8Bytes(JSON.stringify(ancillaryData)),
+
+        // convert eventID to hex number
+        const abiCoder = new ethers.AbiCoder();
+        let encodedConstructorArgs = abiCoder.encode(["bytes32", "uint256", "address", "address", "address"], [
+          orderBookieInfo.eventID,
           startDate, // Convert from milli-seconds to seconds
-          0,
-          0,
-          1800,
-          USDC_ADDRESS,
-          acceptedToken,
-          ethers.encodeBytes32String("MULTIPLE_CHOICE_QUERY"),
-          signerAddress,
-          false
+          orderBookieInfo.owner,
+          orderBookieInfo.settlementManagerAddress,
+          orderBookieInfo.acceptedTokenAddress,
         ]);
 
-        if (!instance.isVerified(address)) {
+        //drop "0x"
+        encodedConstructorArgs = encodedConstructorArgs.slice(2);
+
+        if (!(await instance.isVerified(address))) {
+          console.log("Verifying: " + address)
           const { message: guid } = await instance.verify(
             // Contract address
             address,
             // Contract source code
-            contractSourceCode.stringify(),
+            JSON.stringify(contractSourceCode),
             // Contract name
             "contracts/OrderBookie.sol:OrderBookie",
             // Compiler version
@@ -143,6 +149,10 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
               `Successfully verified contract "MyContract" on Etherscan: ${contractURL}`
             );
           }
+          else {
+            console.error(`Failed to verify contract: ${verificationStatus.message}`);
+          
+          }
         }
     }
     else {  
@@ -150,27 +160,27 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
     }
   }
 
-  // let event: Event = {startDate, result: -1, odds, options, prompt, host, address} as Event;
-  // await kv.hset(`${eventName}`, event);
+  let event: Event = {startDate, result: -1, odds, options, prompt, host, address} as Event;
+  await kv.hset(`${eventName}`, event);
 
-  // // Create poll
-  // const poll = {0: 0, 1: 0, 2: 0, 3: 0} as Record<number, number>
-  // await kv.hset(`${eventName}:${DatabaseKeys.POLL}`, poll)
+  // Create poll
+  const poll = {0: 0, 1: 0, 2: 0, 3: 0} as Record<number, number>
+  await kv.hset(`${eventName}:${DatabaseKeys.POLL}`, poll)
 
-  // if (host === Accounts.ALEA || host === Accounts.BOTH) {
-  //   // Create alea bets list 
-  //   await kv.del(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`)
-  // }
+  if (host === Accounts.ALEA || host === Accounts.BOTH) {
+    // Create alea bets list 
+    await kv.del(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`)
+  }
 
-  // if (host === Accounts.BOOKIES || host === Accounts.BOTH) {
-  //   // Create bookies bets list 
-  //   await kv.del(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`)
-  // }
+  if (host === Accounts.BOOKIES || host === Accounts.BOTH) {
+    // Create bookies bets list 
+    await kv.del(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`)
+  }
 
-  // event = await kv.hgetall(`${eventName}`)
+  event = await kv.hgetall(`${eventName}`)
 
-  // console.log(`Event: ${eventName}`)
-  // console.log(event)
+  console.log(`Event: ${eventName}`)
+  console.log(event)
 }
 
 if (require.main === module) {
