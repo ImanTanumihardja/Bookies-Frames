@@ -102,7 +102,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
         );
 
         // Read in json file
-        const contractSourceCode = JSON.parse(fs.readFileSync('./src/orderbookieVerify.json', 'utf8'));
+        const contractSourceCode = JSON.parse(fs.readFileSync(process.cwd() + '/app/json/orderbookieVerify.json', 'utf8'));
 
         // Encode parameters using orderbookie interface
         const encodedConstructorArgs = orderBookiefactory.interface.encodeFunctionData("createOrderBookie", [
