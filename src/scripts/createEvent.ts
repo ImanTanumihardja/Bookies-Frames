@@ -94,54 +94,54 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
         console.log('OrderBookie Address: ', event?.args[0])
         address = event?.args[0]
 
-        // // Verify the contract on etherscan
-        // const instance = new Etherscan(
-        //   process.env.BASESCAN_API_KEY || '', // Etherscan API key
-        //   "https://api.basescan.org/api", // Etherscan API URL
-        //   "https://basescan.org/" // Etherscan browser URL
-        // );
+        // Verify the contract on etherscan
+        const instance = new Etherscan(
+          process.env.BASESCAN_API_KEY || '', // Etherscan API key
+          "https://api.basescan.org/api", // Etherscan API URL
+          "https://basescan.org/" // Etherscan browser URL
+        );
 
-        // // Read in json file
-        // const contractSourceCode = JSON.parse(fs.readFileSync(process.cwd() + '/app/json/orderbookieVerify.json', 'utf8'));
+        // Read in json file
+        const contractSourceCode = JSON.parse(fs.readFileSync(process.cwd() + '/app/json/orderbookieVerify.json', 'utf8'));
 
-        // // Encode parameters using orderbookie interface
-        // const encodedConstructorArgs = orderBookiefactory.interface.encodeFunctionData("createOrderBookie", [
-        //   ethers.toUtf8Bytes(JSON.stringify(ancillaryData)),
-        //   startDate, // Convert from milli-seconds to seconds
-        //   0,
-        //   0,
-        //   1800,
-        //   USDC_ADDRESS,
-        //   acceptedToken,
-        //   ethers.encodeBytes32String("MULTIPLE_CHOICE_QUERY"),
-        //   signerAddress,
-        //   false
-        // ]);
+        // Encode parameters using orderbookie interface
+        const encodedConstructorArgs = orderBookiefactory.interface.encodeFunctionData("createOrderBookie", [
+          ethers.toUtf8Bytes(JSON.stringify(ancillaryData)),
+          startDate, // Convert from milli-seconds to seconds
+          0,
+          0,
+          1800,
+          USDC_ADDRESS,
+          acceptedToken,
+          ethers.encodeBytes32String("MULTIPLE_CHOICE_QUERY"),
+          signerAddress,
+          false
+        ]);
 
-        // if (!instance.isVerified(address)) {
-        //   const { message: guid } = await instance.verify(
-        //     // Contract address
-        //     address,
-        //     // Contract source code
-        //     contractSourceCode.stringify(),
-        //     // Contract name
-        //     "contracts/OrderBookie.sol:OrderBookie",
-        //     // Compiler version
-        //     "v0.8.19+commit.7dd6d404",
-        //     // Encoded constructor arguments
-        //     encodedConstructorArgs
-        //   );
+        if (!instance.isVerified(address)) {
+          const { message: guid } = await instance.verify(
+            // Contract address
+            address,
+            // Contract source code
+            contractSourceCode.stringify(),
+            // Contract name
+            "contracts/OrderBookie.sol:OrderBookie",
+            // Compiler version
+            "v0.8.19+commit.7dd6d404",
+            // Encoded constructor arguments
+            encodedConstructorArgs
+          );
         
-        //   await sleep(1000);
-        //   const verificationStatus = await instance.getVerificationStatus(guid);
+          await sleep(1000);
+          const verificationStatus = await instance.getVerificationStatus(guid);
         
-        //   if (verificationStatus.isSuccess()) {
-        //     const contractURL = instance.getContractUrl(address);
-        //     console.log(
-        //       `Successfully verified contract "MyContract" on Etherscan: ${contractURL}`
-        //     );
-        //   }
-        // }
+          if (verificationStatus.isSuccess()) {
+            const contractURL = instance.getContractUrl(address);
+            console.log(
+              `Successfully verified contract "MyContract" on Etherscan: ${contractURL}`
+            );
+          }
+        }
     }
     else {  
       throw new Error(`Ancillary data is required for bookies`)

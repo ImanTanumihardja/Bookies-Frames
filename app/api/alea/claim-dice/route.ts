@@ -97,7 +97,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       {
         label: 'Place Bet', 
         action:'post', 
-        target: generateUrl(`/api/alea/conn-bama-spread`, {}, false)
+        target: generateUrl(`/api/alea/G1-OKC-DAL-SPREAD`, {}, false)
       },
     ]
   }
