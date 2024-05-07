@@ -93,8 +93,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
         console.log('OrderBookie Address: ', event?.args[0])
         address = event?.args[0]
 
-        // Verify the contract
-
+        // Verify the contract on etherscan
         const instance = new Etherscan(
           process.env.ETHERSCAN_API_KEY || '', // Etherscan API key
           "https://api.basescan.org/api", // Etherscan API URL
@@ -116,30 +115,30 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
         ]);
 
 
-        // if (!instance.isVerified(address)) {
-        //   const { message: guid } = await instance.verify(
-        //     // Contract address
-        //     address,
-        //     // Contract source code
-        //     '{"language":"Solidity","sources":{"contracts/Sample.sol":{"content":"// SPDX-Lic..."}},"settings":{ ... }}',
-        //     // Contract name
-        //     "contracts/Sample.sol:MyContract",
-        //     // Compiler version
-        //     "v0.8.19+commit.7dd6d404",
-        //     // Encoded constructor arguments
-        //     encodedConstructorArgs
-        //   );
+        if (!instance.isVerified(address)) {
+          const { message: guid } = await instance.verify(
+            // Contract address
+            address,
+            // Contract source code
+            '{"language":"Solidity","sources":{"contracts/Sample.sol":{"content":"// SPDX-Lic..."}},"settings":{ "evmVersion": "istanbul","libraries":{},"optimizer":{"enabled":true,"runs":200},"remappings":[]}',
+            // Contract name
+            "contracts/Sample.sol:MyContract",
+            // Compiler version
+            "v0.8.19+commit.7dd6d404",
+            // Encoded constructor arguments
+            encodedConstructorArgs
+          );
         
-        //   await sleep(1000);
-        //   const verificationStatus = await instance.getVerificationStatus(guid);
+          await sleep(1000);
+          const verificationStatus = await instance.getVerificationStatus(guid);
         
-        //   if (verificationStatus.isSuccess()) {
-        //     const contractURL = instance.getContractUrl(address);
-        //     console.log(
-        //       `Successfully verified contract "MyContract" on Etherscan: ${contractURL}`
-        //     );
-        //   }
-        // }
+          if (verificationStatus.isSuccess()) {
+            const contractURL = instance.getContractUrl(address);
+            console.log(
+              `Successfully verified contract "MyContract" on Etherscan: ${contractURL}`
+            );
+          }
+        }
     }
     else {  
       throw new Error(`Ancillary data is required for bookies`)
