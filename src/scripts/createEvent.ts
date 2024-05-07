@@ -69,30 +69,30 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
 
         console.log('Ancillary Data: ', ancillaryData)
 
-        const tx = await orderBookiefactory.createOrderBookie(ethers.toUtf8Bytes(JSON.stringify(ancillaryData)),
-                                                              startDate, // Convert from milli-seconds to seconds
-                                                              0,
-                                                              0,
-                                                              1800,
-                                                              USDC_ADDRESS,
-                                                              acceptedToken,
-                                                              ethers.encodeBytes32String("MULTIPLE_CHOICE_QUERY"),
-                                                              signerAddress,
-                                                              false)
+        // const tx = await orderBookiefactory.createOrderBookie(ethers.toUtf8Bytes(JSON.stringify(ancillaryData)),
+        //                                                       startDate, // Convert from milli-seconds to seconds
+        //                                                       0,
+        //                                                       0,
+        //                                                       1800,
+        //                                                       USDC_ADDRESS,
+        //                                                       acceptedToken,
+        //                                                       ethers.encodeBytes32String("MULTIPLE_CHOICE_QUERY"),
+        //                                                       signerAddress,
+        //                                                       false)
 
-        // Get address of create contract
-        const txReceipt = await tx.wait()
+        // // Get address of create contract
+        // const txReceipt = await tx.wait()
 
-        console.log('TX RECEIPT: ', txReceipt.hash)
+        // console.log('TX RECEIPT: ', txReceipt.hash)
         
-        const logs:any = txReceipt?.logs.map((log:any) => orderBookiefactory.interface.parseLog(log))
+        // const logs:any = txReceipt?.logs.map((log:any) => orderBookiefactory.interface.parseLog(log))
 
-        // Find event with Name OrderBookieEvent
-        const event = logs?.find((log:any) => log?.name === "OrderBookieCreated")
+        // // Find event with Name OrderBookieEvent
+        // const event = logs?.find((log:any) => log?.name === "OrderBookieCreated")
 
-        // Print the arg
-        console.log('OrderBookie Address: ', event?.args[0])
-        address = event?.args[0]
+        // // Print the arg
+        // console.log('OrderBookie Address: ', event?.args[0])
+        // address = event?.args[0]
 
         // Verify the contract on etherscan
         const instance = new Etherscan(
@@ -148,27 +148,27 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
     }
   }
 
-  let event: Event = {startDate, result: -1, odds, options, prompt, host, address} as Event;
-  await kv.hset(`${eventName}`, event);
+  // let event: Event = {startDate, result: -1, odds, options, prompt, host, address} as Event;
+  // await kv.hset(`${eventName}`, event);
 
-  // Create poll
-  const poll = {0: 0, 1: 0, 2: 0, 3: 0} as Record<number, number>
-  await kv.hset(`${eventName}:${DatabaseKeys.POLL}`, poll)
+  // // Create poll
+  // const poll = {0: 0, 1: 0, 2: 0, 3: 0} as Record<number, number>
+  // await kv.hset(`${eventName}:${DatabaseKeys.POLL}`, poll)
 
-  if (host === Accounts.ALEA || host === Accounts.BOTH) {
-    // Create alea bets list 
-    await kv.del(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`)
-  }
+  // if (host === Accounts.ALEA || host === Accounts.BOTH) {
+  //   // Create alea bets list 
+  //   await kv.del(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`)
+  // }
 
-  if (host === Accounts.BOOKIES || host === Accounts.BOTH) {
-    // Create bookies bets list 
-    await kv.del(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`)
-  }
+  // if (host === Accounts.BOOKIES || host === Accounts.BOTH) {
+  //   // Create bookies bets list 
+  //   await kv.del(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`)
+  // }
 
-  event = await kv.hgetall(`${eventName}`)
+  // event = await kv.hgetall(`${eventName}`)
 
-  console.log(`Event: ${eventName}`)
-  console.log(event)
+  // console.log(`Event: ${eventName}`)
+  // console.log(event)
 }
 
 if (require.main === module) {
