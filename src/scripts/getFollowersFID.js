@@ -1,13 +1,15 @@
 
 const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
-
-const {neynarClient} = require("../utils");
+const { NeynarAPIClient } = require("@neynar/nodejs-sdk");
 
 const target_fid = 391387
 
 // Create a script that access kv storage and reset the hasClaimed value
 async function getFollowersFID() {
+
+    const neynarClient = new NeynarAPIClient(process.env.NEYNAR_API_KEY || "");
+    
     // Iteratively fetch all users
     let result = (await neynarClient.fetchUserFollowers(target_fid, {limit:150})).result
     
