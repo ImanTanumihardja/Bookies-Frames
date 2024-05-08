@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ODDS_DECIMALS, getFrameMessage, getRequestProps, RequestProps, PICK_DECIMALS } from '../../../../../src/utils';
 import {ethers} from 'ethers';
-import orderbookieABI from '../../../../contract-abis/orderBookie';
-import erc20ABI from '../../../../contract-abis/erc20';
-import { USDC_ADDRESS, DEGEN_ADDRESS } from '../../../../addresses';
+import {OrderBookieABI} from '../../../../contract-abis/orderBookie.json';
+import {erc20ABI} from '../../../../contract-abis/erc20.json';
+import { USDC_ADDRESS, DEGEN_ADDRESS } from '../../../../json/addresses.json';
 import { kv } from '@vercel/kv';
 
 export async function POST(req: NextRequest): Promise<Response> {
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   console.log('PICK: ', pick)
   console.log('Implied Probability: ', impliedProb)
   
-  const iOrderBookie = new ethers.Interface(orderbookieABI)
+  const iOrderBookie = new ethers.Interface(OrderBookieABI)
   const data = iOrderBookie.encodeFunctionData('placeBet', [convertedPick, convertedStake, convertedImpliedProb])
 
   const txData = {
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       method: 'eth_sendTransaction',
       attribution: false,
       params: {
-        abi: orderbookieABI,
+        abi: OrderBookieABI,
         data: data,
         to: orderBookieAddress,
         value: ethers.parseEther('0').toString(),

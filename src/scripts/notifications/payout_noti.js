@@ -1,12 +1,19 @@
 const { NeynarAPIClient } = require("@neynar/nodejs-sdk");
 const dotenv = require("dotenv");
-const {fids, message, parentHash} = require('./config.json');
+const {message, parentHash, eventName} = require('./config.json');
 const fs = require("fs");
 const path = require("path");
+const ethers = require("ethers");
+const { createClient  } = require("@vercel/kv");
+const { OrderBookieABI } = require("../../../app/contract-abis/orderBookie.json");
 
 (async () => {
   dotenv.config({ path: ".env"});
-  console.log(fids, message)
+  
+  const kv = createClient({
+    url: process.env['KV_REST_API_URL'],
+    token: process.env['KV_REST_API_TOKEN'],
+  });
 
   const neynarClient = new NeynarAPIClient(process.env['NEYNAR_API_KEY']);
 
@@ -17,7 +24,7 @@ const path = require("path");
     console.log("SIGNER_UUID is not set in the environment or not valid. Need to generate");
 
     // Register signer
-    const signer = await neynarClient.createSignerAndRegisterSignedKey('fdm', {deadline:Math.floor(Date.now() / 1000) + 31556926});
+    const signer = await neynarClient.createSignerAndRegisterSignedKey("FDM", {deadline:Math.floor(Date.now() / 1000) + 31556926});
 
     console.log(`Please connect through warpcast to approve the signer. Go here: ${signer.signer_approval_url}`)
 
@@ -56,9 +63,38 @@ const path = require("path");
 
   console.log("Signer UUID: ", signerUUID);
 
+  console.log("Event Name: ", eventName);
+
+  // Get orderbookie smart contract
+  const eventInfo = await kv.hgetall(`${eventName}`);
+
+  const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
+  const orderbookie = new ethers.Contract(eventInfo.address, OrderBookieABI, provider);
+
+  // Get orderbookie info
+  const orderBookieInfo = await orderbookie.getBookieInfo();
+
+  // Check if the bookie is settled
+  if (parseFloat(ethers.formatEther(orderBookieInfo.result)) === -1) {
+    throw new Error("Bookie is not settled yet");
+  }
+
   // Get the username
   let usernames = [];
+
+  // Get bettors
+  let result = await kv.sscan(`bookies:${eventName}:bettors`, 0);
+  let cursor = result[0];
+  let fids = result[1];
+
+  while (cursor) {
+    result = await kv.sscan(`bookies:${eventName}:bettors`, cursor);
+    cursor = result[0];
+    fids = fids.concat(result[1]);
+  }
   
+  console.log(`Bettors: ${fids.length}`);
+
   // Send in batchs of 100
   let fidIndex = 0;
   let batch = fids.slice(fidIndex, Math.min(100, fids.length));
@@ -78,7 +114,24 @@ const path = require("path");
 
   for (let i = 0; i < usernames.length; i++) {
     const username = usernames[i];
-    
-    neynarClient.publishCast(signerUUID, `${message} \n@${username}`, {replyTo:parentHash})
+    const fid = fids[i];
+
+    // Get address from kv
+    const addresses = (await kv.sscan(`${fid}:addresses`, 0))[1];
+
+    console.log(`Sending to ${username} (${fid})`);
+
+    for (let j = 0; j < addresses.length; j++) {
+      const address = addresses[j];
+      console.log(`Sending to ${username} (${fid}) (${address})`);
+
+      // Check if they won
+      const bets = (await orderbookie.getBets(address));
+
+      console.log(bets)
+
+      // Send notification
+      // neynarClient.publishCast(signerUUID, `${message} \n@${username}`, {replyTo:parentHash})
+    }
   }
 })();

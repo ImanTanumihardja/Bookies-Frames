@@ -6,11 +6,11 @@ dotenv.config({ path: ".env"})
 import { Event } from '../../app/types';
 import {Accounts, DatabaseKeys, Outcomes} from '../../src/utils'
 import { ethers } from 'ethers';
-import  orderBookieFactoryABI  from '../../app/contract-abis/orderBookieFactory';
-import { ORDERBOOKIE_FACTORY_ADDRESS, USDC_ADDRESS } from '../../app/addresses'
+import  {OrderBookieFactoryABI}  from '../../app/contract-abis/orderBookieFactory.json';
+import {OrderBookieABI}  from '../../app/contract-abis/orderBookie.json';
+import { ORDERBOOKIE_FACTORY_ADDRESS, USDC_ADDRESS } from '../../app/json/addresses.json'
 import { Etherscan } from "@nomicfoundation/hardhat-verify/etherscan";
 import { sleep } from '@nomicfoundation/hardhat-verify/internal/utilities';
-import OrderBookieABI from '../../app/contract-abis/orderBookie';
 
 const kv = createClient({
     url: process.env['KV_REST_API_URL'],
@@ -56,8 +56,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
     if (description && acceptedToken) {
         const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
         const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
-        const signerAddress = await signer.getAddress();
-        const orderBookiefactory = new ethers.Contract(ORDERBOOKIE_FACTORY_ADDRESS, orderBookieFactoryABI, signer);
+        const orderBookiefactory = new ethers.Contract(ORDERBOOKIE_FACTORY_ADDRESS, OrderBookieFactoryABI, signer);
 
         console.log('Creating OrderBookie Contract...')
 
@@ -78,7 +77,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
                                                               USDC_ADDRESS,
                                                               acceptedToken,
                                                               ethers.encodeBytes32String("MULTIPLE_CHOICE_QUERY"),
-                                                              signerAddress,
+                                                              signer.address,
                                                               false)
 
         // Get address of create contract

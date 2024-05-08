@@ -94,12 +94,13 @@ async function notifyDC(browserWSEndpoint="") {
   }
 }
 
-if (require.main === module) {
+(async () => {if (require.main === module) {
   // Read in cli arguments
   const args = require('minimist')(process.argv.slice(2), {string: ['b']})
-  notifyDC(args['b'])
+  await notifyDC(args['b']).then(() => process.exit(0))
     .catch(error => {
       console.error(error)
       process.exit(1)
     })
 }
+})();

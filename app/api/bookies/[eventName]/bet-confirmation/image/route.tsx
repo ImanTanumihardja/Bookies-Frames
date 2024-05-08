@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import { ODDS_DECIMALS, PICK_DECIMALS, RequestProps, getRequestProps } from '../../../../../../src/utils';
-import orderbookieABI from '../../../../../contract-abis/orderBookie';
+import { OrderBookieABI } from '../../../../../contract-abis/orderBookie.json';
 import { kv } from '@vercel/kv';
 import * as fs from "fs";
 import { join } from 'path';
 import {ethers} from 'ethers';
-import { USDC_ADDRESS, DEGEN_ADDRESS } from '../../../../../addresses';
-import erc20ABI from '../../../../../contract-abis/erc20';
+import { USDC_ADDRESS, DEGEN_ADDRESS } from '../../../../../json/addresses.json';
+import {erc20ABI} from '../../../../../contract-abis/erc20.json';
 
 // Fonts
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
         const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
         const decimals = await (new ethers.Contract(DEGEN_ADDRESS, erc20ABI, provider)).decimals();
 
-        const orderBookie = new ethers.Contract(orderBookieAddress, orderbookieABI, provider)
+        const orderBookie = new ethers.Contract(orderBookieAddress, OrderBookieABI, provider)
 
         let bets : any[] = [];
 

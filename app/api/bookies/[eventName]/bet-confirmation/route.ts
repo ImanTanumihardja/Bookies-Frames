@@ -4,7 +4,7 @@ import { kv } from "@vercel/kv";
 import { Event } from '../../../../types';
 import { Accounts, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, PICK_DECIMALS } from '../../../../../src/utils';
 import {ethers} from 'ethers';
-import orderbookieABI from '../../../../contract-abis/orderBookie';
+import {OrderBookieABI} from '../../../../contract-abis/orderBookie.json';
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   // Verify the frame request
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   console.log('FID: ', fid.toString())
   console.log('EVENT: ', eventName)
 
-  const orderBookie = new ethers.Contract(event.address, orderbookieABI, provider)
+  const orderBookie = new ethers.Contract(event.address, OrderBookieABI, provider)
   const orderBookieInfo = await orderBookie.getBookieInfo()
   const result = parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS))
 

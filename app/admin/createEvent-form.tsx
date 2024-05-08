@@ -3,7 +3,7 @@
 import { useFormState, useFormStatus } from "react-dom";
 import {createEventAction} from "../actions"
 import { CldUploadWidget } from 'next-cloudinary';
-import { DEGEN_ADDRESS, USDC_ADDRESS } from "../addresses";
+import { DEGEN_ADDRESS, USDC_ADDRESS } from "../json/addresses.json";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
