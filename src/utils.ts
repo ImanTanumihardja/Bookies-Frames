@@ -168,7 +168,8 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
                 returnParams[key] = value
                 break;
             case 'number':
-                returnParams[key] = parseFloat(value || "0")
+                const num = parseFloat(value)
+                returnParams[key] = Number.isNaN(num) ? null : num
                 break;
             case 'boolean':
                 returnParams[key] = value === 'true';

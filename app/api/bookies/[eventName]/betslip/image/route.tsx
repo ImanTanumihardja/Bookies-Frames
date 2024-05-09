@@ -45,25 +45,25 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         display: 'flex',
                         flexDirection:'row',
                         alignItems: 'center',
-                        width: '65%',
+                        width: '100%',
                         height: '100%',
                         background: 'linear-gradient(to right, orange, #aa3855, purple)',
                         justifyContent: 'center',
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize:55, position:'absolute', top:-10, left:20 }}>Betslip</h1>
-                    <div style={{display: 'flex', width:'75%', height:'57%', flexDirection: 'column', alignSelf:'center', alignItems:'flex-start', flexWrap: 'wrap', padding:10}}> 
-                        <h1 style={{color: 'white', fontSize:30, margin:15, marginRight:10, textDecoration:'underline'}}> Pick:</h1>
-                        <h1 style={{color: 'white', fontSize:30, margin:15, marginRight:10, textDecoration:'underline'}}> Stake:</h1>
-                        <h1 style={{color: 'white', fontSize:30, margin:10, marginRight:10, textDecoration:'underline'}}> Payout:</h1>
+                    <div style={{display: 'flex', width:'50%', height:'70%', top:20, flexDirection: 'column', alignSelf:'center', alignItems:'flex-start', flexWrap: 'wrap', padding:10}}> 
+                        <h1 style={{color: 'white', fontSize:40, margin:15, marginRight:10, textDecoration:'underline'}}> Pick:</h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:15, marginRight:10, textDecoration:'underline'}}> Stake:</h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:15, marginRight:10, textDecoration:'underline'}}> Payout:</h1>
 
-                        <h1 style={{color: 'white', fontSize:30, margin:15}}>{options[pick]}</h1>
-                        <h1 style={{color: 'white', fontSize:30, margin:15}}>{stake.toFixed(2)} <img style={{width: 38, height: 38, marginLeft:5, marginRight:5}}src={`${process.env['HOST']}/degen.png`}/></h1>
-                        <h1 style={{color: 'white', fontSize:30, margin:15}}>{payout} <img style={{width: 38, height: 38, marginLeft:5, marginRight:5}}src={`${process.env['HOST']}/degen.png`}/></h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:15}}>{options[pick]}</h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:15}}>{stake.toFixed(2)} <img style={{width: 42, height: 42, marginLeft:5, marginTop: 5}}src={`${process.env['HOST']}/degen.png`}/></h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:15}}>{payout} <img style={{width: 42, height: 42, marginLeft:5, marginTop: 5}}src={`${process.env['HOST']}/degen.png`}/></h1>
                     </div>
                     <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, bottom:10, right: 10}}> Odds: {impliedProbability > 0.5 ? '-' : '+'}{odd}</h1>
                 </div>
-                <div style={{display: 'flex', flexDirection:'column', width:'35%', height:'100%', alignItems:'center', background: 'white'}}>
+                {/* <div style={{display: 'flex', flexDirection:'column', width:'35%', height:'100%', alignItems:'center', background: 'white'}}>
                     <div style={{display: 'flex', flexDirection:'row', height:'100%', transform: 'scaleY(-1)', bottom:-5}}>
                         {
                             pollData.map((opt, index) => {
@@ -88,7 +88,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         }
                     </div>
                     <h2 style={{display: 'flex', justifyContent: 'center', textAlign: 'center', color: 'black', fontSize: 27, width:'75%', position:'absolute'}}>{prompt}</h2>
-                </div>
+                </div> */}
             </div>
         ), {
             width: 764, 

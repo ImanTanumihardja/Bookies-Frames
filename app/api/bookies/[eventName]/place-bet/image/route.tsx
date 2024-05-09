@@ -13,31 +13,36 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
         const {prompt, balance, time:startDate} = getRequestProps(req, [RequestProps.PROMPT, RequestProps.BALANCE, RequestProps.TIME]);
         const date = new Date(parseInt((startDate * 1000).toString()));
 
+        let balanceString = balance !== null ? balance.toFixed(2): 0;
+
         let imageResponse =  new ImageResponse(
             <div style={{display: 'flex', flexDirection:'row', height:'100%', width:'100%'}}>
                 <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        width: '100%',
+                        width: balance !== null ? '65%' : '100%',
                         height: '100%',
                         background: 'linear-gradient(to right, orange, #aa3855, purple)',
                         justifyContent: 'center',
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize:25, position: 'absolute', top: 0, left:20}}> {`(${date.toLocaleDateString()})`} </h1>
-                    <h1 style={{color: 'white', fontSize:50, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25}}> {prompt} </h1>
+                    <h1 style={{color: 'white', fontSize: prompt.length > 50 ? 30 : prompt.length > 40 ? 40 : 50, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25}}> {prompt} </h1>
                 </div>
-                {/* <div style={{
+                {balance !== null &&
+                <div style={{
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        justifyContent:'center',
+                        justifyContent: 'center', 
                         width: '35%',
                         height: '100%',
+                        padding: 10,
                         background: 'white'}}>
-                    <h3 style={{color: 'black', fontSize:20, padding:25, textAlign:'center', position:'absolute', top:10}}> Available Balance:</h3>
-                    <h3 style={{color: 'black', fontSize:50, padding:25, textAlign:'center'}}> {balance} </h3>
-                </div> */}
+                    <h3 style={{color: 'black', fontSize: balanceString.length > 10 ? 20 : balanceString.length > 7 ? 30 : 40, textAlign:'center'}}> {balanceString} </h3>
+                    <h3 style={{color: 'black', fontSize:20, textAlign:'center'}}>Balance ($DEGEN)</h3>
+                </div>
+                }
             </div>
             ,
             {

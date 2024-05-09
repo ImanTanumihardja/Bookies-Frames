@@ -1,11 +1,12 @@
 const { NeynarAPIClient } = require("@neynar/nodejs-sdk");
 const dotenv = require("dotenv");
-const {message, parentHash, eventName} = require('./config.json');
+const {tx_url, parentHash, eventName} = require('./config.json');
 const fs = require("fs");
 const path = require("path");
 const ethers = require("ethers");
 const { createClient  } = require("@vercel/kv");
 const { OrderBookieABI } = require("../../../app/contract-abis/orderBookie.json");
+const { erc20ABI } = require("../../../app/contract-abis/erc20.json");
 
 (async () => {
   dotenv.config({ path: ".env"});
@@ -74,6 +75,10 @@ const { OrderBookieABI } = require("../../../app/contract-abis/orderBookie.json"
   // Get orderbookie info
   const orderBookieInfo = await orderbookie.getBookieInfo();
 
+  // Get decimals for accpeted token
+  const acceptedToken = await (new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider));
+  const decimals = await acceptedToken.decimals();
+
   // Check if the bookie is settled
   if (parseFloat(ethers.formatEther(orderBookieInfo.result)) === -1) {
     throw new Error("Bookie is not settled yet");
@@ -119,19 +124,29 @@ const { OrderBookieABI } = require("../../../app/contract-abis/orderBookie.json"
     // Get address from kv
     const addresses = (await kv.sscan(`${fid}:addresses`, 0))[1];
 
-    console.log(`Sending to ${username} (${fid})`);
-
+    let payout = 0;
     for (let j = 0; j < addresses.length; j++) {
       const address = addresses[j];
-      console.log(`Sending to ${username} (${fid}) (${address})`);
 
       // Check if they won
       const bets = (await orderbookie.getBets(address));
 
-      console.log(bets)
+      // Calculate how much they were paid out
+      for (let k = 0; k < bets.length; k++) {
+        const bet = bets[k];
+        if (bet.pick === orderBookieInfo.result) {
+          payout += parseFloat(ethers.formatUnits(bet.stakeUsed + bet.toWinFilled, decimals));
+        }
+      }
+    }
+    
+    if (payout !== 0 && fid !== 391387) {
+      console.log(`Sending to ${username} (${fid})`);
 
       // Send notification
-      // neynarClient.publishCast(signerUUID, `${message} \n@${username}`, {replyTo:parentHash})
+      const message = `Congratulations @${username}! You won ${payout.toFixed(2).toLocaleString()} $DEGEN! ${tx_url}`;
+      console.log(message +'\n');
+      neynarClient.publishCast(signerUUID, message, {replyTo:parentHash})
     }
   }
 })();

@@ -5,6 +5,7 @@ import { Event } from '../../../../types';
 import { kv } from '@vercel/kv';
 import { ethers } from 'ethers';
 import {OrderBookieABI} from '../../../../contract-abis/orderBookie.json';
+import {erc20ABI} from '../../../../contract-abis/erc20.json';
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   const {fid} = await getFrameMessage(req);
@@ -25,6 +26,19 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   const orderBookie = new ethers.Contract(event.address, OrderBookieABI, provider)
   const orderBookieInfo = await orderBookie.getBookieInfo()
   const result = parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS))
+
+  // Get address of fid
+  const address = (await kv.sscan(`${fid}:addresses`, 0))[1][0] || null;
+
+  // Get balance
+  let balance = null;
+  
+  if (address !== null) {
+    const acceptedToken = await new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider)
+    const decimals = await acceptedToken.decimals();
+    const bal = await acceptedToken.balanceOf(address)
+    balance = parseFloat(ethers.formatUnits(bal, decimals))
+  }
 
   let imageUrl = '';
   let buttons = undefined;
@@ -79,7 +93,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       } as FrameButton
     })
     postUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}`, {}, false),
-    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, [RequestProps.BALANCE]: 0, [RequestProps.TIME]: event.startDate}, true);
+    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, [RequestProps.BALANCE]: balance !== null ? balance : "", [RequestProps.TIME]: event.startDate}, true);
   }
 
   const frame : Frame = {
