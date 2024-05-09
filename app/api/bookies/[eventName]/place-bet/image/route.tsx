@@ -39,7 +39,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         height: '100%',
                         padding: 10,
                         background: 'white'}}>
-                    <h3 style={{color: 'black', fontSize: balanceString.length > 10 ? 20 : balanceString.length > 7 ? 30 : 40, textAlign:'center'}}> {balanceString} </h3>
+                    <h3 style={{color: 'black', fontSize: balanceString.length > 10 ? 25 : balanceString.length > 7 ? 35 : 45, textAlign:'center'}}> {balanceString} </h3>
                     <h3 style={{color: 'black', fontSize:20, textAlign:'center'}}>Balance ($DEGEN)</h3>
                 </div>
                 }
