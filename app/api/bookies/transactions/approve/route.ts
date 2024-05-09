@@ -8,7 +8,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req);
 
-  const {input} = message
+  const {input, connectedAddress} = message
   const {address: orderBookieAddress } = getRequestProps(req, [RequestProps.ADDRESS]);
 
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   // Check balance
-  const balance = await acceptedToken.balanceOf(orderBookieAddress)
+  const balance = await acceptedToken.balanceOf(connectedAddress)
   if (balance < ethers.parseUnits(stake.toString(), decimals)) {
     return new Response(JSON.stringify({ message: 'Insufficient balance' }), { status: 400, headers: { 'content-type': 'application/json' } });
   }
