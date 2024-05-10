@@ -70,6 +70,15 @@ export default async function placeBet(bettorAddress:string, eventName:string, f
       throw new Error('Error creating bet');
     })
   })
+
+  // Add bet to poll
+  await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(async (error) => {
+    console.error('Error adding user to poll:', error);
+    // Try again
+    await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch((error) => {
+      throw new Error('Error creating bet');
+    })
+  })
 }
 
 

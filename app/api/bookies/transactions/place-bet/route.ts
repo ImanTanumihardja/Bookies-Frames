@@ -10,7 +10,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req);
 
-  const {input, fid} = message
+  const {fid} = message
 
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
