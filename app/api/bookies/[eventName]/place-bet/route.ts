@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, PICK_DECIMALS, RequestProps, Transactions, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage } from '../../../../../src/utils';
+import { DatabaseKeys, FrameNames, ODDS_DECIMALS, PICK_DECIMALS, RequestProps, Transactions, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage } from '../../../../../src/utils';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { Event } from '../../../../types';
 import { kv } from '@vercel/kv';
@@ -27,6 +27,9 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   const orderBookieInfo = await orderBookie.getBookieInfo()
   const result = parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS))
 
+  const acceptedToken = await new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider)
+  const decimals = await acceptedToken.decimals();
+
   // Get address of fid
   const address = (await kv.sscan(`${fid}:addresses`, 0))[1][0] || null;
 
@@ -34,8 +37,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   let balance = null;
   
   if (address !== null) {
-    const acceptedToken = await new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider)
-    const decimals = await acceptedToken.decimals();
+    
     const bal = await acceptedToken.balanceOf(address)
     balance = parseFloat(ethers.formatUnits(bal, decimals))
   }
@@ -80,6 +82,9 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   }
   else 
   {
+
+    const poll = Object.values(await kv.hgetall(`${eventName}:${DatabaseKeys.POLL}`) as Record<number, number>)
+
     buttons = event.options.map((option, index) => {
       if (event === null) throw new Error('Event not found');
       const probability = event.odds[index];
@@ -93,7 +98,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       } as FrameButton
     })
     postUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}`, {}, false),
-    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, [RequestProps.BALANCE]: balance !== null ? balance : "", [RequestProps.TIME]: event.startDate}, true);
+    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, [RequestProps.BALANCE]: balance !== null ? balance : "", [RequestProps.POLL]: poll, [RequestProps.OPTIONS]: event.options}, true);
   }
 
   const frame : Frame = {

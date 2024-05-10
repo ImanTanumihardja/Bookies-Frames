@@ -10,8 +10,17 @@ let fontData = fs.readFileSync(fontPath)
 
 export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }) {
     try {
-        const {prompt, balance, time:startDate} = getRequestProps(req, [RequestProps.PROMPT, RequestProps.BALANCE, RequestProps.TIME]);
-        const date = new Date(parseInt((startDate * 1000).toString()));
+        const {prompt, balance, poll, options} = getRequestProps(req, [RequestProps.PROMPT, RequestProps.BALANCE, RequestProps.POLL, RequestProps.OPTIONS]);
+
+        let pollData = [];
+        // Get total votes
+        let totalVotes : number = poll.reduce((a:any, b:any) => a + b, 0); 
+        if (totalVotes === 0) totalVotes = 1;
+
+        for (let i = 0; i < options.length; i++) {
+            const percent = Math.round(Math.min((poll[i] / totalVotes) * 100, 100));
+            pollData.push({votes: poll[i], percent:percent, text: `${options[i]}`})
+        }
 
         let balanceString = balance !== null ? balance.toFixed(2): 0;
 
@@ -20,29 +29,41 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                 <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        width: balance !== null ? '65%' : '100%',
+                        width: '65%',
                         height: '100%',
                         background: 'linear-gradient(to right, orange, #aa3855, purple)',
                         justifyContent: 'center',
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
-                    <h1 style={{color: 'white', fontSize:25, position: 'absolute', top: 0, left:20}}> {`(${date.toLocaleDateString()})`} </h1>
                     <h1 style={{color: 'white', fontSize: prompt.length > 50 ? 30 : prompt.length > 40 ? 40 : 50, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25}}> {prompt} </h1>
+                    {balance !== null && <h3 style={{color: 'white', position: 'absolute', bottom: 0, right:20, fontSize: 25, textAlign:'center'}}> <img style={{width: 25, height: 25, marginRight:5, marginTop: 5}}src={`${process.env['HOST']}/degen.png`}/> {balanceString} </h3>}
+                    <h1 style={{position:'absolute', color:'white', fontSize:25, top: 0, left:20}}> *Approve Spending 1/2*</h1>
                 </div>
-                {balance !== null &&
-                <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center', 
-                        width: '35%',
-                        height: '100%',
-                        padding: 10,
-                        background: 'white'}}>
-                    <h3 style={{color: 'black', fontSize: balanceString.length > 10 ? 25 : balanceString.length > 7 ? 35 : 45, textAlign:'center'}}> {balanceString} </h3>
-                    <h3 style={{color: 'black', fontSize:20, textAlign:'center'}}>Balance ($DEGEN)</h3>
+                <div style={{display: 'flex', flexDirection:'column', width:'35%', height:'100%', alignItems:'center', background: 'white'}}>
+                    <div style={{display: 'flex', flexDirection:'row', height:'100%', transform: 'scaleY(-1)', bottom:-5}}>
+                        {
+                            pollData.map((opt, index) => {
+                                return (
+                                    <div key={index} style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        marginRight: 10,
+                                        marginLeft: 10,
+                                        background: 'linear-gradient(to top, orange, #aa3855, purple)',
+                                        borderRadius: 4,
+                                        width:'20%',
+                                        height: `${Math.min(opt.percent + 18, 100)}%`,
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'visible',
+                                        fontSize: 20,
+                                    }}>
+                                        <h3 style={{color:'black', top:30, transform: 'rotate(90deg) scaleY(-1)'}}>{`${opt.text + " " + opt.percent}`}%</h3>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
                 </div>
-                }
             </div>
             ,
             {

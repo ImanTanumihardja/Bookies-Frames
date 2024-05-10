@@ -15,29 +15,16 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
             stake, 
             odd : impliedProbability, 
             poll, 
-            prompt, 
             options} 
                 = getRequestProps(req, [RequestProps.PICK, 
                                         RequestProps.STAKE, 
                                         RequestProps.ODD,
-                                        RequestProps.POLL,
-                                        RequestProps.PROMPT,
                                         RequestProps.OPTIONS]);
         
         const odd = convertImpliedProbabilityToAmerican(impliedProbability)
 
         // Round payout to 2 decimal places
         const payout = calculatePayout(impliedProbability, stake).toFixed(2);
-
-        let pollData = [];
-        // Get total votes
-        let totalVotes : number = poll.reduce((a:any, b:any) => a + b, 0); 
-        if (totalVotes === 0) totalVotes = 1;
-
-        for (let i = 0; i < options.length; i++) {
-            const percent = Math.round(Math.min((poll[i] / totalVotes) * 100, 100));
-            pollData.push({votes: poll[i], percent:percent, text: `${options[i]}`})
-        }
 
         const imageResponse = new ImageResponse((
             <div style={{display: 'flex', flexDirection:'row', height:'100%', width:'100%'}}>
@@ -62,33 +49,8 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         <h1 style={{color: 'white', fontSize:40, margin:15}}>{payout} <img style={{width: 42, height: 42, marginLeft:5, marginTop: 5}}src={`${process.env['HOST']}/degen.png`}/></h1>
                     </div>
                     <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, bottom:10, right: 10}}> Odds: {impliedProbability > 0.5 ? '-' : '+'}{odd}</h1>
+                    <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, top:10, right: 10}}> *Confirm Bet 2/2*</h1>
                 </div>
-                {/* <div style={{display: 'flex', flexDirection:'column', width:'35%', height:'100%', alignItems:'center', background: 'white'}}>
-                    <div style={{display: 'flex', flexDirection:'row', height:'100%', transform: 'scaleY(-1)', bottom:-5}}>
-                        {
-                            pollData.map((opt, index) => {
-                                return (
-                                    <div key={index} style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        marginRight: 10,
-                                        marginLeft: 10,
-                                        background: 'linear-gradient(to top, orange, #aa3855, purple)',
-                                        borderRadius: 4,
-                                        width:'20%',
-                                        height: `${Math.min(opt.percent + 18, 100)}%`,
-                                        whiteSpace: 'nowrap',
-                                        overflow: 'visible',
-                                        fontSize: 20,
-                                    }}>
-                                        <h3 style={{color:'black', top:30, transform: 'rotate(90deg) scaleY(-1)'}}>{`${opt.text + " " + opt.percent}`}%</h3>
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
-                    <h2 style={{display: 'flex', justifyContent: 'center', textAlign: 'center', color: 'black', fontSize: 27, width:'75%', position:'absolute'}}>{prompt}</h2>
-                </div> */}
             </div>
         ), {
             width: 764, 

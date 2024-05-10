@@ -29,6 +29,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     return new Response(JSON.stringify({ message: `Stake amount exceeds ${STAKE_LIMIT} limit` }), { status: 400, headers: { 'content-type': 'application/json' } });
   }
 
+  console.log("Connected Address: " + connectedAddress)
   // Check balance
   const balance = await acceptedToken.balanceOf(connectedAddress)
   if (balance < ethers.parseUnits(stake.toString(), decimals)) {

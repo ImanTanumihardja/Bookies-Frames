@@ -76,16 +76,12 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   }
   else
   {
-    const poll = Object.values(await kv.hgetall(`${eventName}:${DatabaseKeys.POLL}`) as Record<number, number>)
-    const prompt = event.prompt;
     const options = event.options;
 
 
     imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}/image`, {[RequestProps.PICK]: pick, 
                                                                       [RequestProps.STAKE]: stake, 
                                                                       [RequestProps.ODD]: impliedProbability,
-                                                                      [RequestProps.POLL]: poll,
-                                                                      [RequestProps.PROMPT]: prompt, 
                                                                       [RequestProps.OPTIONS]: options}, true);
     buttons = [
       {
