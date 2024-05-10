@@ -49,7 +49,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         <h1 style={{color: 'white', fontSize:40, margin:15}}>{payout} <img style={{width: 42, height: 42, marginLeft:5, marginTop: 5}}src={`${process.env['HOST']}/degen.png`}/></h1>
                     </div>
                     <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, bottom:10, right: 10}}> Odds: {impliedProbability > 0.5 ? '-' : '+'}{odd}</h1>
-                    <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, top:10, right: 10}}> *Confirm Bet 2/2*</h1>
+                    <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, top:10, right: 10}}> *Confirm Bet TX*</h1>
                 </div>
             </div>
         ), {
