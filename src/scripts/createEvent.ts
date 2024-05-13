@@ -99,30 +99,31 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
         const orderBookieInfo = await orderBookie.getBookieInfo()
 
         // Verify the contract on etherscan
-        const instance = new Etherscan(
-          process.env.BASESCAN_API_KEY || '', // Etherscan API key
-          "https://api.basescan.org/api", // Etherscan API URL
-          "https://basescan.org/" // Etherscan browser URL
-        );
+        try {
+          const instance = new Etherscan(
+            process.env.BASESCAN_API_KEY || '', // Etherscan API key
+            "https://api.basescan.org/api", // Etherscan API URL
+            "https://basescan.org/" // Etherscan browser URL
+          );
 
-        // Read in json file
-        const filePath = process.cwd() + '/app/json/orderbookieVerify.json';
-        const contractSourceCode = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+          // Read in json file
+          const filePath = process.cwd() + '/app/json/orderbookieVerify.json';
+          const contractSourceCode = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-        // Encode parameters using orderbookie interface
+          // Encode parameters using orderbookie interface
 
-        // convert eventID to hex number
-        const abiCoder = new ethers.AbiCoder();
-        let encodedConstructorArgs = abiCoder.encode(["bytes32", "uint256", "address", "address", "address"], [
-          orderBookieInfo.eventID,
-          startDate, // Convert from milli-seconds to seconds
-          orderBookieInfo.owner,
-          orderBookieInfo.settlementManagerAddress,
-          orderBookieInfo.acceptedTokenAddress,
-        ]);
+          // convert eventID to hex number
+          const abiCoder = new ethers.AbiCoder();
+          let encodedConstructorArgs = abiCoder.encode(["bytes32", "uint256", "address", "address", "address"], [
+            orderBookieInfo.eventID,
+            startDate, // Convert from milli-seconds to seconds
+            orderBookieInfo.owner,
+            orderBookieInfo.settlementManagerAddress,
+            orderBookieInfo.acceptedTokenAddress,
+          ]);
 
-        //drop "0x"
-        encodedConstructorArgs = encodedConstructorArgs.slice(2);
+          //drop "0x"
+          encodedConstructorArgs = encodedConstructorArgs.slice(2);
 
         if (!(await instance.isVerified(address))) {
           console.log("Verifying: " + address)
@@ -148,11 +149,11 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
               `Successfully verified contract "MyContract" on Etherscan: ${contractURL}`
             );
           }
-          else {
-            console.error(`Failed to verify contract: ${verificationStatus.message}`);
-          
-          }
         }
+      }
+      catch (error) {
+        console.error(`Failed to verify contract: ${error}`);
+      }
     }
     else {  
       throw new Error(`Ancillary data is required for bookies`)

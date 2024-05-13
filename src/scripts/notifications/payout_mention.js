@@ -140,7 +140,7 @@ const { erc20ABI } = require("../../../app/contract-abis/erc20.json");
       }
     }
     
-    if (payout !== 0 && fid !== 391387) {
+    if (payout !== 0 && fid !== 391387 && fid != 313859) {
       console.log(`Sending to ${username} (${fid})`);
 
       // Send notification
