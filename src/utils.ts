@@ -115,6 +115,7 @@ export enum DatabaseKeys {
     LEADERBOARD = 'leaderboard',
     BETTORS = 'bettors',
     POLL = 'poll',
+    EVENTS = 'events',
 }
 
 export const Outcomes = {
