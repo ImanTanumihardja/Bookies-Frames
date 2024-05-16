@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { DatabaseKeys, FrameNames, ODDS_DECIMALS, PICK_DECIMALS, RequestProps, Transactions, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage } from '../../../../../src/utils';
+import { FrameNames, PICK_DECIMALS, RequestProps, Transactions, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage } from '../../../../../src/utils';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { Event } from '../../../../types';
 import { kv } from '@vercel/kv';
@@ -82,10 +82,14 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   }
   else 
   {
-    // Get liquidity spread from contract
-    const liquiditySpread = await orderBookie.getLiquiditySpread()
+    // Get liquidity spread from contract and convert to array of decimals
+    const results = await orderBookie.getLiquiditySpread()
+    let liquiditySpread: number[] = []
 
-    console.log(`Liquidity Spread: ${liquiditySpread}`)
+    // Convert each liquidity spread to decimals
+    for (let i = 0; i < results.length; i++) {
+      liquiditySpread.push(parseFloat(ethers.formatUnits(results[i], decimals)))
+    }
 
     buttons = event.options.map((option, index) => {
       if (event === null) throw new Error('Event not found');
