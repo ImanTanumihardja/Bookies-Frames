@@ -82,8 +82,10 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   }
   else 
   {
+    // Get liquidity spread from contract
+    const liquiditySpread = await orderBookie.getLiquiditySpread()
 
-    const poll = Object.values(await kv.hgetall(`${eventName}:${DatabaseKeys.POLL}`) as Record<number, number>)
+    console.log(`Liquidity Spread: ${liquiditySpread}`)
 
     buttons = event.options.map((option, index) => {
       if (event === null) throw new Error('Event not found');
@@ -98,7 +100,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       } as FrameButton
     })
     postUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}`, {}, false),
-    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, [RequestProps.BALANCE]: balance !== null ? balance : "", [RequestProps.POLL]: poll, [RequestProps.OPTIONS]: event.options}, true);
+    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, [RequestProps.BALANCE]: balance !== null ? balance : "", [RequestProps.POLL]: liquiditySpread, [RequestProps.OPTIONS]: event.options}, true);
   }
 
   const frame : Frame = {

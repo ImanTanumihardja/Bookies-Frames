@@ -172,7 +172,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
     await kv.del(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`)
 
     // Add to alea events list
-    await kv.ladd(`${Accounts.ALEA}:${DatabaseKeys.EVENTS}`, eventName)
+    await kv.sadd(`${Accounts.ALEA}:${DatabaseKeys.EVENTS}`, eventName)
   }
 
   if (host === Accounts.BOOKIES || host === Accounts.BOTH) {
@@ -180,7 +180,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
     await kv.del(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`)
 
     // Add to bookies events list
-    await kv.ladd(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, eventName)
+    await kv.sadd(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, eventName)
   }
 
   event = await kv.hgetall(`${eventName}`)
