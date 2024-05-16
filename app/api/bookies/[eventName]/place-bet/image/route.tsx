@@ -18,7 +18,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
         if (totalVotes === 0) totalVotes = 1;
 
         for (let i = 0; i < options.length; i++) {
-            const percent = Math.round(Math.min((poll[i] / totalVotes) * 100, 100));
+            const percent = Math.round((poll[i] / totalVotes) * 100);
             pollData.push({votes: poll[i], percent:percent, text: `${options[i]}`})
         }
 
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                                         background: 'linear-gradient(to top, orange, #aa3855, purple)',
                                         borderRadius: 4,
                                         width:'20%',
-                                        height: `${Math.min(opt.percent + 18, 100)}%`,
+                                        height: `${Math.max(opt.percent, 20)}%`,
                                         whiteSpace: 'nowrap',
                                         overflow: 'visible',
                                         fontSize: 20,

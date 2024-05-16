@@ -135,7 +135,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
             // Contract name
             "contracts/OrderBookie.sol:OrderBookie",
             // Compiler version
-            "v0.8.19+commit.7dd6d404",
+            "v0.8.20+commit.7dd6d404",
             // Encoded constructor arguments
             encodedConstructorArgs
           );

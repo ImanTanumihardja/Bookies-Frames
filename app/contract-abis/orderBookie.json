@@ -1,6 +1,6 @@
 {
    "OrderBookieABI":
-  [
+   [
     {
       "inputs": [],
       "name": "cancelBookie",
@@ -151,6 +151,19 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "getLiquiditySpread",
+      "outputs": [
+        {
+          "internalType": "uint256[2]",
+          "name": "",
+          "type": "uint256[2]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "int256",
@@ -163,7 +176,7 @@
           "type": "uint256"
         }
       ],
-      "name": "getLiquidityAtOdd",
+      "name": "getOpenLiquidity",
       "outputs": [
         {
           "internalType": "uint256",
@@ -226,4 +239,5 @@
       "type": "function"
     }
   ]
+  
 }
