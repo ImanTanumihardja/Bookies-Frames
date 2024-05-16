@@ -83,13 +83,9 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   else 
   {
     // Get liquidity spread from contract and convert to array of decimals
-    const results = await orderBookie.getLiquiditySpread()
-    let liquiditySpread: number[] = []
-
-    // Convert each liquidity spread to decimals
-    for (let i = 0; i < results.length; i++) {
-      liquiditySpread.push(parseFloat(ethers.formatUnits(results[i], decimals)))
-    }
+    let liquiditySpread: number[] = await (orderBookie.getLiquiditySpread()).then((res) => {
+      return res.map((val: any) => parseFloat(ethers.formatUnits(val, decimals)))
+    });
 
     buttons = event.options.map((option, index) => {
       if (event === null) throw new Error('Event not found');
