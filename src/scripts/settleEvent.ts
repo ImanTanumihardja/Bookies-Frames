@@ -2,7 +2,7 @@
 const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
-import { Accounts, calculatePayout, DatabaseKeys } from "../utils";
+import { Accounts, calculatePayout, DatabaseKeys, neynarClient } from "../utils";
 import { Event, User } from '../../app/types';
 import { createClient  } from "@vercel/kv";
 
@@ -11,16 +11,18 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'] || '',
   });
 
-export default async function settleEvent(eventName="", result=-1) {
+const REBATE = 0.01;
+
+export default async function settleEvent(eventName="", result=-1, url="") {
     let event: Event | null = await kv.hgetall(`${eventName}`);
 
     if (event === null) {
       throw new Error(`Event: ${eventName} does not exist`)
     }
     
-    if (event?.startDate > new Date().getTime()) {
-      throw new Error('Event has not closed yet')
-    }
+    // if (event?.startDate > new Date().getTime()) {
+    //   throw new Error('Event has not closed yet')
+    // }
 
     if (parseFloat(event?.result.toString()) !== -1) {
       throw new Error('Event has already been settled')
@@ -34,6 +36,57 @@ export default async function settleEvent(eventName="", result=-1) {
       throw new Error('Result is invalid')
     }
 
+    // Check if url is valid
+    if (url === "") {
+      throw new Error('URL is invalid')
+    }
+
+    // Get post info
+    const options = {
+      method: 'GET',
+      headers: {accept: 'application/json', api_key: process.env.NEYNAR_API_KEY || ''}
+    };
+    
+    let postHash;
+    await fetch(`https://api.neynar.com/v2/farcaster/cast?identifier=${encodeURIComponent(url)}&type=url`, options)
+      .then(async (response) => {
+        postHash = (await response.json()).cast.hash
+      })
+      .catch(err => { throw new Error(err) });
+
+    if (postHash === undefined) {
+      throw new Error('Could not get post hash')
+    }
+
+    let cursor = undefined;
+    let likes: number[] = []
+    let recasts: number[] = []
+
+    while (cursor !== null) {
+      await neynarClient.fetchReactionsForCast(postHash, 'all', {limit: 100, cursor: cursor}).then(async (result:any) => {
+        const reactions = result.reactions
+
+        // Loop through all reactions
+        for (const reaction of reactions) {
+          if (reaction.reaction_type === 'like') {
+            likes.push(reaction.user.fid)
+          }
+          else if (reaction.reaction_type === 'recast') {
+            recasts.push(reaction.user.fid)
+          }
+        }
+
+        cursor = result.cursor
+      }
+      ).catch((error) => {
+        throw new Error(`Error fetching reactions: ${error}`)
+      });
+    }
+
+    console.log(`Likes: ${likes}`)
+    console.log(`Recasts: ${recasts}`)
+
+
     console.log(`Event: ${eventName}`)
     console.log(event)
 
@@ -45,7 +98,7 @@ export default async function settleEvent(eventName="", result=-1) {
 
     // Get all bets
     let betsData = (await kv.sscan(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, 0, { count: 150 }))
-    let cursor = betsData[0]
+    cursor = betsData[0]
     let fids : number[] = betsData[1] as unknown as number[]
 
     while (cursor) {
@@ -87,7 +140,14 @@ export default async function settleEvent(eventName="", result=-1) {
             console.log(`User: ${fid} lost bet: ${JSON.stringify(bet)}`)
             user.streak = 0;
             user.losses = parseInt(user.losses.toString()) + 1;
-            toWinAmount -= bet.stake;
+
+            // Check if user is eligible for rebate
+            if (fid in likes && fid in recasts) {
+              toWinAmount -= bet.stake * (1 - REBATE);
+            }
+            else {
+              toWinAmount -= bet.stake;
+            }
           }
           bet.settled = true;
           user.numBets = parseInt(user?.numBets.toString()) + 1;
@@ -105,6 +165,11 @@ export default async function settleEvent(eventName="", result=-1) {
         throw new Error(`Error updating user: ${fid}\n${error}`)
       });
     }
+
+    // Remove event from alea event list
+    await kv.srem(`${Accounts.ALEA}:${DatabaseKeys.EVENTS}`, eventName).catch((error) => {
+      throw new Error(`Error removing event from alea: ${error}`)
+    })
 }
 
 if (require.main === module) {

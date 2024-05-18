@@ -1,4 +1,4 @@
-import { getFrameHtml} from "frames.js";
+import { FrameButtonsType, getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { Event, User, Bet } from '../../../../types';
@@ -30,6 +30,10 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   event = event as unknown as Event || null;
   user = user as unknown as User || null;
+
+  // Get all alea events and filter out this eventName
+  let aleaEvents = (await kv.sscan(`${Accounts.ALEA}:${DatabaseKeys.EVENTS}`, 0, {count: 150}))[1] as string[];
+  aleaEvents = aleaEvents.filter((e) => e !== String(eventName));
 
   console.log('FID: ', fid.toString())
 
@@ -112,33 +116,37 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   const imageUrl = generateUrl(`api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.OPTIONS]: event.options, [RequestProps.TIME]: now, [RequestProps.RESULT]: event.result}, true);
 
+  let buttons : FrameButtonsType = [
+    { 
+      label: "/bookies!", 
+      action: 'link', 
+      target: 'https://warpcast.com/~/channel/bookies'
+    }, 
+    {
+      label: 'Profile Finder', 
+      action:'post', 
+      target: generateUrl(`/api/alea/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: -1}, false)
+    },
+    {
+      label: 'Leaderboard', 
+      action:'post', 
+      target: generateUrl(`/api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: -1, [RequestProps.REDIRECT]: true}, false)
+    },
+  ]
+
+  if (aleaEvents.length > 0) {
+    buttons.push({
+      label: 'Bet on Another Event', 
+      action:'post', 
+      target: generateUrl(`/api/alea/${aleaEvents[Math.floor(Math.random() * aleaEvents.length)]}/${FrameNames.PLACE_BET}`, {}, false)
+    })
+  }
+
   return new NextResponse(
     getFrameHtml({
       version: "vNext",
       image: `${imageUrl}`,
-      buttons: 
-      [
-        { 
-          label: "/bookies!", 
-          action: 'link', 
-          target: 'https://warpcast.com/~/channel/bookies'
-        }, 
-        {
-          label: 'Bet Again', 
-          action:'post', 
-          target: generateUrl(`/api/alea/${eventName}/${FrameNames.PLACE_BET}`, {}, false)
-        },
-        {
-          label: 'Profile Finder', 
-          action:'post', 
-          target: generateUrl(`/api/alea/${FrameNames.PROFILE_FINDER}`, {[RequestProps.FID]: -1}, false)
-        },
-        {
-          label: 'Leaderboard', 
-          action:'post', 
-          target: generateUrl(`/api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: -1, [RequestProps.REDIRECT]: true}, false)
-        },
-        ],
+      buttons: buttons,
       postUrl: generateUrl(`/api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}`, {}, false),
     }),
   );

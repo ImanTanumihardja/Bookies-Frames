@@ -34,6 +34,10 @@ export function SettleEventForm() {
         <input type="decimal" id="result" name="result" required />
         <br />
         <br />
+        <label htmlFor="url">Post URL </label>
+        <input type="string" id="url" name="url" required />
+        <br />
+        <br />
         <SubmitButton />
       </form>
     </div>
