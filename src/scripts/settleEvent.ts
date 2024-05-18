@@ -143,6 +143,7 @@ export default async function settleEvent(eventName="", result=-1, url="") {
 
             // Check if user is eligible for rebate
             if (fid in likes && fid in recasts) {
+              console.log(`User: ${fid} is eligible for rebate`)
               toWinAmount -= bet.stake * (1 - REBATE);
             }
             else {
