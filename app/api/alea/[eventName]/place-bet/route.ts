@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ALEA_FID, DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getFrameMessage, getRequestProps, notFollowingResponse } from '../../../../../src/utils';
+import { ALEA_FID, Accounts, DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getFrameMessage, getRequestProps, notFollowingResponse } from '../../../../../src/utils';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { User, Event } from '../../../../types';
 import { kv } from '@vercel/kv';
@@ -50,6 +50,10 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     const pick = -1;
     inputText = undefined
 
+    // Get all alea events and filter out this eventName
+    let aleaEvents = (await kv.sscan(`${Accounts.ALEA}:${DatabaseKeys.EVENTS}`, 0, {count: 150}))[1] as string[];
+    aleaEvents = aleaEvents.filter((e) => e !== String(eventName));
+
     buttons =
       [
         { 
@@ -68,6 +72,15 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
           target: generateUrl(`/api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: -1, [RequestProps.REDIRECT]: true}, false)
         },
       ]
+
+    if (aleaEvents.length > 0) {
+      buttons.push({
+        label: 'Next Event', 
+        action:'post', 
+        target: generateUrl(`/api/alea/${aleaEvents[Math.floor(Math.random() * aleaEvents.length)]}`, {}, false)
+      })
+    }
+    
     imageUrl = generateUrl(`api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: 0, 
                                                                               [RequestProps.PICK]: pick, 
                                                                               [RequestProps.BUTTON_INDEX]: 0, 
