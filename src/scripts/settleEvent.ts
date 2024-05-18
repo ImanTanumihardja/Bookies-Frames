@@ -11,7 +11,7 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'] || '',
   });
 
-const REBATE = 0.01;
+const REBATE = 0.10;
 
 export default async function settleEvent(eventName="", result=-1, url="") {
     let event: Event | null = await kv.hgetall(`${eventName}`);

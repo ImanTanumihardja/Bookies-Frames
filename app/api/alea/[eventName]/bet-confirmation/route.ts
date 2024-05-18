@@ -136,7 +136,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   if (aleaEvents.length > 0) {
     buttons.push({
-      label: 'Next Event', 
+      label: 'Bet on Another Event', 
       action:'post', 
       target: generateUrl(`/api/alea/${aleaEvents[Math.floor(Math.random() * aleaEvents.length)]}`, {}, false)
     })

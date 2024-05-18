@@ -3,7 +3,7 @@ const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 const { NeynarAPIClient } = require("@neynar/nodejs-sdk");
 
-const target_fid = 244367
+const target_fid = 391387
 
 // Create a script that access kv storage and reset the hasClaimed value
 async function getFollowersFID() {
