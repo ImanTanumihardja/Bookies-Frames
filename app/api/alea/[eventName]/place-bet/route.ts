@@ -56,11 +56,6 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
     buttons =
       [
-        { 
-          label: "/bookies!", 
-          action: 'link', 
-          target: 'https://warpcast.com/~/channel/bookies'
-        },
         {
           label: 'Profile Finder', 
           action:'post', 

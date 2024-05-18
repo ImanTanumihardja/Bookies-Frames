@@ -117,11 +117,6 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   const imageUrl = generateUrl(`api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.OPTIONS]: event.options, [RequestProps.TIME]: now, [RequestProps.RESULT]: event.result}, true);
 
   let buttons : FrameButtonsType = [
-    { 
-      label: "/bookies!", 
-      action: 'link', 
-      target: 'https://warpcast.com/~/channel/bookies'
-    }, 
     {
       label: 'Profile Finder', 
       action:'post', 
