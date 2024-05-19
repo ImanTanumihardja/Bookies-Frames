@@ -9,7 +9,7 @@ export async function GET() {
     // Check each event is settled if so remove
     for (const eventName of bookiesEvents) {
         const eventInfo: Event | null = await kv.hgetall(eventName);
-        if (eventInfo && eventInfo.startDate < Date.now()) {
+        if (eventInfo && eventInfo.startDate < Date.now() / 1000) {
             await kv.srem(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, eventName);
             console.log(`Removed event: ${eventName}`);
         }
