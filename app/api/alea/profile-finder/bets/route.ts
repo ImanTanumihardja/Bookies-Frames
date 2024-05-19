@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Frame, getFrameHtml } from "frames.js";
-import { generateUrl, RequestProps, getFrameMessage, FrameNames, getRequestProps } from '../../../../../src/utils';
+import { generateUrl, RequestProps, getFrameMessage, FrameNames, getRequestProps, DEFAULT_USER } from '../../../../../src/utils';
+import { kv } from '@vercel/kv';
+import { User } from '../../../../types';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request
@@ -8,7 +10,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   const { button } = message;
 
-  const {fid, index:lastEventIndex, array:eventNames} = getRequestProps(req, [RequestProps.FID, RequestProps.INDEX, RequestProps.ARRAY]);
+  const {fid, index:lastEventIndex} = getRequestProps(req, [RequestProps.FID, RequestProps.INDEX]);
+
+  const user: User = await kv.hgetall(fid?.toString() || "") || DEFAULT_USER;
+  
+  const eventNames = Object.keys((user as User).bets) 
 
   console.log('Searched FID: ', fid.toString())
 
@@ -95,7 +101,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         action: 'post'
       }
     ],
-    postUrl: generateUrl(`/api/alea/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}`, {[RequestProps.FID]: fid, [RequestProps.INDEX]: currentEventIndex, [RequestProps.ARRAY]: eventNames}, false),
+    postUrl: generateUrl(`/api/alea/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}`, {[RequestProps.FID]: fid, [RequestProps.INDEX]: currentEventIndex}, false),
   };
 
   return new NextResponse(

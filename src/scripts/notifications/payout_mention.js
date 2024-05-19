@@ -78,6 +78,7 @@ const { erc20ABI } = require("../../../app/contract-abis/erc20.json");
   // Get decimals for accpeted token
   const acceptedToken = await (new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider));
   const decimals = await acceptedToken.decimals();
+  const symbol = (await acceptedToken.symbol()).toUpperCase();
 
   // Check if the bookie is settled
   if (parseFloat(ethers.formatEther(orderBookieInfo.result)) === -1) {
@@ -144,7 +145,7 @@ const { erc20ABI } = require("../../../app/contract-abis/erc20.json");
       console.log(`Sending to ${username} (${fid})`);
 
       // Send notification
-      const message = `Congratulations @${username}! You won ${payout.toFixed(2).toLocaleString()} $DEGEN! ${tx_url}`;
+      const message = `Congratulations @${username}! You won ${payout.toFixed(2).toLocaleString()} \$${symbol}! ${tx_url}`;
       console.log(message +'\n');
       neynarClient.publishCast(signerUUID, message, {replyTo:parentHash})
     }

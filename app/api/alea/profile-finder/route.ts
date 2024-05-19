@@ -61,9 +61,9 @@ export async function POST(req: NextRequest): Promise<Response> {
         throw new Error('Invalid fid');
       }
 
-      const searchFID = profileFID || username;
+      const search = profileFID || username;
 
-      profile = (await neynarClient.fetchBulkUsers([searchFID], {viewerFid: BOOKIES_FID})).users[0];
+      profile = (await neynarClient.fetchBulkUsers([search], {viewerFid: BOOKIES_FID})).users[0];
     } catch (error) {
       console.log('Profile-finder Error: Could not find user by fid:', error);
     }
@@ -143,7 +143,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       {
         label: "Bets",
         action: 'post',
-        target: generateUrl(`/api/alea/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}`, {[RequestProps.FID]: profile?.fid, [RequestProps.INDEX]: 0, [RequestProps.ARRAY]: eventNames}, false)
+        target: generateUrl(`/api/alea/${FrameNames.PROFILE_FINDER}/${FrameNames.BETS}`, {[RequestProps.FID]: profile?.fid, [RequestProps.INDEX]: 0}, false)
       },
       {
         label: "Leaderboard",
