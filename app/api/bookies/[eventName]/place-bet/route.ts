@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, PICK_DECIMALS, RequestProps, Transactions, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage } from '../../../../../src/utils';
+import { Accounts, DatabaseKeys, FrameNames, PICK_DECIMALS, RequestProps, Transactions, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage } from '../../../../../src/utils';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { Event } from '../../../../types';
 import { kv } from '@vercel/kv';
@@ -21,6 +21,10 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   // Get info for bet
   if (event === null) throw new Error('Event not found');
+
+  // Get all bookies events and filter out this eventName
+  let bookiesEvents = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, 0, {count: 150}))[1] as string[];
+  bookiesEvents = bookiesEvents.filter((e) => e !== String(eventName));
 
   // Check if result has been set
   const orderBookie = new ethers.Contract(event.address, OrderBookieABI, provider)
@@ -67,6 +71,14 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
                                                                                            [RequestProps.TRANSACTION_HASH]: ""}, false)
         },
       ]
+
+    if (bookiesEvents.length > 0) {
+      buttons.push({
+        label: 'Bet on Another Event', 
+        action:'post', 
+        target: generateUrl(`/api/bookies/${bookiesEvents[Math.floor(Math.random() * bookiesEvents.length)]}`, {}, false)
+      })
+    }
     
     postUrl = "" // Collect payout page
 
