@@ -2,7 +2,7 @@ import { kv } from "@vercel/kv";
 import { Accounts, DatabaseKeys } from "../../../src/utils";
 import { Event } from "../../types";
 
-export async function POST() {
+export async function GET() {
     // Get bookies events 
     const bookiesEvents = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, 0, {count: 150}))[1] as string[];
 
