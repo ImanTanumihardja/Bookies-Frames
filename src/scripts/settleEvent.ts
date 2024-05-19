@@ -20,9 +20,9 @@ export default async function settleEvent(eventName="", result=-1, url="") {
       throw new Error(`Event: ${eventName} does not exist`)
     }
     
-    // if (event?.startDate > new Date().getTime()) {
-    //   throw new Error('Event has not closed yet')
-    // }
+    if (event?.startDate > new Date().getTime()) {
+      throw new Error('Event has not closed yet')
+    }
 
     if (parseFloat(event?.result.toString()) !== -1) {
       throw new Error('Event has already been settled')
@@ -83,13 +83,6 @@ export default async function settleEvent(eventName="", result=-1, url="") {
       });
     }
 
-    console.log(`Likes: ${likes}`)
-    console.log(`Recasts: ${recasts}`)
-
-
-    console.log(`Event: ${eventName}`)
-    console.log(event)
-
     // Set the result of the event
     event.result = result
 
@@ -107,8 +100,8 @@ export default async function settleEvent(eventName="", result=-1, url="") {
       fids = fids.concat(betsData[1] as unknown as number[])
     }
 
-    // Filter out all fids that are not 313859
-    // fids = fids.filter((fid:number) => fid === 241573) // Testing
+    // // Filter out all fids that are not 313859
+    // fids = fids.filter((fid:number) => fid === 313859) // Testing
 
     // Pay each user
     for (const fid of fids) {
@@ -142,11 +135,15 @@ export default async function settleEvent(eventName="", result=-1, url="") {
             user.losses = parseInt(user.losses.toString()) + 1;
 
             // Check if user is eligible for rebate
-            if (fid in likes && fid in recasts) {
+            if (likes.includes(fid) && recasts.includes(fid)) {
               console.log(`User: ${fid} is eligible for rebate`)
-              toWinAmount -= bet.stake * (1 - REBATE);
+
+              const rebateAmount = Math.floor(bet.stake * REBATE);
+              toWinAmount -= Math.floor(bet.stake - rebateAmount);
+              user.balance = Math.round(parseFloat(user?.balance.toString()) + rebateAmount)
             }
             else {
+              console.log(`User: ${fid} is not eligible for rebate`)
               toWinAmount -= bet.stake;
             }
           }
@@ -154,7 +151,6 @@ export default async function settleEvent(eventName="", result=-1, url="") {
           user.numBets = parseInt(user?.numBets.toString()) + 1;
         }
       }
-      // console.log(`Updated user: ${JSON.stringify(user)}`)
 
       // Update user and database
       await kv.hset(fid.toString(), user).then( async () => {
@@ -174,11 +170,11 @@ export default async function settleEvent(eventName="", result=-1, url="") {
 }
 
 if (require.main === module) {
-    // Read in cli arguments
-    const args = require('minimist')(process.argv.slice(2), {string: ['e']})
-    settleEvent(args['e'], args['r']).then(() => process.exit(0))
-      .catch(error => {
-        console.error(error)
-        process.exit(1)
-      })
-  }
+  // Read in cli arguments
+  const args = require('minimist')(process.argv.slice(2), {string: ['e']})
+  settleEvent(args['e'], args['r']).then(() => process.exit(0))
+    .catch(error => {
+      console.error(error)
+      process.exit(1)
+    })
+}
