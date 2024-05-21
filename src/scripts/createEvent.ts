@@ -189,25 +189,25 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
   console.log(event)
 }
 
-if (require.main === module) {
-  // Read event file using fs
-  const filePath = path.join(__dirname, `../../event.json`);
-  const eventData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+// if (require.main === module) {
+//   // Read event file using fs
+//   const filePath = path.join(__dirname, `../../event.json`);
+//   const eventData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-  if (eventData === null) {
-    throw new Error('Event data is null')
-  }
+//   if (eventData === null) {
+//     throw new Error('Event data is null')
+//   }
 
-  const eventName = eventData.eventName;
-  const startDate = eventData.startDate;
-  const odds = eventData.odds;
-  const multiplier = eventData.multiplier;
-  const options = eventData.options;
-  const prompt = eventData.prompt;
+//   const eventName = eventData.eventName;
+//   const startDate = eventData.startDate;
+//   const odds = eventData.odds;
+//   const multiplier = eventData.multiplier;
+//   const options = eventData.options;
+//   const prompt = eventData.prompt;
 
-  createEvent(eventName, startDate, odds, multiplier, options, prompt).then(() => process.exit(0))
-    .catch(error => {
-      console.error(error)
-      process.exit(1)
-    })
-}
+//   createEvent(eventName, startDate, odds, multiplier, options, prompt).then(() => process.exit(0))
+//     .catch(error => {
+//       console.error(error)
+//       process.exit(1)
+//     })
+// }

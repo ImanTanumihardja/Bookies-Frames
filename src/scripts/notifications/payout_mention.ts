@@ -8,7 +8,7 @@ const { createClient  } = require("@vercel/kv");
 const { OrderBookieABI } = require("../../../app/contract-abis/orderBookie.json");
 const { erc20ABI } = require("../../../app/contract-abis/erc20.json");
 
-(async () => {
+export async function payoutNotification(eventName:string, parentHash:string, tx_url:string) {
   dotenv.config({ path: ".env"});
   
   const kv = createClient({
@@ -22,44 +22,7 @@ const { erc20ABI } = require("../../../app/contract-abis/erc20.json");
 
   // Check signer uuid
   if (!signerUUID || (await neynarClient.lookupSigner(signerUUID)).status !== "approved"){
-    console.log("SIGNER_UUID is not set in the environment or not valid. Need to generate");
-
-    // Register signer
-    const signer = await neynarClient.createSignerAndRegisterSignedKey("FDM", {deadline:Math.floor(Date.now() / 1000) + 31556926});
-
-    console.log(`Please connect through warpcast to approve the signer. Go here: ${signer.signer_approval_url}`)
-
-    while ((await neynarClient.lookupSigner(signer.signer_uuid)).status !== "approved") {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log("Waiting for signer to be approved...");
-    }
-
-    // Add to env
-    // Resolving the path to the .env file.
-    const envPath = path.resolve(__dirname, "../../../.env");
-
-    // Reading the .env file.
-    fs.readFile(envPath, "utf8", (err, data) => {
-      if (err) {
-        console.error("Error reading .env file:", err);
-        return;
-      }
-
-      // Appending the SIGNER_UUID to the file content.
-      const newContent = data + `\nSIGNER_UUID=${signer.signer_uuid}`;
-
-      // Writing the updated content back to the .env file.
-      fs.writeFile(envPath, newContent, "utf8", (err) => {
-        if (err) {
-          console.error("Error writing to .env file:", err);
-          return;
-        }
-        console.log(
-          "SIGNER_UUID appended to .env file.\n"
-        );
-      });
-    });
-    signerUUID = signer.signer_uuid;
+    throw new Error("Invalid signer uuid")
   }
 
   console.log("Signer UUID: ", signerUUID);
@@ -86,7 +49,7 @@ const { erc20ABI } = require("../../../app/contract-abis/erc20.json");
   }
 
   // Get the username
-  let usernames = [];
+  let usernames: string[] = [];
 
   // Get bettors
   let result = await kv.sscan(`bookies:${eventName}:bettors`, 0);
@@ -107,9 +70,9 @@ const { erc20ABI } = require("../../../app/contract-abis/erc20.json");
 
   // Get usernames
   while (fidIndex < fids.length) {
-    await neynarClient.fetchBulkUsers(fids).then((result) => {
+    await neynarClient.fetchBulkUsers(fids).then((result:any) => {
       // Appned usernames to the array
-      usernames = usernames.concat(result.users.map((user) => user.username));
+      usernames = usernames.concat(result.users.map((user: any ) => user.username));
     })
 
     fidIndex += batch.length;
@@ -150,4 +113,4 @@ const { erc20ABI } = require("../../../app/contract-abis/erc20.json");
       neynarClient.publishCast(signerUUID, message, {replyTo:parentHash})
     }
   }
-})();
+}

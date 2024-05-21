@@ -2,6 +2,31 @@
    "OrderBookieABI":
    [
     {
+      "anonymous": false,
+      "inputs": [],
+      "name": "Canceled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "result",
+          "type": "int256"
+        }
+      ],
+      "name": "Settled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [],
+      "name": "Started",
+      "type": "event"
+    },
+    {
       "inputs": [],
       "name": "cancelBookie",
       "outputs": [],
@@ -238,6 +263,7 @@
       "stateMutability": "nonpayable",
       "type": "function"
     }
-  ]
+   ]
+  
   
 }
