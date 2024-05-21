@@ -61,6 +61,8 @@ export async function GET() {
 
                 const txURL = BASESCAN_URL + settledTx.transactionHash
 
+                console.log(`Payout transaction found for event: ${eventName} - ${txURL}`);
+
                 // Send payout notification
                 await payoutNotification(eventName, castHash, txURL);
 
