@@ -25,7 +25,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   // Check if approve mined
   if (!txReceipt) {
-    throw new Error('Approve transaction is not yet mined');
+    return new Response(JSON.stringify({ message: 'Aprrove tx has not yet been mined' }), { status: 400, headers: { 'content-type': 'application/json' } });
   }
 
   console.log('Wallet Address: ', txReceipt.from)

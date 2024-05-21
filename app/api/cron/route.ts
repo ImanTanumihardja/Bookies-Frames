@@ -10,7 +10,8 @@ export async function GET() {
     const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
     // Get bookies events 
-    const bookiesEvents = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, 0, {count: 150}))[1] as string[];
+    const bookiesEvents = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, 0, {count: 149}))[1] as string[];
+    console.log(`Active Bookies events: ${bookiesEvents}`);
 
     if (bookiesEvents.length === 0) {
         return Response.json({ message: 'No events found' });
@@ -31,6 +32,8 @@ export async function GET() {
             const orderBookieInfo = await orderBookie.getBookieInfo()
 
             if (parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS)) !== -1) {
+                console.log(`Event: ${eventName} is settled`);
+
                 // Find the cast associated with the event
                 const cast = casts?.find((cast) => cast.text.includes(eventName));
                 const castHash = cast?.hash;
@@ -40,6 +43,8 @@ export async function GET() {
                     continue;
                 }  
 
+                console.log(`Cast found for event: ${eventName} - ${castHash}`);
+
                 // Find payout transaction hash
                 const filter = {
                     address: orderBookie.target,
@@ -47,19 +52,15 @@ export async function GET() {
                     toBlock: 'latest'
                 };
 
-                console.log(orderBookie.target)
-            
-                console.log(orderBookie.interface)
-
                 const logs = await provider.getLogs(filter);
-                const settledTx = logs.find(log => orderBookie.interface.parseLog(log)?.name === 'Settled');
+                const settleTx = logs.find(log => orderBookie.interface.parseLog(log)?.name === 'Settled');
 
-                if (!settledTx) {
+                if (!settleTx) {
                     console.error(`Settled event not found for event: ${eventName}`);
                     continue;
                 }
 
-                const txURL = BASESCAN_URL + settledTx.transactionHash
+                const txURL = BASESCAN_URL + settleTx.transactionHash
 
                 console.log(`Payout transaction found for event: ${eventName} - ${txURL}`);
 

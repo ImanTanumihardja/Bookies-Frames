@@ -81,7 +81,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
                                                               false)
 
         // Get address of create contract
-        const txReceipt = await tx.wait()
+        const txReceipt = await tx.wait(5)
 
         console.log('TX RECEIPT: ', txReceipt.hash)
         
