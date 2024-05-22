@@ -13,66 +13,66 @@ export async function GET() {
     const bookiesEvents = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, 0, {count: 149}))[1] as string[];
     console.log(`Active Bookies events: ${bookiesEvents}`);
 
-    // if (bookiesEvents.length === 0) {
-    //     return Response.json({ message: 'No events found' });
-    // }
+    if (bookiesEvents.length === 0) {
+        return Response.json({ message: 'No events found' });
+    }
 
-    // // Get all casts from bookies account
-    // const casts = (await neynarClient.fetchAllCastsCreatedByUser(BOOKIES_FID, {limit: 150}))?.result?.casts;
+    // Get all casts from bookies account
+    const casts = (await neynarClient.fetchAllCastsCreatedByUser(BOOKIES_FID, {limit: 150}))?.result?.casts;
 
-    // if (casts && casts.length === 0) {
-    //     return Response.json({ message: 'No events found' });
-    // }
+    if (casts && casts.length === 0) {
+        return Response.json({ message: 'No events found' });
+    }
 
-    // // Check each event is settled if so remove
-    // for (const eventName of bookiesEvents) {
-    //     const eventInfo: Event | null = await kv.hgetall(eventName);
-    //     if (eventInfo) {
-    //         const orderBookie = new ethers.Contract(eventInfo.address, OrderBookieABI, provider)
-    //         const orderBookieInfo = await orderBookie.getBookieInfo()
+    // Check each event is settled if so remove
+    for (const eventName of bookiesEvents) {
+        const eventInfo: Event | null = await kv.hgetall(eventName);
+        if (eventInfo) {
+            const orderBookie = new ethers.Contract(eventInfo.address, OrderBookieABI, provider)
+            const orderBookieInfo = await orderBookie.getBookieInfo()
 
-    //         if (parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS)) !== -1) {
-    //             console.log(`Event: ${eventName} is settled`);
+            if (parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS)) !== -1) {
+                console.log(`Event: ${eventName} is settled`);
 
-    //             // Find the cast associated with the event
-    //             const cast = casts?.find((cast) => cast.text.includes(eventName));
-    //             const castHash = cast?.hash;
+                // Find the cast associated with the event
+                const cast = casts?.find((cast) => cast.text.includes(eventName));
+                const castHash = cast?.hash;
 
-    //             if (!castHash) {
-    //                 console.error(`Cast not found for event: ${eventName}`);
-    //                 continue;
-    //             }  
+                if (!castHash) {
+                    console.error(`Cast not found for event: ${eventName}`);
+                    continue;
+                }  
 
-    //             console.log(`Cast found for event: ${eventName} - ${castHash}`);
+                console.log(`Cast found for event: ${eventName} - ${castHash}`);
 
-    //             // Find payout transaction hash
-    //             const filter = {
-    //                 address: orderBookie.target,
-    //                 fromBlock: 0,
-    //                 toBlock: 'latest'
-    //             };
+                // Find payout transaction hash
+                const filter = {
+                    address: orderBookie.target,
+                    fromBlock: 0,
+                    toBlock: 'latest'
+                };
 
-    //             const logs = await provider.getLogs(filter);
-    //             const settleTx = logs.find(log => orderBookie.interface.parseLog(log)?.name === 'Settled');
+                const logs = await provider.getLogs(filter);
+                const settleTx = logs.find(log => orderBookie.interface.parseLog(log)?.name === 'Settled');
 
-    //             if (!settleTx) {
-    //                 console.error(`Settled event not found for event: ${eventName}`);
-    //                 continue;
-    //             }
+                if (!settleTx) {
+                    console.error(`Settled event not found for event: ${eventName}`);
+                    continue;
+                }
 
-    //             const txURL = BASESCAN_URL + settleTx.transactionHash
+                const txURL = BASESCAN_URL + settleTx.transactionHash
 
-    //             console.log(`Payout transaction found for event: ${eventName} - ${txURL}`);
+                console.log(`Payout transaction found for event: ${eventName} - ${txURL}`);
 
-    //             // Send payout notification
-    //             await payoutNotification(eventName, castHash, txURL);
+                // Send payout notification
+                await payoutNotification(eventName, castHash, txURL);
 
-    //             // Remove event
-    //             await kv.srem(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, eventName);
-    //             console.log(`Removed event: ${eventName}`);
-    //         }
-    //     }
-    // }
+                // Remove event
+                await kv.srem(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, eventName);
+                console.log(`Removed event: ${eventName}`);
+            }
+        }
+    }
    
-    return Response.json({ message: `Active Bookies events: ${bookiesEvents}`});
+    return Response.json({ message: 'Cron job ran successfully'});
   }
