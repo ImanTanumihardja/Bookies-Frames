@@ -1,12 +1,14 @@
 const { NeynarAPIClient } = require("@neynar/nodejs-sdk");
-const dotenv = require("dotenv");
-// const {tx_url, parentHash, eventName} = require('./config.json');
 const ethers = require("ethers");
 const { createClient  } = require("@vercel/kv");
 const { OrderBookieABI } = require("../../../app/contract-abis/orderBookie.json");
 const { erc20ABI } = require("../../../app/contract-abis/erc20.json");
 
+const dotenv = require("dotenv");
+dotenv.config({ path: ".env"});
+
 export async function payoutNotification(eventName:string, parentHash:string, tx_url:string) {
+  
   const kv = createClient({
     url: process.env['KV_REST_API_URL'],
     token: process.env['KV_REST_API_TOKEN'],
