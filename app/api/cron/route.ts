@@ -24,6 +24,8 @@ export async function GET() {
         return Response.json({ message: 'No events found' });
     }
 
+    const settledEvents: string[] = [];
+
     // Check each event is settled if so remove
     for (const eventName of bookiesEvents) {
         const eventInfo: Event | null = await kv.hgetall(eventName);
@@ -56,7 +58,7 @@ export async function GET() {
                 const settleTx = logs.find(log => orderBookie.interface.parseLog(log)?.name === 'Settled');
 
                 if (!settleTx) {
-                    console.error(`Settled event not found for event: ${eventName}`);
+                    console.error(`Settled tx not found for event: ${eventName}`);
                     continue;
                 }
 
@@ -70,9 +72,14 @@ export async function GET() {
                 // Remove event
                 await kv.srem(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, eventName);
                 console.log(`Removed event: ${eventName}`);
+
+                settledEvents.push(eventName);
             }
         }
     }
    
-    return Response.json({ message: 'Cron job ran successfully'});
+    return Response.json({ message: `Settled events: ${settledEvents.join(', ')}`});
   }
+
+  export const dynamic = 'force-dynamic'
+  export const runtime = 'edge';
