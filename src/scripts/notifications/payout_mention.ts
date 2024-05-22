@@ -7,8 +7,6 @@ const { OrderBookieABI } = require("../../../app/contract-abis/orderBookie.json"
 const { erc20ABI } = require("../../../app/contract-abis/erc20.json");
 
 export async function payoutNotification(eventName:string, parentHash:string, tx_url:string) {
-  dotenv.config({ path: ".env"});
-  
   const kv = createClient({
     url: process.env['KV_REST_API_URL'],
     token: process.env['KV_REST_API_TOKEN'],
