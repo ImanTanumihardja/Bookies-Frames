@@ -39,4 +39,5 @@ export type FrameValidationData = {
     recasted: boolean;
     transactionId: string;
     connectedAddress: number;
+    casterFID: number;
 }
