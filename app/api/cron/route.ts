@@ -74,5 +74,5 @@ export async function GET() {
     //     }
     // }
    
-    return Response.json({ message: 'Cron job ran successfully'});
+    return Response.json({ message: `Active Bookies events: ${bookiesEvents}`});
   }
