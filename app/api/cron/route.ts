@@ -78,7 +78,6 @@ export async function GET() {
             else {
                 console.log(`Event: ${eventName} is not yet settled`);
             }
-            console.log('\n')
         }
     }
    
