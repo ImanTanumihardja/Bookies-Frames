@@ -1,8 +1,6 @@
 const { NeynarAPIClient } = require("@neynar/nodejs-sdk");
 const dotenv = require("dotenv");
-const {tx_url, parentHash, eventName} = require('./config.json');
-const fs = require("fs");
-const path = require("path");
+// const {tx_url, parentHash, eventName} = require('./config.json');
 const ethers = require("ethers");
 const { createClient  } = require("@vercel/kv");
 const { OrderBookieABI } = require("../../../app/contract-abis/orderBookie.json");
