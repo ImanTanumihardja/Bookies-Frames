@@ -32,8 +32,8 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   user = user as unknown as User || null;
 
   // Get all alea events and filter out this eventName
-  let aleaEvents = (await kv.sscan(`${Accounts.ALEA}:${DatabaseKeys.EVENTS}`, 0, {count: 150}))[1] as string[];
-  aleaEvents = aleaEvents.filter((e) => e !== String(eventName));
+  let activeEvents = (await kv.sscan(`${Accounts.ALEA}:${DatabaseKeys.EVENTS}`, 0, {count: 150}))[1] as string[];
+  activeEvents = activeEvents.filter((e) => e !== String(eventName));
 
   console.log('FID: ', fid.toString())
 
@@ -129,11 +129,11 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     },
   ]
 
-  if (aleaEvents.length > 0) {
+  if (activeEvents.length > 0) {
     buttons.push({
       label: 'Bet on Another Event', 
       action:'post', 
-      target: generateUrl(`/api/alea/${aleaEvents[Math.floor(Math.random() * aleaEvents.length)]}`, {}, false)
+      target: generateUrl(`/api/alea/${activeEvents[Math.floor(Math.random() * activeEvents.length)]}`, {}, false)
     })
   }
 

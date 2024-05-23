@@ -23,8 +23,8 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   if (event === null) throw new Error('Event not found');
 
   // Get all bookies events and filter out this eventName
-  let bookiesEvents = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, 0, {count: 150}))[1] as string[];
-  bookiesEvents = bookiesEvents.filter((e) => e !== String(eventName));
+  let activeEvents = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, 0, {count: 150}))[1] as string[];
+  activeEvents = activeEvents.filter((e) => e !== String(eventName));
 
   // Check if result has been set
   const orderBookie = new ethers.Contract(event.address, OrderBookieABI, provider)
@@ -72,11 +72,11 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
         },
       ]
 
-    if (bookiesEvents.length > 0) {
+    if (activeEvents.length > 0) {
       buttons.push({
         label: 'Bet on Another Event', 
         action:'post', 
-        target: generateUrl(`/api/bookies/${bookiesEvents[Math.floor(Math.random() * bookiesEvents.length)]}`, {}, false)
+        target: generateUrl(`/api/bookies/${activeEvents[Math.floor(Math.random() * activeEvents.length)]}`, {}, false)
       })
     }
     

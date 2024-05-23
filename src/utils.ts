@@ -116,6 +116,7 @@ export enum DatabaseKeys {
     BETTORS = 'bettors',
     POLL = 'poll',
     EVENTS = 'events',
+    REFERRALS = "referrals",
 }
 
 export const Outcomes = {

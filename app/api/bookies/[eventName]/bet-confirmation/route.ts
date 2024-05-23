@@ -10,7 +10,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   // Verify the frame request
   const message = await getFrameMessage(req);
 
-  const {button, fid, transactionId} = message;
+  const {button, fid, transactionId, casterFID} = message;
 
   console.log('FID: ', fid.toString())
 
@@ -44,6 +44,17 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
         throw new Error('Error creating bet');
       })
     })
+
+    // Add to referral leaderboard
+    if (casterFID && casterFID !== fid) {
+      await kv.hincrby(`${DatabaseKeys.REFERRALS}`, `${casterFID}`, stake).catch(async (error) => {
+        console.error('Error adding user to referral leaderboard:', error);
+        // Try again
+        await kv.hincrby(`${DatabaseKeys.REFERRALS}`, `${casterFID}`, stake).catch((error) => {
+          throw new Error('Error creating bet');
+        })
+      })
+    }
   } 
   else if (transactionHash) 
   {
@@ -63,8 +74,8 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   
   // Get all bookies events and filter out this eventName
-  let bookiesEvents = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, 0, {count: 150}))[1] as string[];
-  bookiesEvents = bookiesEvents.filter((e) => e !== String(eventName));
+  let activeEvents = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, 0, {count: 150}))[1] as string[];
+  activeEvents = activeEvents.filter((e) => e !== String(eventName));
 
   console.log('EVENT: ', eventName)
 
@@ -110,11 +121,11 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     },
   ];
 
-  if (bookiesEvents.length > 0) {
+  if (activeEvents.length > 0) {
     buttons.push({
       label: 'Bet on Another Event', 
       action:'post', 
-      target: generateUrl(`/api/bookies/${bookiesEvents[Math.floor(Math.random() * bookiesEvents.length)]}`, {}, false)
+      target: generateUrl(`/api/bookies/${activeEvents[Math.floor(Math.random() * activeEvents.length)]}`, {}, false)
     })
   }
   
