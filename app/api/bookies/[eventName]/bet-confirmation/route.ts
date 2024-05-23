@@ -47,10 +47,10 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
     // Add to referral leaderboard
     if (casterFID && casterFID !== fid) {
-      await kv.hincrby(`${DatabaseKeys.REFERRALS}`, `${casterFID}`, stake).catch(async (error) => {
+      await kv.zincrby(`${DatabaseKeys.REFERRALS}`, stake, casterFID).catch(async (error) => {
         console.error('Error adding user to referral leaderboard:', error);
         // Try again
-        await kv.hincrby(`${DatabaseKeys.REFERRALS}`, `${casterFID}`, stake).catch((error) => {
+        await kv.zincrby(`${DatabaseKeys.REFERRALS}`, stake, casterFID).catch((error) => {
           throw new Error('Error creating bet');
         })
       })
