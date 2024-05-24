@@ -38,7 +38,7 @@ export function CreateEventForm() {
         <br />
         <br />
         <label htmlFor="startDate">Start Date (Unix) </label>
-        <input type="number" id="startDate" name="startDate" placeholder="1709777045000" required />
+        <input type="number" id="startDate" name="startDate" placeholder="1709777045" required />
         <br />
         <br />
         <label htmlFor="odds">Odds </label>
