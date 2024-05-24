@@ -28,8 +28,8 @@ export async function createEventAction(
         options: formData.get('options'),
         prompt: formData.get('prompt'),
         host: formData.get('host'),
-        description: formData.get('description'),
-        acceptedToken: formData.get('acceptedToken'),
+        description: formData.get('description') || '',
+        acceptedToken: formData.get('acceptedToken') || '',
     })
 
     // Parse odds to be float array
