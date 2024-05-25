@@ -13,7 +13,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   const {followingHost: followingBookies, liked, fid} = message;
 
-  if ((!followingBookies && !liked) && fid !== 313859) {
+  if ((!followingBookies || !liked) && fid !== 313859) {
     // Call fetch to get not following thumbnail
     return notFollowingResponse(generateUrl(`/api/alea/${eventName}/${FrameNames.PLACE_BET}`, {}, false))
   }
