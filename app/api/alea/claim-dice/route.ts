@@ -76,7 +76,7 @@ export async function POST(req: NextRequest): Promise<Response> {
           if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: user.balance, member: fid})
         });
       }).catch((error) => {
-        throw new Error('Error updating user');
+        return new Response(JSON.stringify({ message: `Error updating user` }), { status: 400, headers: { 'content-type': 'application/json' } });
       });
     } else {
       console.log('ALREADY CLAIMED')
