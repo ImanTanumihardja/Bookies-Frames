@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { User} from '../../../types';
-import { RequestProps, generateUrl, DEFAULT_USER, getFrameMessage, DatabaseKeys, notFollowingResponse, getRequestProps, ALEA_FID } from '../../../../src/utils';
+import { RequestProps, generateUrl, DEFAULT_USER, getFrameMessage, DatabaseKeys, notFollowingResponse, getRequestProps, ALEA_FID, Accounts } from '../../../../src/utils';
 import { getFrameHtml, Frame, FrameButtonsType} from "frames.js";
 import { FrameNames } from '../../../../src/utils';
 
@@ -58,6 +58,9 @@ export async function POST(req: NextRequest): Promise<Response> {
     }
 
     if (user === null) throw new Error('User is null');
+
+    // Get all alea events and filter out this eventName
+    let activeEvents = (await kv.sscan(`${Accounts.ALEA}:${DatabaseKeys.EVENTS}`, 0, {count: 150}))[1] as string[];
  
     hasClaimed = user.hasClaimed;
     if (!hasClaimed) {
@@ -94,14 +97,16 @@ export async function POST(req: NextRequest): Promise<Response> {
         action:'post', 
         target: generateUrl(`/api/alea/${FrameNames.LEADERBOARD}`, {[RequestProps.OFFSET]: -1, [RequestProps.REDIRECT]: false}, false)
       },
-      {
-        label: 'Place Bet', 
-        action:'post', 
-        target: generateUrl(`/api/alea/G1-OKC-DAL-SPREAD`, {}, false)
-      },
     ]
+
+    if (activeEvents.length > 0) {
+      buttons.push({
+        label: 'Bet on Another Event', 
+        action:'post', 
+        target: generateUrl(`/api/alea/${activeEvents[Math.floor(Math.random() * activeEvents.length)]}`, {}, false)
+      })
+    }
   }
-  
 
   const imageUrl = generateUrl(`api/alea/${FrameNames.CLAIM_DICE}/image`, {[RequestProps.HAS_CLAIMED]: hasClaimed, [RequestProps.BALANCE]: CLAIM_AMOUNT, [RequestProps.VALID_CAPTCHA]: validCaptcha}, true);
 
