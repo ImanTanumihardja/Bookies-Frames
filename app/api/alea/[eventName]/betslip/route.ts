@@ -43,7 +43,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   if (event === null) throw new Error('Event not found');
 
   if (stake > user.balance) {
-    throw new Error(`Invalid wager amount STAKE: ${stake}`);
+    return new Response(JSON.stringify({ message: `Invalid wager amount STAKE: ${stake}` }), { status: 400, headers: { 'content-type': 'application/json' } });
   }
 
   // Check if result has been set
