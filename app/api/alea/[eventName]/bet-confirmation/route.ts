@@ -52,9 +52,9 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   if (user === null) throw new Error('User is null');
 
-  const balance = parseFloat(user?.balance.toString());
-
   if (event === null) throw new Error('Event not found');
+
+  const balance = parseFloat(user?.balance.toString());
 
   if (stake <= 0 || stake > balance) {
     stake = -1
@@ -104,7 +104,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
         });
       }
     }).catch((error) => {
-      throw new Error('Error creating bet');
+      return new Response(JSON.stringify({ message: 'Error creating bet' }), { status: 400, headers: { 'content-type': 'application/json' } });
     });   
 
     console.log('NEW BET: ', bet)
