@@ -59,16 +59,14 @@ export async function settleEventAction(
     const schema = z.object({
         eventName: z.string(),
         result: z.number(),
-        url: z.string(),
     })
-    const {eventName, result, url} = schema.parse({
+    const {eventName, result} = schema.parse({
         eventName: formData.get('eventName'),
         result: parseFloat(formData.get('result') as string),
-        url: formData.get('url'),
     })
 
     try {
-        await settleEvent(eventName, result, url)
+        await settleEvent(eventName, result)
         revalidatePath('/')
         return {message: `Settled event: ${eventName}`}
     }

@@ -114,7 +114,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     console.log('FAILED TO PLACE BET')
   }
 
-  const imageUrl = generateUrl(`api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.OPTIONS]: event.options, [RequestProps.TIME]: now, [RequestProps.RESULT]: event.result}, true);
+  const imageUrl = generateUrl(`api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.OPTIONS]: event.options, [RequestProps.RESULT]: event.result, [RequestProps.ODDS]: event.odds, [RequestProps.PROMPT]: event.prompt}, true);
 
   let buttons : FrameButtonsType = [
     {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import { RequestProps, getRequestProps } from '../../../../../../src/utils';
+import { RequestProps, calculatePayout, getRequestProps } from '../../../../../../src/utils';
 import { kv } from '@vercel/kv';
 import { Bet } from '../../../../../types';
 import * as fs from "fs";
@@ -13,7 +13,7 @@ let fontData = fs.readFileSync(fontPath)
 export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }) {
     try {
         let text='' // Default empty React element
-        const {pick, stake, buttonIndex, fid, options, time, result} = getRequestProps(req, [RequestProps.STAKE, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.TIME, RequestProps.RESULT]);
+        const {buttonIndex, fid, options, result, odds, prompt} = getRequestProps(req, [RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.RESULT, RequestProps.ODDS, RequestProps.PROMPT]);
 
         // Get bets for this event by filtering the bets array for the eventName
         const bets : Record<string, Bet[]> = (await kv.hget(fid?.toString(), 'bets') || {});
@@ -22,20 +22,41 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
         const filteredBets : Bet[] = bets[eventName] || []
 
         console.log('BETS: ', filteredBets)
-        
+
         if (filteredBets === null) throw new Error('Bets not found');
 
-        if (buttonIndex === 1) {
+        if (result !== -1) {
+            text = prompt
+        }
+        else if (buttonIndex === 1) {
             text = 'You rejected the bet!'
         } 
-        else if (stake <= -1){
-            text =  "You don't have enough dice!"
-        }
-        else if (pick === -1) {
-            text = "Event is closed!"
-        }
-        else {
+        else if (buttonIndex === 0) {
             text = "Bet confirmed!"
+        }
+
+        // Process Bets
+        let totalPayout = 0;
+        let totalStaked = 0;
+        let overallPick = 0;
+
+        for (const bet of filteredBets) {
+            totalStaked += bet.stake;
+
+            const payout = calculatePayout(odds[bet.pick], bet.stake);
+            // Calculate the total payout if bet pick is the same as the result
+            if (overallPick === bet.pick) {
+                totalPayout += payout;
+            }
+            else {
+                totalStaked -= payout;
+            }
+            
+            if (totalPayout < 0) {
+                // Switch pick
+                totalPayout = Math.abs(totalPayout)
+                overallPick = bet.pick
+            }
         }
 
         const imageResponse = new ImageResponse(
@@ -51,39 +72,31 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize: text.length > 50 ? 30 : text.length > 40 ? 35 : 40, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25, bottom:10}}> {text} </h1>
+                    <h2 style={{color: 'white', fontSize: 15, position: 'absolute', top:0, textAlign:'center'}}>*Recast for a 10% loss rebate*</h2>
                 </div>
-                {filteredBets.length > 0 ?
                 <div style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    justifyItems:'flex-start',
+                    justifyItems:'center',
                     width: '65%',
                     height: '100%',
                     background: 'white',
                     padding: 10}}>
-                    {filteredBets.reverse().slice(0, 6).map((bet: Bet, index: number) => { 
-                    return (
-                        <h3 key={index} style={{color: 'black', fontSize: 25, margin:12, textDecoration: bet.timeStamp === time ? "underline" :'none'}}>
-                            {result != -1 ? (bet.pick == result ? '✅' : '❌') : ''} {options[bet.pick]} | {bet.stake}
-                        </h3>
-                    )})}
-                    {filteredBets.length > 6 &&
-                    <h2 style={{color: 'black', position:'absolute', bottom:10, fontSize:30, justifyContent:'center'}}>. . .</h2>}
+                    <h1 style={{color: 'black', fontSize: 30, textAlign:'center'}}>Overall Pick: {options[overallPick]}</h1>
+                    <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0}}>{totalStaked.toFixed(2)}<img style={{width: 35, height: 35, marginTop: 5, marginLeft:10, marginRight:10}} src={`${process.env['HOST']}/dice.png`}/></h1>
+                    <h3 style={{color: 'black', 
+                                fontSize: 25, 
+                                textAlign:'center',
+                                marginRight:10
+                                }}>Total Stake</h3>
+                    <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0}}>{totalPayout.toFixed(2)}<img style={{width: 35, height: 35, marginTop: 5, marginLeft:10, marginRight:10}} src={`${process.env['HOST']}/dice.png`}/></h1>
+                    <h3 style={{color: 'black', 
+                                fontSize: 25, 
+                                textAlign:'center',
+                                marginRight:10
+                                }}>Total Payout</h3>
                 </div>
-                :
-                <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyItems:'flex-start',
-                        width: '65%',
-                        height: '100%',
-                        background: 'white',
-                        padding: 10}}>
-                        <h3 style={{color: 'black', fontSize:25, margin:12}}>No bets found!</h3>
-                </div>
-                }
             </div>
             ), {
             width: 764, 

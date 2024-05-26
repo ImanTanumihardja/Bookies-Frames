@@ -76,12 +76,11 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       })
     }
 
-    imageUrl = generateUrl(`api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: 0, 
-                                                                              [RequestProps.PICK]: pick, 
+    imageUrl = generateUrl(`api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {
                                                                               [RequestProps.BUTTON_INDEX]: 0, 
                                                                               [RequestProps.FID]: fid, 
                                                                               [RequestProps.OPTIONS]: event.options, 
-                                                                              [RequestProps.TIME]: now, 
+                                                                              [RequestProps.ODDS]: event.odds,
                                                                               [RequestProps.RESULT]: result}, true);
                                                                       
   }

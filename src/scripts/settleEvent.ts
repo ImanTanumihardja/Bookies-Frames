@@ -2,7 +2,7 @@
 const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
-import { Accounts, calculatePayout, DatabaseKeys, neynarClient } from "../utils";
+import { Accounts, ALEA_FID, calculatePayout, DatabaseKeys, neynarClient } from "../utils";
 import { Event, User } from '../../app/types';
 import { createClient  } from "@vercel/kv";
 
@@ -13,7 +13,7 @@ const kv = createClient({
 
 const REBATE = 0.10;
 
-export default async function settleEvent(eventName="", result=-1, url="") {
+export default async function settleEvent(eventName="", result=-1) {
     let event: Event | null = await kv.hgetall(`${eventName}`);
 
     if (event === null) {
@@ -36,34 +36,27 @@ export default async function settleEvent(eventName="", result=-1, url="") {
       throw new Error('Result is invalid')
     }
 
-    // Check if url is valid
-    if (url === "") {
-      throw new Error('URL is invalid')
-    }
+    // Get all casts from bookies account
+    const casts = (await neynarClient.fetchAllCastsCreatedByUser(ALEA_FID, {limit: 150}))?.result?.casts;
 
-    // Get post info
-    const options = {
-      method: 'GET',
-      headers: {accept: 'application/json', api_key: process.env.NEYNAR_API_KEY || ''}
-    };
+    if (casts && casts.length === 0) {
+        return Response.json({ message: 'No events found' });
+    }
     
-    let postHash;
-    await fetch(`https://api.neynar.com/v2/farcaster/cast?identifier=${encodeURIComponent(url)}&type=url`, options)
-      .then(async (response) => {
-        postHash = (await response.json()).cast.hash
-      })
-      .catch(err => { throw new Error(err) });
+    // Find the cast associated with the event
+    const cast = casts?.find((cast) => cast.text.includes(eventName));
+    const castHash = cast?.hash;
 
-    if (postHash === undefined) {
-      throw new Error('Could not get post hash')
-    }
+    if (!castHash) {
+        throw new Error(`Cast not found for event: ${eventName}`);
+    }  
 
     let cursor = undefined;
     let likes: number[] = []
     let recasts: number[] = []
 
     while (cursor !== null) {
-      await neynarClient.fetchReactionsForCast(postHash, 'all', {limit: 100, cursor: cursor}).then(async (result:any) => {
+      await neynarClient.fetchReactionsForCast(castHash, 'all', {limit: 100, cursor: cursor}).then(async (result:any) => {
         const reactions = result.reactions
 
         // Loop through all reactions
