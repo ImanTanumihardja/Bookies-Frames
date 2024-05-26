@@ -13,7 +13,7 @@ let fontData = fs.readFileSync(fontPath)
 export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }) {
     try {
         let text='' // Default empty React element
-        const {buttonIndex, fid, options, result, odds, prompt} = getRequestProps(req, [RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.RESULT, RequestProps.ODDS, RequestProps.PROMPT]);
+        const {buttonIndex, fid, options, result, odds, prompt, startDate} = getRequestProps(req, [RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.RESULT, RequestProps.ODDS, RequestProps.PROMPT, RequestProps.TIME]);
 
         // Get bets for this event by filtering the bets array for the eventName
         const bets : Record<string, Bet[]> = (await kv.hget(fid?.toString(), 'bets') || {});
@@ -25,14 +25,14 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
 
         if (filteredBets === null) throw new Error('Bets not found');
 
-        if (result !== -1) {
-            text = prompt
-        }
-        else if (buttonIndex === 1) {
+        if (buttonIndex === 1 && startDate <= (new Date()).getTime() / 1000) {
             text = 'You rejected the bet!'
         } 
-        else if (buttonIndex === 0) {
+        else if (buttonIndex === 0 && startDate <= (new Date()).getTime() / 1000){
             text = "Bet confirmed!"
+        }
+        else {
+            text = prompt
         }
 
         // Process Bets
@@ -45,11 +45,18 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
 
             const payout = calculatePayout(odds[bet.pick], bet.stake);
             // Calculate the total payout if bet pick is the same as the result
-            if (overallPick === bet.pick) {
-                totalPayout += payout;
+            if (result === -1) {
+                if (overallPick === bet.pick) {
+                    totalPayout += payout;
+                }
+                else {
+                    totalPayout -= payout;
+                }
             }
             else {
-                totalPayout -= payout;
+                if (result === bet.pick) {
+                    totalPayout += payout;
+                }
             }
             
             if (totalPayout < 0) {
@@ -83,13 +90,13 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                     height: '100%',
                     background: 'white',
                     padding: 10}}>
-                    {totalStaked !== 0 && <h1 style={{color: 'black', fontSize: 30, textAlign:'center'}}>Overall Pick: {options[overallPick]}</h1>}
+                    {totalStaked !== 0 && <h1 style={{color: 'black', fontSize: 25, textAlign:'center', margin:0}}>Overall Pick: {options[overallPick]} {result !== -1 ? result === overallPick ? '✅' : '❌' : ''}</h1>}
 
-                    <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0}}>{totalStaked.toFixed(2)}<img style={{width: 35, height: 35, marginTop: 5, marginLeft:10, marginRight:10}} src={`${process.env['HOST']}/dice.png`}/></h1>
-                    <h3 style={{color: 'black', fontSize: 25, textAlign:'center', marginRight:10}}>Total Stake</h3>
+                    <h1 style={{color: 'black', fontSize: 45, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalStaked.toFixed(2)}<img style={{width: 40, height: 40, marginTop: 10, marginLeft:10, marginRight:10}} src={`${process.env['HOST']}/dice.png`}/></h1>
+                    <h3 style={{color: 'black', fontSize: 25, textAlign:'center'}}>Total Stake</h3>
 
-                    <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0}}>{totalPayout.toFixed(2)}<img style={{width: 35, height: 35, marginTop: 5, marginLeft:10, marginRight:10}} src={`${process.env['HOST']}/dice.png`}/></h1>
-                    <h3 style={{color: 'black', fontSize: 25, textAlign:'center', marginRight:10}}>Total Payout</h3>
+                    <h1 style={{color: 'black', fontSize: 45, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalPayout.toFixed(2)}<img style={{width: 40, height: 40, marginTop: 10, marginLeft:10, marginRight:10}} src={`${process.env['HOST']}/dice.png`}/></h1>
+                    <h3 style={{color: 'black', fontSize: 25, textAlign:'center'}}>{result === -1 ? 'Potential Payout': 'Total Payout'}</h3>
                 </div>
             </div>
             ), {

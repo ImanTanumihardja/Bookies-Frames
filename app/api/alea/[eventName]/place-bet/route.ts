@@ -82,7 +82,8 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
                                                                               [RequestProps.OPTIONS]: event.options, 
                                                                               [RequestProps.ODDS]: event.odds,
                                                                               [RequestProps.RESULT]: result,
-                                                                              [RequestProps.PROMPT]: event.prompt}, true);
+                                                                              [RequestProps.PROMPT]: event.prompt,
+                                                                              [RequestProps.TIME]: event.startDate}, true);
                                                                       
   }
   else {

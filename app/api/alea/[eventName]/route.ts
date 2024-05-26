@@ -29,6 +29,11 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
         label: 'Place Bet',
         action: 'post',
       },
+      {
+        label: 'Your Bets',
+        action: 'post',
+        target: generateUrl(`api/alea/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.STAKE]: -1, [RequestProps.PICK]: -1}, false),
+      },
     ],
     image: imageUrl,
     postUrl: generateUrl(`api/alea/${eventName}/${FrameNames.PLACE_BET}`, {}, false),
