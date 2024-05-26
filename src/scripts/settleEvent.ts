@@ -103,6 +103,7 @@ export default async function settleEvent(eventName="", result=-1) {
         console.log(`User: ${fid} does not exist`)
         continue
       }
+      
       let toWinAmount = 0;
       for (const bet of user?.bets[eventName]) {
         if (!bet.settled) {
@@ -132,7 +133,7 @@ export default async function settleEvent(eventName="", result=-1) {
               console.log(`User: ${fid} is eligible for rebate`)
 
               const rebateAmount = Math.floor(bet.stake * REBATE);
-              toWinAmount -= Math.floor(bet.stake - rebateAmount);
+              toWinAmount -= (bet.stake - rebateAmount);
               user.balance = Math.round(parseFloat(user?.balance.toString()) + rebateAmount)
             }
             else {

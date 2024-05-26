@@ -49,7 +49,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                 totalPayout += payout;
             }
             else {
-                totalStaked -= payout;
+                totalPayout -= payout;
             }
             
             if (totalPayout < 0) {
