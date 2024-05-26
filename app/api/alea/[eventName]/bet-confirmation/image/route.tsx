@@ -84,18 +84,12 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                     background: 'white',
                     padding: 10}}>
                     <h1 style={{color: 'black', fontSize: 30, textAlign:'center'}}>Overall Pick: {options[overallPick]}</h1>
+
                     <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0}}>{totalStaked.toFixed(2)}<img style={{width: 35, height: 35, marginTop: 5, marginLeft:10, marginRight:10}} src={`${process.env['HOST']}/dice.png`}/></h1>
-                    <h3 style={{color: 'black', 
-                                fontSize: 25, 
-                                textAlign:'center',
-                                marginRight:10
-                                }}>Total Stake</h3>
+                    <h3 style={{color: 'black', fontSize: 25, textAlign:'center', marginRight:10}}>Total Stake</h3>
+
                     <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0}}>{totalPayout.toFixed(2)}<img style={{width: 35, height: 35, marginTop: 5, marginLeft:10, marginRight:10}} src={`${process.env['HOST']}/dice.png`}/></h1>
-                    <h3 style={{color: 'black', 
-                                fontSize: 25, 
-                                textAlign:'center',
-                                marginRight:10
-                                }}>Total Payout</h3>
+                    <h3 style={{color: 'black', fontSize: 25, textAlign:'center', marginRight:10}}>Total Payout</h3>
                 </div>
             </div>
             ), {
