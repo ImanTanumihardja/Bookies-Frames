@@ -87,6 +87,7 @@ export async function payoutNotification(eventName:string, parentHash:string, tx
     const addresses = (await kv.sscan(`${fid}:addresses`, 0))[1];
 
     let payout = 0;
+    let unfilled = 0;
     for (let j = 0; j < addresses.length; j++) {
       const address = addresses[j];
 
@@ -99,16 +100,26 @@ export async function payoutNotification(eventName:string, parentHash:string, tx
         if (bet.pick === orderBookieInfo.result) {
           payout += parseFloat(ethers.formatUnits(bet.stakeUsed + bet.toWinFilled, decimals));
         }
+
+        // Calculate how much was unfilled
+        unfilled += parseFloat(ethers.formatUnits(bet.stake - bet.stakeUsed, decimals));
       }
     }
     
-    if (payout !== 0 && fid !== 391387 && fid != 313859) {
-      console.log(`Sending to ${username} (${fid})`);
-
-      // Send notification
-      const message = `Congratulations @${username}! You won ${payout.toFixed(2).toLocaleString()} \$${symbol}! ${tx_url}`;
-      console.log(message +'\n');
-      neynarClient.publishCast(signerUUID, message, {replyTo:parentHash})
+    if (fid !== 391387 && fid != 313859) {
+      if (payout !== 0) {
+        // Send notification
+        const message = `Congratulations @${username}! You won ${payout.toFixed(2).toLocaleString()} \$${symbol}! ${tx_url}`;
+        console.log(message +'\n');
+        neynarClient.publishCast(signerUUID, message, {replyTo:parentHash})
+      }
+      else if (unfilled !== 0) {
+        // Send notification
+        const message = `Sorry @${username} we were unable to fill your bet. We have returned ${unfilled.toFixed(2).toLocaleString()} \$${symbol} back to your account! ${tx_url}`;
+        console.log(message +'\n');
+        neynarClient.publishCast(signerUUID, message, {replyTo:parentHash})
+      }
     }
+    
   }
 }
