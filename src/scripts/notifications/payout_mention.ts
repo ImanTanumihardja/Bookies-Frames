@@ -115,7 +115,7 @@ export async function payoutNotification(eventName:string, parentHash:string, tx
       }
       else if (unfilled !== 0) {
         // Send notification
-        const message = `Sorry @${username} we were unable to fill your bet. We have returned ${unfilled.toFixed(2).toLocaleString()} \$${symbol} back to your account! ${tx_url}`;
+        const message = `@${username} we were unable to fully fill your bet. We have returned ${unfilled.toFixed(2).toLocaleString()} \$${symbol} back to your account! ${tx_url}`;
         console.log(message +'\n');
         neynarClient.publishCast(signerUUID, message, {replyTo:parentHash})
       }
