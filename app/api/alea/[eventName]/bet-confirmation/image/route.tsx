@@ -55,7 +55,12 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
             }
             else {
                 if (result === bet.pick) {
-                    totalPayout += payout;
+                    if (overallPick === bet.pick) {
+                        totalPayout += payout;
+                    }
+                    else {
+                        totalPayout -= payout;
+                    }
                 }
             }
             
@@ -78,7 +83,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         justifyContent: 'center',
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
-                    <h1 style={{color: 'white', fontSize: text.length > 50 ? 30 : text.length > 40 ? 35 : 40, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25, bottom:10}}> {text} </h1>
+                    <h1 style={{color: 'white', fontSize: text.length > 50 ? 25 : text.length > 40 ? 30 : 35, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25, bottom:10}}> {text} </h1>
                     <h2 style={{color: 'white', fontSize: 15, position: 'absolute', top:0, textAlign:'center'}}>*Recast for a 10% loss rebate*</h2>
                 </div>
                 <div style={{
@@ -90,7 +95,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                     height: '100%',
                     background: 'white',
                     padding: 10}}>
-                    {totalStaked !== 0 && <h1 style={{color: 'black', fontSize: 25, textAlign:'center', margin:0}}>Overall Pick: {options[overallPick]} {result !== -1 ? result === overallPick ? '✅' : '❌' : ''}</h1>}
+                    {totalStaked !== 0 && <h1 style={{color: 'black', fontSize: 25, textAlign:'center', margin:0}}> {result !== -1 ? result === overallPick ? '✅' : '❌' : ''} Overall Pick: {options[overallPick]} </h1>}
 
                     <h1 style={{color: 'black', fontSize: 45, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalStaked.toFixed(2)}<img style={{width: 40, height: 40, marginTop: 10, marginLeft:10, marginRight:10}} src={`${process.env['HOST']}/dice.png`}/></h1>
                     <h3 style={{color: 'black', fontSize: 25, textAlign:'center'}}>Total Stake</h3>

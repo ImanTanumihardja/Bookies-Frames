@@ -27,8 +27,10 @@ export async function GET(req: NextRequest) {
 
         let bets : any[] = [];
 
+        let overallPick = 0;
         let totalPayout = 0;
         let totalUnfilled = 0;
+        let totalStaked = 0;
 
         for (const address of addresses) {
             // Concatenate the bets array with the bets for this address
@@ -39,9 +41,35 @@ export async function GET(req: NextRequest) {
                 const toWinFilled = parseFloat(ethers.formatUnits(bet.toWinFilled, decimals))
                 const pick = parseInt(ethers.formatUnits(bet.pick, PICK_DECIMALS))
 
-                // Calculate the total payout if bet pick is the same as the result
-                if (result === pick) {
-                    totalPayout += toWinFilled + stakeUsed;
+                if (result === -1) {
+                    totalStaked += stake;
+                    if (overallPick === pick) {
+                        totalPayout += toWin + stake;
+                    }
+                    else {
+                        totalPayout -= toWin + stake;
+                    }
+                }
+                else
+                {
+                    totalStaked += stakeUsed;
+                    if (result === pick) { // Calculate the total payout if bet pick is the same as the result
+                        if (overallPick === pick) {
+                            totalPayout += toWinFilled + stakeUsed;
+                        }
+                        else {
+                            totalPayout -= toWinFilled + stakeUsed;
+                        }
+                    }
+                }
+
+                if (totalPayout < 0) {
+                    // Switch pick
+                    totalPayout = Math.abs(totalPayout)
+                    overallPick = pick
+                }
+                else if (totalPayout === 0) {
+                    overallPick = pick
                 }
 
                 // Calculate the total unfilled
@@ -68,9 +96,6 @@ export async function GET(req: NextRequest) {
         if (buttonIndex === 1 && !transactionHash) {
             text = 'You rejected the bet!'
         } 
-        else if (pick === -1 && result === -1) {
-            text = "Event is closed!"
-        }
         else if (transactionHash && !isMined) {
             text = "Transaction is pending!"
         }
@@ -93,68 +118,33 @@ export async function GET(req: NextRequest) {
                         justifyContent: 'center',
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
-                    {result === -1 
-                    ?
                     <div style={{display: 'flex', flexDirection:'column', height:'100%', width:'100%', justifyContent: 'center', alignItems: 'center'}}>
                         <h1 style={{color: 'white', 
-                                    fontSize: text.length > 50 ? 30 : text.length > 40 ? 35 : 37, 
+                                    fontSize: text.length > 50 ? 25 : text.length > 40 ? 30 : 35, 
                                     textAlign:'center', 
                                     padding:25}}> {text} </h1>
                     </div>
-                    :
-                    <div style={{display: 'flex', flexDirection:'column', height:'100%', width:'100%', justifyContent: 'center', alignItems: 'center'}}>
-                        <h1 style={{color: 'white', 
-                                    fontSize: totalPayout.toFixed(2).length > 10 ? 30 : totalPayout.toFixed(2).length > 7 ? 35 : 45,
-                                    textAlign:'center', 
-                                    marginBottom:-15}}> {totalPayout.toFixed(2)} </h1>
-                        <h3 style={{color: 'white', 
-                                    fontSize: 20, 
-                                    textAlign:'center',
-                                    }}>Total Payout ($DEGEN)</h3>
-
-                        <h1 style={{color: 'white', 
-                                    fontSize: 25,
-                                    textAlign:'center', 
-                                    marginBottom:-15}}> {totalUnfilled.toFixed(2)} </h1>
-                        <h3 style={{color: 'white', 
-                                    fontSize: 15, 
-                                    textAlign:'center',
-                                    }}>Total Unfilled ($DEGEN)</h3>
-                    </div>
-                    }
                 </div>
-                    {bets.length !== 0 ?
-                        <div style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyItems:'flex-start',
-                            width: '65%',
-                            height: '100%',
-                            background: 'white',
-                            padding: 10}}>
-                            {bets.reverse().slice(0, 6).map((bet: any, index: number) => { 
-                            return (
-                                <h3 key={index} style={{color: 'black', fontSize:25, margin:12}}>
-                                    { result === -1 ? '' : bet.pick === result ? '✅' : '❌'} {options[bet.pick]} | {bet.stake.toFixed(2)} <img style={{width: 32, height: 32, marginLeft:5, marginRight:5}}src={`${process.env['HOST']}/degen.png`}/> | {bet.filledPercent}% Filled
-                                </h3>
-                            )})}
-                            {bets.length > 6 &&
-                            <h2 style={{color: 'black', position:'absolute', bottom:10, fontSize:30, justifyContent:'center'}}>. . .</h2>}
-                        </div>
-                        :
-                        <div style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyItems:'flex-start',
-                            width: '65%',
-                            height: '100%',
-                            background: 'white',
-                            padding: 10}}>
-                            <h3 style={{color: 'black', fontSize:25, margin:12}}>No bets found!</h3>
-                        </div>
-                    }
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '65%',
+                    height: '100%',
+                    background: 'white',
+                    padding: 10}}>
+                    {(totalStaked !== 0  || totalUnfilled !== 0) && <h1 style={{color: 'black', fontSize: 25, textAlign:'center', margin:0}}> {result !== -1 ? result === overallPick ? '✅' : '❌' : ''} Overall Pick: {options[overallPick]}</h1>}
+
+                    <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalStaked.toFixed(2)}<img style={{width: 35, height: 35, marginLeft:7, marginTop: 7}}src={`${process.env['HOST']}/degen.png`}/></h1>
+                    <h3 style={{color: 'black', fontSize: 20, textAlign:'center', margin: 5}}>Total Stake</h3>
+
+                    <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalPayout.toFixed(2)}<img style={{width: 35, height: 35, marginLeft:7, marginTop: 7}}src={`${process.env['HOST']}/degen.png`}/></h1>
+                    <h3 style={{color: 'black', fontSize: 20, textAlign:'center', margin: 5}}>{result === -1 ? 'Potential Payout': 'Total Payout'}</h3>
+
+                    <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalUnfilled.toFixed(2)}<img style={{width: 35, height: 35, marginLeft:7, marginTop: 7}}src={`${process.env['HOST']}/degen.png`}/></h1>
+                    <h3 style={{color: 'black', fontSize: 20, textAlign:'center', margin: 5}}>Total Unfilled</h3>
+                </div>
             </div>
             ), {
             width: 764, 
