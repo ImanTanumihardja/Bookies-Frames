@@ -63,12 +63,9 @@ export async function GET(req: NextRequest) {
                     }
                 }
 
-                if (totalPayout < 0) {
+                if (totalPayout <= 0) {
                     // Switch pick
                     totalPayout = Math.abs(totalPayout)
-                    overallPick = pick
-                }
-                else if (totalPayout === 0) {
                     overallPick = pick
                 }
 
