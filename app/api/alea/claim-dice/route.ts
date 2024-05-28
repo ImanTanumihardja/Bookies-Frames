@@ -48,6 +48,15 @@ export async function POST(req: NextRequest): Promise<Response> {
         user = structuredClone(DEFAULT_USER);
         user.hasClaimed = false;
 
+        // Save to leaderboard
+        if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: DEFAULT_USER.balance, member: fid}).catch(async (error) => {
+          console.error('Error adding user to leaderboard:', error);
+          // Try again
+          if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: DEFAULT_USER.balance, member: fid}).catch((error) => {
+            throw new Error('Error adding user to leaderboard');
+          })
+        });
+
         console.log('NEW USER: ', user)
         // console.log('CLAIMED 100 DICE')
     }
@@ -73,7 +82,7 @@ export async function POST(req: NextRequest): Promise<Response> {
        if (user !== null) await kv.zincrby(DatabaseKeys.LEADERBOARD, CLAIM_AMOUNT, fid).catch(async (error) => {
           console.error('Error adding user to leaderboard:', error);
           // Try again
-          if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: user.balance, member: fid})
+          if (user !== null) await kv.zincrby(DatabaseKeys.LEADERBOARD, CLAIM_AMOUNT, fid)
         });
       }).catch((error) => {
         return new Response(JSON.stringify({ message: `Error updating user` }), { status: 400, headers: { 'content-type': 'application/json' } });
