@@ -106,7 +106,7 @@ export async function payoutNotification(eventName:string, parentHash:string, tx
       }
     }
     
-    if (fid !== 391387 && fid != 313859) {
+    if (fid !== 391387 && fid != 313859 && fid !== 241573) {
       if (payout !== 0) {
         // Send notification
         const message = `Congratulations @${username}! You won ${payout.toFixed(2).toLocaleString()} \$${symbol}! ${tx_url}`;
