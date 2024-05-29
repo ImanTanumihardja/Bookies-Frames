@@ -4,6 +4,7 @@ import {
     VStack,
     useColorMode,
 } from '@chakra-ui/react';
+
 import { ReactTyped } from "react-typed";
 
 

@@ -15,7 +15,7 @@ export const viewport = {
   initialScale: 1.0,
 };
 
-export default function RootLayout({ children, pageName }: { children: React.ReactNode, pageName: string}) {
+export default function RootLayout({ children }: { children: React.ReactNode}) {
 
   const config = {
     initialColorMode: 'dark',
@@ -32,7 +32,7 @@ export default function RootLayout({ children, pageName }: { children: React.Rea
     <html lang='en'>
       <body> 
         <Head>
-          <title>{`${pageName} | Bookies`}</title>
+          <title>Bookies</title>
           <meta name="viewport" content="initial-scale=1.0, width=device-width" />
           <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
