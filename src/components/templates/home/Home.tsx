@@ -3,7 +3,7 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 
-import { ReactTyped } from "react-typed";
+// import { ReactTyped } from "react-typed";
 
 const Home = () => {
   const openInNewTab = (url: string) => {
@@ -34,7 +34,7 @@ const Home = () => {
         
         <div className='flex text-6xl md:text-7xl lg:text-8xl font-bold italic items-center justify-center'>
           <h1 className=''>Bet to </h1>
-          <ReactTyped className='bg-gradient-to-r from-orange-500 to-purple-600 text-transparent bg-clip-text bg-300% animate-gradient pl-5' strings={['Own', 'Win', 'Earn']} typeSpeed={175} backSpeed={200} loop/>
+          {/* <ReactTyped className='bg-gradient-to-r from-orange-500 to-purple-600 text-transparent bg-clip-text bg-300% animate-gradient pl-5' strings={['Own', 'Win', 'Earn']} typeSpeed={175} backSpeed={200} loop/> */}
         </div>
       </div>
 
