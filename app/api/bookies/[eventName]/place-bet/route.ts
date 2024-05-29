@@ -41,7 +41,6 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   let balance = null;
   
   if (address !== null) {
-    
     const bal = await acceptedToken.balanceOf(address)
     balance = parseFloat(ethers.formatUnits(bal, decimals))
   }
