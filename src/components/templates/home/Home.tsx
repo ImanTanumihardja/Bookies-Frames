@@ -3,7 +3,7 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 
-import { ReactTyped } from "react-typed";
+const {ReactTyped} = require("react-typed");
 
 const Home = () => {
   const openInNewTab = (url: string) => {
