@@ -1,7 +1,7 @@
 // Page that returns a frame
 import { Frame, getFrame, getFrameFlattened } from "frames.js";
 import type { Metadata } from "next";
-import {GET} from '../../api/bookies/[eventName]/route'
+import {GET} from '../../../app/api/bookies/[eventName]/route'
 import { NextRequest } from "next/server";
 import { fetchMetadata } from "frames.js/next";
 import { Accounts } from "../../../src/utils";
