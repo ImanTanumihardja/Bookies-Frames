@@ -1,5 +1,5 @@
 {
-  "name": "Bookies-Frames",
+  "name": "bookies-frames",
   "version": "0.1.2",
   "scripts": {
     "build": "next build",
@@ -12,36 +12,34 @@
   "author": "Emmaniii",
   "license": "MIT",
   "dependencies": {
-    "@neynar/nodejs-sdk": "^1.19.3",
-    "@vercel/kv": "^1.0.1",
+    "@neynar/nodejs-sdk": "^1.27.0",
+    "@vercel/kv": "^2.0.0",
     "cloudinary": "^2.2.0",
-    "ethers": "^6.12.0",
-    "frames.js": "^0.14.0",
+    "ethers": "^6.12.1",
+    "frames.js": "^0.16.4",
     "minimist": "^1.2.8",
-    "next": "14.2.2",
-    "next-cloudinary": "^6.5.1",
-    "puppeteer": "^22.6.5",
-    "react-dom": "^18.2.0",
-    "zod": "^3.23.3",
+    "next": "14.2.3",
+    "next-cloudinary": "^6.6.2",
+    "zod": "^3.23.8",
     "@chakra-ui/card": "^2.2.0",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
     "@chakra-ui/react-context": "^2.1.0",
     "@chakra-ui/react-use-callback-ref": "^2.1.0",
     "aos": "^2.3.4",
-    "autoprefixer": "^10.4.17",
-    "react": "18.2.0",
+    "autoprefixer": "^10.4.19",
+    "react": "18.3.1",
     "react-typed": "^2.0.12"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-verify": "^2.0.6",
-    "@types/node": "^20.12.7",
-    "@types/react": "18.2.79",
-    "@types/react-dom": "^18.2.25",
+    "@nomicfoundation/hardhat-verify": "^2.0.7",
+    "@types/node": "^20.12.13",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "^18.3.0",
     "dotenv": "^16.4.5",
     "prettier": "^3.2.5",
     "typescript": "^5.4.5",
     "@types/aos": "^3.0.7",
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.3"
   }
 }
