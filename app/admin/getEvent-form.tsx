@@ -16,15 +16,8 @@ function SubmitButton() {
 }
 
 export function GetEventForm() {
-  const [eventstate, getEventFormAction] = useFormState(getEventAction, {message: "", eventName:"", eventData: null});
-  
-  let isBookies = true;
-  let isAlea = true;
+  const [eventstate, getEventFormAction] = useFormState(getEventAction, {message: "", eventName:"", eventData: null, isAlea: true, isBookies: true});
 
-  if (eventstate.eventData) {
-    isBookies = eventstate.eventData.host === Accounts.BOOKIES || eventstate.eventData.host === Accounts.BOTH;
-    isAlea = eventstate.eventData.host === Accounts.ALEA || eventstate.eventData.host === Accounts.BOTH;
-  }
 
   return (
     <div>
@@ -41,7 +34,7 @@ export function GetEventForm() {
           <p>Start Date: {(new Date(parseInt(eventstate.eventData?.startDate?.toString() || '') * 1000)).toString()}</p>
           <p>Prompt: {eventstate.eventData.prompt}</p>
           <p>Host: {eventstate.eventData.host}</p>
-          <p>Result: {isAlea ? eventstate.eventData.result : eventstate.eventData.orderBookieInfo?.result}</p>
+          <p>Result: {eventstate?.isAlea ? eventstate.eventData.result : eventstate.eventData.orderBookieInfo?.result}</p>
           <div>Options: 
             <ul>{eventstate.eventData?.options?.map((option:string, index:number) => 
               <li key={index}>
@@ -49,8 +42,8 @@ export function GetEventForm() {
               </li>)}
             </ul>
           </div>
-          { isAlea && <p>Alea Bettors(n={eventstate.eventData.aleaBettors.length}): {eventstate.eventData.aleaBettors.join(', ')}</p>}
-          { isBookies && eventstate.eventData.orderBookieInfo && 
+          { eventstate?.isAlea && <p>Alea Bettors(n={eventstate.eventData.aleaBettors.length}): {eventstate.eventData.aleaBettors.join(', ')}</p>}
+          { eventstate?.isBookies && eventstate.eventData.orderBookieInfo && 
           <>
             <p>OrderBookie Address: {eventstate.eventData.address}</p>
             <p>Bookies Bettors(n={eventstate.eventData.bookiesBettors.length}): {eventstate.eventData.bookiesBettors.join(', ')}</p> 

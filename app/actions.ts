@@ -6,6 +6,7 @@ import settleEvent from '../src/scripts/settleEvent'
 import placeBet from '../src/scripts/placeBet'
 import getEvent from '../src/scripts/getEvent'
 import { revalidatePath } from 'next/cache'
+import { Accounts } from '../src/utils'
 
 export async function createEventAction(
     prevState: any, 
@@ -91,11 +92,15 @@ export async function getEventAction(
     try {
         const eventData = await getEvent(eventName)
         revalidatePath('/')
-        return {message: `Retrieved ${eventName}`, eventName: eventName, eventData: eventData}
+
+        const isBookies = eventData?.host === Accounts.BOOKIES || eventData?.host === Accounts.BOTH
+        const isAlea = eventData?.host === Accounts.ALEA || eventData?.host === Accounts.BOTH
+
+        return {message: `Retrieved ${eventName}`, eventName: eventName, eventData: eventData, isAlea: isAlea, isBookies: isBookies}
     }
     catch (e) {
         console.error(e)
-        return {message: `Failed to settle event: ${e}`, eventName: eventName, eventData: null}
+        return {message: `Failed to settle event: ${e}`, eventName: eventName, eventData: null, isAlea: true, isBookies: true}
     }
 }
 
