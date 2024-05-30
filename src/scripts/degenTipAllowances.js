@@ -22,7 +22,7 @@ async function notifyDC() {
   const randomUsers = data.sort(() => 0.5 - Math.random()).slice(0, 50)
 
   // Log the random users' fids
-  console.log('Random Users:', randomUsers.map(user => user.fid))
+  console.log('Random Users:', randomUsers.map(user => parseInt(user.fid)).toString())  
 }
 
 (async () => {if (require.main === module) {
