@@ -29,3 +29,7 @@ export default function EventPage({params}: { params: {eventName: string}}) {
         <Home/>
     );
 }
+
+export const revalidate = 60;
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
