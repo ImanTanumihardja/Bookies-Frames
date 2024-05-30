@@ -28,7 +28,6 @@ export function GetEventForm() {
       </form>
       {eventstate.eventData &&
         <div>
-          <h2>Event Data</h2>
           <p>Event Name: {eventstate.eventName}</p>
           <p>Start Date: {(new Date(parseInt(eventstate.eventData?.startDate?.toString() || '') * 1000)).toString()}</p>
           <p>Prompt: {eventstate.eventData.prompt}</p>
