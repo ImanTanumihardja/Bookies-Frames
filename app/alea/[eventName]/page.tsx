@@ -5,6 +5,7 @@ import {GET} from '../../api/bookies/[eventName]/route'
 import { NextRequest } from "next/server";
 import { fetchMetadata } from "frames.js/next";
 import { Accounts } from "../../../src/utils";
+import { Home } from "../../../src/components/templates/home";
  
 
 // Export Next.js metadata
@@ -26,12 +27,6 @@ export async function generateMetadata({ params: { eventName } }: { params: { ev
 
 export default function EventPage({params}: { params: {eventName: string}}) {
     return(
-        <>
-            <div className="flex flex-col items-center justify-center min-h-screen py-2">
-                <main className="flex flex-col items-center justify-center flex-1 px-4 sm:px-20 text-center">
-                   {params.eventName}
-                </main>
-            </div>
-        </>
+        <Home/>
     );
 }
