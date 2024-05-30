@@ -12,6 +12,14 @@
   @apply py-4 px-8 rounded-md text-2xl font-display shadow-transparent hover:shadow-stone-500/20 hover:scale-95 hover:shadow-md active:scale-90 transition-all;
 }
 
+.admin-button {
+  @apply py-1 px-2 rounded-md text-base font-display shadow-transparent hover:shadow-stone-500/20 hover:scale-95 hover:shadow-md active:scale-90 transition-all grow text-white font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-300% animate-gradient;
+}
+
+.admin-heading {
+  @apply text-lg md:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-orange-500 to-purple-600 text-transparent bg-clip-text bg-300% animate-gradient mb-5 mt-10;
+}
+
 .animate-gradient {
   background-size: 300%;
   -webkit-animation: animatedgradient 6s ease infinite alternate;

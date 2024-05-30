@@ -8,7 +8,7 @@ function SubmitButton() {
 
   return (
     !pending &&
-    <button type="submit" aria-disabled={pending}>
+    <button className="admin-button" type="submit" aria-disabled={pending}>
       Settle
     </button>
   );
@@ -24,7 +24,7 @@ export function SettleEventForm() {
   }
   return (
     <div>
-      <h1>Settle Event</h1>
+      <h1 className="admin-heading">Settle Event</h1>
       <form action={formAction}>
         <label htmlFor="eventName">Event Name </label>
         <input type="text" id="eventName" name="eventName" required />

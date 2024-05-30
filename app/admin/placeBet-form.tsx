@@ -8,7 +8,7 @@ function SubmitButton() {
 
   return (
     !pending &&
-    <button type="submit" aria-disabled={pending}>
+    <button className="admin-button" type="submit" aria-disabled={pending}>
       Place Bet
     </button>
   );
@@ -26,7 +26,7 @@ export function PlaceBetForm() {
 
   return (
     <div>
-      <h1>Place Bet</h1>
+      <h1 className="admin-heading">Place Bet</h1>
       <form action={placeBetFormAction}>
         <label htmlFor="bettor">Bettor Address </label>
         <input type="string" id="bettor" name="bettor" required />

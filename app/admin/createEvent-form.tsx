@@ -10,7 +10,7 @@ function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
-    <button type="submit" disabled={pending} aria-disabled={pending}>
+    <button className="admin-button" type="submit" disabled={pending} aria-disabled={pending}>
       {pending ? "Creating..." : "Create"}
     </button>
   );
@@ -31,7 +31,7 @@ export function CreateEventForm() {
 
   return (
     <div>
-      <h1>Create Event</h1>
+      <h1 className="admin-heading">Create Event</h1>
       <form action={formAction}>
         <label htmlFor="eventName">Event Name </label>
         <input type="text" id="eventName" name="eventName" placeholder="lal-lac-ml" required />

@@ -2,13 +2,12 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import {getEventAction} from "../actions"
-import { Accounts } from "../../src/utils";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     (
-      <button type="submit" aria-disabled={pending}>
+      <button className="admin-button" type="submit" aria-disabled={pending}>
         Get Event
       </button>
     )
@@ -21,7 +20,7 @@ export function GetEventForm() {
 
   return (
     <div>
-      <h1>Get Event</h1>
+      <h1 className="admin-heading">Get Event</h1>
       <form action={getEventFormAction}>
         <label htmlFor="eventName">Event Name </label>
         <input type="text" id="eventName" name="eventName" required />
