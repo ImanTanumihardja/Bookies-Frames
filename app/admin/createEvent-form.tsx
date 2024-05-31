@@ -82,7 +82,7 @@ export function CreateEventForm() {
       <CldUploadWidget uploadPreset="thumbnails" signatureEndpoint={"../api/sign-image"}>
         {({ open }) => {
           return (
-            <button type="button" onClick={() => open()}>
+            <button className="admin-button" type="button" onClick={() => open()}>
               Upload Thumbnail
             </button>
           );
