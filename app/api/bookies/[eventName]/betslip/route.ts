@@ -89,6 +89,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
     const acceptedToken = await new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider)
     const decimals = await acceptedToken.decimals();
+    const symbol = await acceptedToken.symbol();
       
     // Get percent of stake filled
     const oppositePick = 1 - pick;
@@ -107,7 +108,8 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
                                                                       [RequestProps.STAKE]: stake, 
                                                                       [RequestProps.ODD]: impliedProbability,
                                                                       [RequestProps.OPTIONS]: options,
-                                                                      [RequestProps.PERCENT_FILLED]: percentFilled}, true);
+                                                                      [RequestProps.PERCENT_FILLED]: percentFilled,
+                                                                      [RequestProps.SYMBOL]: symbol}, true);
     buttons = [
       {
         label: "Reject", 

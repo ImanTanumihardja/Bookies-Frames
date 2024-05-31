@@ -26,7 +26,9 @@ export async function GET(req: NextRequest) {
         // Get orderBookieInfo
         const orderBookieInfo = await orderBookie.getBookieInfo()
 
-        const decimals = await (new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider)).decimals();
+        const acceptedToken = await new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider)
+        const decimals = await acceptedToken.decimals();
+        const symbol = await acceptedToken.symbol();
 
         let bets : any[] = [];
 
@@ -142,18 +144,18 @@ export async function GET(req: NextRequest) {
                     {(totalStaked !== 0  || totalUnfilled !== 0) && <h1 style={{color: 'black', fontSize: 25, textAlign:'center', margin:0}}> {result !== -1 ? result === overallPick ? '✅' : '❌' : ''} Overall Pick: {options[overallPick]}</h1>}
 
                     <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-                        <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalStaked.toFixed(2)}<img style={{width: 35, height: 35, marginLeft:7, marginTop: 7}}src={`${process.env['HOST']}/degen.png`}/></h1>
+                        <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalStaked.toFixed(2)}<img style={{width: 35, height: 35, marginLeft:7, marginTop: 7}}src={`${process.env['HOST']}/${symbol}.png`}/></h1>
                         <h3 style={{color: 'black', fontSize: 20, textAlign:'center', margin: 5}}>Total Stake {result === -1 && `(${filledPercent}% Filled)`}</h3>
                     </div>
 
                     <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-                        <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalPayout.toFixed(2)}<img style={{width: 35, height: 35, marginLeft:7, marginTop: 7}}src={`${process.env['HOST']}/degen.png`}/></h1>
+                        <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalPayout.toFixed(2)}<img style={{width: 35, height: 35, marginLeft:7, marginTop: 7}}src={`${process.env['HOST']}/${symbol}.png`}/></h1>
                         <h3 style={{color: 'black', fontSize: 20, textAlign:'center', margin: 5}}>{result === -1 ? 'Potential Payout': 'Total Payout'}</h3>
                     </div>
 
                     { totalUnfilled !== 0 && result !== -1 && 
                         <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-                            <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalUnfilled.toFixed(2)}<img style={{width: 35, height: 35, marginLeft:7, marginTop: 7}}src={`${process.env['HOST']}/degen.png`}/></h1>
+                            <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalUnfilled.toFixed(2)}<img style={{width: 35, height: 35, marginLeft:7, marginTop: 7}}src={`${process.env['HOST']}/${symbol}.png`}/></h1>
                             <h3 style={{color: 'black', fontSize: 20, textAlign:'center', margin: 5}}>Total Unfilled</h3>
                         </div>
                     }

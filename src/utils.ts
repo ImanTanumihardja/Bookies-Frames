@@ -43,7 +43,8 @@ export enum RequestProps {
   TRANSACTION_HASH = 'transactionHash',
   ADDRESS = 'address',
   IS_MINED = 'isMined',
-  PERCENT_FILLED = 'percentFilled'
+  PERCENT_FILLED = 'percentFilled',
+  SYMBOL = 'symbol'
 }
 
 export enum Accounts {
@@ -90,7 +91,8 @@ export const RequestPropsTypes = {
     [RequestProps.TRANSACTION_HASH] : "",
     [RequestProps.ADDRESS] : "",
     [RequestProps.IS_MINED]: false,
-    [RequestProps.PERCENT_FILLED]: 0.0
+    [RequestProps.PERCENT_FILLED]: 0.0,
+    [RequestProps.SYMBOL]: ""
 }
 
 export enum FrameNames {

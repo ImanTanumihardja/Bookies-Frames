@@ -33,6 +33,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   const acceptedToken = await new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider)
   const decimals = await acceptedToken.decimals();
+  const symbol = await acceptedToken.symbol();
 
   // Get address of fid
   const address = (await kv.sscan(`${fid}:addresses`, 0))[1][0] || null;
@@ -111,7 +112,11 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       } as FrameButton
     })
     postUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}`, {}, false),
-    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, [RequestProps.BALANCE]: balance !== null ? balance : "", [RequestProps.POLL]: liquiditySpread, [RequestProps.OPTIONS]: event.options}, true);
+    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, 
+                                                                                      [RequestProps.BALANCE]: balance !== null ? balance : "", 
+                                                                                      [RequestProps.POLL]: liquiditySpread, 
+                                                                                      [RequestProps.OPTIONS]: event.options, 
+                                                                                      [RequestProps.SYMBOL]: symbol}, true);
   }
 
   const frame : Frame = {

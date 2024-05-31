@@ -10,7 +10,7 @@ let fontData = fs.readFileSync(fontPath)
 
 export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }) {
     try {
-        const {prompt, balance, poll, options} = getRequestProps(req, [RequestProps.PROMPT, RequestProps.BALANCE, RequestProps.POLL, RequestProps.OPTIONS]);
+        const {prompt, balance, poll, options, symbol} = getRequestProps(req, [RequestProps.PROMPT, RequestProps.BALANCE, RequestProps.POLL, RequestProps.OPTIONS, RequestProps.SYMBOL]);
 
         let pollData = [];
         // Get total votes
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize: prompt.length > 50 ? 30 : prompt.length > 40 ? 40 : 50, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25}}> {prompt} </h1>
-                    {balance !== null && <h3 style={{color: 'white', position: 'absolute', bottom: 0, right:20, fontSize: 25, textAlign:'center'}}> <img style={{width: 25, height: 25, marginRight:5, marginTop: 5}}src={`${process.env['HOST']}/degen.png`}/> {balanceString} </h3>}
+                    {balance !== null && <h3 style={{color: 'white', position: 'absolute', bottom: 0, right:20, fontSize: 25, textAlign:'center'}}> <img style={{width: 25, height: 25, marginRight:5, marginTop: 5}}src={`${process.env['HOST']}/${symbol}.png`}/> {balanceString} </h3>}
                     <h1 style={{position:'absolute', color:'white', fontSize:25, top: 0, left:20}}> *Approve Spending TX*</h1>
                 </div>
                 <div style={{display: 'flex', flexDirection:'column', width:'35%', height:'100%', alignItems:'center', background: 'white'}}>
