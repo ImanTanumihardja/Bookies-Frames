@@ -16,7 +16,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
             odd : impliedProbability, 
             options,
             percentFilled,
-            acceptedToken} 
+            symbol} 
                 = getRequestProps(req, [RequestProps.PICK, 
                                         RequestProps.STAKE, 
                                         RequestProps.ODD,
@@ -49,8 +49,8 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                         <h1 style={{color: 'white', fontSize:40, margin:15, marginRight:10, textDecoration:'underline'}}> Filled:</h1>
 
                         <h1 style={{color: 'white', fontSize:40, margin:15}}>{options[pick]}</h1>
-                        <h1 style={{color: 'white', fontSize:40, margin:15}}>{stake.toFixed(2)} <img style={{width: 42, height: 42, marginLeft:5, marginTop: 5}}src={`${process.env['HOST']}/${acceptedToken}.png`}/></h1>
-                        <h1 style={{color: 'white', fontSize:40, margin:15}}>{payout} <img style={{width: 42, height: 42, marginLeft:5, marginTop: 5}}src={`${process.env['HOST']}/${acceptedToken}.png`}/></h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:15}}>{stake.toFixed(2)} <img style={{width: 42, height: 42, marginLeft:5, marginTop: 5}}src={`${process.env['HOST']}/${symbol}.png`}/></h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:15}}>{payout} <img style={{width: 42, height: 42, marginLeft:5, marginTop: 5}}src={`${process.env['HOST']}/${symbol}.png`}/></h1>
                         <h1 style={{color: 'white', fontSize:40, margin:15}}>{percentFilled}% </h1>
                     </div>
                     <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, bottom:10, right: 10}}> Odds: {impliedProbability > 0.5 ? '-' : '+'}{odd}</h1>
