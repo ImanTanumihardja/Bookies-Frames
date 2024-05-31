@@ -42,7 +42,8 @@ export enum RequestProps {
   REDIRECT = 'redirect',
   TRANSACTION_HASH = 'transactionHash',
   ADDRESS = 'address',
-  IS_MINED = 'isMined'
+  IS_MINED = 'isMined',
+  PERCENT_FILLED = 'percentFilled'
 }
 
 export enum Accounts {
@@ -88,7 +89,8 @@ export const RequestPropsTypes = {
     [RequestProps.REDIRECT] : true,
     [RequestProps.TRANSACTION_HASH] : "",
     [RequestProps.ADDRESS] : "",
-    [RequestProps.IS_MINED]: false
+    [RequestProps.IS_MINED]: false,
+    [RequestProps.PERCENT_FILLED]: 0.0
 }
 
 export enum FrameNames {

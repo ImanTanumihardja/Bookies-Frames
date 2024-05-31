@@ -14,12 +14,13 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
             pick, 
             stake, 
             odd : impliedProbability, 
-            poll, 
-            options} 
+            options,
+            percentFilled} 
                 = getRequestProps(req, [RequestProps.PICK, 
                                         RequestProps.STAKE, 
                                         RequestProps.ODD,
-                                        RequestProps.OPTIONS]);
+                                        RequestProps.OPTIONS,
+                                        RequestProps.PERCENT_FILLED]);
         
         const odd = convertImpliedProbabilityToAmerican(impliedProbability)
 
@@ -39,14 +40,16 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                 }}>
                     <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize:55, position:'absolute', top:-10, left:20 }}>Betslip</h1>
-                    <div style={{display: 'flex', width:'50%', height:'70%', top:20, flexDirection: 'column', alignSelf:'center', alignItems:'flex-start', flexWrap: 'wrap', padding:10}}> 
+                    <div style={{display: 'flex', width:'50%', height:'90%', top:20, flexDirection: 'column', alignSelf:'center', alignItems:'flex-start', flexWrap: 'wrap', padding:15}}> 
                         <h1 style={{color: 'white', fontSize:40, margin:15, marginRight:10, textDecoration:'underline'}}> Pick:</h1>
                         <h1 style={{color: 'white', fontSize:40, margin:15, marginRight:10, textDecoration:'underline'}}> Stake:</h1>
                         <h1 style={{color: 'white', fontSize:40, margin:15, marginRight:10, textDecoration:'underline'}}> Payout:</h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:15, marginRight:10, textDecoration:'underline'}}> Filled:</h1>
 
                         <h1 style={{color: 'white', fontSize:40, margin:15}}>{options[pick]}</h1>
                         <h1 style={{color: 'white', fontSize:40, margin:15}}>{stake.toFixed(2)} <img style={{width: 42, height: 42, marginLeft:5, marginTop: 5}}src={`${process.env['HOST']}/degen.png`}/></h1>
                         <h1 style={{color: 'white', fontSize:40, margin:15}}>{payout} <img style={{width: 42, height: 42, marginLeft:5, marginTop: 5}}src={`${process.env['HOST']}/degen.png`}/></h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:15}}>{percentFilled}% </h1>
                     </div>
                     <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, bottom:10, right: 10}}> Odds: {impliedProbability > 0.5 ? '-' : '+'}{odd}</h1>
                     <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, top:10, right: 10}}> *Confirm Bet TX*</h1>

@@ -6,7 +6,6 @@ import { kv } from '@vercel/kv';
 import * as fs from "fs";
 import { join } from 'path';
 import {ethers} from 'ethers';
-import { USDC_ADDRESS, DEGEN_ADDRESS } from '../../../../../json/addresses.json';
 import {erc20ABI} from '../../../../../contract-abis/erc20.json';
 
 // Fonts
@@ -16,14 +15,18 @@ let fontData = fs.readFileSync(fontPath)
 export async function GET(req: NextRequest) {
     try {
         let text='' // Default empty React element
-        let {pick, buttonIndex, fid, address: orderBookieAddress, options, result, prompt, transactionHash, isMined} = getRequestProps(req, [RequestProps.ADDRESS, RequestProps.PICK, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.RESULT, RequestProps.PROMPT, RequestProps.TRANSACTION_HASH, RequestProps.IS_MINED]);
+        let {buttonIndex, fid, address: orderBookieAddress, options, result, prompt, transactionHash, isMined} = getRequestProps(req, [RequestProps.ADDRESS, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.RESULT, RequestProps.PROMPT, RequestProps.TRANSACTION_HASH, RequestProps.IS_MINED]);
 
         const addresses = (await kv.sscan(`${fid}:addresses`, 0))[1] || [];
 
         const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
-        const decimals = await (new ethers.Contract(DEGEN_ADDRESS, erc20ABI, provider)).decimals();
 
         const orderBookie = new ethers.Contract(orderBookieAddress, OrderBookieABI, provider)
+
+        // Get orderBookieInfo
+        const orderBookieInfo = await orderBookie.getBookieInfo()
+
+        const decimals = await (new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider)).decimals();
 
         let bets : any[] = [];
 
@@ -31,6 +34,7 @@ export async function GET(req: NextRequest) {
         let totalPayout = 0;
         let totalUnfilled = 0;
         let totalStaked = 0;
+        let totalStakeUsed = 0;
 
         for (const address of addresses) {
             // Concatenate the bets array with the bets for this address
@@ -63,6 +67,8 @@ export async function GET(req: NextRequest) {
                     }
                 }
 
+                totalStakeUsed += stakeUsed;
+
                 if (totalPayout <= 0) {
                     // Switch pick
                     totalPayout = Math.abs(totalPayout)
@@ -85,6 +91,8 @@ export async function GET(req: NextRequest) {
                 }
             }));
         }
+
+        const filledPercent = totalStakeUsed !== 0 ? Math.floor(totalStakeUsed / totalStaked * 100) : 0;
 
         // Get bets for this event by filtering the bets array for the eventName
         console.log('BETS: ', bets)
@@ -126,21 +134,29 @@ export async function GET(req: NextRequest) {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    justifyContent: 'center',
+                    justifyContent: 'space-around',
                     width: '65%',
                     height: '100%',
                     background: 'white',
-                    padding: 10}}>
+                    padding: 40}}>
                     {(totalStaked !== 0  || totalUnfilled !== 0) && <h1 style={{color: 'black', fontSize: 25, textAlign:'center', margin:0}}> {result !== -1 ? result === overallPick ? '✅' : '❌' : ''} Overall Pick: {options[overallPick]}</h1>}
 
-                    <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalStaked.toFixed(2)}<img style={{width: 35, height: 35, marginLeft:7, marginTop: 7}}src={`${process.env['HOST']}/degen.png`}/></h1>
-                    <h3 style={{color: 'black', fontSize: 20, textAlign:'center', margin: 5}}>Total Stake</h3>
+                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                        <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalStaked.toFixed(2)}<img style={{width: 35, height: 35, marginLeft:7, marginTop: 7}}src={`${process.env['HOST']}/degen.png`}/></h1>
+                        <h3 style={{color: 'black', fontSize: 20, textAlign:'center', margin: 5}}>Total Stake {result === -1 && `(${filledPercent}% Filled)`}</h3>
+                    </div>
 
-                    <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalPayout.toFixed(2)}<img style={{width: 35, height: 35, marginLeft:7, marginTop: 7}}src={`${process.env['HOST']}/degen.png`}/></h1>
-                    <h3 style={{color: 'black', fontSize: 20, textAlign:'center', margin: 5}}>{result === -1 ? 'Potential Payout': 'Total Payout'}</h3>
+                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                        <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalPayout.toFixed(2)}<img style={{width: 35, height: 35, marginLeft:7, marginTop: 7}}src={`${process.env['HOST']}/degen.png`}/></h1>
+                        <h3 style={{color: 'black', fontSize: 20, textAlign:'center', margin: 5}}>{result === -1 ? 'Potential Payout': 'Total Payout'}</h3>
+                    </div>
 
-                    <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalUnfilled.toFixed(2)}<img style={{width: 35, height: 35, marginLeft:7, marginTop: 7}}src={`${process.env['HOST']}/degen.png`}/></h1>
-                    <h3 style={{color: 'black', fontSize: 20, textAlign:'center', margin: 5}}>Total Unfilled</h3>
+                    { totalUnfilled !== 0 && result !== -1 && 
+                        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                            <h1 style={{color: 'black', fontSize: 35, textAlign:'center', marginBottom: 0, marginLeft:30}}>{totalUnfilled.toFixed(2)}<img style={{width: 35, height: 35, marginLeft:7, marginTop: 7}}src={`${process.env['HOST']}/degen.png`}/></h1>
+                            <h3 style={{color: 'black', fontSize: 20, textAlign:'center', margin: 5}}>Total Unfilled</h3>
+                        </div>
+                    }
                 </div>
             </div>
             ), {

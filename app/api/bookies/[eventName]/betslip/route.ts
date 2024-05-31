@@ -1,8 +1,11 @@
 import { FrameButtonsType, getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
-import {  DatabaseKeys, FrameNames, RequestProps, generateUrl, getFrameMessage, Transactions, STAKE_LIMIT } from '../../../../../src/utils';
+import { FrameNames, RequestProps, generateUrl, getFrameMessage, Transactions, STAKE_LIMIT, PICK_DECIMALS, ODDS_DECIMALS } from '../../../../../src/utils';
+import { OrderBookieABI } from '../../../../contract-abis/orderBookie.json';
+import { erc20ABI } from '../../../../contract-abis/erc20.json';
 import { kv } from "@vercel/kv";
 import { Event } from "../../../../types";
+import { ethers } from "ethers";
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   // Verify the frame request
@@ -43,9 +46,12 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   let buttons;
   const impliedProbability = event.odds[pick]
   const orderBookieAddress = event.address;
+
+
   const now = new Date().getTime() / 1000;
   // Check if event has already passed
   if (event.startDate < now || result !== -1) {
+    
     pick = -1;
     imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.PICK]: -1, 
                                                                                             [RequestProps.BUTTON_INDEX]: 0, 
@@ -76,13 +82,32 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   }
   else
   {
+    const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
+
+    const orderBookie = new ethers.Contract(orderBookieAddress, OrderBookieABI, provider)
+    const orderBookieInfo = await orderBookie.getBookieInfo()
+
+    const acceptedToken = await new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider)
+    const decimals = await acceptedToken.decimals();
+      
+    // Get percent of stake filled
+    const oppositePick = 1 - pick;
+    const oppositeOdd = event.odds[oppositePick];
+    const openLiquidty = await orderBookie.getOpenLiquidity(ethers.parseUnits(oppositePick.toString(), PICK_DECIMALS), ethers.parseUnits(oppositeOdd.toString(), ODDS_DECIMALS));
+
+    const stakeUsed = Math.min(parseFloat(ethers.formatUnits(openLiquidty, decimals)), stake);
+    console.log('Stake used: ', stakeUsed)
+    const percentFilled = stakeUsed > 0 ? Math.floor(stakeUsed / stake) * 100 : 0
+
+
     const options = event.options;
 
 
     imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}/image`, {[RequestProps.PICK]: pick, 
                                                                       [RequestProps.STAKE]: stake, 
                                                                       [RequestProps.ODD]: impliedProbability,
-                                                                      [RequestProps.OPTIONS]: options}, true);
+                                                                      [RequestProps.OPTIONS]: options,
+                                                                      [RequestProps.PERCENT_FILLED]: percentFilled}, true);
     buttons = [
       {
         label: "Reject", 

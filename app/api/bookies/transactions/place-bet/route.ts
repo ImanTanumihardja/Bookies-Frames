@@ -3,7 +3,6 @@ import { ODDS_DECIMALS, getFrameMessage, getRequestProps, RequestProps, PICK_DEC
 import {ethers} from 'ethers';
 import {OrderBookieABI} from '../../../../contract-abis/orderBookie.json';
 import {erc20ABI} from '../../../../contract-abis/erc20.json';
-import { USDC_ADDRESS, DEGEN_ADDRESS } from '../../../../json/addresses.json';
 import { kv } from '@vercel/kv';
 
 export async function POST(req: NextRequest): Promise<Response> {
@@ -37,7 +36,11 @@ export async function POST(req: NextRequest): Promise<Response> {
     await kv.sadd(`${fid.toString()}:addresses`, txReceipt.from)
   })
 
-  const decimals = await (new ethers.Contract(DEGEN_ADDRESS, erc20ABI, provider)).decimals();
+  const orderbookie = await new ethers.Contract(orderBookieAddress, OrderBookieABI, provider)
+  const orderBookieInfo = await orderbookie.getBookieInfo()
+
+  const acceptedToken = await new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider)
+  const decimals = await acceptedToken.decimals();
 
   const convertedImpliedProb = ethers.parseUnits(impliedProb.toString(), ODDS_DECIMALS)
   const convertedStake = ethers.parseUnits(stake.toString(), Number(decimals))
@@ -47,7 +50,9 @@ export async function POST(req: NextRequest): Promise<Response> {
   console.log('PICK: ', pick)
   console.log('Implied Probability: ', impliedProb)
   
-  const iOrderBookie = new ethers.Interface(OrderBookieABI)
+
+
+  const iOrderBookie = orderbookie.interface
   const data = iOrderBookie.encodeFunctionData('placeBet', [convertedPick, convertedStake, convertedImpliedProb])
 
   const txData = {
