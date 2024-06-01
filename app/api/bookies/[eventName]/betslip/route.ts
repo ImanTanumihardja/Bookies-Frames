@@ -50,7 +50,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   const now = new Date().getTime() / 1000;
   // Check if event has already passed
-  if (event.startDate < now || result !== -1) {
+  if (event.startDate < now || result !== -1 ) {
     
     pick = -1;
     imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.PICK]: -1, 
@@ -98,8 +98,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
     const stakeUsed = Math.min(parseFloat(ethers.formatUnits(openLiquidty, decimals)), stake);
     console.log('Stake used: ', stakeUsed)
-    const percentFilled = stakeUsed > 0 ? Math.floor(stakeUsed / stake) * 100 : 0
-
+    const percentFilled = stakeUsed > 0 ? Math.floor((stakeUsed / stake) * 100) : 0
 
     const options = event.options;
 
