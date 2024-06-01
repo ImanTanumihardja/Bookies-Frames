@@ -73,7 +73,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
                                                               startDate, // Convert from milli-seconds to seconds
                                                               0,
                                                               0,
-                                                              1800,
+                                                              7200,
                                                               USDC_ADDRESS,
                                                               acceptedToken,
                                                               ethers.encodeBytes32String("MULTIPLE_CHOICE_QUERY"),
