@@ -21,7 +21,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     return await GET(req); 
   }
 
-  if (!isFollowing || !liked) {
+  if ((!isFollowing || !liked) && fid !== 313859) {
     // Call fetch to get not following
     return notFollowingResponse(generateUrl(`/api/alea/${FrameNames.CAPTCHA}`, {}, false))
   }
