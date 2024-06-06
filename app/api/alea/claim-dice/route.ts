@@ -58,7 +58,6 @@ export async function POST(req: NextRequest): Promise<Response> {
         });
 
         console.log('NEW USER: ', user)
-        // console.log('CLAIMED 100 DICE')
     }
     else 
     {
