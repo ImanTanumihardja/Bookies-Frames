@@ -65,12 +65,13 @@ export default async function getEvent(eventName="") {
       const bets : Bet[] = user?.bets[eventName]
       for (const bet of bets) {
         if (bet.pick === eventData?.result) {
-          payout = calculatePayout(eventData?.odds[eventData?.result] || 0.5, bet.stake);
+          payout = calculatePayout(eventData?.odds[eventData?.result], bet.stake);
   
           if (payout > maxValue) {
             fids = [fid];
             maxValue = payout;
-          } else if (payout === maxValue) {
+          } 
+          else if (payout === maxValue) {
             fids.push(fid);
           }
         }

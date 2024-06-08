@@ -1,6 +1,6 @@
 import { FrameButtonsType, getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, RequestProps, generateUrl, getFrameMessage, Transactions, STAKE_LIMIT, PICK_DECIMALS, ODDS_DECIMALS } from '../../../../../src/utils';
+import { FrameNames, RequestProps, generateUrl, getFrameMessage, Transactions, STAKE_LIMIT, PICK_DECIMALS, ODDS_DECIMALS, calculatePayout } from '../../../../../src/utils';
 import { OrderBookieABI } from '../../../../contract-abis/orderBookie.json';
 import { erc20ABI } from '../../../../contract-abis/erc20.json';
 import { kv } from "@vercel/kv";
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   const now = new Date().getTime() / 1000;
   // Check if event has already passed
-  if (event.startDate < now || result !== -1 ) {
+  if (event.startDate < now || result !== -1) {
     
     pick = -1;
     imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.PICK]: -1, 
@@ -96,12 +96,12 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     const oppositeOdd = event.odds[oppositePick];
     const openLiquidty = await orderBookie.getOpenLiquidity(ethers.parseUnits(oppositePick.toString(), PICK_DECIMALS), ethers.parseUnits(oppositeOdd.toString(), ODDS_DECIMALS));
 
-    const stakeUsed = Math.min(parseFloat(ethers.formatUnits(openLiquidty, decimals)), stake);
-    console.log('Stake used: ', stakeUsed)
-    const percentFilled = stakeUsed > 0 ? Math.floor((stakeUsed / stake) * 100) : 0
+    const toWinAmount = calculatePayout(impliedProbability, stake) - stake;
+    const toWinFilledAmount = Math.min(parseFloat(ethers.formatUnits(openLiquidty, decimals)), toWinAmount);
+    
+    const percentFilled = Math.floor((toWinFilledAmount / toWinAmount) * 100)
 
     const options = event.options;
-
 
     imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}/image`, {[RequestProps.PICK]: pick, 
                                                                       [RequestProps.STAKE]: stake, 

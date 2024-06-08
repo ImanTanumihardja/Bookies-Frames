@@ -30,11 +30,6 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   console.log("Connected Address: " + connectedAddress)
-  // Check balance
-  const balance = await acceptedToken.balanceOf(connectedAddress)
-  // if (balance < ethers.parseUnits(stake.toString(), decimals)) {
-  //   return new Response(JSON.stringify({ message: 'Insufficient balance' }), { status: 400, headers: { 'content-type': 'application/json' } });
-  // }
 
   console.log('Approve: ', stake)
 
