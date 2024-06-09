@@ -104,33 +104,36 @@ export async function getEventAction(
     }
 }
 
-    export async function placeBetAction(
-        prevState: any, 
-        formData: FormData
-        ) {
-            
-        const schema = z.object({
-            bettor: z.string(),
-            eventName: z.string(),
-            fid: z.number(),
-            stake: z.number(),
-            pick: z.number(),
-        })
-        const { bettor, eventName, fid, stake, pick } = schema.parse({
-            bettor: formData.get('bettor'),
-            eventName: formData.get('eventName'),
-            fid: parseInt(formData.get('fid') as string),
-            stake: parseFloat(formData.get('stake') as string),
-            pick: parseFloat(formData.get('pick') as string),
-        })
-    
-        try {
-            await placeBet(bettor, eventName, fid, stake, pick)
-            revalidatePath('/')
-            return {message: `Placed bet for ${fid} on option ${pick + 1} with ${stake} stake`}
-        }
-        catch (e) {
-            console.error(e)
-            return {message: `Failed to place bet: ${e}` }
-        }
+export async function placeBetAction(
+    prevState: any, 
+    formData: FormData
+    ) {
+        
+    const schema = z.object({
+        bettor: z.string(),
+        eventName: z.string(),
+        fid: z.number(),
+        stake: z.number(),
+        pick: z.number(),
+    })
+    const { bettor, eventName, fid, stake, pick } = schema.parse({
+        bettor: formData.get('bettor'),
+        eventName: formData.get('eventName'),
+        fid: parseInt(formData.get('fid') as string),
+        stake: parseFloat(formData.get('stake') as string),
+        pick: parseFloat(formData.get('pick') as string),
+    })
+
+    try {
+        await placeBet(bettor, eventName, fid, stake, pick)
+        revalidatePath('/')
+        return {message: `Placed bet for ${fid} on option ${pick + 1} with ${stake} stake`}
     }
+    catch (e) {
+        console.error(e)
+        return {message: `Failed to place bet: ${e}` }
+    }
+}
+
+
+export const maxDuration = 300;
