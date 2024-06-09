@@ -15,3 +15,5 @@ export default function Page() {
     </main>
   )
 }
+
+export const maxDuration = 300;

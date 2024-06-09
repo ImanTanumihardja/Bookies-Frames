@@ -134,6 +134,3 @@ export async function placeBetAction(
         return {message: `Failed to place bet: ${e}` }
     }
 }
-
-
-export const maxDuration = 300;
