@@ -41,7 +41,7 @@ async function notifyDC() {
     await fetch(url, {
       method: 'PUT',
       headers: {
-        'Authorization': `Bearer ${process.env['BOOKIES_API_KEY']}`,
+        'Authorization': `Bearer ${process.env['ALEA_API_KEY']}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(data)

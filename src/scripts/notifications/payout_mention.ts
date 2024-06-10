@@ -77,11 +77,19 @@ export async function payoutNotification(eventName:string, parentHash:string, tx
     batch = fids.slice(fidIndex, Math.min(100, fids.length));
   }
 
-  console.log(usernames);
+  
+  // Print the pairing of usernames and fids
+  for (let i = 0; i < usernames.length; i++) {
+    console.log(usernames[i], fids[i]);
+  }
 
   for (let i = 0; i < usernames.length; i++) {
     const username = usernames[i];
     const fid = fids[i];
+
+    if (fid === 391387 || fid === 313859 || fid === 241573 || fid === 244367) {
+      continue;
+    }
 
     // Get address from kv
     const addresses = (await kv.sscan(`${fid}:addresses`, 0))[1];
@@ -106,21 +114,19 @@ export async function payoutNotification(eventName:string, parentHash:string, tx
       }
     }
     
-    if (fid !== 391387 && fid != 313859 && fid !== 241573) {
-      if (payout !== 0) {
-        // Send notification
-        const message = `Congratulations @${username}! You won ${payout.toFixed(2).toLocaleString()} \$${symbol}! ${tx_url}`;
-        console.log(message +'\n');
-        neynarClient.publishCast(signerUUID, message, {replyTo:parentHash})
-      }
-      
-      if (unfilled >= 0.01) {
-        // Send notification
-        const message = `@${username} we were unable to match you with another counterparty to fully fill your bet. We have returned ${unfilled.toFixed(2).toLocaleString()} \$${symbol} back to your account! ${tx_url}`;
-        console.log(message +'\n');
-        neynarClient.publishCast(signerUUID, message, {replyTo:parentHash})
-      }
+
+    if (payout !== 0) {
+      // Send notification
+      const message = `Congratulations @${username}! You won ${payout.toFixed(2).toLocaleString()} \$${symbol}! ${tx_url}`;
+      console.log(message +'\n');
+      // neynarClient.publishCast(signerUUID, message, {replyTo:parentHash})
     }
     
+    if (unfilled >= 0.01) {
+      // Send notification
+      const message = `@${username} we were unable to match you with another counterparty to fully fill your bet. We have returned ${unfilled.toFixed(2).toLocaleString()} \$${symbol} back to your account! ${tx_url}`;
+      console.log(message +'\n');
+      // neynarClient.publishCast(signerUUID, message, {replyTo:parentHash})
+    }
   }
 }

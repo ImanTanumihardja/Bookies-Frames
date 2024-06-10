@@ -70,8 +70,8 @@ export async function GET() {
                 await payoutNotification(eventName, castHash, txURL);
 
                 // Remove event
-                await kv.srem(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, eventName);
-                console.log(`Removed event: ${eventName}`);
+                // await kv.srem(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, eventName);
+                // console.log(`Removed event: ${eventName}`);
 
                 settledEvents.push(eventName);
             }
