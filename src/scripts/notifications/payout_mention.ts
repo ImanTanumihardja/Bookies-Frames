@@ -77,15 +77,11 @@ export async function payoutNotification(eventName:string, parentHash:string, tx
     batch = fids.slice(fidIndex, Math.min(100, fids.length));
   }
 
-  
-  // Print the pairing of usernames and fids
-  for (let i = 0; i < usernames.length; i++) {
-    console.log(usernames[i], fids[i]);
-  }
-
   for (let i = 0; i < usernames.length; i++) {
     const username = usernames[i];
     const fid = fids[i];
+
+    console.log(username, fid);
 
     if (fid === 391387 || fid === 313859 || fid === 241573 || fid === 244367) {
       continue;
