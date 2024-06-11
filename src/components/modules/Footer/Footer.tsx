@@ -1,4 +1,4 @@
-import { Box, Link, Text } from '@chakra-ui/react';
+import { Box, Container, Flex, Heading, IconButton, Text, HStack, VStack, Button } from '@chakra-ui/react';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 
 const links = {
@@ -8,28 +8,33 @@ const links = {
 };
 
 const Footer = () => {
+  const openInNewTab = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
-    <Box textAlign={'center'} w="full" p={6}>
-      <Text>
-        {/* ⭐️ Please star this{' '}
-        <Link href={links.github} isExternal alignItems={'center'}>
-          boilerplate <ExternalLinkIcon />
-        </Link>
-        , every star makes us very happy!
-      </Text>
-      <Text>
-        🙋 You have questions? Ask them on the{' '}
-        <Link href={links.forum} isExternal alignItems={'center'}>
-          Moralis forum <ExternalLinkIcon />
-        </Link>
-      </Text>
-      <Text>
-        📖 Read more about{' '}
-        <Link href={links.moralis} isExternal alignItems={'center'}>
-          Moralis <ExternalLinkIcon />
-        </Link> */}
-      </Text>
-    </Box>
+      <Container className='font-body' backgroundColor='black' maxW="screen" mt={10} p={'50px'}>
+          <Flex align="center" justify="space-between">
+            <Heading> 
+              <IconButton size='20px' variant='ghost' icon={ <img className="mx-auto" style={{width: 200}}src={`${process.env['HOST']}/Full_logo.png`} />} aria-label={'logo'} 
+              onClick= {
+                () => window.location.href = `/`
+              }/> 
+            </Heading>
+            <HStack>
+              <VStack className='m-10'>
+                <Text className="font-bold text-2xl">Socials</Text>
+                <Button variant="link" onClick={() => openInNewTab("https://warpcast.com/bookies")}>Warpcast</Button>
+                <Button variant="link" onClick={() => openInNewTab("https://discord.gg/D4RTcMBWVC")}>Discord</Button>
+              </VStack>
+              <VStack className='m-10'>
+                <Text className="font-bold text-2xl">Company</Text>
+                <Button variant="link" onClick={() => openInNewTab("")}>Terms of Service</Button>
+                <Button variant="link" onClick={() => openInNewTab("")}>Privacy Policy</Button>
+              </VStack>
+            </HStack>
+          </Flex>
+        </Container>
   );
 };
 

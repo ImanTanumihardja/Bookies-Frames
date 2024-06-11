@@ -1,9 +1,9 @@
 'use client'
 
 import { useFormState, useFormStatus } from "react-dom";
-import { createEventAction } from "../actions";
+import { createEventAction } from "../../../app/actions";
 import { CldUploadWidget } from 'next-cloudinary';
-import { DEGEN_ADDRESS, USDC_ADDRESS } from "../json/addresses.json";
+import { DEGEN_ADDRESS, USDC_ADDRESS } from "../../../app/json/addresses.json";
 import { ChangeEvent, useState } from 'react';
 
 function SubmitButton() {
@@ -30,7 +30,7 @@ export function CreateEventForm() {
   };
 
   return (
-    <div>
+    <div className="font-body">
       <h1 className="admin-heading">Create Event</h1>
       <form action={formAction}>
         <label htmlFor="eventName">Event Name </label>

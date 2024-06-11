@@ -7,7 +7,7 @@ const LaunchAppButton = () => {
   };
 
   return (
-    <Button size="sm" onClick= {
+    <Button size="md" onClick= {
       () => openInNewTab('https://warpcast.com/bookies')
       }>
       Launch App

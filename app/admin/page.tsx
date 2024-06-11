@@ -1,8 +1,7 @@
 'use client'
-import {CreateEventForm} from './createEvent-form';
-import {SettleEventForm} from './settleEvent-form';
-import {GetEventForm} from './getEvent-form';
-import {PlaceBetForm} from './placeBet-form';
+import {CreateEventForm} from '../../src/components/modules/createEvent-form';
+import {GetEventForm} from '../../src/components/modules/getEvent-form';
+
 
 export default function Page() {
 
@@ -10,8 +9,6 @@ export default function Page() {
     <main>
       <GetEventForm />
       <CreateEventForm />
-      <SettleEventForm />
-      <PlaceBetForm />
     </main>
   )
 }

@@ -2,11 +2,11 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./pages/**/*.{js,ts,jsx,tsx}', './src/components/**/*.{js,ts,jsx,tsx}'],
+  content: ['./app/**/*.{js,ts,jsx,tsx}', './src/components/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       fontFamily: {
-        display: ['Plus Jakarta Sans', 'Helvetica Neue',, ...defaultTheme.fontFamily.sans],
+        display: ['Plus Jakarta Sans', 'Helvetica Neue', ...defaultTheme.fontFamily.sans],
         body: ['Plus Jakarta Sans', 'Helvetica Neue', ...defaultTheme.fontFamily.sans],
       },
       keyframes: {

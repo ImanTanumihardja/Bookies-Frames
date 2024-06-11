@@ -1,13 +1,15 @@
 'use client'
 
 import { useFormState, useFormStatus } from "react-dom";
-import {getEventAction} from "../actions"
+import {getEventAction} from "../../../app/actions"
+import {SettleEventForm} from './settleEvent-form';
+import {PlaceBetForm} from './placeBet-form';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     (
-      <button className="admin-button" type="submit" aria-disabled={pending}>
+      <button className="admin-button ml-2.5" type="submit" aria-disabled={pending}>
         Get Event
       </button>
     )
@@ -19,7 +21,7 @@ export function GetEventForm() {
 
 
   return (
-    <div>
+    <div className="font-body">
       <h1 className="admin-heading">Get Event</h1>
       <form action={getEventFormAction}>
         <label htmlFor="eventName">Event Name </label>
@@ -39,15 +41,23 @@ export function GetEventForm() {
               </li>)}
             </ul>
           </div>
-          { eventstate?.isAlea && <p>Alea Bettors(n={eventstate.eventData.aleaBettors.length}): {eventstate.eventData.aleaBettors.join(', ')}</p>}
-          { eventstate?.isBookies && eventstate.eventData.orderBookieInfo && 
+          { eventstate?.isAlea && 
+          <div>
+            <p>Alea Bettors(n={eventstate.eventData.aleaBettors.length}): {eventstate.eventData.aleaBettors.join(', ')}</p>
+            <SettleEventForm eventName={eventstate.eventName}/>
+          </div>
+          }
+          { 
+          eventstate?.isBookies && eventstate.eventData.orderBookieInfo && 
           <>
             <p>OrderBookie Address: {eventstate.eventData.address}</p>
             <p>Bookies Bettors(n={eventstate.eventData.bookiesBettors.length}): {eventstate.eventData.bookiesBettors.join(', ')}</p> 
-            <p>Option1 Stake: {eventstate.eventData.orderBookieInfo.totalStakedOutcome1}</p>
-            <p>Option2 Stake: {eventstate.eventData.orderBookieInfo.totalStakedOutcome2}</p>
-            <p>Option1 Unfilled: {eventstate.eventData.orderBookieInfo.totalUnfilledOutcome1}</p>
-            <p>Option2 Unfilled: {eventstate.eventData.orderBookieInfo.totalUnfilledOutcome2}</p>
+            <p>Option 1 Stake: {eventstate.eventData.orderBookieInfo.totalStakedOutcome1}</p>
+            <p>Option 2 Stake: {eventstate.eventData.orderBookieInfo.totalStakedOutcome2}</p>
+            <p>Option 1 Unfilled: {eventstate.eventData.orderBookieInfo.totalUnfilledOutcome1}</p>
+            <p>Option 2 Unfilled: {eventstate.eventData.orderBookieInfo.totalUnfilledOutcome2}</p>
+
+            <PlaceBetForm eventName={eventstate.eventName}/>
           </>
           }
         </div>}

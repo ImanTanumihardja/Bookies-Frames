@@ -17,8 +17,10 @@
 }
 
 .admin-heading {
-  @apply text-lg md:text-3xl lg:text-5xl font-bold bg-gradient-to-r from-orange-500 to-purple-600 text-transparent bg-clip-text bg-300% animate-gradient mb-5 mt-10;
+  @apply text-lg md:text-3xl lg:text-5xl font-display font-bold mb-5 mt-10;
 }
+
+
 
 .animate-gradient {
   background-size: 300%;

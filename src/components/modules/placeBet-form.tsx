@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormState, useFormStatus } from "react-dom";
-import { placeBetAction } from "../actions"
+import { placeBetAction } from "../../../app/actions"
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -14,7 +14,7 @@ function SubmitButton() {
   );
 }
 
-export function PlaceBetForm() {
+export function PlaceBetForm({eventName}: {eventName: string}) {
 
   const [placeBetState, placeBetFormAction] = useFormState(placeBetAction, {message: ""});
 
@@ -26,16 +26,13 @@ export function PlaceBetForm() {
 
   return (
     <div>
-      <h1 className="admin-heading">Place Bet</h1>
+      <h1 className="text-lg md:text-2xl lg:text-3xl font-bold mb-5 mt-10">Place Bet</h1>
       <form action={placeBetFormAction}>
         <label htmlFor="bettor">Bettor Address </label>
         <input type="string" id="bettor" name="bettor" required />
         <br />
         <br />
-        <label htmlFor="eventName">Event Name </label>
-        <input type="string" id="eventName" name="eventName" required />
-        <br />
-        <br />
+        <input type="hidden" id="eventName" name="eventName" value={eventName} />
         <label htmlFor="fid">FID </label>
         <input type="number" id="fid" name="fid" required />
         <br />

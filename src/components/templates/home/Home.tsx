@@ -2,7 +2,7 @@
 
 import {
   VStack,
-  useColorMode,
+  useColorMode,Image
 } from '@chakra-ui/react';
 
 const {ReactTyped} = require("react-typed");
@@ -18,14 +18,14 @@ const Home = () => {
     <VStack w={'full'} rounded="lg" className="space-y-0 font-body">
       <div className='h-screen flex flex-col items-center justify-center mt-[-100px]'>
         <div className="w-full h-70 overflow-clip text-center">
-          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-orange-500 to-purple-600 text-transparent bg-clip-text bg-300% animate-gradient">Welcome to <br/> Bookies</h1>
+          <img className="mx-auto mb-10 mt-5" style={{width: 1000}}src={`${process.env['HOST']}/Full_logo.png`} />
           <div className='my-10'>
-            <h2 className="text-2xl lg:text-3xl font-bold lg:w-2/3 mx-auto text-center">The first transparent, non-custodial sports betting exchange  centered around the ethos of democratizing the sports betting experience!</h2>
+            <h2 className="text-2xl lg:text-3xl font-bold lg:w-2/3 mx-auto text-center">The first onchain, permissionless sports betting exchange centered around the ethos of democratizing the sports betting experience!</h2>
             <button className="secondary-button grow text-white font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-300% animate-gradient mt-10" 
             onClick = {
-              () => openInNewTab('https://docs.google.com/forms/d/1Bt-eLAhZh1jpzClLI9NRqYa6C9-iTErFeI0_8dVK2L0/')
+              () => openInNewTab('https://warpcast.com/bookies')
               }
-            >Get Early Access</button>
+            >Launch Warpcast</button>
             <button className="secondary-button grow text-white font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-300% animate-gradient mt-10 mx-10" 
             onClick = {
               () => openInNewTab('https://paragraph.xyz/@bookies/the-whos,-whats,-and-hows-of-bookies')
@@ -43,7 +43,7 @@ const Home = () => {
 
         <h1 className="text-6xl md:text-7xl lg:text-8xl font-display font-bold items-center justify-center text-center">Power of Bookies</h1>
         <div className='w-full'>
-          <div className={`${colorMode === "dark" ? "bg-gray-800" : "bg-gray-100"} flex space-x-4 rounded-md p-6 my-8 lg:w-2/3`} data-aos="fade-right">
+          <div className={`${colorMode === "dark" ? "bg-gray-800" : "bg-gray-100"} flex space-x-4 rounded-md p-6 my-8 lg:w-2/3 shadow-lg`} data-aos="fade-right">
             <div className='ml-auto'>
               <img src="/handshake.png" className="h-40 w-40 md:h-60 md:w-60 rounded-sm object-cover float-right"></img>
               <h1 className="font-bold font-display text-3xl lg:text-5xl my-5">Peer-to-Peer Sports Betting Exchange</h1>
@@ -52,7 +52,7 @@ const Home = () => {
           </div>
           <br />
           <div className='justify-end'>
-            <div className={`${colorMode === "dark" ? "bg-gray-800" : "bg-gray-100"} flex space-x-4 w-full rounded-md p-6 my-8 ml-auto lg:w-2/3`} data-aos="fade-left">
+            <div className={`${colorMode === "dark" ? "bg-gray-800" : "bg-gray-100"} flex space-x-4 w-full rounded-md p-6 my-8 ml-auto lg:w-2/3 shadow-lg`} data-aos="fade-left">
                 <div>
                   <img src="/bot.png" className="h-40 w-40 md:h-60 md:w-60 rounded-sm object-cover float-right"></img>
                   <h1 className="font-bold font-display text-3xl lg:text-5xl my-5">Sports Betting AI Chatbot</h1>
@@ -62,7 +62,7 @@ const Home = () => {
           </div>
           
           <br />
-          <div className={`${colorMode === "dark" ? "bg-gray-800" : "bg-gray-100"} flex space-x-4 rounded-md p-6 my-8 lg:w-2/3`} data-aos='fade-right'>
+          <div className={`${colorMode === "dark" ? "bg-gray-800" : "bg-gray-100"} flex space-x-4 rounded-md p-6 my-8 lg:w-2/3 shadow-lg`} data-aos='fade-right'>
             <div className='ml-auto'>
             <img src="/blockchain.png" className="h-40 w-40 md:h-60 md:w-60 rounded-sm object-cover float-right"></img>
               <h1 className="font-bold font-display text-3xl lg:text-5xl my-5">Fully Built On-Chain</h1>
@@ -74,7 +74,7 @@ const Home = () => {
         <br />
         <br />
 
-        <div className="bg-gradient-to-r from-orange-500 to-purple-600 bg-300% animate-gradient w-full rounded-md p-6" data-aos="fade-up">
+        <div className="bg-gradient-to-r from-orange-500 to-purple-600 bg-300% animate-gradient w-full rounded-md p-6 shadow-lg" data-aos="fade-up">
           <h1 className="text-5xl font-display font-bold my-3 text-center">Bracket Betting</h1>
           <p className="text-2xl opacity-80 text-center"> Bookies is the first on-chain sports betting platform that enables bracket betting.</p>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 my-5">
@@ -117,7 +117,7 @@ const Home = () => {
         <div className="w-full snap-x snap-mandatory overflow-x-scroll flex">
             <div className="snap-center shrink-0 place-items-center mx-10">
               <div className={`${colorMode === "dark" ? "bg-gray-800" : "bg-gray-100"} rounded p-5 m-5 h-56 w-90`}>
-                <h1 className="text-4xl md:text-5xl font-display font-bold my-3 text-center  bg-gradient-to-r from-orange-500 to-purple-600 text-transparent bg-clip-text bg-300% animate-gradient">Q1 2024</h1>
+                <h1 className="text-4xl md:text-5xl font-display font-bold my-3 text-center">Q1 2024</h1>
                 <ul className="list-disc p-5 text-xl">
                   <li>Research and Ideate</li>
                   <li>Prototype Development</li>
@@ -126,11 +126,11 @@ const Home = () => {
             </div>
             <div className="snap-center shrink-0 place-items-center mx-10">
               <div className={`${colorMode === "dark" ? "bg-gray-800" : "bg-gray-100"} rounded p-5 m-5 h-56 w-90`}>
-                <h1 className="text-4xl md:text-5xl font-display font-bold my-3 text-center">Q2 2024</h1>
+                <h1 className="text-4xl md:text-5xl font-display font-bold my-3 text-center bg-gradient-to-r from-orange-500 to-purple-600 text-transparent bg-clip-text bg-300% animate-gradient">Q2 2024</h1>
                 <ul className="list-disc p-5 text-xl">
-                  <li>Incorporate the Business</li>
-                  <li>Get Licensing</li>
-                  <li>MVP Development</li>
+                  <li>Launch Warpcast</li>
+                  <li>Execute Go-to-Market</li>
+                  <li>Website Development</li>
                 </ul>
               </div>
             </div>
@@ -138,9 +138,9 @@ const Home = () => {
               <div className={`${colorMode === "dark" ? "bg-gray-800" : "bg-gray-100"} rounded p-5 m-5 h-56 w-90`}>
                 <h1 className="text-4xl md:text-5xl font-display font-bold my-3 text-center">Q3 2024</h1>
                 <ul className="list-disc p-5 text-xl">
-                  <li>Launch MVP</li>
-                  <li>Execute Go-to-Market</li>
+                  <li>Incorporate the Business</li>
                   <li>Token Generation Event</li>
+                  <li>Fund Raise</li>
                 </ul>
               </div>
             </div>
@@ -150,6 +150,7 @@ const Home = () => {
                 <ul className="list-disc p-5 text-xl">
                   <li>AI Tooling Development</li>
                   <li>Build-Your-Own Props</li>
+                  <li>Farcaster Client</li>
                 </ul>
               </div>
             </div>

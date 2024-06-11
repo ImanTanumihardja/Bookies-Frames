@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormState, useFormStatus } from "react-dom";
-import {settleEventAction} from "../actions"
+import {settleEventAction} from "../../../app/actions"
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -14,7 +14,7 @@ function SubmitButton() {
   );
 }
 
-export function SettleEventForm() {
+export function SettleEventForm({eventName}: {eventName: string}) {
   const [state, formAction] = useFormState(settleEventAction, {message: ""});
 
   if (state.message !== "") 
@@ -24,12 +24,9 @@ export function SettleEventForm() {
   }
   return (
     <div>
-      <h1 className="admin-heading">Settle Event</h1>
+      <h1 className="text-lg md:text-2xl lg:text-3xl font-bold mb-5 mt-10">Settle Event</h1>
       <form action={formAction}>
-        <label htmlFor="eventName">Event Name </label>
-        <input type="text" id="eventName" name="eventName" required />
-        <br />
-        <br />
+        <input type="hidden" id="eventName" name="eventName" value={eventName} />
         <label htmlFor="result">Result </label>
         <input type="decimal" id="result" name="result" required />
         <br />

@@ -1,15 +1,26 @@
-import { Box, Container, Flex, HStack, Heading } from '@chakra-ui/react';
+import { Box, Button, Container, Flex, HStack, Heading, IconButton, Image } from '@chakra-ui/react';
 import { ColorModeButton, LaunchAppButton } from '../../../components/elements';
 
 const Header = () => {
+  function redirect(url: string): void {
+    window.location.href = url;
+  }
+
   return (
     <Box borderBottom="1px" borderBottomColor="chakra-border-color">
       <Container maxW="screen" p={'20px'}>
         <Flex align="center" justify="space-between">
-          <Heading className="font-bold bg-gradient-to-r from-orange-500 to-purple-600 text-transparent bg-clip-text bg-300% animate-gradient font-display" size="lg">Bookies</Heading>
+          <Heading> 
+            <IconButton size='50px' variant='ghost' icon={<Image boxSize='40px' src={`${process.env['HOST']}/icon_transparent.png`} />} aria-label={'logo'} 
+            onClick= {
+              () => window.location.href = `/`
+            }/> 
+          </Heading>
           <HStack gap={'10px'}>
-            <LaunchAppButton/>
-            <ColorModeButton />
+            <Button fontSize='xl' variant="ghost" onClick={() => redirect('/bookies/events')}>Events</Button>
+            <Button fontSize='xl' variant="ghost">Profile</Button>
+            {/* <LaunchAppButton/> */}
+            {/* <ColorModeButton /> */}
           </HStack>
         </Flex>
       </Container>
