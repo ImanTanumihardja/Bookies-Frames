@@ -4,6 +4,7 @@ import { User, Bet} from '../app/types';
 import { FrameValidationData } from '../app/types';
 import { ethers } from 'ethers';
 const { getFrameHtml, getFrameMessage: validateFrameMessage } = require('frames.js');
+// const {getFrameMessage: validateFrameMessage} = require('@coinbase/onchainkit/frames');
 
 export enum RequestProps {
   FID = 'fid',
@@ -220,28 +221,6 @@ export function notFollowingResponse(returnUrl:string) {
     );
 }
 
-export function notMinedResponse(returnUrl:string) {
-    return new NextResponse(
-        getFrameHtml({
-          version: "vNext",
-          image: `${process.env['HOST']}/thumbnails/not-mined.gif`,
-          buttons: [
-            {
-              label:'Refresh', 
-              action:'post',
-              target: returnUrl
-            },
-            { 
-              label: "Follow Us!", 
-              action: 'link', 
-              target: 'https://warpcast.com/bookies'
-            }
-          ],
-          postUrl: returnUrl,
-        }),
-    );
-}
-
 export function generateUrl(extension: string, props: Record<string, any>, addTimestamp: boolean = false): string {
     let url = `${process.env['HOST']}/${extension}`;
 
@@ -308,6 +287,42 @@ export async function getFrameMessage(req: NextRequest, validate=true, viewerFid
 
     return message
 }
+
+// Onchainkit
+// export async function getFrameMessage(req: NextRequest, validate=true, viewerFid=BOOKIES_FID) {
+//     const body = await req.json();
+
+//     let frameValidationData: FrameValidationData = {} as FrameValidationData;
+
+//     frameValidationData.button = body.untrustedData.buttonIndex
+//     frameValidationData.input = body.untrustedData.inputText
+//     frameValidationData.fid = body.untrustedData.fid
+//     frameValidationData.transactionId = body.untrustedData.transactionId 
+//     frameValidationData.connectedAddress = body.untrustedData.address
+//     frameValidationData.casterFID = body.untrustedData.castId.fid
+
+//     // Use onchainkit to validate the frame message
+//     if (validate) {
+//         const {isValid, message} = await validateFrameMessage(body, {
+//             neynarApiKey: process.env.NEYNAR_API_KEY || 'NEYNAR_API_DOCS', 
+//           });
+
+//         if (!isValid) {
+//             throw new Error('Invalid frame message');
+//         }
+
+//         frameValidationData.following = message?.following
+//         frameValidationData.custodyAddress = message?.interactor.custody_address
+//         frameValidationData.verifiedAccounts = message?.interactor.verified_accounts
+//         frameValidationData.liked = message?.liked
+//         frameValidationData.recasted = message?.recasted
+//         frameValidationData.followingHost = await checkIsFollowing(message.fid, viewerFid)
+//     }
+
+//     console.log(frameValidationData)
+
+//     return frameValidationData
+// }
 
 export function convertImpliedProbabilityToAmerican(impliedProbability: number):number {
     if (impliedProbability <= 0 || impliedProbability >= 1) {

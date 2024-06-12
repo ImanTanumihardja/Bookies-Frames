@@ -9,6 +9,7 @@ import '../styles/globals.css';
 import { useEffect } from "react";
 import "aos/dist/aos.css";
 import Aos from "aos";
+// import {ThirdwebProvider} from 'thirdweb';
 
 export const viewport = {
   width: 'device-width',
