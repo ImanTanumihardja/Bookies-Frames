@@ -1,12 +1,8 @@
 import { Container } from "@chakra-ui/react";
 import { kv } from "@vercel/kv";
-import { ethers } from "ethers";
 import { Accounts, DatabaseKeys } from "../../../src/utils";
 
 export default async function EventsPage() {
-
-    const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
-
     // Get events from database
     
     let result = await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, 0);

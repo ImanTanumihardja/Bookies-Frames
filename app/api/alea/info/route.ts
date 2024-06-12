@@ -28,7 +28,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   );
 }
 
-export async function GET(req: NextRequest): Promise<Response> {
+export async function GET(_: NextRequest): Promise<Response> {
   const imageUrl = generateUrl(`info/march-madness.gif`, {}, true)
 
   const frame : Frame = {

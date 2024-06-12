@@ -1,4 +1,4 @@
-const { createClient  } = require("@vercel/kv");
+const { createClient } = require("@vercel/kv");
 const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
@@ -21,7 +21,7 @@ async function updateHasClaimed() {
     }
 
     // Filter out every other element
-    users = users.filter((fid:number, index:number) => index % 2 === 0)
+    users = users.filter((_:number, index:number) => index % 2 === 0)
 
     console.log(`Total users: ${users.length}\n`)
 

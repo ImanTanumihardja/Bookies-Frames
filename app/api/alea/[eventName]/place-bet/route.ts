@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ALEA_FID, Accounts, DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getFrameMessage, getRequestProps, notFollowingResponse } from '../../../../../src/utils';
+import { ALEA_FID, Accounts, DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getFrameMessage, notFollowingResponse } from '../../../../../src/utils';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { User, Event } from '../../../../types';
 import { kv } from '@vercel/kv';
@@ -47,7 +47,6 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   const now = new Date().getTime() / 1000;
   if (event.startDate < now || result !== -1) {
-    const pick = -1;
     inputText = undefined
 
     // Get all alea events and filter out this eventName

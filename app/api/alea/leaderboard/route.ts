@@ -32,7 +32,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   );
 } 
 
-export async function GET(req: NextRequest): Promise<Response> {
+export async function GET(_: NextRequest): Promise<Response> {
   const imageUrl = generateUrl(`api/alea/${FrameNames.LEADERBOARD}/image`, {[RequestProps.OFFSET]: 0, [RequestProps.REDIRECT]: false}, true)
 
     const frame : Frame = {

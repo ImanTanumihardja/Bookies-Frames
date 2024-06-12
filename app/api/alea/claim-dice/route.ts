@@ -52,7 +52,7 @@ export async function POST(req: NextRequest): Promise<Response> {
         if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: DEFAULT_USER.balance, member: fid}).catch(async (error) => {
           console.error('Error adding user to leaderboard:', error);
           // Try again
-          if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: DEFAULT_USER.balance, member: fid}).catch((error) => {
+          if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: DEFAULT_USER.balance, member: fid}).catch(() => {
             throw new Error('Error adding user to leaderboard');
           })
         });
@@ -83,7 +83,7 @@ export async function POST(req: NextRequest): Promise<Response> {
           // Try again
           if (user !== null) await kv.zincrby(DatabaseKeys.LEADERBOARD, CLAIM_AMOUNT, fid)
         });
-      }).catch((error) => {
+      }).catch(() => {
         return new Response(JSON.stringify({ message: `Error updating user` }), { status: 400, headers: { 'content-type': 'application/json' } });
       });
     } else {
@@ -130,7 +130,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   );
 }
 
-export async function GET(req: NextRequest): Promise<Response> {
+export async function GET(_: NextRequest): Promise<Response> {
   const imageUrl = generateUrl(`thumbnails/${FrameNames.CLAIM_DICE}.gif`, {}, true)
 
   const frame : Frame = {

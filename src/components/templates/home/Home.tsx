@@ -2,7 +2,7 @@
 
 import {
   VStack,
-  useColorMode,Image
+  useColorMode
 } from '@chakra-ui/react';
 
 const {ReactTyped} = require("react-typed");

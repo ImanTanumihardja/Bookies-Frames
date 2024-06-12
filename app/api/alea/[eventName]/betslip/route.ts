@@ -1,6 +1,6 @@
 import { getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
-import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage } from '../../../../../src/utils';
+import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getFrameMessage } from '../../../../../src/utils';
 import { kv } from "@vercel/kv";
 import { User, Event } from "../../../../types";
 

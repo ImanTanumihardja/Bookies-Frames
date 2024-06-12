@@ -66,7 +66,7 @@ export default async function placeBet(bettorAddress:string, eventName:string, f
   await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
     console.error('Error adding user to bettors list: ', error);
     // Try again
-    await kv.sadd(`${Accounts.BOOKIES}:${orderBookieInfo.eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
+    await kv.sadd(`${Accounts.BOOKIES}:${orderBookieInfo.eventName}:${DatabaseKeys.BETTORS}`, fid).catch(() => {
       throw new Error('Error creating bet');
     })
   })
@@ -75,7 +75,7 @@ export default async function placeBet(bettorAddress:string, eventName:string, f
   await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(async (error) => {
     console.error('Error adding user to poll:', error);
     // Try again
-    await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch((error) => {
+    await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(() => {
       throw new Error('Error creating bet');
     })
   })

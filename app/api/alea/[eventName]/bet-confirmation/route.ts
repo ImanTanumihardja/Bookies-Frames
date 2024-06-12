@@ -79,7 +79,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       await kv.sadd(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
         console.error('Error adding user to event:', error);
         // Try again
-        await kv.sadd(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
+        await kv.sadd(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(() => {
           throw new Error('Error creating bet');
         })
       })
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(async (error) => {
         console.error('Error adding user to event:', error);
         // Try again
-        await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch((error) => {
+        await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(() => {
           throw new Error('Error creating bet');
         })
       })
@@ -98,12 +98,12 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
         if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: DEFAULT_USER.balance, member: fid}).catch(async (error) => {
           console.error('Error adding user to leaderboard:', error);
           // Try again
-          if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: DEFAULT_USER.balance, member: fid}).catch((error) => {
+          if (user !== null) await kv.zadd(DatabaseKeys.LEADERBOARD, {score: DEFAULT_USER.balance, member: fid}).catch(() => {
             throw new Error('Error adding user to leaderboard');
           })
         });
       }
-    }).catch((error) => {
+    }).catch(() => {
       return new Response(JSON.stringify({ message: 'Error creating bet' }), { status: 400, headers: { 'content-type': 'application/json' } });
     });   
 

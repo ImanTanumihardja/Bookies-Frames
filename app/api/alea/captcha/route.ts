@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, RequestProps, generateUrl, getFrameMessage } from '../../../../src/utils';
+import { FrameNames, RequestProps, generateUrl } from '../../../../src/utils';
 import { getFrameHtml} from "frames.js";
 
 
-export async function POST(req: NextRequest): Promise<Response> {
+export async function POST(_: NextRequest): Promise<Response> {
   // Verify the frame request
 
   // Generate random number between 0 and 3

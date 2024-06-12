@@ -8,7 +8,7 @@ import { join } from 'path';
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
 let fontData = fs.readFileSync(fontPath)
 
-export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }) {
+export async function GET(req: NextRequest) {
     try {
         let {
             pick, 

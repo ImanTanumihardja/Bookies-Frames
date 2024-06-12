@@ -24,7 +24,7 @@ export async function generateMetadata({ params: { eventName } }: { params: { ev
     };
 };
 
-export default function EventPage({params}: { params: {eventName: string}}) {
+export default function EventPage() {
     return(
         <Home/>
     );

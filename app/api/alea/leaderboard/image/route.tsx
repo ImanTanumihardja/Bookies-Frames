@@ -23,8 +23,8 @@ export async function GET(req: NextRequest) {
             console.error('No users found');
         }
 
-        const fids = users.filter((user:any, index:number) => index % 2 === 0);
-        const scores = users.filter((user:any, index) => index % 2 !== 0);
+        const fids = users.filter((_:any, index:number) => index % 2 === 0);
+        const scores = users.filter((_:any, index) => index % 2 !== 0);
 
         console.log('FIDS: ', fids)
 

@@ -1,5 +1,4 @@
 import { Box, Button, Container, Flex, HStack, Heading, IconButton, Image } from '@chakra-ui/react';
-import { ColorModeButton, LaunchAppButton } from '../../../components/elements';
 
 const Header = () => {
   function redirect(url: string): void {
@@ -19,8 +18,6 @@ const Header = () => {
           <HStack gap={'10px'}>
             <Button fontSize='xl' variant="ghost" onClick={() => redirect('/bookies/events')}>Events</Button>
             <Button fontSize='xl' variant="ghost">Profile</Button>
-            {/* <LaunchAppButton/> */}
-            {/* <ColorModeButton /> */}
           </HStack>
         </Flex>
       </Container>

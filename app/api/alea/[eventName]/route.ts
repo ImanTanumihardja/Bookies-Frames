@@ -8,7 +8,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   return await GET(req, { params: { eventName } });
 }
 
-export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
+export async function GET(_: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   console.log('Event Name: ', eventName)
   const event : Event | null = await kv.hgetall(eventName)
   if (event === null) throw new Error('Event not found');

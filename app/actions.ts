@@ -9,7 +9,7 @@ import { revalidatePath } from 'next/cache'
 import { Accounts } from '../src/utils'
 
 export async function createEventAction(
-    prevState: any, 
+    _: any, 
     formData: FormData
     ) {
     const schema = z.object({
@@ -53,7 +53,7 @@ export async function createEventAction(
 }
 
 export async function settleEventAction(
-    prevState: any, 
+    _: any, 
     formData: FormData
     ) {
         
@@ -78,7 +78,7 @@ export async function settleEventAction(
 }
 
 export async function getEventAction(
-    prevState: any, 
+    _: any, 
     formData: FormData
     ) {
         
@@ -105,7 +105,7 @@ export async function getEventAction(
 }
 
 export async function placeBetAction(
-    prevState: any, 
+    _: any, 
     formData: FormData
     ) {
         

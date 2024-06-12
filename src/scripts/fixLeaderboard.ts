@@ -1,12 +1,3 @@
-const { createClient  } = require("@vercel/kv");
-const dotenv = require("dotenv")
-dotenv.config({ path: ".env"})
-
-const kv = createClient({
-  url: process.env['KV_REST_API_URL'] || '',
-  token: process.env['KV_REST_API_TOKEN'] || '',
-});
-
 // Create a script that access kv storage and reset the hasClaimed value
 async function fixLeaderboard() {
     // Iteratively fetch all users
@@ -21,7 +12,7 @@ async function fixLeaderboard() {
     }
 
     // Filter out every other element
-    users = users.filter((fid:number, index:number) => index % 2 === 0)
+    users = users.filter((_:number, index:number) => index % 2 === 0)
 
     console.log(`Total users: ${users.length}\n`)
 

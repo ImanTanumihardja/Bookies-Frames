@@ -31,7 +31,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
       console.error('Error adding user to bettors list:', error);
       // Try again
-      await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch((error) => {
+      await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(() => {
         throw new Error('Error creating bet');
       })
     })
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(async (error) => {
       console.error('Error adding user to poll:', error);
       // Try again
-      await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch((error) => {
+      await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(() => {
         throw new Error('Error creating bet');
       })
     })
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       await kv.zincrby(`${DatabaseKeys.REFERRALS}`, stake, casterFID).catch(async (error) => {
         console.error('Error adding user to referral leaderboard:', error);
         // Try again
-        await kv.zincrby(`${DatabaseKeys.REFERRALS}`, stake, casterFID).catch((error) => {
+        await kv.zincrby(`${DatabaseKeys.REFERRALS}`, stake, casterFID).catch(() => {
           throw new Error('Error creating bet');
         })
       })
