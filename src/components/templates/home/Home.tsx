@@ -15,10 +15,10 @@ const Home = () => {
   const { colorMode } = useColorMode();
 
   return (
-    <VStack w={'full'} rounded="lg" className="space-y-0 font-body">
-      <div className='h-screen flex flex-col items-center justify-center mt-[-100px]'>
+    <VStack w={'full'} rounded="lg" className="space-y-10 font-body">
+      <div className='h-screen flex flex-col items-center justify-center mt-[-100px] mt-20 mb-20'>
         <div className="w-full h-70 overflow-clip text-center">
-          <img className="mx-auto mb-10 mt-5" style={{width: 1000}}src={`${process.env['HOST']}/Full_logo.png`} />
+          <img className="mx-auto mb-10" style={{width: 900}}src={`${process.env['HOST']}/Full_logo.png`} />
           <div className='my-10'>
             <h2 className="text-2xl lg:text-3xl font-bold lg:w-2/3 mx-auto text-center">The first onchain, permissionless sports betting exchange centered around the ethos of democratizing the sports betting experience!</h2>
             <button className="secondary-button grow text-white font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-300% animate-gradient mt-10" 
