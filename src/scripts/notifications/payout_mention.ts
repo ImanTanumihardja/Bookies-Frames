@@ -1,5 +1,3 @@
-import { count } from "console";
-
 const { NeynarAPIClient } = require("@neynar/nodejs-sdk");
 const ethers = require("ethers");
 const { createClient  } = require("@vercel/kv");
