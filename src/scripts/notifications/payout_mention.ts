@@ -1,3 +1,5 @@
+import { count } from "console";
+
 const { NeynarAPIClient } = require("@neynar/nodejs-sdk");
 const ethers = require("ethers");
 const { createClient  } = require("@vercel/kv");
@@ -47,11 +49,11 @@ export async function payoutNotification(eventName:string, parentHash:string, tx
   }
 
   // Get bettors
-  let result = await kv.sscan(`bookies:${eventName}:bettors`, 0);
+  let result = await kv.sscan(`bookies:${eventName}:bettors`, 0, {count: 100});
   let cursor = result[0];
   let fids = result[1];
 
-  while (cursor) {
+  while (cursor && cursor !== "0") {
     result = await kv.sscan(`bookies:${eventName}:bettors`, cursor);
     cursor = result[0];
     fids = fids.concat(result[1]);

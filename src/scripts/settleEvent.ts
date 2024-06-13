@@ -87,7 +87,7 @@ export default async function settleEvent(eventName="", result=-1) {
     cursor = betsData[0]
     let fids : number[] = betsData[1] as unknown as number[]
 
-    while (cursor) {
+    while (cursor && cursor !== "0") {
       betsData = (await kv.sscan(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, cursor, { count: 150 }))
       cursor = betsData[0]
       fids = fids.concat(betsData[1] as unknown as number[])

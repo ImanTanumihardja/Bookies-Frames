@@ -14,7 +14,7 @@ async function updateHasClaimed() {
     let cursor = result[0]
     let users = result[1]
 
-    while (cursor) {
+    while (cursor && cursor !== "0") {
         result = (await kv.zscan("leaderboard", cursor, { count: 150 }))
         cursor = result[0]
         users = users.concat(result[1])

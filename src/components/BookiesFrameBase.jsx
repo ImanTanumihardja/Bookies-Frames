@@ -8,7 +8,7 @@ const FrameBase = ({ children }) => {
             background: 'linear-gradient(to right, orange, #aa3855, purple)',
             justifyContent: 'center'
         }}>
-            <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
+            <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 50, height: 50, position: 'absolute', bottom:10, left:10}}/>
             {/* Render the children components or content */}
             {children}
         </div>

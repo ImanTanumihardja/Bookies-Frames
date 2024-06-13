@@ -19,7 +19,6 @@ function SubmitButton() {
 export function GetEventForm() {
   const [eventstate, getEventFormAction] = useFormState(getEventAction, {message: "", eventName:"", eventData: null, isAlea: true, isBookies: true});
 
-
   return (
     <div className="font-body">
       <h1 className="admin-heading">Get Event</h1>
@@ -44,7 +43,7 @@ export function GetEventForm() {
           { eventstate?.isAlea && 
           <div>
             <p>Alea Bettors(n={eventstate.eventData.aleaBettors.length}): {eventstate.eventData.aleaBettors.join(', ')}</p>
-            <SettleEventForm eventName={eventstate.eventName}/>
+            <SettleEventForm eventName={eventstate.eventName} options={eventstate.eventData.options}/>
           </div>
           }
           { 
@@ -57,7 +56,7 @@ export function GetEventForm() {
             <p>Option 1 Unfilled: {eventstate.eventData.orderBookieInfo.totalUnfilledOutcome1}</p>
             <p>Option 2 Unfilled: {eventstate.eventData.orderBookieInfo.totalUnfilledOutcome2}</p>
 
-            <PlaceBetForm eventName={eventstate.eventName}/>
+            <PlaceBetForm eventName={eventstate.eventName} options={eventstate.eventData.options}/>
           </>
           }
         </div>}

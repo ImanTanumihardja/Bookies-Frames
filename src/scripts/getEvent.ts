@@ -1,8 +1,8 @@
 const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
-import { Accounts, DatabaseKeys, PICK_DECIMALS, calculatePayout } from "../utils";
-import { Event, Bet, User } from '../../app/types';
+import { Accounts, DatabaseKeys, PICK_DECIMALS } from "../utils";
+import { Event } from '../../app/types';
 import { createClient  } from "@vercel/kv";
 import { ethers } from "ethers";
 import {OrderBookieABI} from '../../app/contract-abis/orderBookie.json';
@@ -23,7 +23,7 @@ export default async function getEvent(eventName="") {
   let cursor = betsData[0]
   let aleaFIDs : number[] = betsData[1] as unknown as number[]
 
-  while (cursor) {
+  while (cursor && cursor !== "0") {
     betsData = (await kv.sscan(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, cursor, { count: 150 }))
     cursor = betsData[0]
     aleaFIDs = aleaFIDs.concat(betsData[1] as unknown as number[])
@@ -34,7 +34,7 @@ export default async function getEvent(eventName="") {
   cursor = betsData[0]
   let bookiesFIDs : number[] = betsData[1] as unknown as number[]
 
-  while (cursor) {
+  while (cursor && cursor !== "0") {
     betsData = (await kv.sscan(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, cursor, { count: 150 }))
     cursor = betsData[0]
     bookiesFIDs = bookiesFIDs.concat(betsData[1] as unknown as number[])
@@ -47,41 +47,6 @@ export default async function getEvent(eventName="") {
   }
 
   console.log(`Total bets: ${aleaFIDs.length + bookiesFIDs.length}`);
-
-  if (eventData?.result != -1) {
-    let maxValue = 0;
-    let fids: number[] = [];
-    let payout = 0;
-
-    // Find the max winners
-    for (const fid of fids) {
-      const user : User | null = await kv.hgetall(fid.toString());
-
-      if (user === null) {
-        console.error(`User: ${fid} does not exist`)
-        continue;
-      } 
-
-      const bets : Bet[] = user?.bets[eventName]
-      for (const bet of bets) {
-        if (bet.pick === eventData?.result) {
-          payout = calculatePayout(eventData?.odds[eventData?.result], bet.stake);
-  
-          if (payout > maxValue) {
-            fids = [fid];
-            maxValue = payout;
-          } 
-          else if (payout === maxValue) {
-            fids.push(fid);
-          }
-        }
-      }
-    }
-
-    console.log(`MAX WINNERS COUNT: ${fids.length}`);
-    console.log(`MAX WINNERS: ${fids}`);
-    console.log(`MAX WINNERS PAYOUT: ${maxValue}`);
-  }
 
   let orderBookieInfo = null
   if (eventData?.host === Accounts.BOOKIES || eventData?.host === Accounts.BOTH) {
@@ -156,9 +121,8 @@ export default async function getEvent(eventName="") {
       totalUnfilledOutcome1: ethers.formatUnits(totalUnfilledOutcome1, decimals),
       totalUnfilledOutcome2: ethers.formatUnits(totalUnfilledOutcome2, decimals),
     }
+    console.log('Order Bookie Info: ', orderBookieInfo)
   }
-
-  console.log('Order Bookie Info: ', orderBookieInfo)
 
   return {...eventData, aleaBettors: aleaFIDs, bookiesBettors: bookiesFIDs, pollData: pollData, orderBookieInfo}
 }

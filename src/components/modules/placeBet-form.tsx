@@ -14,7 +14,7 @@ function SubmitButton() {
   );
 }
 
-export function PlaceBetForm({eventName}: {eventName: string}) {
+export function PlaceBetForm({eventName, options}: {eventName: string, options: string[]}) {
 
   const [placeBetState, placeBetFormAction] = useFormState(placeBetAction, {message: ""});
 
@@ -43,8 +43,8 @@ export function PlaceBetForm({eventName}: {eventName: string}) {
         <br />
         <label htmlFor="pick">Pick </label>
         <select id="pick" name="pick">
-          <option value="0">Option 1</option>
-          <option value="1">Option 2</option>
+          <option value="0">{options[0]}</option>
+          <option value="1">{options[1]}</option>
         </select>
         <br />
         <br />

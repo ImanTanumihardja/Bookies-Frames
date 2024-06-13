@@ -3,8 +3,8 @@ import { NeynarAPIClient } from "@neynar/nodejs-sdk";
 import { User, Bet} from '../app/types';
 import { FrameValidationData } from '../app/types';
 import { ethers } from 'ethers';
-const { getFrameHtml, getFrameMessage: validateFrameMessage } = require('frames.js');
-// const {getFrameMessage: validateFrameMessage} = require('@coinbase/onchainkit/frames');
+const { getFrameHtml, /*getFrameMessage: validateFrameMessage */} = require('frames.js');
+import {getFrameMessage as validateFrameMessage} from '@coinbase/onchainkit/frame';
 
 export enum RequestProps {
   FID = 'fid',
@@ -256,73 +256,73 @@ export async function checkIsFollowing(fid: number, viewerFid=BOOKIES_FID): Prom
     return isFollowing
 }
 
-export async function getFrameMessage(req: NextRequest, validate=true, viewerFid=BOOKIES_FID) {
-    const body = await req.json();
-
-    let message: FrameValidationData = {} as FrameValidationData;
-
-    message.button = body.untrustedData.buttonIndex
-    message.input = body.untrustedData.inputText
-    message.fid = body.untrustedData.fid
-    message.transactionId = body.untrustedData.transactionId 
-    message.connectedAddress = body.untrustedData.address
-    message.casterFID = body.untrustedData.castId.fid
-
-    // Use onchainkit to validate the frame message
-    if (validate) {
-        const data = await validateFrameMessage(body, 
-            {fetchHubContext: true, hubHttpUrl:process.env['HUB_HTTP_URL'], hubRequestOptions:{headers: {api_key: process.env['NEYNAR_API_KEY']}}});
-
-        if (!data.isValid) {
-            throw new Error('Invalid frame message');
-        }
-
-        message.following = data.requesterFollowsCaster
-        message.custodyAddress = data?.requesterCustodyAddress
-        message.verifiedAccounts = data?.requesterVerifiedAddresses
-        message.liked = data?.likedCast
-        message.recasted = data?.recastedCast
-        message.followingHost = await checkIsFollowing(message.fid, viewerFid)
-    }
-
-    return message
-}
-
-// Onchainkit
 // export async function getFrameMessage(req: NextRequest, validate=true, viewerFid=BOOKIES_FID) {
 //     const body = await req.json();
 
-//     let frameValidationData: FrameValidationData = {} as FrameValidationData;
+//     let message: FrameValidationData = {} as FrameValidationData;
 
-//     frameValidationData.button = body.untrustedData.buttonIndex
-//     frameValidationData.input = body.untrustedData.inputText
-//     frameValidationData.fid = body.untrustedData.fid
-//     frameValidationData.transactionId = body.untrustedData.transactionId 
-//     frameValidationData.connectedAddress = body.untrustedData.address
-//     frameValidationData.casterFID = body.untrustedData.castId.fid
+//     message.button = body.untrustedData.buttonIndex
+//     message.input = body.untrustedData.inputText
+//     message.fid = body.untrustedData.fid
+//     message.transactionId = body.untrustedData.transactionId 
+//     message.connectedAddress = body.untrustedData.address
+//     message.casterFID = body.untrustedData.castId.fid
 
 //     // Use onchainkit to validate the frame message
 //     if (validate) {
-//         const {isValid, message} = await validateFrameMessage(body, {
-//             neynarApiKey: process.env.NEYNAR_API_KEY || 'NEYNAR_API_DOCS', 
-//           });
+//         const data = await validateFrameMessage(body, 
+//             {fetchHubContext: true, hubHttpUrl:process.env['HUB_HTTP_URL'], hubRequestOptions:{headers: {api_key: process.env['NEYNAR_API_KEY']}}});
 
-//         if (!isValid) {
+//         if (!data.isValid) {
 //             throw new Error('Invalid frame message');
 //         }
 
-//         frameValidationData.following = message?.following
-//         frameValidationData.custodyAddress = message?.interactor.custody_address
-//         frameValidationData.verifiedAccounts = message?.interactor.verified_accounts
-//         frameValidationData.liked = message?.liked
-//         frameValidationData.recasted = message?.recasted
-//         frameValidationData.followingHost = await checkIsFollowing(message.fid, viewerFid)
+//         message.following = data.requesterFollowsCaster
+//         message.custodyAddress = data?.requesterCustodyAddress
+//         message.verifiedAccounts = data?.requesterVerifiedAddresses
+//         message.liked = data?.likedCast
+//         message.recasted = data?.recastedCast
+//         message.followingHost = await checkIsFollowing(message.fid, viewerFid)
 //     }
 
-//     console.log(frameValidationData)
-
-//     return frameValidationData
+//     return message
 // }
+
+// Onchainkit
+export async function getFrameMessage(req: NextRequest, validate=true, viewerFid=BOOKIES_FID) {
+    const body = await req.json();
+
+    let frameValidationData: FrameValidationData = {} as FrameValidationData;
+
+    frameValidationData.button = body.untrustedData.buttonIndex
+    frameValidationData.input = body.untrustedData.inputText
+    frameValidationData.fid = body.untrustedData.fid
+    frameValidationData.transactionId = body.untrustedData.transactionId 
+    frameValidationData.connectedAddress = body.untrustedData.address
+    frameValidationData.casterFID = body.untrustedData.castId.fid
+
+    // Use onchainkit to validate the frame message
+    if (validate) {
+        const {isValid, message} = await validateFrameMessage(body, {
+            neynarApiKey: process.env.NEYNAR_API_KEY || 'NEYNAR_API_DOCS', 
+          });
+
+        if (!isValid) {
+            throw new Error('Invalid frame message');
+        }
+
+        frameValidationData.following = message?.following
+        frameValidationData.custodyAddress = message?.interactor.custody_address
+        frameValidationData.verifiedAccounts = message?.interactor.verified_accounts
+        frameValidationData.liked = message?.liked
+        frameValidationData.recasted = message?.recasted
+        frameValidationData.followingHost = await checkIsFollowing(message.interactor.fid, viewerFid)
+    }
+
+    console.log(frameValidationData)
+
+    return frameValidationData
+}
 
 export function convertImpliedProbabilityToAmerican(impliedProbability: number):number {
     if (impliedProbability <= 0 || impliedProbability >= 1) {
