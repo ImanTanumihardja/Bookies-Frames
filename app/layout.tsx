@@ -1,15 +1,12 @@
-'use client'
+// "use client"
+
 import { Container } from '@chakra-ui/react';
 import { Footer, Header } from '../src/components/modules';
 import Head from 'next/head';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ColorModeScript } from '@chakra-ui/react'
-import { extendTheme } from '@chakra-ui/react';
 import '../styles/globals.css';
-import { useEffect } from "react";
-import "aos/dist/aos.css";
-import Aos from "aos";
-// import {ThirdwebProvider} from 'thirdweb';
+import { ThirdwebProvider } from './thirdweb';
 
 export const viewport = {
   width: 'device-width',
@@ -18,16 +15,11 @@ export const viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode}) {
 
-  const config = {
-    initialColorMode: 'dark',
-  };
+  // const config = {
+  //   initialColorMode: 'dark',
+  // };
   
-  const theme = extendTheme({ config });
-
-  useEffect(() => {
-    Aos.init({
-    });
-  }, []);
+  // const theme = extendTheme({ config });
 
   return (
     <html lang='en'>
@@ -43,13 +35,15 @@ export default function RootLayout({ children }: { children: React.ReactNode}) {
           <meta name="msapplication-TileColor" content="#da532c"/>
           <meta name="theme-color" content="#ffffff"></meta>
         </Head>
-        <ChakraProvider resetCSS theme={theme}>
-        <ColorModeScript initialColorMode={theme.config.initialColorMode} /> 
-          <Header />
-          <Container maxW="container.xl" p={3} marginTop={50} as="main" minH="70vh">
-            {children}
-          </Container>
-          <Footer />
+        <ChakraProvider resetCSS>
+        <ColorModeScript initialColorMode={'dark'} />
+          <ThirdwebProvider>
+            <Header />
+              <Container maxW="container.xl" p={3} marginTop={50} as="main" minH="70vh">
+                {children}
+              </Container>
+            <Footer />
+          </ThirdwebProvider>
       </ChakraProvider>
       </body>
     </html>

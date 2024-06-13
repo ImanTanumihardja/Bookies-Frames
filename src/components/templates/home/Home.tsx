@@ -4,6 +4,8 @@ import {
   VStack,
   useColorMode
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
+import Aos from "aos";
 
 const {ReactTyped} = require("react-typed");
 
@@ -11,6 +13,11 @@ const Home = () => {
   const openInNewTab = (url: string) => {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
+
+  useEffect(() => {
+    Aos.init({
+    });
+  }, []);
 
   const { colorMode } = useColorMode();
 

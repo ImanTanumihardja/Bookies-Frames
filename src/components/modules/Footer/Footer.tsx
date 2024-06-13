@@ -1,3 +1,5 @@
+"use client"
+
 import { Container, Flex, Heading, IconButton, Text, HStack, VStack, Button } from '@chakra-ui/react';
 
 const Footer = () => {
