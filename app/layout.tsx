@@ -1,5 +1,3 @@
-// "use client"
-
 import { Container } from '@chakra-ui/react';
 import { Footer, Header } from '../src/components/modules';
 import Head from 'next/head';
