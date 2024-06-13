@@ -46,9 +46,6 @@ export async function payoutNotification(eventName:string, parentHash:string, tx
     throw new Error("Bookie is not settled yet");
   }
 
-  // Get the username
-  let usernames: string[] = [];
-
   // Get bettors
   let result = await kv.sscan(`bookies:${eventName}:bettors`, 0);
   let cursor = result[0];
@@ -60,26 +57,27 @@ export async function payoutNotification(eventName:string, parentHash:string, tx
     fids = fids.concat(result[1]);
   }
   
-  console.log(`Bettors: ${fids.length}`);
+  console.log(`Bettors: ${fids.toString()}`);
 
   // Send in batchs of 100
   let fidIndex = 0;
   let batch = fids.slice(fidIndex, Math.min(100, fids.length));
 
-  // Get usernames
+  // Get usernames for each fid
+  let users = []
   while (fidIndex < fids.length) {
     await neynarClient.fetchBulkUsers(fids).then((result:any) => {
       // Appned usernames to the array
-      usernames = usernames.concat(result.users.map((user: any ) => user.username));
+      users = users.concat(result.users);
     })
 
     fidIndex += batch.length;
     batch = fids.slice(fidIndex, Math.min(100, fids.length));
   }
 
-  for (let i = 0; i < usernames.length; i++) {
-    const username = usernames[i];
-    const fid = fids[i];
+  for (let i = 0; i < users.length; i++) {
+    const username = users[i].username;
+    const fid = users[i].fid;
 
     console.log(username, fid);
 
