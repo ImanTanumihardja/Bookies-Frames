@@ -29,8 +29,8 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
         const hours = Math.ceil(((till) / (60 * 60)) * 10) / 10;
 
         let imageUrl = null;
-        let profile;
-        let pfpURL;
+        let profile = null;
+        let pfpURL = null;
         
         if (prompt && creator)
         {

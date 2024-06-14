@@ -19,7 +19,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
             prompt = prompt_;
             creator = fid;
         } catch (error) {
-            console.error(error);
+            console.warn(error);
         }
 
         const now = new Date().getTime() / 1000;
@@ -32,20 +32,21 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
         let profile;
         let pfpURL;
         
-        if (prompt && creator)
-        {
-            imageUrl = getCldImageUrl({
-                width: 960,
-                height: 600,
-                src: eventName
-            });
+
+        imageUrl = getCldImageUrl({
+            width: 960,
+            height: 600,
+            src: eventName
+        });
     
     
-            // Check if have thumbnail
-            const response = await fetch(imageUrl, { method: 'HEAD' });
-            if (!response.ok) {
-                imageUrl = null;
-                
+        // Check if have thumbnail
+        const response = await fetch(imageUrl, { method: 'HEAD' });
+        if (!response.ok) {
+            imageUrl = null;
+            
+            if (prompt && creator)
+            {
                 // Get creator profile from fid
                 profile = (await neynarClient.fetchBulkUsers([creator])).users[0];
                 pfpURL = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(profile.pfp_url)}` 
