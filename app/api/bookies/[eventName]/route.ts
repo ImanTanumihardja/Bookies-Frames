@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, RequestProps, generateUrl, Accounts } from '../../../../src/utils';
+import { generateUrl } from '@utils';
+import {FrameNames, RequestProps, Accounts} from "@utils/constants"
 import { Frame, getFrameHtml} from "frames.js";
 import { kv } from '@vercel/kv';
 import { Event } from '../../../types';

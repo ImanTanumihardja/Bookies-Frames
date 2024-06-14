@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import { RequestProps, getRequestProps, calculatePayout, convertImpliedProbabilityToAmerican } from '../../../../../../src/utils';
+import { getRequestProps, calculatePayout, convertImpliedProbabilityToAmerican } from '@utils';
+import { RequestProps } from '@utils/constants';
 import * as fs from "fs";
 import { join } from 'path';
 

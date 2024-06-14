@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFrameMessage, getRequestProps, RequestProps, STAKE_LIMIT } from '../../../../../src/utils';
+import { getFrameMessage, getRequestProps } from '@utils';
+import { RequestProps, STAKE_LIMIT } from '@utils/constants';
 import {ethers } from 'ethers';
-import {erc20ABI} from '../../../../contract-abis/erc20.json';
-import { OrderBookieABI } from "../../../../../app/contract-abis/orderBookie.json";
+import {erc20ABI} from '@contract-abis/erc20.json';
+import { OrderBookieABI } from "@contract-abis/orderBookie.json";
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request

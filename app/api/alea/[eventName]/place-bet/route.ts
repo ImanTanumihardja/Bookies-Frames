@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ALEA_FID, Accounts, DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getFrameMessage, notFollowingResponse } from '../../../../../src/utils';
+import { generateUrl, getFrameMessage, notFollowingResponse } from '@utils';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
-import { User, Event } from '../../../../types';
+import { FrameNames, RequestProps, ALEA_FID, DatabaseKeys, DEFAULT_USER, Accounts} from '@utils/constants';
+import { User, Event } from '@types';
 import { kv } from '@vercel/kv';
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {

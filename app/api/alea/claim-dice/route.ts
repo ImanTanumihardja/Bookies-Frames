@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
-import { User} from '../../../types';
-import { RequestProps, generateUrl, DEFAULT_USER, getFrameMessage, DatabaseKeys, notFollowingResponse, getRequestProps, ALEA_FID, Accounts } from '../../../../src/utils';
+import { User} from '@types';
+import { generateUrl, getFrameMessage, notFollowingResponse, getRequestProps } from '@utils';
+import { ALEA_FID, DatabaseKeys, DEFAULT_USER, RequestProps, FrameNames, Accounts} from '@utils/constants';
 import { getFrameHtml, Frame, FrameButtonsType} from "frames.js";
-import { FrameNames } from '../../../../src/utils';
 
 const CLAIM_AMOUNT = 50;
 

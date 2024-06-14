@@ -1,10 +1,11 @@
 import { FrameButtonsType, getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, RequestProps, generateUrl, getFrameMessage, Transactions, STAKE_LIMIT, PICK_DECIMALS, ODDS_DECIMALS, calculatePayout } from '../../../../../src/utils';
-import { OrderBookieABI } from '../../../../contract-abis/orderBookie.json';
-import { erc20ABI } from '../../../../contract-abis/erc20.json';
+import { generateUrl, getFrameMessage, calculatePayout } from '@utils';
+import { FrameNames, RequestProps, Transactions, STAKE_LIMIT, PICK_DECIMALS, ODDS_DECIMALS } from '@utils/constants';
+import { OrderBookieABI } from '@contract-abis/orderBookie.json';
+import { erc20ABI } from '@contract-abis/erc20.json';
 import { kv } from "@vercel/kv";
-import { Event } from "../../../../types";
+import { Event } from "@types";
 import { ethers } from "ethers";
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   let pick = button - 1;
   let buttons;
   const impliedProbability = event.odds[pick]
-  const orderBookieAddress = event.orderBookieAddress;
+  const orderBookieAddress = event.address;
 
 
   const now = new Date().getTime() / 1000;
@@ -57,7 +58,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
                                                                                             [RequestProps.BUTTON_INDEX]: 0, 
                                                                                             [RequestProps.FID]: fid,  
                                                                                             [RequestProps.OPTIONS]: event.options, 
-                                                                                            [RequestProps.ADDRESS]: event.orderBookieAddress,
+                                                                                            [RequestProps.ADDRESS]: event.address,
                                                                                             [RequestProps.RESULT]: result,
                                                                                             [RequestProps.PROMPT]: event.prompt,
                                                                                             [RequestProps.TRANSACTION_HASH]: "",

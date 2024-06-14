@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, RequestProps, generateUrl } from '../../../../src/utils';
+import { generateUrl } from '@utils';
+import {FrameNames, RequestProps} from "@utils/constants"
 import { getFrameHtml} from "frames.js";
 
 

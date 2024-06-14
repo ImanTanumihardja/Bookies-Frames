@@ -1,8 +1,8 @@
 const { NeynarAPIClient } = require("@neynar/nodejs-sdk");
 const ethers = require("ethers");
 const { createClient  } = require("@vercel/kv");
-const { OrderBookieABI } = require("../../../app/contract-abis/orderBookie.json");
-const { erc20ABI } = require("../../../app/contract-abis/erc20.json");
+const { OrderBookieABI } = require("@contract-abis/orderBookie.json");
+const { erc20ABI } = require("@contract-abis/erc20.json");
 
 const dotenv = require("dotenv");
 dotenv.config({ path: ".env"});

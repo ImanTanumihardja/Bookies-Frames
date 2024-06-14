@@ -3,12 +3,12 @@ const dotenv = require("dotenv")
 const fs = require('fs')
 dotenv.config({ path: ".env"})
 
-import { Event } from '../../app/types';
-import {Accounts, DatabaseKeys, Outcomes} from '../../src/utils'
+import { Event } from '@types';
+import {Accounts, DatabaseKeys, Outcomes} from '@utils/constants'
 import { ethers } from 'ethers';
-import  {OrderBookieFactoryABI}  from '../../app/contract-abis/orderBookieFactory.json';
-import {OrderBookieABI}  from '../../app/contract-abis/orderBookie.json';
-import { ORDERBOOKIE_FACTORY_ADDRESS, USDC_ADDRESS } from '../../app/json/addresses.json'
+import  {OrderBookieFactoryABI}  from '@contract-abis/orderBookieFactory.json';
+import {OrderBookieABI}  from '@contract-abis/orderBookie.json';
+import { ORDERBOOKIE_FACTORY_ADDRESS, USDC_ADDRESS } from '@addresses'
 import { Etherscan } from "@nomicfoundation/hardhat-verify/etherscan";
 import { sleep } from '@nomicfoundation/hardhat-verify/internal/utilities';
 
@@ -160,7 +160,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
     }
   }
 
-  let event: Event = {startDate, result: -1, odds, options, prompt, host, orderBookieAddress, creator} as Event;
+  let event: Event = {startDate, result: -1, odds, options, prompt, host, address: orderBookieAddress, creator} as Event;
   await kv.hset(`${eventName}`, event);
 
   // Create poll

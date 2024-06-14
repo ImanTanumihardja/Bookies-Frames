@@ -1,12 +1,12 @@
 'use server'
 
 import {z} from 'zod'
-import createEvent from '../src/scripts/createEvent'
-import settleEvent from '../src/scripts/settleEvent'
-import placeBet from '../src/scripts/placeBet'
-import getEvent from '../src/scripts/getEvent'
+import createEvent from '../scripts/createEvent'
+import settleEvent from '../scripts/settleEvent'
+import placeBet from '../scripts/placeBet'
+import getEvent from '../scripts/getEvent'
 import { revalidatePath } from 'next/cache'
-import { Accounts } from '../src/utils'
+import { Accounts } from '@utils/constants'
 
 export async function createEventAction(
     _: any, 

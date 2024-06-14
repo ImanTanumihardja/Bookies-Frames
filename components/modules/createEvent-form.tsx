@@ -1,10 +1,11 @@
 'use client'
 
 import { useFormState, useFormStatus } from "react-dom";
-import { createEventAction } from "../../../app/actions";
+import { createEventAction } from "../../app/actions";
 import { CldUploadWidget } from 'next-cloudinary';
-import { DEGEN_ADDRESS, USDC_ADDRESS } from "../../../app/json/addresses.json";
+import { DEGEN_ADDRESS, USDC_ADDRESS } from "@addresses";
 import { ChangeEvent, useState } from 'react';
+import { Accounts } from '@utils/constants';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -55,13 +56,13 @@ export function CreateEventForm() {
         <br />
         <label htmlFor="host">Host </label>
         <select id="host" name="host" value={host} onChange={handleHostChange}>
-          <option value="alea">Alea</option>
-          <option value="bookies">Bookies</option>
-          <option value="both">Both</option>
+          <option value={Accounts.ALEA}>Alea</option>
+          <option value={Accounts.BOOKIES}>Bookies</option>
+          <option value={Accounts.BOTH}>Both</option>
         </select>
         <br />
         <br />
-        {(host === 'bookies' || host === 'both') && (
+        {(host === Accounts.BOOKIES || host === Accounts.BOTH) && (
           <>
             <label htmlFor="description">Description (*bookies only*) </label>
             <input type="text" id="description" name="description" />
@@ -76,7 +77,7 @@ export function CreateEventForm() {
             <br />
           </>
         )}
-        <input type="hidden" id="creator" name="creator" value={host === 'alea' ? 391387 as number : 244367 as number} />
+        <input type="hidden" id="creator" name="creator" value={host === Accounts.ALEA ? 391387 : 244367} />
         <SubmitButton />
       </form>
       <br />

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage } from '../../../../src/utils';
+import { generateUrl, getRequestProps, getFrameMessage } from '@utils';
+import { FrameNames, RequestProps } from '@utils/constants';
 import { Frame, getFrameHtml} from "frames.js";
 
 export async function POST(req: NextRequest): Promise<Response> {

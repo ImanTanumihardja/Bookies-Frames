@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import { ODDS_DECIMALS, PICK_DECIMALS, RequestProps, getRequestProps } from '../../../../../../src/utils';
-import { OrderBookieABI } from '../../../../../contract-abis/orderBookie.json';
+import { getRequestProps } from '@utils';
+import {ODDS_DECIMALS, PICK_DECIMALS, RequestProps } from '@utils/constants';
+import { OrderBookieABI } from '@contract-abis/orderBookie.json';
 import { kv } from '@vercel/kv';
 import * as fs from "fs";
 import { join } from 'path';
 import {ethers} from 'ethers';
-import {erc20ABI} from '../../../../../contract-abis/erc20.json';
+import {erc20ABI} from '@contract-abis/erc20.json';
 
 // Fonts
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')

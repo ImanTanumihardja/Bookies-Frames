@@ -6,7 +6,7 @@ export type Event = {
     options: string[]
     prompt: string
     host: string
-    orderBookieAddress: string
+    address: string
     creator: number
 }
 

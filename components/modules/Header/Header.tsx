@@ -4,7 +4,7 @@ import { Box, Button, Container, Flex, HStack, Heading, IconButton, Image } from
 import { createThirdwebClient } from 'thirdweb';
 import { ConnectButton } from 'thirdweb/react';
 import { createWallet, walletConnect } from 'thirdweb/wallets';
-import { myChain } from "../../../constants"
+import { myChain } from "@utils/constants"
 
 const Header = () => {
   function redirect(url: string): void {

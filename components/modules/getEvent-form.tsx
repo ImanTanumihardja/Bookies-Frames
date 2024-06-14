@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormState, useFormStatus } from "react-dom";
-import {getEventAction} from "../../../app/actions"
+import {getEventAction} from "../../app/actions"
 import {SettleEventForm} from './settleEvent-form';
 import {PlaceBetForm} from './placeBet-form';
 

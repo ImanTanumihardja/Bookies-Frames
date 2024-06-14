@@ -2,6 +2,7 @@
 const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 const { createClient  } = require("@vercel/kv");
+import {Accounts, DatabaseKeys} from "@utils/constants"
 
 const kv = createClient({
   url: process.env['KV_REST_API_URL'] || '',
@@ -19,12 +20,12 @@ async function getBookiesBettors() {
     console.log(`Getting bettors for event: ${eventName}`)
     // Get all alea bettors
     let cursor = null
-    betsData = (await kv.sscan(`${'bookies'}:${eventName}:${'bettors'}`, 0, { count: 150 }))
+    betsData = (await kv.sscan(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, 0, { count: 150 }))
     cursor = betsData[0]
     bookiesFIDs = bookiesFIDs.concat(betsData[1])
 
     while (cursor && cursor !== "0") {
-      betsData = (await kv.sscan(`${'bookies'}:${eventName}:${'bettors'}`, cursor, { count: 150 }))
+      betsData = (await kv.sscan(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, cursor, { count: 150 }))
       cursor = betsData[0]
       bookiesFIDs = bookiesFIDs.concat(betsData[1])
     }

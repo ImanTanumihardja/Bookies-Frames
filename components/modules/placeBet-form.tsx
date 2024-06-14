@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormState, useFormStatus } from "react-dom";
-import { placeBetAction } from "../../../app/actions"
+import { placeBetAction } from "../../app/actions"
 
 function SubmitButton() {
   const { pending } = useFormStatus();

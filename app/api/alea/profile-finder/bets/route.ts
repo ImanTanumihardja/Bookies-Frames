@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Frame, getFrameHtml } from "frames.js";
-import { generateUrl, RequestProps, getFrameMessage, FrameNames, getRequestProps, DEFAULT_USER } from '../../../../../src/utils';
+import { generateUrl, getFrameMessage, getRequestProps } from '@utils';
+import { FrameNames, RequestProps, DEFAULT_USER } from '@utils/constants';
 import { kv } from '@vercel/kv';
-import { User } from '../../../../types';
+import { User } from '@types';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // Verify the frame request

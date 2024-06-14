@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import { RequestProps, getRequestProps, neynarClient } from '../../../../../src/utils';
+import { getRequestProps, neynarClient } from '@utils';
+import { RequestProps } from '@utils/constants';
 import * as fs from "fs";
 import { join } from 'path';
 import { getCldImageUrl } from 'next-cloudinary';
-import FrameBase from '../../../../../src/components/BookiesFrameBase';
+import FrameBase from '@components/BookiesFrameBase';
 
 // Fonts
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')

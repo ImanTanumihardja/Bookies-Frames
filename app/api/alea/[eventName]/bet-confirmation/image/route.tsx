@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import { RequestProps, calculatePayout, getRequestProps } from '../../../../../../src/utils';
+import { calculatePayout, getRequestProps } from '@utils';
+import { RequestProps } from '@utils/constants';
 import { kv } from '@vercel/kv';
-import { Bet } from '../../../../../types';
+import { Bet } from '@types';
 import * as fs from "fs";
 import { join } from 'path';
 

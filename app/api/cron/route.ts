@@ -1,9 +1,10 @@
 import { kv } from "@vercel/kv";
-import { Accounts, BOOKIES_FID, DatabaseKeys, neynarClient, PICK_DECIMALS } from "../../../src/utils";
+import { neynarClient } from "@utils";
+import {Accounts, BOOKIES_FID, DatabaseKeys, PICK_DECIMALS} from '@utils/constants'
 import { Event } from "../../types";
 import { ethers } from "ethers";
-import {OrderBookieABI} from '../../contract-abis/orderBookie.json';
-import { payoutNotification } from "../../../src/scripts/notifications/payout_mention";
+import {OrderBookieABI} from '@contract-abis/orderBookie.json';
+import { payoutNotification } from "../../../scripts/notifications/payout_mention";
 
 export async function GET() {
     const BASESCAN_URL = 'https://basescan.org/tx/' 
@@ -30,7 +31,7 @@ export async function GET() {
     for (const eventName of bookiesEvents) {
         const eventInfo: Event | null = await kv.hgetall(eventName);
         if (eventInfo) {
-            const orderBookie = new ethers.Contract(eventInfo.orderBookieAddress, OrderBookieABI, provider)
+            const orderBookie = new ethers.Contract(eventInfo.address, OrderBookieABI, provider)
             const orderBookieInfo = await orderBookie.getBookieInfo()
 
             if (parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS)) !== -1) {

@@ -1,10 +1,11 @@
 import { FrameButtonsType, getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
-import { Event } from '../../../../types';
-import { Accounts, DatabaseKeys, FrameNames, RequestProps, generateUrl, getRequestProps, getFrameMessage, PICK_DECIMALS } from '../../../../../src/utils';
+import { Event } from '@types';
+import { generateUrl, getRequestProps, getFrameMessage } from '@utils';
+import { FrameNames, RequestProps, DatabaseKeys, Accounts, PICK_DECIMALS } from '@utils/constants';
 import {ethers} from 'ethers';
-import {OrderBookieABI} from '../../../../contract-abis/orderBookie.json';
+import {OrderBookieABI} from '@contract-abis/orderBookie.json';
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   // Verify the frame request
@@ -79,7 +80,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   console.log('EVENT: ', eventName)
 
-  const orderBookie = new ethers.Contract(event.orderBookieAddress, OrderBookieABI, provider)
+  const orderBookie = new ethers.Contract(event.address, OrderBookieABI, provider)
   const orderBookieInfo = await orderBookie.getBookieInfo()
   const result = parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS))
 
@@ -105,7 +106,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     console.log('REJECTED BET')
   }
 
-  const imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.ADDRESS]: event.orderBookieAddress, [RequestProps.OPTIONS]: event.options, [RequestProps.RESULT]: result, [RequestProps.PROMPT]: event.prompt, [RequestProps.TRANSACTION_HASH]: transactionHash, [RequestProps.IS_MINED]: isMined}, true);
+  const imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.ADDRESS]: event.address, [RequestProps.OPTIONS]: event.options, [RequestProps.RESULT]: result, [RequestProps.PROMPT]: event.prompt, [RequestProps.TRANSACTION_HASH]: transactionHash, [RequestProps.IS_MINED]: isMined}, true);
 
   // Create buttons for frame
   let buttons : FrameButtonsType = [

@@ -2,8 +2,9 @@
 const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
-import { Accounts, ALEA_FID, calculatePayout, DatabaseKeys, neynarClient } from "../utils";
-import { Event, User } from '../../app/types';
+import { calculatePayout, neynarClient } from "@utils";
+import {Accounts, ALEA_FID, DatabaseKeys} from "@utils/constants";
+import { Event, User } from '@types';
 import { createClient  } from "@vercel/kv";
 
 const kv = createClient({

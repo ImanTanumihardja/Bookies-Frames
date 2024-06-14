@@ -1,12 +1,12 @@
 const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
-import { Accounts, DatabaseKeys, PICK_DECIMALS } from "../utils";
-import { Event } from '../../app/types';
+import { Accounts, DatabaseKeys, PICK_DECIMALS } from "@utils/constants";
+import { Event } from '@types';
 import { createClient  } from "@vercel/kv";
 import { ethers } from "ethers";
-import {OrderBookieABI} from '../../app/contract-abis/orderBookie.json';
-import {erc20ABI} from '../../app/contract-abis/erc20.json';
+import {OrderBookieABI} from '@contract-abis/orderBookie.json';
+import {erc20ABI} from '@contract-abis/erc20.json';
 
 const kv = createClient({
   url: process.env['KV_REST_API_URL'] || '',
@@ -51,7 +51,7 @@ export default async function getEvent(eventName="") {
   let orderBookieInfo = null
   if (eventData?.host === Accounts.BOOKIES || eventData?.host === Accounts.BOTH) {
     // Get orderbookie info
-    const orderBookieAddress = eventData?.orderBookieAddress || '';
+    const orderBookieAddress = eventData?.address || '';
     const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
     const orderBookie = new ethers.Contract(orderBookieAddress, OrderBookieABI, provider)

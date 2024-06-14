@@ -1,8 +1,9 @@
 import { getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
-import { DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, generateUrl, getFrameMessage } from '../../../../../src/utils';
+import { generateUrl, getFrameMessage } from '@utils';
+import { FrameNames, RequestProps, DatabaseKeys, DEFAULT_USER } from "@utils/constants";
 import { kv } from "@vercel/kv";
-import { User, Event } from "../../../../types";
+import { User, Event } from "@types";
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   // Verify the frame request

@@ -22,15 +22,27 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "paths": {
-      "@lib/*": [
-        "src/lib/*"
+      "@utils": [
+        "utils/index.ts"
       ],
-      "@css/*": [
-        "src/css/*"
+      "@utils/*": [
+        "utils/*"
       ],
-      "@icon/*": [
-        "src/icon/*"
-      ]
+      "@types": [
+        "app/types.tsx"
+      ],
+      "@scripts/*": [
+        "scripts/*"
+      ],
+      "@components/*": [
+        "components/*"
+      ],
+      "@addresses": [
+        "app/json/addresses.json"
+      ],
+      "@contract-abis/*": [
+        "app/contract-abis/*"
+      ],
     },
     "plugins": [
       {

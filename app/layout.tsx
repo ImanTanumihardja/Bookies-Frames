@@ -1,5 +1,5 @@
 import { Container } from '@chakra-ui/react';
-import { Footer, Header } from '../src/components/modules';
+import { Footer, Header } from '@components/modules';
 import Head from 'next/head';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ColorModeScript } from '@chakra-ui/react'

@@ -1,4 +1,3 @@
-const { NeynarAPIClient } = require("@neynar/nodejs-sdk");
 const dotenv = require("dotenv");
 
 async function notifyDC() {

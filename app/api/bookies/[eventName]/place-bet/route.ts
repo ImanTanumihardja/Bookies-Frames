@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Accounts, DatabaseKeys, FrameNames, PICK_DECIMALS, RequestProps, Transactions, convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage } from '../../../../../src/utils';
+import { convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage } from '@utils';
+import { Accounts, DatabaseKeys, FrameNames, PICK_DECIMALS, RequestProps, Transactions } from '@utils/constants';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
-import { Event } from '../../../../types';
+import { Event } from '@types';
 import { kv } from '@vercel/kv';
 import { ethers } from 'ethers';
-import {OrderBookieABI} from '../../../../contract-abis/orderBookie.json';
-import {erc20ABI} from '../../../../contract-abis/erc20.json';
+import {OrderBookieABI} from '@contract-abis/orderBookie.json';
+import {erc20ABI} from '@contract-abis/erc20.json';
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   const {fid} = await getFrameMessage(req);
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   activeEvents = activeEvents.filter((e) => e !== String(eventName));
 
   // Check if result has been set
-  const orderBookie = new ethers.Contract(event.orderBookieAddress, OrderBookieABI, provider)
+  const orderBookie = new ethers.Contract(event.address, OrderBookieABI, provider)
   const orderBookieInfo = await orderBookie.getBookieInfo()
   const result = parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS))
 
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   const symbol = await acceptedToken.symbol();
 
   // Get address of fid
-  const address = (await kv.sscan(`${fid}:addresses`, 0))[1][0] || null;
+  const address = (await kv.sscan(`${fid}:${DatabaseKeys.ADDRESSES}`, 0))[1][0] || null;
 
   // Get balance
   let balance = null;
@@ -86,7 +87,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
                                                                                             [RequestProps.BUTTON_INDEX]: 0, 
                                                                                             [RequestProps.FID]: fid,  
                                                                                             [RequestProps.OPTIONS]: event.options, 
-                                                                                            [RequestProps.ADDRESS]: event.orderBookieAddress,
+                                                                                            [RequestProps.ADDRESS]: event.address,
                                                                                             [RequestProps.RESULT]: result,
                                                                                             [RequestProps.PROMPT]: event.prompt,
                                                                                             [RequestProps.TRANSACTION_HASH]: "",
@@ -108,7 +109,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       return {
         label: `${option} (${probString})`,
         action: 'tx',
-        target: generateUrl(`api/bookies/transactions/${Transactions.APPROVE}`, {[RequestProps.ADDRESS]: event.orderBookieAddress}, false),
+        target: generateUrl(`api/bookies/transactions/${Transactions.APPROVE}`, {[RequestProps.ADDRESS]: event.address}, false),
       } as FrameButton
     })
     postUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}`, {}, false),

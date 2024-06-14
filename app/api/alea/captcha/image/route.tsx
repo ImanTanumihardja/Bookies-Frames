@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import FrameBase from '../../../../../src/components/AleaFrameBase'
+import FrameBase from '@components/AleaFrameBase'
 import * as fs from "fs";
 import { join } from 'path';
-import { RequestProps, getRequestProps } from '../../../../../src/utils';
+import { getRequestProps } from '@utils';
+import { RequestProps } from '@utils/constants';
 
 // Fonts
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')

@@ -1,5 +1,4 @@
 import { v2 as cloudinary } from 'cloudinary';
-// const cloudinary = require('cloudinary').v2;
  
 export async function POST(request:Request) {
     const body = (await request.json()) as {paramsToSign: Record<string, string>};

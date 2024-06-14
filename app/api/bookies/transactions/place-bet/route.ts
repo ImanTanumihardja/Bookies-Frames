@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ODDS_DECIMALS, getFrameMessage, getRequestProps, RequestProps, PICK_DECIMALS } from '../../../../../src/utils';
+import { getFrameMessage, getRequestProps } from '@utils';
+import { ODDS_DECIMALS, RequestProps, PICK_DECIMALS } from '@utils/constants';
 import {ethers} from 'ethers';
-import {OrderBookieABI} from '../../../../contract-abis/orderBookie.json';
-import {erc20ABI} from '../../../../contract-abis/erc20.json';
+import {OrderBookieABI} from '@contract-abis/orderBookie.json';
+import {erc20ABI} from '@contract-abis/erc20.json';
 import { kv } from '@vercel/kv';
 
 export async function POST(req: NextRequest): Promise<Response> {
