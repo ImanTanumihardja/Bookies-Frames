@@ -19,8 +19,10 @@ export async function GET(_: NextRequest, { params: { eventName } }: { params: {
   }
 
   const startDate : number = event?.startDate
+  const prompt: string = event?.prompt
+  const creator: number = event?.creator 
 
-  const imageUrl:string = generateUrl(`api/alea/${eventName}/image`, {[RequestProps.TIME]: startDate}, true)
+  const imageUrl:string = generateUrl(`api/alea/${eventName}/image`, {[RequestProps.TIME]: startDate, [RequestProps.PROMPT]: prompt, [RequestProps.FID]: creator}, true)
   
   const frame : Frame = {
     version: "vNext",

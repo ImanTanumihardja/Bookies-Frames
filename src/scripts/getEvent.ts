@@ -51,7 +51,7 @@ export default async function getEvent(eventName="") {
   let orderBookieInfo = null
   if (eventData?.host === Accounts.BOOKIES || eventData?.host === Accounts.BOTH) {
     // Get orderbookie info
-    const orderBookieAddress = eventData?.address || '';
+    const orderBookieAddress = eventData?.orderBookieAddress || '';
     const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
     const orderBookie = new ethers.Contract(orderBookieAddress, OrderBookieABI, provider)

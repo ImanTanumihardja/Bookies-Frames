@@ -30,7 +30,7 @@ export async function GET() {
     for (const eventName of bookiesEvents) {
         const eventInfo: Event | null = await kv.hgetall(eventName);
         if (eventInfo) {
-            const orderBookie = new ethers.Contract(eventInfo.address, OrderBookieABI, provider)
+            const orderBookie = new ethers.Contract(eventInfo.orderBookieAddress, OrderBookieABI, provider)
             const orderBookieInfo = await orderBookie.getBookieInfo()
 
             if (parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS)) !== -1) {

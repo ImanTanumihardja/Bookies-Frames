@@ -6,7 +6,8 @@ export type Event = {
     options: string[]
     prompt: string
     host: string
-    address: string
+    orderBookieAddress: string
+    creator: number
 }
 
 export type User = {

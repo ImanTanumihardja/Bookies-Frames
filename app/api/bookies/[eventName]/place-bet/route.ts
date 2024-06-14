@@ -27,7 +27,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   activeEvents = activeEvents.filter((e) => e !== String(eventName));
 
   // Check if result has been set
-  const orderBookie = new ethers.Contract(event.address, OrderBookieABI, provider)
+  const orderBookie = new ethers.Contract(event.orderBookieAddress, OrderBookieABI, provider)
   const orderBookieInfo = await orderBookie.getBookieInfo()
   const result = parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS))
 
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
                                                                                             [RequestProps.BUTTON_INDEX]: 0, 
                                                                                             [RequestProps.FID]: fid,  
                                                                                             [RequestProps.OPTIONS]: event.options, 
-                                                                                            [RequestProps.ADDRESS]: event.address,
+                                                                                            [RequestProps.ADDRESS]: event.orderBookieAddress,
                                                                                             [RequestProps.RESULT]: result,
                                                                                             [RequestProps.PROMPT]: event.prompt,
                                                                                             [RequestProps.TRANSACTION_HASH]: "",
@@ -108,7 +108,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       return {
         label: `${option} (${probString})`,
         action: 'tx',
-        target: generateUrl(`api/bookies/transactions/${Transactions.APPROVE}`, {[RequestProps.ADDRESS]: event.address}, false),
+        target: generateUrl(`api/bookies/transactions/${Transactions.APPROVE}`, {[RequestProps.ADDRESS]: event.orderBookieAddress}, false),
       } as FrameButton
     })
     postUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}`, {}, false),

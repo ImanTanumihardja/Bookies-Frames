@@ -76,6 +76,7 @@ export function CreateEventForm() {
             <br />
           </>
         )}
+        <input type="hidden" id="creator" name="creator" value={host === 'alea' ? 391387 as number : 244367 as number} />
         <SubmitButton />
       </form>
       <br />

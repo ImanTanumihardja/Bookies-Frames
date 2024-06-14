@@ -45,7 +45,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   let pick = button - 1;
   let buttons;
   const impliedProbability = event.odds[pick]
-  const orderBookieAddress = event.address;
+  const orderBookieAddress = event.orderBookieAddress;
 
 
   const now = new Date().getTime() / 1000;
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
                                                                                             [RequestProps.BUTTON_INDEX]: 0, 
                                                                                             [RequestProps.FID]: fid,  
                                                                                             [RequestProps.OPTIONS]: event.options, 
-                                                                                            [RequestProps.ADDRESS]: event.address,
+                                                                                            [RequestProps.ADDRESS]: event.orderBookieAddress,
                                                                                             [RequestProps.RESULT]: result,
                                                                                             [RequestProps.PROMPT]: event.prompt,
                                                                                             [RequestProps.TRANSACTION_HASH]: "",

@@ -17,7 +17,7 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
   });
 
-export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 0.5], options=["", ""], prompt="", host="", description='', acceptedToken='') {
+export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 0.5], options=["", ""], prompt="", host="", description='', acceptedToken='', creator=0) {
   if (startDate < new Date().getTime() / 1000) {
     throw new Error('Start date is invalid')
   }
@@ -51,7 +51,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
   }
 
   // Deploy Orderbookie smart contract
-  let address = ""
+  let orderBookieAddress = ""
   if (host === Accounts.BOOKIES || host === Accounts.BOTH) { // If bookies is the host deploy smart contract
     if (description && acceptedToken) {
         const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
@@ -92,10 +92,10 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
 
         // Print the arg
         console.log('OrderBookie Address: ', event?.args[0])
-        address = event?.args[0]
+        orderBookieAddress = event?.args[0]
 
         // Get orderbookie contract
-        const orderBookie = new ethers.Contract(address, OrderBookieABI, signer)
+        const orderBookie = new ethers.Contract(orderBookieAddress, OrderBookieABI, signer)
         const orderBookieInfo = await orderBookie.getBookieInfo()
 
         // Verify the contract on etherscan
@@ -125,11 +125,11 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
           //drop "0x"
           encodedConstructorArgs = encodedConstructorArgs.slice(2);
 
-        if (!(await instance.isVerified(address))) {
-          console.log("Verifying: " + address)
+        if (!(await instance.isVerified(orderBookieAddress))) {
+          console.log("Verifying: " + orderBookieAddress)
           const { message: guid } = await instance.verify(
             // Contract address
-            address,
+            orderBookieAddress,
             // Contract source code
             JSON.stringify(contractSourceCode),
             // Contract name
@@ -144,7 +144,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
           const verificationStatus = await instance.getVerificationStatus(guid);
         
           if (verificationStatus.isSuccess()) {
-            const contractURL = instance.getContractUrl(address);
+            const contractURL = instance.getContractUrl(orderBookieAddress);
             console.log(
               `Successfully verified contract "MyContract" on Etherscan: ${contractURL}`
             );
@@ -160,7 +160,7 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
     }
   }
 
-  let event: Event = {startDate, result: -1, odds, options, prompt, host, address} as Event;
+  let event: Event = {startDate, result: -1, odds, options, prompt, host, orderBookieAddress, creator} as Event;
   await kv.hset(`${eventName}`, event);
 
   // Create poll
@@ -188,26 +188,3 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
   console.log(`Event: ${eventName}`)
   console.log(event)
 }
-
-// if (require.main === module) {
-//   // Read event file using fs
-//   const filePath = path.join(__dirname, `../../event.json`);
-//   const eventData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-
-//   if (eventData === null) {
-//     throw new Error('Event data is null')
-//   }
-
-//   const eventName = eventData.eventName;
-//   const startDate = eventData.startDate;
-//   const odds = eventData.odds;
-//   const multiplier = eventData.multiplier;
-//   const options = eventData.options;
-//   const prompt = eventData.prompt;
-
-//   createEvent(eventName, startDate, odds, multiplier, options, prompt).then(() => process.exit(0))
-//     .catch(error => {
-//       console.error(error)
-//       process.exit(1)
-//     })
-// }

@@ -28,7 +28,7 @@ export default async function placeBet(bettorAddress:string, eventName:string, f
   console.log(`Event: ${eventName}`);
   console.log(eventData);
 
-  const orderBookieAddress = eventData?.address.toString()
+  const orderBookieAddress = eventData?.orderBookieAddress.toString()
 
   const orderBookie = new ethers.Contract(orderBookieAddress, OrderBookieABI, signer)
   const orderBookieInfo = await orderBookie.getBookieInfo()
