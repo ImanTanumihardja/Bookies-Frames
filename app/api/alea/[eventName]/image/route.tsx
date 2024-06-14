@@ -36,7 +36,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
         if (!response.ok) {
             imageUrl = null;
             
-            const {prompt_, fid:creator} = getRequestProps(req, [RequestProps.PROMPT, RequestProps.FID]);
+            const {prompt:prompt_, fid:creator} = getRequestProps(req, [RequestProps.PROMPT, RequestProps.FID]);
             prompt = prompt_;
             if (prompt && creator)
             {
