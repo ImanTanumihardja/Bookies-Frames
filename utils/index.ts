@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { NeynarAPIClient } from "@neynar/nodejs-sdk";
 import { FrameValidationData } from '@types';
-import { getFrameHtml, /*getFrameMessage: validateFrameMessage */} from 'frames.js';
+const { getFrameHtml, /*getFrameMessage: validateFrameMessage */} = require('frames.js');
 import {RequestProps, RequestPropsTypes, BOOKIES_FID} from '../utils/constants';
 import {getFrameMessage as validateFrameMessage} from '@coinbase/onchainkit/frame';
 
