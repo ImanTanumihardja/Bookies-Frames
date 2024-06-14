@@ -51,6 +51,9 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                 profile = (await neynarClient.fetchBulkUsers([creator])).users[0];
                 pfpURL = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(profile.pfp_url)}` 
             }
+            else {
+                throw new Error('Could not generate thumbnail');
+            }
         }
 
         let imageResponse =  new ImageResponse(
