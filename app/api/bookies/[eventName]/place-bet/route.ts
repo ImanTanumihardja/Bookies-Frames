@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage } from '@utils';
+import { convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage, getRequestProps } from '@utils';
 import { Accounts, DatabaseKeys, FrameNames, PICK_DECIMALS, RequestProps, Transactions } from '@utils/constants';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { Event } from '@types';
@@ -46,6 +46,10 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     const bal = await acceptedToken.balanceOf(address)
     balance = parseFloat(ethers.formatUnits(bal, decimals))
   }
+
+  // Get odds
+  const {odds} = getRequestProps(req, [RequestProps.ODDS]);
+
 
   let imageUrl = '';
   let buttons = undefined;
@@ -102,8 +106,8 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
     buttons = event.options.map((option, index) => {
       if (event === null) throw new Error('Event not found');
-      const probability = event.odds[index];
-      const odd = convertImpliedProbabilityToAmerican(event.odds[index]);
+      const probability = odds[index];
+      const odd = convertImpliedProbabilityToAmerican(odds[index]);
       const probString = `${probability > 0.5 ? '-' : '+'}${odd.toString()}`; 
   
       return {
@@ -112,7 +116,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
         target: generateUrl(`api/bookies/transactions/${Transactions.APPROVE}`, {[RequestProps.ADDRESS]: event.address}, false),
       } as FrameButton
     })
-    postUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}`, {}, false),
+    postUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}`, {[RequestProps.ODDS]: odds}, false),
     imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, 
                                                                                       [RequestProps.BALANCE]: balance !== null ? balance : "", 
                                                                                       [RequestProps.POLL]: liquiditySpread, 

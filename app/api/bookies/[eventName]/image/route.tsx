@@ -21,7 +21,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
         const till = startDate - now;
         const hours = Math.ceil(((till) / (60 * 60)) * 10) / 10;
 
-        let imageUrl, profile, pfpURL, prompt = null;
+        let imageUrl, profile, pfpURL, prompt, creator = null;
         
         imageUrl = getCldImageUrl({
             width: 960,
@@ -33,10 +33,10 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
         // Check if have thumbnail
         const response = await fetch(imageUrl, { method: 'HEAD' });
         if (!response.ok) {
+            // No thumbnail
             imageUrl = null;
             
-            const {prompt:prompt_, fid:creator} = getRequestProps(req, [RequestProps.PROMPT, RequestProps.FID]);
-            prompt = prompt_;
+            ({prompt, fid:creator} = getRequestProps(req, [RequestProps.PROMPT, RequestProps.FID]));
 
             if (prompt && creator)
             {

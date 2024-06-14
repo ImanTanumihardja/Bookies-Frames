@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateUrl } from '@utils';
+import { generateUrl, getRequestProps } from '@utils';
 import {FrameNames, RequestProps, Accounts} from "@utils/constants"
 import { Frame, getFrameHtml} from "frames.js";
 import { kv } from '@vercel/kv';
@@ -9,7 +9,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   return await GET(req, { params: { eventName } });
 }
 
-export async function GET(_: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
+export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   console.log('Event Name: ', eventName)
   const event : Event | null = await kv.hgetall(eventName)
   if (event === null) throw new Error('Event not found');
@@ -17,6 +17,19 @@ export async function GET(_: NextRequest, { params: { eventName } }: { params: {
   // Check if event is hosted by Bookies
   if (event.host !== Accounts.BOOKIES && event.host !== Accounts.BOTH) {
     throw new Error('Event not hosted by Bookies');
+  }
+
+  let odds: number[] = event.odds
+  try {
+    const {propOdds} = getRequestProps(req, [RequestProps.ODDS]);
+
+    // Check if null
+    if (propOdds !== null) {
+      odds = propOdds
+    }
+  }
+  catch (e) {
+      console.warn("No odds given in url.")
   }
 
   const startDate : number = event?.startDate
@@ -39,7 +52,7 @@ export async function GET(_: NextRequest, { params: { eventName } }: { params: {
       }
     ],
     image: imageUrl,
-    postUrl: generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}`, {}, false),
+    postUrl: generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}`, {[RequestProps.ODDS]: odds}, false),
   };
   return new NextResponse(
     getFrameHtml(frame),

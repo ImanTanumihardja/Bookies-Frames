@@ -106,7 +106,15 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     console.log('REJECTED BET')
   }
 
-  const imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, [RequestProps.BUTTON_INDEX]: button, [RequestProps.FID]: fid, [RequestProps.ADDRESS]: event.address, [RequestProps.OPTIONS]: event.options, [RequestProps.RESULT]: result, [RequestProps.PROMPT]: event.prompt, [RequestProps.TRANSACTION_HASH]: transactionHash, [RequestProps.IS_MINED]: isMined}, true);
+  const imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, 
+                                                                                                [RequestProps.BUTTON_INDEX]: button, 
+                                                                                                [RequestProps.FID]: fid, 
+                                                                                                [RequestProps.ADDRESS]: event.address, 
+                                                                                                [RequestProps.OPTIONS]: event.options, 
+                                                                                                [RequestProps.RESULT]: result, 
+                                                                                                [RequestProps.PROMPT]: event.prompt, 
+                                                                                                [RequestProps.TRANSACTION_HASH]: transactionHash, 
+                                                                                                [RequestProps.IS_MINED]: isMined}, true);
 
   // Create buttons for frame
   let buttons : FrameButtonsType = [

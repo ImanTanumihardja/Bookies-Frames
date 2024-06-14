@@ -16,6 +16,12 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
 
         const value = decodeURIComponent(req.nextUrl.searchParams.get(key) || "")
 
+        // Check if could be undefined or null
+        if (value === "null" || value === "undefined") {
+            returnParams[key] = null
+            continue
+        }
+
         // Parse Props
         switch (typeof RequestPropsTypes[key]) {
             case 'string':

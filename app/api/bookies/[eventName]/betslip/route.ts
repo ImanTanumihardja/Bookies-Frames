@@ -1,6 +1,6 @@
 import { FrameButtonsType, getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
-import { generateUrl, getFrameMessage, calculatePayout } from '@utils';
+import { generateUrl, getFrameMessage, calculatePayout, getRequestProps } from '@utils';
 import { FrameNames, RequestProps, Transactions, STAKE_LIMIT, PICK_DECIMALS, ODDS_DECIMALS } from '@utils/constants';
 import { OrderBookieABI } from '@contract-abis/orderBookie.json';
 import { erc20ABI } from '@contract-abis/erc20.json';
@@ -42,17 +42,19 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     console.log('Event has already been settled');
   }
 
+  // Get odds
+  const {odds} = getRequestProps(req, [RequestProps.ODDS]);
+
   let imageUrl = ''
   let pick = button - 1;
   let buttons;
-  const impliedProbability = event.odds[pick]
+  const impliedProbability = odds[pick]
   const orderBookieAddress = event.address;
 
 
   const now = new Date().getTime() / 1000;
   // Check if event has already passed
   if (event.startDate < now || result !== -1) {
-    
     pick = -1;
     imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.PICK]: -1, 
                                                                                             [RequestProps.BUTTON_INDEX]: 0, 
