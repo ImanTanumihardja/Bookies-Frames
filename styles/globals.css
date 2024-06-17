@@ -1,26 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap'); */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-.primary-button {
-  @apply py-4 px-8 bg-orange-500 rounded-md text-2xl font-display shadow-transparent hover:shadow-orange-500/20 hover:scale-95 hover:shadow-md active:scale-90 transition-all duration-300;
-}
-
-.secondary-button {
-  @apply py-4 px-8 rounded-md text-2xl font-display shadow-transparent hover:shadow-stone-500/20 hover:scale-95 hover:shadow-md active:scale-90 transition-all;
-}
-
 .admin-button {
-  @apply py-1 px-2 rounded-md text-base font-display shadow-transparent hover:shadow-stone-500/20 hover:scale-95 hover:shadow-md active:scale-90 transition-all grow text-white font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-300% animate-gradient;
+  @apply py-1 px-2 rounded-md shadow-transparent hover:shadow-stone-500/20 hover:scale-95 hover:shadow-md active:scale-90 transition-all grow text-white font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-300% animate-gradient;
 }
 
 .admin-heading {
-  @apply text-lg md:text-3xl lg:text-5xl font-display font-bold mb-5 mt-10;
+  @apply text-xl md:text-5xl lg:text-5xl font-bold mb-5 mt-10;
 }
-
-
 
 .animate-gradient {
   background-size: 300%;
@@ -39,4 +30,13 @@
   100% {
     background-position: 0% 50%;
   }
+}
+
+body {
+  @apply leading-[normal] m-0;
+}
+*,
+::before,
+::after {
+  border-width: 0;
 }

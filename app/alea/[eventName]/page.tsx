@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import {GET} from '../../api/alea/[eventName]/route'
 import { NextRequest } from "next/server";
 import { Accounts } from "@utils/constants";
-import { Home } from "@components/templates/home";
+import Home from "@components/templates/Home";
  
 
 // Export Next.js metadata

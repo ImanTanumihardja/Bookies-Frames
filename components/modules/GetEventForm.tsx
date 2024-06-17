@@ -2,8 +2,8 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import {getEventAction} from "../../app/actions"
-import {SettleEventForm} from './settleEvent-form';
-import {PlaceBetForm} from './placeBet-form';
+import {SettleEventForm} from './SettleEventForm';
+import {PlaceBetForm} from './PlaceBetForm';
 
 function SubmitButton() {
   const { pending } = useFormStatus();

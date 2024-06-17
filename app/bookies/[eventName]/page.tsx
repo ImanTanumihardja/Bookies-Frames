@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import {GET} from '../../../app/api/bookies/[eventName]/route'
 import { NextRequest } from "next/server";
 import { Accounts, RequestProps } from "@utils/constants";
-import { Home } from "@components/templates/home";
+import Home from "@components/templates/Home";
 import { generateUrl } from "@utils";
 
 // Export Next.js metadata

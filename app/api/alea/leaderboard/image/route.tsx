@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import FrameBase from '@components/AleaFrameBase'
+import FrameBase from '@components/frames/AleaFrameBase'
 import { getRequestProps } from '@utils';
 import { RequestProps, DatabaseKeys } from '@utils/constants';
 import { kv } from "@vercel/kv";

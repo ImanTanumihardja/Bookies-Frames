@@ -51,6 +51,6 @@ export async function GET(_: NextRequest, { params: { eventName } }: { params: {
   );
 }
 
-export const revalidate = 60;
+export const revalidate = 3600;
 // export const dynamic = 'force-dynamic';
 // export const fetchCache = 'force-no-store';

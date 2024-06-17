@@ -1,10 +1,11 @@
 import { Container } from '@chakra-ui/react';
-import { Footer, Header } from '@components/modules';
+import Footer from '@components/Footer';
+import Header from '@components/Header';
 import Head from 'next/head';
 import { ChakraProvider } from '@chakra-ui/react';
 import { ColorModeScript } from '@chakra-ui/react'
+import Providers from '../context/Providers';
 import '../styles/globals.css';
-import { ThirdwebProvider } from './thirdweb';
 
 export const viewport = {
   width: 'device-width',
@@ -12,12 +13,6 @@ export const viewport = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode}) {
-
-  // const config = {
-  //   initialColorMode: 'dark',
-  // };
-  
-  // const theme = extendTheme({ config });
 
   return (
     <html lang='en'>
@@ -34,14 +29,14 @@ export default function RootLayout({ children }: { children: React.ReactNode}) {
           <meta name="theme-color" content="#ffffff"></meta>
         </Head>
         <ChakraProvider resetCSS>
-        <ColorModeScript initialColorMode={'dark'} />
-          <ThirdwebProvider>
+          <ColorModeScript initialColorMode={'dark'} />
+          <Providers>
             <Header />
-              <Container maxW="container.xl" p={3} marginTop={50} as="main" minH="70vh">
-                {children}
-              </Container>
+            <Container maxW="container.md" p={3} marginTop={25} as="main" minH="70vh">
+              {children}
+            </Container>
             <Footer />
-          </ThirdwebProvider>
+          </Providers>
       </ChakraProvider>
       </body>
     </html>

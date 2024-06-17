@@ -9,11 +9,11 @@ export default async function EventsPage() {
     let cursor = result[0];
     let events = result[1];
 
-    while (cursor) {
-        result = await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, cursor);
-        cursor = result[0];
-        events = events.concat(result[1]);
-    }
+    // while (cursor && cursor !== '0') {
+    //     result = await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, cursor);
+    //     cursor = result[0];
+    //     events = events.concat(result[1]);
+    // }
 
     console.log(events);
 

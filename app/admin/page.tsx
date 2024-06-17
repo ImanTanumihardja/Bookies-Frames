@@ -1,6 +1,6 @@
 'use client'
-import {CreateEventForm} from '@components/modules/createEvent-form';
-import {GetEventForm} from '@components/modules/getEvent-form';
+import {CreateEventForm} from '@components/modules/CreateEventForm';
+import {GetEventForm} from '@components/modules/GetEventForm';
 
 
 export default function Page() {

@@ -5,7 +5,7 @@ import { RequestProps } from '@utils/constants';
 import * as fs from "fs";
 import { join } from 'path';
 import { getCldImageUrl } from 'next-cloudinary';
-import FrameBase from '@components/BookiesFrameBase';
+import FrameBase from '@components/frames/BookiesFrameBase';
 
 // Fonts
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')

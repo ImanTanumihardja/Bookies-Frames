@@ -5,7 +5,7 @@ import { RequestProps } from '@utils/constants';
 import * as fs from "fs";
 import { join } from 'path';
 import { getCldImageUrl } from 'next-cloudinary';
-import AleaFrameBase from '@components/AleaFrameBase';
+import AleaFrameBase from '@components/frames/AleaFrameBase';
 
 // Fonts
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
@@ -22,8 +22,6 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
         const hours = Math.ceil(((till) / (60 * 60)) * 10) / 10;   
 
         let imageUrl ,profile, pfpURL, prompt = null;
-
-        
 
         imageUrl = getCldImageUrl({
             width: 960,
@@ -67,12 +65,12 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                 height: 400, 
                 fonts: [{ name: 'Plus_Jakarta_Sans_700', data: fontData, weight: 400 }],
                 headers:{
-                    'CDN-Cache-Control': 'public, s-maxage=60',
-                    'Vercel-CDN-Cache-Control': 'public, s-maxage=60'
+                    'CDN-Cache-Control': 'public, s-maxage=3600',
+                    'Vercel-CDN-Cache-Control': 'public, s-maxage=3600'
                 }
             })
         
-        imageResponse.headers.set('Cache-Control', 'public, s-maxage=60, max-age=60');
+        imageResponse.headers.set('Cache-Control', 'public, s-maxage=3600, max-age=3600');
         return imageResponse;
         
     } catch (error) {
