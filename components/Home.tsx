@@ -2,6 +2,7 @@ import { FunctionComponent } from "react";
 import ActiveBets from "./ActiveBets";
 import { VStack, Flex, HStack, Button } from "@chakra-ui/react";
 import {ReactTyped} from "react-typed";
+import MarketCard from "./MarketCard";
 
 const Home: FunctionComponent = () => {
   return (
@@ -87,6 +88,7 @@ const Home: FunctionComponent = () => {
             />
         </Button>
       </HStack>
+      <MarketCard/>
       <ActiveBets />
     </VStack>
   );

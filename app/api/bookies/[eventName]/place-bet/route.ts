@@ -53,14 +53,13 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     const {propOdds} = getRequestProps(req, [RequestProps.ODDS]);
 
     // Check if null
-    if (propOdds !== null) {
+    if (propOdds) {
       odds = propOdds
     }
   }
   catch (e) {
       console.warn("No odds given in url.")
   }
-
 
   let imageUrl = '';
   let buttons = undefined;

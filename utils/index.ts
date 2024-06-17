@@ -171,7 +171,7 @@ export async function getFrameMessage(req: NextRequest, validate=true, viewerFid
         frameValidationData.followingHost = await checkIsFollowing(message.interactor.fid, viewerFid)
     }
 
-    console.log(frameValidationData)
+    // console.log(frameValidationData)
 
     return frameValidationData
 }
