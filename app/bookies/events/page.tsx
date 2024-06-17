@@ -1,6 +1,6 @@
 import { Container } from "@chakra-ui/react";
-import { kv } from "@vercel/kv";
-import { Accounts, DatabaseKeys } from "@utils/constants";
+// import { kv } from "@vercel/kv";
+// import { Accounts, DatabaseKeys } from "@utils/constants";
 
 export default async function EventsPage() {
     // Get events from database
