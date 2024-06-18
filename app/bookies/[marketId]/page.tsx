@@ -26,7 +26,9 @@ export async function generateMetadata({ params: { marketId, odds } }: { params:
     };
 };
 
-export default async function MarketPage({ params: { marketId, odds } }: { params: { marketId: string, odds: number[] }; }) {
+export default async function MarketPage({ params: { marketId } }: { params: { marketId: string }; }) {
+
+
     // Get market data
     const marketData: MarketData = await getEvent(marketId)
 
