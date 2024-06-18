@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormState, useFormStatus } from "react-dom";
-import { createEventAction } from "../../app/actions";
+import { createMarketAction } from "../../app/actions";
 import { CldUploadWidget } from 'next-cloudinary';
 import { DEGEN_ADDRESS, USDC_ADDRESS } from "@addresses";
 import { ChangeEvent, useState } from 'react';
@@ -18,7 +18,7 @@ function SubmitButton() {
 }
 
 export function CreateEventForm() {
-  const [state, formAction] = useFormState(createEventAction, { message: "" });
+  const [state, formAction] = useFormState(createMarketAction, { message: "" });
   const [host, setHost] = useState("bookies");
 
   if (state.message !== "") {

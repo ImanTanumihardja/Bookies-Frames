@@ -1,7 +1,7 @@
 import { FrameButtonsType, getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
-import { Event, User, Bet } from '@types';
+import { Market, User, Bet } from '@types';
 import { generateUrl, getRequestProps, getFrameMessage, notFollowingResponse } from '@utils';
 import {Accounts, DEFAULT_USER, DatabaseKeys, FrameNames, RequestProps, ALEA_FID} from '@utils/constants';
 
@@ -21,15 +21,15 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   // Wait for both user to be found and event to be found
   let user : User | null = null;
-  let event : Event | null = null;
+  let event : Market | null = null;
   let isNewUser: boolean = false;
 
   await Promise.all([kv.hgetall(fid.toString()), kv.hgetall(eventName)]).then( (res) => {
     user = res[0] as User || null;
-    event = res[1] as Event || null;
+    event = res[1] as Market || null;
   });
 
-  event = event as unknown as Event || null;
+  event = event as unknown as Market || null;
   user = user as unknown as User || null;
 
   // Get all alea events and filter out this eventName

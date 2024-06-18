@@ -3,7 +3,7 @@ const dotenv = require("dotenv")
 const fs = require('fs')
 dotenv.config({ path: ".env"})
 
-import { Event } from '@types';
+import { Market } from '@types';
 import {Accounts, DatabaseKeys, Outcomes} from '@utils/constants'
 import { ethers } from 'ethers';
 import  {OrderBookieFactoryABI}  from '@contract-abis/orderBookieFactory.json';
@@ -17,7 +17,7 @@ const kv = createClient({
     token: process.env['KV_REST_API_TOKEN'],
   });
 
-export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 0.5], options=["", ""], prompt="", host="", description='', acceptedToken='', creator=0) {
+export default async function createMarket(marketId=``, startDate=0, odds=[0.5, 0.5], options=["", ""], prompt="", host="", description='', acceptedToken='', creator=0) {
   if (startDate < new Date().getTime() / 1000) {
     throw new Error('Start date is invalid')
   }
@@ -41,9 +41,9 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
   }
 
   // Check if event already exists
-  const eventExists = await kv.exists(`${eventName}`)
+  const eventExists = await kv.exists(`${marketId}`)
   if (eventExists) {
-    throw new Error(`Event ${eventName} already exists`)
+    throw new Error(`Event ${marketId} already exists`)
   }
 
   if (host !== Accounts.ALEA && host !== Accounts.BOOKIES && host !== Accounts.BOTH) {
@@ -160,31 +160,31 @@ export default async function createEvent(eventName=``, startDate=0, odds=[0.5, 
     }
   }
 
-  let event: Event = {startDate, result: -1, odds, options, prompt, host, address: orderBookieAddress, creator} as Event;
-  await kv.hset(`${eventName}`, event);
+  let event: Market = {startDate, result: -1, odds, options, prompt, host, address: orderBookieAddress, creator} as Market;
+  await kv.hset(`${marketId}`, event);
 
   // Create poll
   const poll = {0: 0, 1: 0, 2: 0, 3: 0} as Record<number, number>
-  await kv.hset(`${eventName}:${DatabaseKeys.POLL}`, poll)
+  await kv.hset(`${marketId}:${DatabaseKeys.POLL}`, poll)
 
   if (host === Accounts.ALEA || host === Accounts.BOTH) {
     // Create alea bets list 
-    await kv.del(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`)
+    await kv.del(`${Accounts.ALEA}:${marketId}:${DatabaseKeys.BETTORS}`)
 
     // Add to alea events list
-    await kv.sadd(`${Accounts.ALEA}:${DatabaseKeys.EVENTS}`, eventName)
+    await kv.sadd(`${Accounts.ALEA}:${DatabaseKeys.EVENTS}`, marketId)
   }
 
   if (host === Accounts.BOOKIES || host === Accounts.BOTH) {
     // Create bookies bets list 
-    await kv.del(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`)
+    await kv.del(`${Accounts.BOOKIES}:${marketId}:${DatabaseKeys.BETTORS}`)
 
     // Add to bookies events list
-    await kv.sadd(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, eventName)
+    await kv.sadd(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, marketId)
   }
 
-  event = await kv.hgetall(`${eventName}`)
+  event = await kv.hgetall(`${marketId}`)
 
-  console.log(`Event: ${eventName}`)
+  console.log(`Event: ${marketId}`)
   console.log(event)
 }

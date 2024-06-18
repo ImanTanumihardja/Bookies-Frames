@@ -34,7 +34,7 @@ export function GetEventForm() {
           <p>Host: {eventstate.eventData.host}</p>
           <p>Result: {eventstate?.isAlea ? eventstate.eventData.result : eventstate.eventData.orderBookieInfo?.result}</p>
           <div>Options: 
-            <ul>{eventstate.eventData?.options?.map((option:string, index:number) => 
+            <ul className="ml-10">{eventstate.eventData?.options?.map((option:string, index:number) => 
               <li key={index}>
                 {`${option} (odd=${eventstate.eventData?.odds?.[index]}) (votes=${eventstate.eventData?.pollData?.[index]})`}
               </li>)}

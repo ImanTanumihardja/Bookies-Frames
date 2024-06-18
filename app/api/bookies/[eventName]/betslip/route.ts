@@ -5,7 +5,7 @@ import { FrameNames, RequestProps, Transactions, STAKE_LIMIT, PICK_DECIMALS, ODD
 import { OrderBookieABI } from '@contract-abis/orderBookie.json';
 import { erc20ABI } from '@contract-abis/erc20.json';
 import { kv } from "@vercel/kv";
-import { Event } from "@types";
+import { Market } from "@types";
 import { ethers } from "ethers";
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
@@ -25,13 +25,13 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   }
 
   // Wait for both user to be found and event to be found
-  let event : Event | null = null;
+  let event : Market | null = null;
 
   await Promise.all([kv.hgetall(eventName)]).then( (res) => {
-    event = res[0] as Event || null;
+    event = res[0] as Market || null;
   });
 
-  event = event as unknown as Event || null;
+  event = event as unknown as Market || null;
 
   // Get info for bet
   if (event === null) throw new Error('Event not found');

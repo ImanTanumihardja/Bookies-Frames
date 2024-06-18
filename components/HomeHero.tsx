@@ -1,10 +1,11 @@
+"use client"
+
 import { FunctionComponent } from "react";
-import ActiveBets from "./ActiveBets";
 import { VStack, Flex, HStack, Button } from "@chakra-ui/react";
 import {ReactTyped} from "react-typed";
-import MarketCard from "./MarketCard";
 
-const Home: FunctionComponent = () => {
+const HomeHero: FunctionComponent = () => {
+
   return (
     <VStack w={'full'} rounded="lg" className="space-y-10 font-inter" alignItems='center' justifyItems='center'>
       <Flex gap={5} flexDirection="row" className="text-center">
@@ -42,28 +43,6 @@ const Home: FunctionComponent = () => {
             betting exchange centered around the ethos of democratizing the
             sports betting experience
         </p>
-        <div className="w-[200px] h-[150px] absolute shrink-0 hidden md:block">
-          <img
-              className="h-[120.4px] w-[120.4px] absolute !m-[0] top-[25px] left-[-310px] object-contain z-[1]"
-              loading="lazy"
-              alt=""
-              src="/group-48096747@2x.png"
-            />
-            <h1 className="!m-[0] h-16 w-16 absolute top-[100px] left-[-225px] text-[64px] font-normal font-inherit text-gray-800 inline-block [transform:_rotate(-2deg)] [transform-origin:0_0]">
-              🤑
-            </h1>
-            <img
-              className="absolute top-[75px] left-[340px] rounded-[88px] w-[118.4px] h-[116.2px] object-contain"
-              alt=""
-              src="/image-wrapper@2x.png"
-            />
-            <img
-              className="absolute top-[10px] left-[400px] w-[103px] h-[103px] object-contain z-[1]"
-              loading="lazy"
-              alt=""
-              src="/group-48096725@2x.png"
-            />
-          </div>
       </Flex>
       <HStack width="full" justify="space-between">
         <div className="flex flex-row"> 
@@ -88,10 +67,8 @@ const Home: FunctionComponent = () => {
             />
         </Button>
       </HStack>
-      <MarketCard/>
-      <ActiveBets />
     </VStack>
   );
 };
 
-export default Home;
+export default HomeHero;

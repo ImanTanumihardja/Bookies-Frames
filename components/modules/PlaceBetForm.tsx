@@ -26,7 +26,7 @@ export function PlaceBetForm({eventName, options}: {eventName: string, options: 
 
   return (
     <div>
-      <h1 className="text-lg md:text-2xl lg:text-3xl font-bold mb-5 mt-10">Place Bet</h1>
+      <h1 className="admin-heading">Place Bet</h1>
       <form action={placeBetFormAction}>
         <label htmlFor="bettor">Bettor Address </label>
         <input type="string" id="bettor" name="bettor" required />

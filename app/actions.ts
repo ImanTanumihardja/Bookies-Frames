@@ -1,14 +1,15 @@
 'use server'
 
 import {z} from 'zod'
-import createEvent from '../scripts/createEvent'
+import createMarket from '../scripts/createMarket'
 import settleEvent from '../scripts/settleEvent'
 import placeBet from '../scripts/placeBet'
 import getEvent from '../scripts/getEvent'
 import { revalidatePath } from 'next/cache'
-import { Accounts } from '@utils/constants'
+import { Accounts, DatabaseKeys } from '@utils/constants'
+import { kv } from '@vercel/kv'
 
-export async function createEventAction(
+export async function createMarketAction(
     _: any, 
     formData: FormData
     ) {
@@ -44,7 +45,7 @@ export async function createEventAction(
     console.log(optionsArray)
 
     try {
-        await createEvent(eventName, startDate, oddsArray, optionsArray, prompt, host, description, acceptedToken, parseInt(creator))
+        await createMarket(eventName, startDate, oddsArray, optionsArray, prompt, host, description, acceptedToken, parseInt(creator))
         revalidatePath('/')
         return {message: `Created event: ${eventName}`}
     }
@@ -103,6 +104,36 @@ export async function getEventAction(
     catch (e) {
         console.error(e)
         return {message: `Failed to settle event: ${e}`, eventName: eventName, eventData: null, isAlea: true, isBookies: true}
+    }
+}
+
+export async function getAllEventsAction() {
+    try {
+        // Get events from database
+    
+        let result = await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, 0);
+        let cursor = result[0];
+        let eventNames:string[] = result[1] as string[];
+
+        while (cursor && cursor !== '0') {
+            result = await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, cursor);
+            cursor = result[0];
+            eventNames = eventNames.concat(result[1] as string[]);
+        }
+
+        // For each event, get the event data
+        const events = {}
+        for (const eventName of eventNames) {
+            const eventData = await getEvent(eventName)
+            events[eventName] = eventData
+        }
+
+        revalidatePath('/')
+
+        return events
+    }
+    catch (e) {
+        console.error(e)
     }
 }
 

@@ -69,6 +69,7 @@ module.exports = {
       smi: "13px",
       mini: "15px",
       "5xl": "24px",
+      "6xl": "30px",
       mid: "17px",
       "56xl": "75px",
       xl: "20px",

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage, getRequestProps } from '@utils';
 import { Accounts, DatabaseKeys, FrameNames, PICK_DECIMALS, RequestProps, Transactions } from '@utils/constants';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
-import { Event } from '@types';
+import { Market } from '@types';
 import { kv } from '@vercel/kv';
 import { ethers } from 'ethers';
 import {OrderBookieABI} from '@contract-abis/orderBookie.json';
@@ -13,12 +13,12 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
-  let event : Event | null = null;
+  let event : Market | null = null;
   await Promise.all([kv.hgetall(eventName)]).then( (res) => {
-    event = res[0] as Event || null;
+    event = res[0] as Market || null;
   });
 
-  event = event as unknown as Event || null;
+  event = event as unknown as Market || null;
 
   // Get info for bet
   if (event === null) throw new Error('Event not found');

@@ -2,7 +2,7 @@ const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
 import { Accounts, DatabaseKeys, ODDS_DECIMALS, PICK_DECIMALS } from "@utils/constants";
-import { Event } from '@types';
+import { Market } from '@types';
 import { createClient  } from "@vercel/kv";
 import { ethers } from "ethers";
 import {OrderBookieABI} from '@contract-abis/orderBookie.json';
@@ -19,7 +19,7 @@ export default async function placeBet(bettorAddress:string, eventName:string, f
   const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
 
   // Get event info from database
-  let eventData: Event | null = await kv.hgetall(`${eventName}`);
+  let eventData: Market | null = await kv.hgetall(`${eventName}`);
 
   if (eventData === null) {
     throw new Error(`Event: ${eventName} does not exist`)

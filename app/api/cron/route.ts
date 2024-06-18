@@ -1,7 +1,7 @@
 import { kv } from "@vercel/kv";
 import { neynarClient } from "@utils";
 import {Accounts, BOOKIES_FID, DatabaseKeys, PICK_DECIMALS} from '@utils/constants'
-import { Event } from "../../types";
+import { Market } from "../../types";
 import { ethers } from "ethers";
 import {OrderBookieABI} from '@contract-abis/orderBookie.json';
 import { payoutNotification } from "../../../scripts/notifications/payout_mention";
@@ -29,7 +29,7 @@ export async function GET() {
 
     // Check each event is settled if so remove
     for (const eventName of bookiesEvents) {
-        const eventInfo: Event | null = await kv.hgetall(eventName);
+        const eventInfo: Market | null = await kv.hgetall(eventName);
         if (eventInfo) {
             const orderBookie = new ethers.Contract(eventInfo.address, OrderBookieABI, provider)
             const orderBookieInfo = await orderBookie.getBookieInfo()

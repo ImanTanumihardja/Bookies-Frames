@@ -24,7 +24,7 @@ export function SettleEventForm({eventName, options}: {eventName: string, option
   }
   return (
     <div>
-      <h1 className="text-lg md:text-2xl lg:text-3xl font-bold mb-5 mt-10">Settle Event</h1>
+      <h1 className="admin-heading">Settle Event</h1>
       <form action={formAction}>
         <input type="hidden" id="eventName" name="eventName" value={eventName} />
         <label htmlFor="result">Result </label>

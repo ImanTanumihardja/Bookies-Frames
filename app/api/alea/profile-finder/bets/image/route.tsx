@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import { getRequestProps } from '@utils';
 import { RequestProps } from '@utils/constants';
-import { Event, Bet } from '@types';
+import { Market, Bet } from '@types';
 import { kv } from '@vercel/kv';
 import * as fs from "fs";
 import { join } from 'path';
@@ -17,14 +17,14 @@ export async function GET(req: NextRequest) {
         
         // Wait for both user to be found and event to be found
         let bets : Record<string , Bet[]> | null = null;
-        let event : Event | null = null;
+        let event : Market | null = null;
 
         await Promise.all([kv.hget(fid.toString(), 'bets'), kv.hgetall(eventName)]).then( (res) => {
             bets = res[0] as Record<string , Bet[]> || null;
-            event = res[1] as unknown as Event || null;
+            event = res[1] as unknown as Market || null;
         });
 
-        event = event as unknown as Event || null;
+        event = event as unknown as Market || null;
 
         if (!bets || Object.keys(bets).length === 0) throw new Error('User is null');
 

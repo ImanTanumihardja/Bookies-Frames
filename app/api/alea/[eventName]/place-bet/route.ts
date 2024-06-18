@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { generateUrl, getFrameMessage, notFollowingResponse } from '@utils';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { FrameNames, RequestProps, ALEA_FID, DatabaseKeys, DEFAULT_USER, Accounts} from '@utils/constants';
-import { User, Event } from '@types';
+import { User, Market } from '@types';
 import { kv } from '@vercel/kv';
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   // Wait for both user to be found and event to be found
   let user : User | null = null;
-  let event : Event | null = null;
+  let event : Market | null = null;
 
   const message = await getFrameMessage(req, true, ALEA_FID);
 
@@ -21,10 +21,10 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   await Promise.all([kv.hgetall(fid.toString()), kv.hgetall(eventName)]).then( (res) => {
     user = res[0] as User || null;
-    event = res[1] as Event || null;
+    event = res[1] as Market || null;
   });
 
-  event = event as unknown as Event || null;
+  event = event as unknown as Market || null;
 
   if (!user || (user as User)?.hasClaimed === undefined || await kv.zscore(DatabaseKeys.LEADERBOARD, fid.toString()) === null) {
     // New user

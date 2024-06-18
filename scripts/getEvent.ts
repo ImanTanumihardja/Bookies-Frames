@@ -2,7 +2,7 @@ const dotenv = require("dotenv")
 dotenv.config({ path: ".env"})
 
 import { Accounts, DatabaseKeys, PICK_DECIMALS } from "@utils/constants";
-import { Event } from '@types';
+import { Market, MarketData } from '@types';
 import { createClient  } from "@vercel/kv";
 import { ethers } from "ethers";
 import {OrderBookieABI} from '@contract-abis/orderBookie.json';
@@ -13,8 +13,8 @@ const kv = createClient({
   token: process.env['KV_REST_API_TOKEN'] || '',
 });
 
-export default async function getEvent(eventName="") {
-  let eventData: Event | null = await kv.hgetall(`${eventName}`);
+export default async function getEvent(eventName=""): Promise<MarketData> {
+  let eventData: Market | null = await kv.hgetall(`${eventName}`);
   console.log(`Event: ${eventName}`);
   console.log(eventData);
   
@@ -109,22 +109,23 @@ export default async function getEvent(eventName="") {
     orderBookieInfo = {
       // Decompose orderbookie info
       eventID : orderBookieInfo.eventID,
-      result : ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS),
-      startDate : orderBookieInfo.startDate,
-      isCanceled : orderBookieInfo.isCancelled,
+      result : parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS)),
+      startDate : parseInt(orderBookieInfo.startDate),
+      isCanceled : orderBookieInfo.isCanceled,
       owner : orderBookieInfo.owner,
       factoryAddress : orderBookieInfo.factoryAddress,
       settlementMangerAddress : orderBookieInfo.settlementManagerAddress,
       acceptedTokenAddress : orderBookieInfo.acceptedTokenAddress,
-      totalStakedOutcome1: ethers.formatUnits(totalStakedOutcome1, decimals),
-      totalStakedOutcome2: ethers.formatUnits(totalStakedOutcome2, decimals),
-      totalUnfilledOutcome1: ethers.formatUnits(totalUnfilledOutcome1, decimals),
-      totalUnfilledOutcome2: ethers.formatUnits(totalUnfilledOutcome2, decimals),
+      totalStakedOutcome1: parseFloat(ethers.formatUnits(totalStakedOutcome1, decimals)),
+      totalStakedOutcome2: parseFloat(ethers.formatUnits(totalStakedOutcome2, decimals)),
+      totalUnfilledOutcome1: parseFloat(ethers.formatUnits(totalUnfilledOutcome1, decimals)),
+      totalUnfilledOutcome2: parseFloat(ethers.formatUnits(totalUnfilledOutcome2, decimals)),
+      bettors: bettors
     }
     console.log('Order Bookie Info: ', orderBookieInfo)
   }
 
-  return {...eventData, aleaBettors: aleaFIDs, bookiesBettors: bookiesFIDs, pollData: pollData, orderBookieInfo}
+  return { ...eventData, aleaBettors: aleaFIDs, bookiesBettors: bookiesFIDs, pollData: pollData, orderBookieInfo } as unknown as MarketData
 }
 
 

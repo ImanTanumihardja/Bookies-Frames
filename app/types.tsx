@@ -1,5 +1,5 @@
 
-export type Event = { 
+export type Market = { 
     startDate: number;
     result: number 
     odds : number[]
@@ -41,4 +41,33 @@ export type FrameValidationData = {
     transactionId: string;
     connectedAddress: number;
     casterFID: number;
+}
+
+export type MarketData = {
+    startDate: number;
+    result: number 
+    odds : number[]
+    options: string[]
+    prompt: string
+    host: string
+    address: string
+    creator: number
+    aleaBettors: string[];
+    bookiesBettors: string[];
+    pollData: number[];
+    orderBookieInfo: {
+        eventID: string;
+        result: number;
+        startDate: number;
+        isCancelled: boolean;
+        owner: string;
+        factoryAddress: string;
+        settlementManagerAddress: string;
+        acceptedTokenAddress: string;
+        totalStakedOutcome1: number;
+        totalStakedOutcome2: number;
+        totalUnfilledOutcome1: number;
+        totalUnfilledOutcome2: number;
+        bettors: string[];
+    }
 }

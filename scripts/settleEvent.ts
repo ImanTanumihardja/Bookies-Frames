@@ -4,7 +4,7 @@ dotenv.config({ path: ".env"})
 
 import { calculatePayout, neynarClient } from "@utils";
 import {Accounts, ALEA_FID, DatabaseKeys} from "@utils/constants";
-import { Event, User } from '@types';
+import { Market, User } from '@types';
 import { createClient  } from "@vercel/kv";
 
 const kv = createClient({
@@ -15,7 +15,7 @@ const kv = createClient({
 const REBATE = 0.10;
 
 export default async function settleEvent(eventName="", result=-1) {
-    let event: Event | null = await kv.hgetall(`${eventName}`);
+    let event: Market | null = await kv.hgetall(`${eventName}`);
 
     if (event === null) {
       throw new Error(`Event: ${eventName} does not exist`)

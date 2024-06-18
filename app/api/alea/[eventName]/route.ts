@@ -3,7 +3,7 @@ import { generateUrl } from '@utils';
 import { FrameNames, RequestProps, Accounts } from "@utils/constants";
 import { Frame, getFrameHtml} from "frames.js";
 import { kv } from '@vercel/kv';
-import { Event } from '@types';
+import { Market } from '@types';
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   return await GET(req, { params: { eventName } });
@@ -11,7 +11,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
 export async function GET(_: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   console.log('Event Name: ', eventName)
-  const event : Event | null = await kv.hgetall(eventName)
+  const event : Market | null = await kv.hgetall(eventName)
   if (event === null) throw new Error('Event not found');
 
   // Check if event is hosted by Alea

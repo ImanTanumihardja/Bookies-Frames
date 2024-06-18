@@ -23,7 +23,7 @@ const Header = () => {
         </Heading>
         <Flex flex="1" justify="center">
           <HStack spacing={4}>
-            <Button fontSize='xl' variant="ghost" onClick={() => redirect('/bookies/events')}>Markets</Button>
+            <Button fontSize='xl' variant="ghost" onClick={() => redirect('/bookies/markets')}>Markets</Button>
             <Button fontSize='xl' variant="ghost">FAQ</Button>
           </HStack>
         </Flex>
