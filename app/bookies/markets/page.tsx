@@ -12,7 +12,11 @@ export default async function MarketsPage() {
 
      // Get creators profile 
      const creators = Object.values(markets).map((event:any) => event.creator)
-     const profiles = (await neynarClient.fetchBulkUsers(creators)).users.map((profile:any) => profile)
+     let profiles = []
+     if (creators.length != 0){
+        profiles = (await neynarClient.fetchBulkUsers(creators)).users.map((profile:any) => profile)
+     }
+
 
     return(
         <VStack w={'full'} rounded="lg" className="space-y-10 font-inter" alignItems='center' justifyItems='center'> 

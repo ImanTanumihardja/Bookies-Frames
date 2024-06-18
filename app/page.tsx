@@ -10,9 +10,12 @@ export default async function HomePage() {
     const markets: Record<string, MarketData> = (await getAllEventsAction())
     const marketIds: string[] = Object.keys(markets)
 
-    // Get creators profile 
-    const creators = Object.values(markets).map((event:any) => event.creator)
-    const profiles = (await neynarClient.fetchBulkUsers(creators)).users.map((profile:any) => profile)
+     // Get creators profile 
+     const creators = Object.values(markets).map((event:any) => event.creator)
+     let profiles = []
+     if (creators.length != 0){
+        profiles = (await neynarClient.fetchBulkUsers(creators)).users.map((profile:any) => profile)
+     }
 
     return (
         <div>
