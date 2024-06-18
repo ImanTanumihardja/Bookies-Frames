@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import {GET} from '../../api/bookies/[eventName]/route'
 import { NextRequest } from "next/server";
 import { Accounts, RequestProps } from "@utils/constants";
-import Home from "@components/templates/Home";
+
 import { generateUrl } from "@utils";
 
 // Export Next.js metadata
@@ -26,7 +26,7 @@ export async function generateMetadata({ params: { marketId, odds } }: { params:
 
 export default function MarketPage() {
     return(
-        <Home/>
+        <></>
     );
 }
 

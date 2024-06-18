@@ -57,7 +57,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
                             <h1 style={{textAlign:'center', color: 'black', fontSize: 40, fontWeight: 'bold', margin:10}}>{prompt}</h1>
                             <h2 style={{textAlign:'center', color: 'black', fontSize: 30, fontWeight: 'bold'}}>Created by: @{profile.username} <img style={{ width: 40, maxHeight: 40, marginLeft: 5, marginRight: 5, borderRadius: 50 }} src={pfpURL}/></h2>
                         </div>}
-                    <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-10, right:15, textAlign:'start', textDecoration:'underline'}}>{now > startDate ? `Event Closed` : `Closes in: ${hours} hrs`}</h1>
+                    <h1 style={{color: 'white', fontSize:20, position:'absolute', bottom:-10, right:15, textAlign:'start', textDecoration:'underline'}}>{now > startDate ? `Market Closed` : `Closes in: ${hours} hrs`}</h1>
                 </div>
             </FrameBase>
             ,
