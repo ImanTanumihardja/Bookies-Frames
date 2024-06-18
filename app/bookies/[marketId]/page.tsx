@@ -4,8 +4,10 @@ import type { Metadata } from "next";
 import {GET} from '../../api/bookies/[eventName]/route'
 import { NextRequest } from "next/server";
 import { Accounts, RequestProps } from "@utils/constants";
-
 import { generateUrl } from "@utils";
+import { Box } from "@chakra-ui/react";
+import getEvent from "@scripts/getEvent";
+import { MarketData } from "@types";
 
 // Export Next.js metadata
 export async function generateMetadata({ params: { marketId, odds } }: { params: { marketId: string, odds: number[] }; }): Promise<Metadata> {
@@ -24,9 +26,14 @@ export async function generateMetadata({ params: { marketId, odds } }: { params:
     };
 };
 
-export default function MarketPage() {
+export default async function MarketPage({ params: { marketId, odds } }: { params: { marketId: string, odds: number[] }; }) {
+    // Get market data
+    const marketData: MarketData = await getEvent(marketId)
+
+    console.log(marketData)
+    
     return(
-        <></>
+        <Box></Box>
     );
 }
 

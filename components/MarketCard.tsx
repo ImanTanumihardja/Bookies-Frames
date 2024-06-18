@@ -3,6 +3,7 @@ import { FunctionComponent } from "react";
 import { Box } from "@chakra-ui/react";
 
 export type MarketCardType = {
+    marketId: string;
     prompt: string;
     options: string[];
     startDate: number;
@@ -15,6 +16,7 @@ export type MarketCardType = {
   };
 
 const MarketCard: FunctionComponent<MarketCardType> = ({
+    marketId = "",
     prompt = "",
     options = [],
     startDate = 0,
@@ -41,7 +43,7 @@ const MarketCard: FunctionComponent<MarketCardType> = ({
             _hover={{ opacity: 0.8}}  
             className={`h-[260px] w-[640px] rounded-xl flex flex-col items-end justify-start py-[19px] px-[22px] box-border gap-[16px] text-left text-smi text-white font-inter`}
             onClick={() => {
-
+                window.location.href = `/bookies/${marketId}`
             }}
         >
             <div className="w-[640px] relative rounded-xl bg-gray-200 h-[260px] hidden" />
