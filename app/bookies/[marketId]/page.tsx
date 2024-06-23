@@ -5,7 +5,7 @@ import {GET} from '../../api/bookies/[eventName]/route'
 import { NextRequest } from "next/server";
 import { Accounts, RequestProps } from "@utils/constants";
 import { generateUrl } from "@utils";
-import { Container } from "@chakra-ui/react";
+import { Container, Button } from "@chakra-ui/react";
 import getEvent from "@scripts/getEvent";
 import { MarketData } from "@types";
 
@@ -37,9 +37,9 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
     return(
         <Container maxW="container.xl" p={3} marginTop={25} as="main" minH="70vh">
             <div className="self-stretch flex flex-row items-start justify-between max-w-full gap-[20px pb-5">
-                <div className="flex flex-col items-start justify-start pt-3 px-0 pb-0 box-border max-w-full">
-                <div className="self-stretch flex flex-row items-start justify-start gap-[20px]">
-                    <div className="flex flex-row items-start justify-start gap-[12px]">
+                <div className="flex flex-col items-center justify-center pt-3 px-0 pb-0 box-border max-w-full">
+                <div className="self-stretch flex flex-row items-center justify-center gap-[20px]">
+                    <Button className="flex flex-row items-center justify-center gap-[12px]">
                     <img
                         className="h-6 w-6 relative overflow-hidden shrink-0 min-h-[24px]"
                         loading="lazy"
@@ -47,7 +47,7 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
                         src="/ionarrowback.svg"
                     />
                     <div className="relative font-medium">Event ID #45688</div>
-                    </div>
+                    </Button>
                     <div className="pt-0.5 px-0 pb-0 text-left text-smi text-lightgray-200">
                         <div className="flex flex-row items-center justify-center font-medium gap-1">
                             <img
@@ -61,38 +61,40 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
                     </div>
                 </div>
                 </div>
-                <div className="flex flex-row items-start justify-start gap-[24px] max-w-full mq450:flex-wrap">
-                <button className="cursor-pointer pt-[11px] pb-3 px-7 bg-[transparent] rounded-3xl flex flex-row items-start justify-start gap-[8px] border-[1px] border-solid border-white">
-                    <div className="relative text-mid font-extrabold font-inter text-white text-center inline-block min-w-[81px] z-[1]">
+                <div className="flex flex-row items-center justify-center gap-[24px] max-w-full mq450:flex-wrap">
+                <Button
+                    variant="outline"
+                    size="lg"
+                    border='1px'
+                    borderRadius='20px'
+                >
                     Warpcast
-                    </div>
-                    <div className="flex flex-col items-start justify-start pt-px px-0 pb-0">
                     <img
-                        className="w-5 h-5 relative overflow-hidden shrink-0 z-[1]"
+                        className="w-5 h-5 ml-1 relative overflow-hidden shrink-0 z-[1]"
                         alt=""
                         src="/iconoiropennewwindow.svg"
                     />
-                    </div>
-                </button>
-                <button
-                    className="cursor-pointer pt-[11px] px-[38px] pb-3 bg-[transparent] rounded-3xl flex flex-row items-start justify-start whitespace-nowrap border-[1px] border-solid border-white hover:bg-gainsboro-200 hover:box-border hover:border-[1px] hover:border-solid hover:border-gainsboro-100"
+                </Button>
+                <Button
+                    variant="outline"
+                    size="lg"
+                    border='1px'
+                    borderRadius='20px'
                 >
-                    <div className="relative text-mid font-extrabold font-inter text-white text-center inline-block min-w-[70px] z-[1]">
                     Bet Now
-                    </div>
-                </button>
+                </Button>
                 </div>
             </div>
             <div className={`self-stretch flex flex-col items-start justify-start gap-[26px] max-w-full text-left text-mid text-lightgray-100 font-inter`}>
-                <div className="self-stretch rounded-xl box-border flex flex-col items-start justify-start pt-[26px] pb-[46px] pr-[27px] pl-[35px] relative gap-[24px] max-w-full z-[2] text-center text-13xl text-white border-[1px] border-solid border-darkslategray-300 mq450:pt-5 mq450:pb-[30px] mq450:box-border">
+                <div className="self-stretch rounded-xl box-border flex flex-col items-start justify-start pt-[26px] pb-[46px] pr-[27px] pl-[35px] relative gap-[24px] max-w-full z-[2] text-center text-13xl text-white border-[1px] border-solid border-darkslategray-300">
                     <div className="self-stretch flex flex-row items-start justify-center pt-0 pb-[15px] pr-2 pl-0 box-border max-w-full">
-                    <h2 className="m-0 w-[761px] relative text-5xl font-bold inline-block shrink-0 max-w-full mq1025:text-7xl mq450:text-lgi">
+                    <h2 className="m-0 w-[761px] relative text-5xl font-bold inline-block shrink-0 max-w-full">
                         Who will win Game 4: Celtics or Mavericks?
                     </h2>
                     </div>
                     <div className="self-stretch flex flex-row items-center justify-center pb-3 box-border max-w-full text-37xl">
-                        <div className="w-[486px] flex flex-row text-8xl font-semibold items-center justify-between gap-[35px] max-w-full mq750:flex-wrap mq750:justify-center">
-                            <h1 className="m-0 flex-1 relative font-inherit flex items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)] min-w-[117px] mq1025:text-26xl mq450:text-15xl mq900:text-26xl">
+                        <div className="w-[486px] flex flex-row text-8xl font-semibold items-center justify-between gap-[35px] max-w-full">
+                            <h1 className="m-0 flex-1 relative font-inherit flex items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)] min-w-[117px]">
                                 BOS
                             </h1>
                             <div className="rounded-lg bg-gray-700 flex flex-row items-center justify-center py-2 px-3">
@@ -100,39 +102,37 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
                                     OR
                                 </h3>
                             </div>
-                            <h1 className="m-0 flex-1 relative text-inherit font-inherit flex items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)] min-w-[111px] mq1025:text-26xl mq450:text-15xl mq900:text-26xl">
+                            <h1 className="m-0 flex-1 relative text-inherit font-inherit flex items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)] min-w-[111px]">
                                 DAL
                             </h1>
                         </div>
                     </div>
-                    <div className="w-full h-full absolute !m-[0] rounded-xl z-[1]" />
-                    <div className="w-[1184px] h-[419px] relative rounded-xl box-border hidden max-w-full z-[3] border-[1px] border-solid border-darkslategray-300" />
                     <div className="self-stretch flex flex-col items-center justify-center gap-[15px] max-w-full text-xl text-lightgray-100">
                     <div className="w-[1100px] flex flex-row items-center justify-center py-0 px-5 box-border max-w-full">
-                        <div className="w-[226px] self-center relative font-semibold inline-block shrink-0 whitespace-nowrap mq450:text-base">
+                        <div className="w-[226px] self-center relative font-semibold inline-block shrink-0 whitespace-nowrap">
                         Closes in 05:08:23 hrs
                         </div>
                     </div>
-                    <div className="self-stretch flex flex-row items-start justify-between gap-[20px] mq450:flex-wrap mq450:justify-center">
+                    <div className="self-stretch flex flex-row items-start justify-between gap-[20px]">
                         <div className="w-[124px] flex flex-row items-start justify-start relative">
-                        <button
-                            className="cursor-pointer py-[9px] px-6 bg-[transparent] flex-1 rounded-3xl flex flex-row items-start justify-start whitespace-nowrap z-[4] border-[1px] border-solid border-white hover:bg-gainsboro-200 hover:box-border hover:border-[1px] hover:border-solid hover:border-gainsboro-100"
+                        <Button
+                            variant="outline"
+                            size="md"
+                            border='1px'
+                            borderRadius='20px'
                         >
-                            <div className="h-10 w-[124px] relative rounded-3xl box-border hidden border-[1px] border-solid border-white" />
-                            <div className="flex-1 relative text-mini font-extrabold font-inter text-white text-center z-[1]">
                             Bet BOS
-                            </div>
-                        </button>
+                        </Button>
                         </div>
-                        <div className="w-[124px] flex flex-row items-start justify-start relative">
-                        <button
-                            className="cursor-pointer py-[9px] pr-[22px] pl-[26px] bg-[transparent] flex-1 rounded-3xl flex flex-row items-start justify-start whitespace-nowrap z-[4] border-[1px] border-solid border-white hover:bg-gainsboro-200 hover:box-border hover:border-[1px] hover:border-solid hover:border-gainsboro-100"
+                        <div className="w-[124px] flex flex-row items-end justify-end relative">
+                        <Button
+                            variant="outline"
+                            size="md"
+                            border='1px'
+                            borderRadius='20px'
                         >
-                            <div className="h-10 w-[124px] relative rounded-3xl box-border hidden border-[1px] border-solid border-white" />
-                            <div className="flex-1 relative text-mini font-extrabold font-inter text-white text-center z-[1]">
                             Bet DAL
-                            </div>
-                        </button>
+                        </Button>
                         </div>
                     </div>
                     </div>
