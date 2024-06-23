@@ -70,6 +70,8 @@ module.exports = {
       mini: "15px",
       "5xl": "24px",
       "6xl": "30px",
+      '7xl': "40px",
+      '8xl': "50px",
       mid: "17px",
       "56xl": "75px",
       xl: "20px",

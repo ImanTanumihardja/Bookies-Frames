@@ -32,9 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode}) {
           <ColorModeScript initialColorMode={'dark'} />
           <Providers>
             <Header />
-            <Container maxW="container.md" p={3} marginTop={25} as="main" minH="70vh">
               {children}
-            </Container>
             <Footer />
           </Providers>
       </ChakraProvider>

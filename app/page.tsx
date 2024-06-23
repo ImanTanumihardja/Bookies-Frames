@@ -1,7 +1,7 @@
 import HomeHero from '@components/HomeHero'
 import MarketCard from '@components/MarketCard'
 import {getAllEventsAction} from "./actions"
-import { VStack } from '@chakra-ui/react'
+import { VStack, Container } from '@chakra-ui/react'
 import { neynarClient } from '@utils'
 import { MarketData } from '@types'
 
@@ -18,7 +18,7 @@ export default async function HomePage() {
      }
 
     return (
-        <div>
+      <Container maxW="container.md" p={3} marginTop={25} as="main" minH="70vh">
           <HomeHero/>
           <VStack w={'full'} rounded="lg" className="space-y-10 font-inter pt-10" alignItems='center' justifyItems='center'>
             {Object.values(markets).map(async(event:any, index) => {
@@ -39,8 +39,7 @@ export default async function HomePage() {
                         numBettors={event.orderBookieInfo.bettors.length}/>
             })}
           </VStack>
-
-        </div>
+        </Container>
       );
 }
 
