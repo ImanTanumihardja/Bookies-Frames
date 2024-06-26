@@ -13,41 +13,41 @@ const kv = createClient({
   token: process.env['KV_REST_API_TOKEN'] || '',
 });
 
-export default async function getEvent(eventName=""): Promise<MarketData> {
-  let eventData: Market | null = await kv.hgetall(`${eventName}`);
+export default async function getMarket(marketId=""): Promise<MarketData> {
+  let marketData: Market | null = await kv.hgetall(`${marketId}`);
   
   // Get all alea bettors
-  let betsData = (await kv.sscan(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, 0, { count: 150 }))
+  let betsData = (await kv.sscan(`${Accounts.ALEA}:${marketId}:${DatabaseKeys.BETTORS}`, 0, { count: 150 }))
   let cursor = betsData[0]
   let aleaFIDs : number[] = betsData[1] as unknown as number[]
 
   while (cursor && cursor !== "0") {
-    betsData = (await kv.sscan(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, cursor, { count: 150 }))
+    betsData = (await kv.sscan(`${Accounts.ALEA}:${marketId}:${DatabaseKeys.BETTORS}`, cursor, { count: 150 }))
     cursor = betsData[0]
     aleaFIDs = aleaFIDs.concat(betsData[1] as unknown as number[])
   }
 
   // Get all bookies bettors
-  betsData = (await kv.sscan(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, 0, { count: 150 }))
+  betsData = (await kv.sscan(`${Accounts.BOOKIES}:${marketId}:${DatabaseKeys.BETTORS}`, 0, { count: 150 }))
   cursor = betsData[0]
   let bookiesFIDs : number[] = betsData[1] as unknown as number[]
 
   while (cursor && cursor !== "0") {
-    betsData = (await kv.sscan(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, cursor, { count: 150 }))
+    betsData = (await kv.sscan(`${Accounts.BOOKIES}:${marketId}:${DatabaseKeys.BETTORS}`, cursor, { count: 150 }))
     cursor = betsData[0]
     bookiesFIDs = bookiesFIDs.concat(betsData[1] as unknown as number[])
   }
 
   // Get poll data
-  const pollData : Record<number, number> | null = await kv.hgetall(`${eventName}:${DatabaseKeys.POLL}`);
+  const pollData : Record<number, number> | null = await kv.hgetall(`${marketId}:${DatabaseKeys.POLL}`);
   if (pollData === null) {
-    throw new Error(`Poll: ${eventName} does not exist`)
+    throw new Error(`Poll: ${marketId} does not exist`)
   }
 
   let orderBookieInfo = null
-  if (eventData?.host === Accounts.BOOKIES || eventData?.host === Accounts.BOTH) {
+  if (marketData?.host === Accounts.BOOKIES || marketData?.host === Accounts.BOTH) {
     // Get orderbookie info
-    const orderBookieAddress = eventData?.address || '';
+    const orderBookieAddress = marketData?.address || '';
     const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
     const orderBookie = new ethers.Contract(orderBookieAddress, OrderBookieABI, provider)
@@ -94,7 +94,7 @@ export default async function getEvent(eventName=""): Promise<MarketData> {
 
     orderBookieInfo = {
       // Decompose orderbookie info
-      eventID : orderBookieInfo.eventID,
+      marketId : orderBookieInfo.marketId,
       result : parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS)),
       startDate : parseInt(orderBookieInfo.startDate),
       isCanceled : orderBookieInfo.isCanceled,
@@ -110,14 +110,14 @@ export default async function getEvent(eventName=""): Promise<MarketData> {
     }
   }
 
-  return { ...eventData, aleaBettors: aleaFIDs, bookiesBettors: bookiesFIDs, pollData: pollData, orderBookieInfo } as unknown as MarketData
+  return { ...marketData, aleaBettors: aleaFIDs, bookiesBettors: bookiesFIDs, pollData: pollData, orderBookieInfo } as unknown as MarketData
 }
 
 
 if (require.main === module) {
   // Read in cli arguments
   const args = require('minimist')(process.argv.slice(2), {string: ['e']})
-  getEvent(args['e']).then(() => process.exit(0))
+  getMarket(args['e']).then(() => process.exit(0))
     .catch(error => {
       console.error(error)
       process.exit(1)

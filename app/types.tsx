@@ -21,6 +21,13 @@ export type User = {
     bets: Record<string, Bet[]>;
 }
 
+export type UserType ={
+    address: string
+    fid: number
+    username: string
+    pfpUrl: string
+}
+
 export type Bet = {
     stake: number
     odd: number

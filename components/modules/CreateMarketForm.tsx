@@ -17,7 +17,7 @@ function SubmitButton() {
   );
 }
 
-export function CreateEventForm() {
+export function CreateMarketForm() {
   const [state, formAction] = useFormState(createMarketAction, { message: "" });
   const [host, setHost] = useState("bookies");
 
@@ -32,10 +32,10 @@ export function CreateEventForm() {
 
   return (
     <div className="font-body">
-      <h1 className="admin-heading">Create Event</h1>
+      <h1 className="admin-heading">Create Market</h1>
       <form action={formAction}>
-        <label htmlFor="eventName">Event Name </label>
-        <input type="text" id="eventName" name="eventName" placeholder="lal-lac-ml" required />
+        <label htmlFor="marketId">Market Id </label>
+        <input type="text" id="marketId" name="marketId" placeholder="lal-lac-ml" required />
         <br />
         <br />
         <label htmlFor="startDate">Start Date (Unix) </label>

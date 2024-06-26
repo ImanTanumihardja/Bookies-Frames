@@ -68,7 +68,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     if (user === null) throw new Error('User is null');
 
     // Get all alea events and filter out this eventName
-    let activeEvents = (await kv.sscan(`${Accounts.ALEA}:${DatabaseKeys.EVENTS}`, 0, {count: 150}))[1] as string[];
+    let activeEvents = (await kv.sscan(`${Accounts.ALEA}:${DatabaseKeys.MARKETS}`, 0, {count: 150}))[1] as string[];
  
     hasClaimed = user.hasClaimed;
     if (!hasClaimed) {

@@ -5,7 +5,7 @@ import {GET} from '../../api/bookies/[eventName]/route'
 import { NextRequest } from "next/server";
 import { Accounts, ODDS_DECIMALS, PICK_DECIMALS, RequestProps } from "@utils/constants";
 import { convertImpliedProbabilityToAmerican as formatImpliedProbability, generateUrl, neynarClient } from "@utils";
-import getEvent from "@scripts/getEvent";
+import getMarket from "@scripts/getMarket";
 import { MarketData } from "@types";
 import InnerMarket from "@components/InnerMarket";
 import {ethers} from 'ethers';
@@ -33,7 +33,7 @@ export async function generateMetadata({ params: { marketId, odds } }: { params:
 
 export default async function MarketPage({ params: { marketId } }: { params: { marketId: string }; }) {
     // Get market data
-    const marketData: MarketData = await getEvent(marketId)
+    const marketData: MarketData = await getMarket(marketId)
 
     const creatorProfile = (await neynarClient.fetchBulkUsers([marketData.creator])).users.map((profile:any) => profile)[0]
     const creatorPFPUrl  = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(creatorProfile.pfp_url)}` 

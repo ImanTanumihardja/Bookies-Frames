@@ -1,6 +1,7 @@
 "use client"
 import { FunctionComponent } from "react";
 import { Container, Button, Table, TableContainer, Tr, Th, Tbody, Td, Thead } from "@chakra-ui/react";
+import { UserType } from "@types";
 
 export type MarketInnerType = {
     marketId: string;
@@ -25,13 +26,6 @@ export type PlacedBetTxnType = {
     pick: number
     timeStamp: number
     txnHash: string
-}
-
-export type UserType ={
-    address: string
-    fid: number
-    username: string
-    pfpUrl: string
 }
 
 const InnerMarket: FunctionComponent<MarketInnerType> = ({

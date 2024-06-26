@@ -14,7 +14,7 @@ const kv = createClient({
 
 const REBATE = 0.10;
 
-export default async function settleEvent(eventName="", result=-1) {
+export default async function settleMarket(eventName="", result=-1) {
     let event: Market | null = await kv.hgetall(`${eventName}`);
 
     if (event === null) {
@@ -159,7 +159,7 @@ export default async function settleEvent(eventName="", result=-1) {
     }
 
     // Remove event from alea event list
-    await kv.srem(`${Accounts.ALEA}:${DatabaseKeys.EVENTS}`, eventName).catch((error) => {
+    await kv.srem(`${Accounts.ALEA}:${DatabaseKeys.MARKETS}`, eventName).catch((error) => {
       throw new Error(`Error removing event from alea: ${error}`)
     })
 }
@@ -167,7 +167,7 @@ export default async function settleEvent(eventName="", result=-1) {
 if (require.main === module) {
   // Read in cli arguments
   const args = require('minimist')(process.argv.slice(2), {string: ['e']})
-  settleEvent(args['e'], args['r']).then(() => process.exit(0))
+  settleMarket(args['e'], args['r']).then(() => process.exit(0))
     .catch(error => {
       console.error(error)
       process.exit(1)

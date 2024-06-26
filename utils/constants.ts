@@ -117,7 +117,7 @@ export enum DatabaseKeys {
     LEADERBOARD = 'leaderboard',
     BETTORS = 'bettors',
     POLL = 'poll',
-    EVENTS = 'events',
+    MARKETS = 'markets',
     REFERRALS = "referrals",
     ADDRESSES = "addresses",
 }

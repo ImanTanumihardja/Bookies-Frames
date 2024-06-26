@@ -48,7 +48,7 @@ const HomeHero: FunctionComponent = () => {
         <div className="flex flex-row"> 
           <h2 className="uppercase font-semibold inline-block pr-5">POPULAR</h2>
           <div className="h-[26px] w-[67px] rounded-lg bg-white box-border flex flex-row items-center justify-center py-1 gap-[4px] opacity-[0.8] text-center text-gray-700 border-[1px] border-solid border-whitesmoke">
-            <div className="h-3 w-1.5 flex flex-col items-start justify-start box-border">
+            <div className="h-3 w-1.5 flex flex-col items-center justify-center box-border">
               <div className="w-1.5 h-1.5 relative rounded-[50%] bg-firebrick" />
             </div>
             <div className="relative uppercase font-medium inline-block self-center">
@@ -57,7 +57,10 @@ const HomeHero: FunctionComponent = () => {
           </div>
         </div>  
         <Button 
-          variant="ghost">
+          variant="ghost"
+          onClick={() => {
+            window.location.href = "bookies/markets";
+          }}>
             View all 
             <img
               className="h-7 w-7 relative overflow-hidden shrink-0"

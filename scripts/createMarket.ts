@@ -40,10 +40,10 @@ export default async function createMarket(marketId=``, startDate=0, odds=[0.5, 
     throw new Error('Start date is in milliseconds')
   }
 
-  // Check if event already exists
-  const eventExists = await kv.exists(`${marketId}`)
-  if (eventExists) {
-    throw new Error(`Event ${marketId} already exists`)
+  // Check if market already exists
+  const marketExists = await kv.exists(`${marketId}`)
+  if (marketExists) {
+    throw new Error(`Market ${marketId} already exists`)
   }
 
   if (host !== Accounts.ALEA && host !== Accounts.BOOKIES && host !== Accounts.BOTH) {
@@ -90,12 +90,12 @@ export default async function createMarket(marketId=``, startDate=0, odds=[0.5, 
         
         const logs:any = txReceipt?.logs.map((log:any) => orderBookiefactory.interface.parseLog(log))
 
-        // Find event with Name OrderBookieEvent
-        const event = logs?.find((log:any) => log?.name === "OrderBookieCreated")
+        // Find market with Name OrderBookie
+        const market = logs?.find((log:any) => log?.name === "OrderBookieCreated")
 
         // Print the arg
-        console.log('OrderBookie Address: ', event?.args[0])
-        orderBookieAddress = event?.args[0]
+        console.log('OrderBookie Address: ', market?.args[0])
+        orderBookieAddress = market?.args[0]
 
         // Get orderbookie contract
         const orderBookie = new ethers.Contract(orderBookieAddress, OrderBookieABI, signer)
@@ -163,8 +163,8 @@ export default async function createMarket(marketId=``, startDate=0, odds=[0.5, 
     }
   }
 
-  let event: Market = {startDate, result: -1, odds, options, prompt, host, address: orderBookieAddress, creator, rules } as Market;
-  await kv.hset(`${marketId}`, event);
+  let market: Market = {startDate, result: -1, odds, options, prompt, host, address: orderBookieAddress, creator, rules } as Market;
+  await kv.hset(`${marketId}`, market);
 
   // Create poll
   const poll = {0: 0, 1: 0, 2: 0, 3: 0} as Record<number, number>
@@ -174,20 +174,20 @@ export default async function createMarket(marketId=``, startDate=0, odds=[0.5, 
     // Create alea bets list 
     await kv.del(`${Accounts.ALEA}:${marketId}:${DatabaseKeys.BETTORS}`)
 
-    // Add to alea events list
-    await kv.sadd(`${Accounts.ALEA}:${DatabaseKeys.EVENTS}`, marketId)
+    // Add to alea markets list
+    await kv.sadd(`${Accounts.ALEA}:${DatabaseKeys.MARKETS}`, marketId)
   }
 
   if (host === Accounts.BOOKIES || host === Accounts.BOTH) {
     // Create bookies bets list 
     await kv.del(`${Accounts.BOOKIES}:${marketId}:${DatabaseKeys.BETTORS}`)
 
-    // Add to bookies events list
-    await kv.sadd(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, marketId)
+    // Add to bookies markets list
+    await kv.sadd(`${Accounts.BOOKIES}:${DatabaseKeys.MARKETS}`, marketId)
   }
 
-  event = await kv.hgetall(`${marketId}`)
+  market = await kv.hgetall(`${marketId}`)
 
-  console.log(`Event: ${marketId}`)
-  console.log(event)
+  console.log(`Market: ${marketId}`)
+  console.log(market)
 }

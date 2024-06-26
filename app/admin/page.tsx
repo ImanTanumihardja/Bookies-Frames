@@ -1,15 +1,15 @@
 'use client'
 import { Container } from '@chakra-ui/react';
-import {CreateEventForm} from '@components/modules/CreateEventForm';
-import {GetEventForm} from '@components/modules/GetEventForm';
+import {CreateMarketForm} from '@components/modules/CreateMarketForm';
+import {GetMarketForm} from '@components/modules/GetMarketForm';
 
 
 export default function Page() {
 
   return (
     <Container maxW="container.md" p={3} marginTop={25} as="main" minH="70vh">
-      <GetEventForm />
-      <CreateEventForm />
+      <GetMarketForm />
+      <CreateMarketForm />
     </Container>
   )
 }

@@ -14,7 +14,7 @@ function SubmitButton() {
   );
 }
 
-export function PlaceBetForm({eventName, options}: {eventName: string, options: string[]}) {
+export function PlaceBetForm({marketId, options}: {marketId: string, options: string[]}) {
 
   const [placeBetState, placeBetFormAction] = useFormState(placeBetAction, {message: ""});
 
@@ -32,7 +32,7 @@ export function PlaceBetForm({eventName, options}: {eventName: string, options: 
         <input type="string" id="bettor" name="bettor" required />
         <br />
         <br />
-        <input type="hidden" id="eventName" name="eventName" value={eventName} />
+        <input type="hidden" id="marketId" name="marketId" value={marketId} />
         <label htmlFor="fid">FID </label>
         <input type="number" id="fid" name="fid" required />
         <br />

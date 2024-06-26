@@ -24,7 +24,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   if (event === null) throw new Error('Event not found');
 
   // Get all bookies events and filter out this eventName
-  let activeEvents = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, 0, {count: 150}))[1] as string[];
+  let activeEvents = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.MARKETS}`, 0, {count: 150}))[1] as string[];
   activeEvents = activeEvents.filter((e) => e !== String(eventName));
 
   // Check if result has been set

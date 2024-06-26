@@ -2,12 +2,12 @@ import { VStack } from "@chakra-ui/react";
 import MarketCard from "@components/MarketCard";
 import { MarketData } from "@types";
 import { neynarClient } from "@utils";
-import { getAllEventsAction } from "app/actions";
+import { getAllMarketsAction } from "app/actions";
 
 
 export default async function MarketsPage() {
     // Get all events data
-    const markets: Record<string, MarketData> = await getAllEventsAction();
+    const markets: Record<string, MarketData> = await getAllMarketsAction();
     const marketIds: string[] = Object.keys(markets)
 
      // Get creators profile 
@@ -15,8 +15,7 @@ export default async function MarketsPage() {
      let profiles = []
      if (creators.length != 0){
         profiles = (await neynarClient.fetchBulkUsers(creators)).users.map((profile:any) => profile)
-     }
-
+    }
 
     return(
         <VStack w={'full'} rounded="lg" className="space-y-10 font-inter" alignItems='center' justifyItems='center'> 
@@ -35,8 +34,12 @@ export default async function MarketsPage() {
                             prompt={event?.prompt} 
                             options={event?.options}
                             startDate={event?.startDate}
-                            creator={profile?.username}
-                            pfp={pfpUrl}
+                            creator={{
+                                username: profile?.username,
+                                pfpUrl: pfpUrl,
+                                address: '',
+                                fid: 0
+                            }}
                             outcome1Staked={event?.orderBookieInfo.totalStakedOutcome1}
                             outcome2Staked={event?.orderBookieInfo.totalStakedOutcome2}
                             totalStaked={event?.orderBookieInfo.totalStakedOutcome1 + event?.orderBookieInfo.totalStakedOutcome2}

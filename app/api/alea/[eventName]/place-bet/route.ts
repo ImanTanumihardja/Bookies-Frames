@@ -51,7 +51,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     inputText = undefined
 
     // Get all alea events and filter out this eventName
-    let activeEvents = (await kv.sscan(`${Accounts.ALEA}:${DatabaseKeys.EVENTS}`, 0, {count: 150}))[1] as string[];
+    let activeEvents = (await kv.sscan(`${Accounts.ALEA}:${DatabaseKeys.MARKETS}`, 0, {count: 150}))[1] as string[];
     activeEvents = activeEvents.filter((e) => e !== String(eventName));
 
     buttons =

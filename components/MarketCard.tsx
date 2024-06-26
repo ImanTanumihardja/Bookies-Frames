@@ -1,14 +1,14 @@
 "use client"
 import { FunctionComponent } from "react";
 import { Box } from "@chakra-ui/react";
+import { UserType } from "@types";
 
 export type MarketCardType = {
     marketId: string;
     prompt: string;
     options: string[];
     startDate: number;
-    creator: string;
-    pfp: string;
+    creator: UserType;
     outcome1Staked: number;
     outcome2Staked: number;
     totalStaked: number;
@@ -20,8 +20,7 @@ const MarketCard: FunctionComponent<MarketCardType> = ({
     prompt = "",
     options = [],
     startDate = 0,
-    creator = "",
-    pfp = "",
+    creator = null,
     outcome1Staked = 0,
     outcome2Staked = 0,
     totalStaked = 0,
@@ -112,11 +111,11 @@ const MarketCard: FunctionComponent<MarketCardType> = ({
                                 className="w-8 relative rounded-[50%] object-cover z-[1]"
                                 loading="lazy"
                                 alt=""
-                                src={pfp}
+                                src={creator.pfpUrl}
                             />
                             <div className="h-[18px] w-[134px] flex flex-col items-start justify-start pt-0.5 px-0 pb-0 box-border">
                                 <div className="w-[134px] h-4 relative font-medium inline-block z-[1]">
-                                    Created by @{creator}
+                                    Created by @{creator.username}
                                 </div>
                             </div>
                         </div>

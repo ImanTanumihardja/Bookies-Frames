@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormState, useFormStatus } from "react-dom";
-import {settleEventAction} from "../../app/actions"
+import { settleMarketAction } from "../../app/actions"
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -14,8 +14,8 @@ function SubmitButton() {
   );
 }
 
-export function SettleEventForm({eventName, options}: {eventName: string, options: string[]}) {
-  const [state, formAction] = useFormState(settleEventAction, {message: ""});
+export function SettleMarketForm({marketId, options}: {marketId: string, options: string[]}) {
+  const [state, formAction] = useFormState(settleMarketAction, {message: ""});
 
   if (state.message !== "") 
   {
@@ -24,9 +24,9 @@ export function SettleEventForm({eventName, options}: {eventName: string, option
   }
   return (
     <div>
-      <h1 className="admin-heading">Settle Event</h1>
+      <h1 className="admin-heading">Settle Market</h1>
       <form action={formAction}>
-        <input type="hidden" id="eventName" name="eventName" value={eventName} />
+        <input type="hidden" id="marketId" name="marketId" value={marketId} />
         <label htmlFor="result">Result </label>
         <select id="result" name="result">
           <option value="0">{options[0]}</option>

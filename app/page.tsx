@@ -1,17 +1,19 @@
 import HomeHero from '@components/HomeHero'
 import MarketCard from '@components/MarketCard'
-import {getAllEventsAction} from "./actions"
+import {getAllMarketsAction} from "./actions"
 import { VStack, Container } from '@chakra-ui/react'
 import { neynarClient } from '@utils'
 import { MarketData } from '@types'
 
 export default async function HomePage() {
     // Get all events data
-    const markets: Record<string, MarketData> = (await getAllEventsAction())
-    const marketIds: string[] = Object.keys(markets)
+    const allMarkets: Record<string, MarketData> = (await getAllMarketsAction())
+
+    const marketIds: string[] = Object.keys(allMarkets).reverse().slice(0, 5)
+    const markets = Object.values(allMarkets).reverse().slice(0, 5)
 
      // Get creators profile 
-     const creators = Object.values(markets).map((event:any) => event.creator)
+     const creators = markets.map((event:any) => event.creator)
      let profiles = []
      if (creators.length != 0){
         profiles = (await neynarClient.fetchBulkUsers(creators)).users.map((profile:any) => profile)
@@ -21,22 +23,26 @@ export default async function HomePage() {
       <Container maxW="container.md" p={3} marginTop={25} as="main" minH="70vh">
           <HomeHero/>
           <VStack w={'full'} rounded="lg" className="space-y-10 font-inter pt-10" alignItems='center' justifyItems='center'>
-            {Object.values(markets).map(async(event:any, index) => {
+            {markets.map(async(market:any, index) => {
               // Get creator user data from neynar
               const profile = profiles[index]
               const pfpUrl  = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(profile.pfp_url)}` 
               return <MarketCard 
                         marketId={marketIds[index]}
                         key={index} 
-                        prompt={event?.prompt} 
-                        options={event?.options}
-                        startDate={event?.startDate}
-                        creator={profile?.username}
-                        pfp={pfpUrl}
-                        outcome1Staked={event?.orderBookieInfo.totalStakedOutcome1}
-                        outcome2Staked={event?.orderBookieInfo.totalStakedOutcome2}
-                        totalStaked={event?.orderBookieInfo.totalStakedOutcome1 + event?.orderBookieInfo.totalStakedOutcome2}
-                        numBettors={event.orderBookieInfo.bettors.length}/>
+                        prompt={market?.prompt} 
+                        options={market?.options}
+                        startDate={market?.startDate}
+                        creator={{
+                            username: profile?.username,
+                            pfpUrl: pfpUrl,
+                            address: '',
+                            fid: 0
+                        }}
+                        outcome1Staked={market?.orderBookieInfo.totalStakedOutcome1}
+                        outcome2Staked={market?.orderBookieInfo.totalStakedOutcome2}
+                        totalStaked={market?.orderBookieInfo.totalStakedOutcome1 + market?.orderBookieInfo.totalStakedOutcome2}
+                        numBettors={market.orderBookieInfo.bettors.length}/>
             })}
           </VStack>
         </Container>

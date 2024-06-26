@@ -2,9 +2,9 @@
 
 import {z} from 'zod'
 import createMarket from '../scripts/createMarket'
-import settleEvent from '../scripts/settleEvent'
+import settleMarket from '../scripts/settleMarket'
 import placeBet from '../scripts/placeBet'
-import getEvent from '../scripts/getEvent'
+import getMarket from '../scripts/getMarket'
 import { revalidatePath } from 'next/cache'
 import { Accounts, DatabaseKeys } from '@utils/constants'
 import { kv } from '@vercel/kv'
@@ -14,7 +14,7 @@ export async function createMarketAction(
     formData: FormData
     ) {
     const schema = z.object({
-        eventName: z.string(),
+        marketId: z.string(),
         startDate: z.number(),
         odds: z.string(),
         options: z.string(),
@@ -24,8 +24,8 @@ export async function createMarketAction(
         acceptedToken: z.string().optional(),
         creator: z.string(),
     })
-    const {eventName, startDate, odds, options, prompt, host, description, acceptedToken, creator} = schema.parse({
-        eventName: formData.get('eventName'),
+    const {marketId, startDate, odds, options, prompt, host, description, acceptedToken, creator} = schema.parse({
+        marketId: formData.get('marketId'),
         startDate: parseInt(formData.get('startDate') as string),
         odds: formData.get('odds'),
         options: formData.get('options'),
@@ -45,9 +45,9 @@ export async function createMarketAction(
     console.log(optionsArray)
 
     try {
-        await createMarket(eventName, startDate, oddsArray, optionsArray, prompt, host, description, acceptedToken, parseInt(creator))
+        await createMarket(marketId, startDate, oddsArray, optionsArray, prompt, host, description, acceptedToken, parseInt(creator))
         revalidatePath('/')
-        return {message: `Created event: ${eventName}`}
+        return {message: `Created event: ${marketId}`}
     }
     catch (e) {
         console.error(e)
@@ -55,24 +55,24 @@ export async function createMarketAction(
     }
 }
 
-export async function settleEventAction(
+export async function settleMarketAction(
     _: any, 
     formData: FormData
     ) {
         
     const schema = z.object({
-        eventName: z.string(),
+        marketId: z.string(),
         result: z.number(),
     })
-    const {eventName, result} = schema.parse({
-        eventName: formData.get('eventName'),
+    const {marketId, result} = schema.parse({
+        marketId: formData.get('marketId'),
         result: parseFloat(formData.get('result') as string),
     })
 
     try {
-        await settleEvent(eventName, result)
+        await settleMarket(marketId, result)
         revalidatePath('/')
-        return {message: `Settled event: ${eventName}`}
+        return {message: `Settled event: ${marketId}`}
     }
     catch (e) {
         console.error(e)
@@ -80,57 +80,57 @@ export async function settleEventAction(
     }
 }
 
-export async function getEventAction(
+export async function getMarketAction(
     _: any, 
     formData: FormData
     ) {
         
     const schema = z.object({
-        eventName: z.string(),
+        marketId: z.string(),
     })
-    const {eventName} = schema.parse({
-        eventName: formData.get('eventName'),
+    const {marketId} = schema.parse({
+        marketId: formData.get('marketId'),
     })
 
     try {
-        const eventData = await getEvent(eventName)
+        const marketData = await getMarket(marketId)
         revalidatePath('/')
 
-        const isBookies = eventData?.host === Accounts.BOOKIES || eventData?.host === Accounts.BOTH
-        const isAlea = eventData?.host === Accounts.ALEA || eventData?.host === Accounts.BOTH
+        const isBookies = marketData?.host === Accounts.BOOKIES || marketData?.host === Accounts.BOTH
+        const isAlea = marketData?.host === Accounts.ALEA || marketData?.host === Accounts.BOTH
 
-        return {message: `Retrieved ${eventName}`, eventName: eventName, eventData: eventData, isAlea: isAlea, isBookies: isBookies}
+        return {message: `Retrieved ${marketId}`, marketId: marketId, marketData: marketData, isAlea: isAlea, isBookies: isBookies}
     }
     catch (e) {
         console.error(e)
-        return {message: `Failed to settle event: ${e}`, eventName: eventName, eventData: null, isAlea: true, isBookies: true}
+        return {message: `Failed to settle event: ${e}`, marketId: marketId, marketData: null, isAlea: true, isBookies: true}
     }
 }
 
-export async function getAllEventsAction() {
+export async function getAllMarketsAction() {
     try {
         // Get events from database
     
-        let result = await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, 0);
+        let result = await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.MARKETS}`, 0);
         let cursor = result[0];
-        let eventNames:string[] = result[1] as string[];
+        let marketIds:string[] = result[1] as string[];
 
         while (cursor && cursor !== '0') {
-            result = await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.EVENTS}`, cursor);
+            result = await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.MARKETS}`, cursor);
             cursor = result[0];
-            eventNames = eventNames.concat(result[1] as string[]);
+            marketIds = marketIds.concat(result[1] as string[]);
         }
 
         // For each event, get the event data
-        const events = {}
-        for (const eventName of eventNames) {
-            const eventData = await getEvent(eventName)
-            events[eventName] = eventData
+        const markets = {}
+        for (const marketId of marketIds) {
+            const marketData = await getMarket(marketId)
+            markets[marketId] = marketData
         }
 
         revalidatePath('/')
 
-        return events
+        return markets
     }
     catch (e) {
         console.error(e)
@@ -144,21 +144,21 @@ export async function placeBetAction(
         
     const schema = z.object({
         bettor: z.string(),
-        eventName: z.string(),
+        marketId: z.string(),
         fid: z.number(),
         stake: z.number(),
         pick: z.number(),
     })
-    const { bettor, eventName, fid, stake, pick } = schema.parse({
+    const { bettor, marketId, fid, stake, pick } = schema.parse({
         bettor: formData.get('bettor'),
-        eventName: formData.get('eventName'),
+        marketId: formData.get('marketId'),
         fid: parseInt(formData.get('fid') as string),
         stake: parseFloat(formData.get('stake') as string),
         pick: parseFloat(formData.get('pick') as string),
     })
 
     try {
-        await placeBet(bettor, eventName, fid, stake, pick)
+        await placeBet(bettor, marketId, fid, stake, pick)
         revalidatePath('/')
         return {message: `Placed bet for ${fid} on option ${pick + 1} with ${stake} stake`}
     }
