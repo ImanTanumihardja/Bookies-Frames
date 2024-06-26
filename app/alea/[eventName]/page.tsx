@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import {GET} from '../../api/alea/[eventName]/route'
 import { NextRequest } from "next/server";
 import { Accounts } from "@utils/constants";
-import Home from "@components/templates/Home";
  
 
 // Export Next.js metadata
@@ -26,7 +25,7 @@ export async function generateMetadata({ params: { eventName } }: { params: { ev
 
 export default function EventPage() {
     return(
-        <Home/>
+        <></>
     );
 }
 
