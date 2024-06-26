@@ -76,12 +76,12 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                         alt=""
                         src="/ionarrowback.svg"
                     />
-                    <div className="relative font-medium">Event ID {marketId}</div>
+                    <div className="relative font-medium">Market ID {marketId}</div>
                 </Button>
                 <div className="pt-0.5 px-0 pb-0 text-left text-smi text-lightgray-200">
                     <div className="flex flex-row items-center justify-center font-medium gap-1">
                         <img
-                            className="w-8 relative rounded-[50%] object-cover z-[1]"
+                            className="w-7 relative rounded-[50%] object-cover z-[1]"
                             loading="lazy"
                             alt=""
                             src={creator.pfpUrl}
