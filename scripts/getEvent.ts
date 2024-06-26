@@ -15,8 +15,6 @@ const kv = createClient({
 
 export default async function getEvent(eventName=""): Promise<MarketData> {
   let eventData: Market | null = await kv.hgetall(`${eventName}`);
-  console.log(`Event: ${eventName}`);
-  console.log(eventData);
   
   // Get all alea bettors
   let betsData = (await kv.sscan(`${Accounts.ALEA}:${eventName}:${DatabaseKeys.BETTORS}`, 0, { count: 150 }))
@@ -46,8 +44,6 @@ export default async function getEvent(eventName=""): Promise<MarketData> {
     throw new Error(`Poll: ${eventName} does not exist`)
   }
 
-  console.log(`Total bets: ${aleaFIDs.length + bookiesFIDs.length}`);
-
   let orderBookieInfo = null
   if (eventData?.host === Accounts.BOOKIES || eventData?.host === Accounts.BOTH) {
     // Get orderbookie info
@@ -62,7 +58,6 @@ export default async function getEvent(eventName=""): Promise<MarketData> {
 
     // Get bettors
     const bettors = await orderBookie.getBettors()
-    console.log('Bettors: ', bettors, '\n')
 
     let numBets = 0;
     let totalStakedOutcome1 = BigInt(0);
@@ -72,6 +67,8 @@ export default async function getEvent(eventName=""): Promise<MarketData> {
     let totalUnfilledOutcome2 = BigInt(0);
     let unfilledBets = []
 
+
+     // TODO 
     for (const bettor of bettors) {
       const bets = await orderBookie.getBets(bettor);
       for (const bet of bets) {
@@ -94,17 +91,6 @@ export default async function getEvent(eventName=""): Promise<MarketData> {
         }
       }
     }
-    console.log(`Number of Bets: ${numBets}\n`)
-
-    console.log(`Total Staked Outcome 1: ${totalStakedOutcome1}`)
-    console.log(`Total Staked Outcome 2: ${totalStakedOutcome2}\n`)
-
-    console.log(`Total Unfilled Outcome 1: ${totalUnfilledOutcome1}`)
-    console.log(`Total Unfilled Outcome 2: ${totalUnfilledOutcome2}`)
-
-    console.log('Unfilled Bets: ', unfilledBets)
-    
-    console.log("result: ", orderBookieInfo?.result)
 
     orderBookieInfo = {
       // Decompose orderbookie info
@@ -122,7 +108,6 @@ export default async function getEvent(eventName=""): Promise<MarketData> {
       totalUnfilledOutcome2: parseFloat(ethers.formatUnits(totalUnfilledOutcome2, decimals)),
       bettors: bettors
     }
-    console.log('Order Bookie Info: ', orderBookieInfo)
   }
 
   return { ...eventData, aleaBettors: aleaFIDs, bookiesBettors: bookiesFIDs, pollData: pollData, orderBookieInfo } as unknown as MarketData

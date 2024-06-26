@@ -2,6 +2,7 @@ import { Bet, User } from "@types";
 import { ethers } from "ethers";
 import { defineChain } from "thirdweb/chains";
 
+
 export enum Accounts {
     BOOKIES = 'bookies',
     ALEA = 'alea',

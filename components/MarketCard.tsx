@@ -70,7 +70,6 @@ const MarketCard: FunctionComponent<MarketCardType> = ({
             <div className="w-[596px] h-[104px] flex flex-row items-start justify-end py-0 pr-2.5 pl-0 box-border text-mini text-lightgray-100">
                 <div className="h-[104px] w-[586px] flex flex-col items-end justify-start gap-[12px]">
                     <div className="w-[584px] h-3 rounded-xl bg-whitesmoke flex flex-row items-start justify-start z-[1]">
-                        <div className="relative rounded-xl bg-whitesmoke h-3 hidden" />
                         <div className="relative rounded-xl h-3 [background:linear-gradient(90deg,_#feae26,_#d44fc9_49.5%,_#7a65ec)]" style={{ width: `${spreadPercent}%` }} />
                     </div>
                     <div className="w-[586px] h-[30px] flex flex-row items-start justify-start gap-[176px]">
@@ -95,12 +94,12 @@ const MarketCard: FunctionComponent<MarketCardType> = ({
                             </div>
                         </div>
                     </div>
-                    <div className="w-[584px] h-[5px] flex flex-row items-start justify-start pt-0 px-0 pb-1 box-border">
+                    <div className="w-[584px] h-[5px] flex flex-row items-start justify-center pt-0 px-0 pb-1 box-border">
                         <div className="h-px w-[585px] relative box-border z-[1] border-t-[1px] border-solid border-darkslategray-200" />
                     </div>
-                    <div className="w-[583px] h-5 flex flex-row items-center justify-start gap-[187px] text-smi text-whitesmoke">
-                        <div className="w-[236px] h-4 flex flex-row items-center justify-start gap-[5px]">
-                            <div className="h-4 relative font-medium inline-block z-[1]">
+                    <div className="w-[583px] h-5 flex flex-row items-center justify-center gap-[187px] text-smi text-whitesmoke">
+                        <div className="w-[236px] h-4 flex flex-row items-center justify-center gap-[5px]">
+                            <div className="relative font-medium inline-block z-[1]">
                                 Bettors: {numBettors}
                             </div>
                             <div className="w-1.5 h-1.5 relative rounded-[50%] bg-slategray z-[1]" />
@@ -117,7 +116,7 @@ const MarketCard: FunctionComponent<MarketCardType> = ({
                             />
                             <div className="h-[18px] w-[134px] flex flex-col items-start justify-start pt-0.5 px-0 pb-0 box-border">
                                 <div className="w-[134px] h-4 relative font-medium inline-block z-[1]">
-                                Created by @{creator}
+                                    Created by @{creator}
                                 </div>
                             </div>
                         </div>

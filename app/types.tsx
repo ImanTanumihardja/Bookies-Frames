@@ -8,6 +8,7 @@ export type Market = {
     host: string
     address: string
     creator: number
+    rules: string
 }
 
 export type User = {
@@ -52,6 +53,7 @@ export type MarketData = {
     host: string
     address: string
     creator: number
+    rules: string
     aleaBettors: string[];
     bookiesBettors: string[];
     pollData: number[];

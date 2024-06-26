@@ -116,12 +116,10 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
     buttons = event.options.map((option, index) => {
       if (event === null) throw new Error('Event not found');
-      const probability = odds[index];
-      const odd = convertImpliedProbabilityToAmerican(odds[index]);
-      const probString = `${probability > 0.5 ? '-' : '+'}${odd.toString()}`; 
+      const formatedOdd = convertImpliedProbabilityToAmerican(odds[index]);
   
       return {
-        label: `${option} (${probString})`,
+        label: `${option} (${formatedOdd})`,
         action: 'tx',
         target: generateUrl(`api/bookies/transactions/${Transactions.APPROVE}`, {[RequestProps.ADDRESS]: event.address}, false),
       } as FrameButton

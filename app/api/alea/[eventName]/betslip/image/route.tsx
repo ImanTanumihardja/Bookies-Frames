@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
                                         RequestProps.PROMPT,
                                         RequestProps.OPTIONS]);
         
-        const odd = convertImpliedProbabilityToAmerican(impliedProbability)
+        const formatedOdd = convertImpliedProbabilityToAmerican(impliedProbability)
         const payout = Math.ceil(calculatePayout(impliedProbability, stake))
 
         let pollData = [];
@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
                         <h1 style={{color: 'white', fontSize:40, margin:10}}>{stake} <img style={{width: 35, height: 35, marginTop: 10, marginLeft:10, marginRight:10}} src={`${process.env['HOST']}/dice.png`}/></h1>
                         <h1 style={{color: 'white', fontSize:40, margin:10}}>{payout}<img style={{width: 35, height: 35, marginTop: 10, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
                     </div>
-                    <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, bottom:10, right: 10}}> Odds: {impliedProbability > 0.5 ? '-' : '+'}{odd}</h1>
+                    <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, bottom:10, right: 10}}> Odds: {formatedOdd}</h1>
                 </div>
                 <div style={{display: 'flex', flexDirection:'column', width:'35%', height:'100%', alignItems:'center', background: 'white'}}>
                     <div style={{display: 'flex', flexDirection:'row', height:'100%', transform: 'scaleY(-1)', bottom:-5}}>

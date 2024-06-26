@@ -39,7 +39,7 @@ const Footer = () => {
                   <Button 
                     variant="link" 
                     className="whitespace-pre-wrap" 
-                    onClick={() => {openInNewTab('https://warpcast.com/bookies')}}
+                    onClick={() => {openInNewTab(`${process.env.HOST || ''}/terms`)}}
                   >
                     {`Terms of Use`}
                   </Button>
@@ -52,7 +52,7 @@ const Footer = () => {
                     {`Privacy Policy`}
                   </Button>
                 </HStack>
-                <Text>©2024 Bookies Labs</Text>
+                <Text className='font-inter text-inter'>©2024 Bookies Labs</Text>
               </VStack>
           </Flex>
         </Container>

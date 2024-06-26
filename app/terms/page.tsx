@@ -1,9 +1,11 @@
 'use client'
 
+import { Container } from "@chakra-ui/react"
+
 export default function Page() {
 
   return (
-    <main>
+    <Container maxW="container.md" p={3} marginTop={25} as="main" minH="70vh">
       <h1 className="text-lg md:text-3xl lg:text-5xl font-display font-bold mb-5 mt-10">Terms and Conditions</h1>
       <p>
         The Service is currently in testing or Beta ("Beta Services"). This means a service, or a feature of a service, that is designated or presented to the user as alpha, beta, experimental, pilot, limited release, in development, developer preview, early access, non-production, evaluation, such that it is provided prior to general commercial release (and can have the designation "Beta"). For the avoidance of doubt, all Services referenced herein are currently Beta Services and shall remain so until such time as the Company announces the official launch of the Service and updates these Terms accordingly. 
@@ -127,6 +129,6 @@ export default function Page() {
       <p>
         6.7. Violations by Other Users. User irrevocably releases, acquits, and forever discharges the Company and its subsidiaries, affiliates, officers, and successors for and against any and all past or future causes of action, suits, or controversies arising out of another user's violation of this Agreement.
       </p>
-    </main>
+    </Container>
   )
 }

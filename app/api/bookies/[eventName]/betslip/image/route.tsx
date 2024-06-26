@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
                                         RequestProps.PERCENT_FILLED,
                                         RequestProps.SYMBOL]);
         
-        const odd = convertImpliedProbabilityToAmerican(impliedProbability)
+        const formatedOdd = convertImpliedProbabilityToAmerican(impliedProbability)
 
         // Round payout to 2 decimal places
         const payout = calculatePayout(impliedProbability, stake).toFixed(2);
@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
                         <h1 style={{color: 'white', fontSize:40, margin:15}}>{payout} <img style={{width: 42, height: 42, marginLeft:5, marginTop: 5}}src={`${process.env['HOST']}/${symbol}.png`}/></h1>
                         <h1 style={{color: 'white', fontSize:40, margin:15}}>{percentFilled}% </h1>
                     </div>
-                    <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, bottom:10, right: 10}}> Odds: {impliedProbability > 0.5 ? '-' : '+'}{odd}</h1>
+                    <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, bottom:10, right: 10}}> Odds: {formatedOdd}</h1>
                     <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, top:10, right: 10}}> *Confirm Bet TX*</h1>
                 </div>
             </div>

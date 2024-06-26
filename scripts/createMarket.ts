@@ -52,6 +52,7 @@ export default async function createMarket(marketId=``, startDate=0, odds=[0.5, 
 
   // Deploy Orderbookie smart contract
   let orderBookieAddress = ""
+  let rules = ""
   if (host === Accounts.BOOKIES || host === Accounts.BOTH) { // If bookies is the host deploy smart contract
     if (description && acceptedToken) {
         const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
@@ -66,6 +67,8 @@ export default async function createMarket(marketId=``, startDate=0, odds=[0.5, 
           description: description,
           options: [[options[0], Outcomes.OUTCOME1.toString()], [options[1], Outcomes.OUTCOME2.toString()], ["Tie", Outcomes.TIE.toString()]],
         }
+
+        rules = description
 
         console.log('Ancillary Data: ', ancillaryData)
 
@@ -160,7 +163,7 @@ export default async function createMarket(marketId=``, startDate=0, odds=[0.5, 
     }
   }
 
-  let event: Market = {startDate, result: -1, odds, options, prompt, host, address: orderBookieAddress, creator} as Market;
+  let event: Market = {startDate, result: -1, odds, options, prompt, host, address: orderBookieAddress, creator, rules } as Market;
   await kv.hset(`${marketId}`, event);
 
   // Create poll

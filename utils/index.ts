@@ -171,12 +171,10 @@ export async function getFrameMessage(req: NextRequest, validate=true, viewerFid
         frameValidationData.followingHost = await checkIsFollowing(message.interactor.fid, viewerFid)
     }
 
-    // console.log(frameValidationData)
-
     return frameValidationData
 }
 
-export function convertImpliedProbabilityToAmerican(impliedProbability: number):number {
+export function convertImpliedProbabilityToAmerican(impliedProbability: number):string {
     if (impliedProbability <= 0 || impliedProbability >= 1) {
       throw new Error('Implied probability must be between 0 and 1 (exclusive).');
     }
@@ -192,8 +190,8 @@ export function convertImpliedProbabilityToAmerican(impliedProbability: number):
             Math.round(((impliedProbability * 100) * 100) / (100 - (impliedProbability * 100)));
     }
   
-    return americanOdds;
-  }
+    return impliedProbability > 0.5 ? '-' : '+' + americanOdds.toString();
+}
 
 export function calculatePayout(impliedProbability: number, stake: number){
     const payout = (1 / impliedProbability) * (stake)

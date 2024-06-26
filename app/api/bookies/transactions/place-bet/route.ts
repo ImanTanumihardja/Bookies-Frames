@@ -37,6 +37,13 @@ export async function POST(req: NextRequest): Promise<Response> {
     await kv.sadd(`${fid.toString()}:addresses`, txReceipt.from)
   })
 
+  // Add reverse search
+  await kv.hset(txReceipt.from, {"fid": fid.toString()}).catch(async (e) => {
+    console.log('Error adding address to kv: ', e)
+    // Try again
+    await kv.hset(txReceipt.from, {"fid": fid.toString()})
+  })
+
   const orderbookie = await new ethers.Contract(orderBookieAddress, OrderBookieABI, provider)
   const orderBookieInfo = await orderbookie.getBookieInfo()
 
@@ -50,8 +57,6 @@ export async function POST(req: NextRequest): Promise<Response> {
   console.log('STAKE: ', stake)
   console.log('PICK: ', pick)
   console.log('Implied Probability: ', impliedProb)
-  
-
 
   const iOrderBookie = orderbookie.interface
   const data = iOrderBookie.encodeFunctionData('placeBet', [convertedPick, convertedStake, convertedImpliedProb])

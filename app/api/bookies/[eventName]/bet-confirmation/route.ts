@@ -37,15 +37,6 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       })
     })
 
-    // Update poll
-    await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(async (error) => {
-      console.error('Error adding user to poll:', error);
-      // Try again
-      await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(() => {
-        throw new Error('Error creating bet');
-      })
-    })
-
     // Add to referral leaderboard
     if (casterFID && casterFID !== fid) {
       await kv.zincrby(`${DatabaseKeys.REFERRALS}`, stake, casterFID).catch(async (error) => {
