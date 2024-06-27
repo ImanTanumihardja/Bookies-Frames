@@ -1,7 +1,7 @@
 'use client'
 import { Container } from '@chakra-ui/react';
-import {CreateMarketForm} from '@components/modules/CreateMarketForm';
-import {GetMarketForm} from '@components/modules/GetMarketForm';
+import {CreateMarketForm} from '@components/admin/CreateMarketForm';
+import {GetMarketForm} from '@components/admin/GetMarketForm';
 
 
 export default function Page() {

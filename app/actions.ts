@@ -115,7 +115,7 @@ export async function getAllMarketsAction() {
         let cursor = result[0];
         let marketIds:string[] = result[1] as string[];
 
-        while (cursor && cursor !== '0') {
+        while (cursor && cursor !== '0' && parseFloat(cursor) !== 0) {
             result = await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.MARKETS}`, cursor);
             cursor = result[0];
             marketIds = marketIds.concat(result[1] as string[]);

@@ -5,16 +5,17 @@ import { Market } from "../../types";
 import { ethers } from "ethers";
 import {OrderBookieABI} from '@contract-abis/orderBookie.json';
 import { payoutNotification } from "../../../scripts/notifications/payout_mention";
+import settleMarket from "@scripts/settleMarket";
 
 export async function GET() {
     const BASESCAN_URL = 'https://basescan.org/tx/' 
     const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
     // Get bookies markets 
-    const bookiesmarkets = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.MARKETS}`, 0, {count: 149}))[1] as string[];
-    console.log(`Active Bookies markets: ${bookiesmarkets}`);
+    const bookiesMarkets = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.MARKETS}`, 0, {count: 149}))[1] as string[];
+    console.log(`Active Bookies markets: ${bookiesMarkets}`);
 
-    if (bookiesmarkets.length === 0) {
+    if (bookiesMarkets.length === 0) {
         return Response.json({ message: 'No markets found' });
     }
 
@@ -25,10 +26,10 @@ export async function GET() {
         return Response.json({ message: 'No markets found' });
     }
 
-    const settledmarkets: string[] = [];
+    const settledMarkets: string[] = [];
 
     // Check each market is settled if so remove
-    for (const marketName of bookiesmarkets) {
+    for (const marketName of bookiesMarkets) {
         const marketInfo: Market | null = await kv.hgetall(marketName);
         if (marketInfo) {
             const orderBookie = new ethers.Contract(marketInfo.address, OrderBookieABI, provider)
@@ -70,15 +71,21 @@ export async function GET() {
                 // Send payout notification
                 await payoutNotification(marketName, castHash, txURL);
 
-                // // Remove market
-                // await kv.srem(`${Accounts.BOOKIES}:${DatabaseKeys.MARKETS}`, marketName);
-                // console.log(`Removed market: ${marketName}`);
+                // Remove market
+                await kv.srem(`${Accounts.BOOKIES}:${DatabaseKeys.MARKETS}`, marketName);
+                console.log(`Removed market: ${marketName}`);
 
                 // Settle market
                 const result = parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS));
-                await kv.hset(marketName, {result: result});
+                if (marketInfo.host === Accounts.BOTH) {
+                    // Settle alea market
+                    await settleMarket(marketName, result);
+                }
+                else {
+                    await kv.hset(marketName, {result: result});
+                }
 
-                settledmarkets.push(marketName);
+                settledMarkets.push(marketName);
             }
             else {
                 console.log(`market: ${marketName} is not yet settled`);
@@ -86,7 +93,7 @@ export async function GET() {
         }
     }
    
-    return Response.json({ message: `Settled markets: ${settledmarkets.join(', ')}`});
+    return Response.json({ message: `Settled markets: ${settledMarkets.join(', ')}`});
   }
 
   export const dynamic = 'force-dynamic'

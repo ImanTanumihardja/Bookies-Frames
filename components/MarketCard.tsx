@@ -108,10 +108,10 @@ const MarketCard: FunctionComponent<MarketCardType> = ({
                         </div>
                         <div className="h-5 w-40 flex flex-row items-center justify-start gap-[5px] text-lightgray-200">
                             <img
-                                className="w-8 relative rounded-[50%] object-cover z-[1]"
+                                className="w-7 relative rounded-[50%] object-cover z-[1]"
                                 loading="lazy"
                                 alt=""
-                                src={creator.pfpUrl}
+                                src={creator.pfpUrl ? creator.pfpUrl : `${process.env.host}/generic_pfp.png`}
                             />
                             <div className="h-[18px] w-[134px] flex flex-col items-start justify-start pt-0.5 px-0 pb-0 box-border">
                                 <div className="w-[134px] h-4 relative font-medium inline-block z-[1]">
