@@ -292,7 +292,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                     </Table>
                 </TableContainer>
             </div>
-            <PlaceBetModal marketId={marketId} prompt={prompt} options={options} isOpen={isOpen} onClose={onClose}/>
+            <PlaceBetModal address={address} prompt={prompt} options={options} isOpen={isOpen} onClose={onClose}/>
         </Container>
         );
 }

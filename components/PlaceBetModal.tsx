@@ -7,7 +7,6 @@ import {
     ModalHeader,
     ModalBody,
     ModalCloseButton,
-    Button,
     Heading,
     VStack,
     HStack,
@@ -25,7 +24,7 @@ import PickBet from "./elements/PickBet";
 import PlaceBetButton from "./elements/PlaceBetButton";
 
 export type PlaceBetModal = {
-    marketId: string;
+    address: string;
     prompt: string;
     options: string[];
     isOpen: boolean;
@@ -33,7 +32,7 @@ export type PlaceBetModal = {
   };
 
 const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
-    marketId = "",
+    address = "",
     prompt = "",
     options = [],
     isOpen = false,
@@ -44,7 +43,9 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
     const parse = (val) => val.replace(/^\$/, '')
     const [value, setValue] = React.useState('0')
 
-    const [state, formAction] = useFormState((_: any, formData: FormData) => {}, { message: "" });
+    const [_state, formAction] = useFormState((_: any, _formData: FormData) => {}, { message: "" });
+
+    console.log(address)
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} isCentered >
