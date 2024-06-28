@@ -49,7 +49,8 @@ export enum RequestProps {
     ADDRESS = 'address',
     IS_MINED = 'isMined',
     PERCENT_FILLED = 'percentFilled',
-    SYMBOL = 'symbol'
+    SYMBOL = 'symbol',
+    TX_FEE = 'txFee',
   }
 
   export const RequestPropsTypes = {
@@ -91,7 +92,8 @@ export enum RequestProps {
     [RequestProps.ADDRESS] : "",
     [RequestProps.IS_MINED]: false,
     [RequestProps.PERCENT_FILLED]: 0.0,
-    [RequestProps.SYMBOL]: ""
+    [RequestProps.SYMBOL]: "",
+    [RequestProps.TX_FEE]: 0.0,
 }
 
 export enum FrameNames {

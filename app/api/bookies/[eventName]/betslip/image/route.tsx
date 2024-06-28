@@ -17,18 +17,21 @@ export async function GET(req: NextRequest) {
             odd : impliedProbability, 
             options,
             percentFilled,
-            symbol} 
+            symbol,
+            txFee} 
                 = getRequestProps(req, [RequestProps.PICK, 
                                         RequestProps.STAKE, 
                                         RequestProps.ODD,
                                         RequestProps.OPTIONS,
                                         RequestProps.PERCENT_FILLED,
-                                        RequestProps.SYMBOL]);
+                                        RequestProps.SYMBOL,
+                                        RequestProps.TX_FEE]);
         
         const formattedOdd = formatImpliedProbability(impliedProbability)
 
         // Round payout to 2 decimal places
-        const payout = calculatePayout(impliedProbability, stake).toFixed(2);
+        const toWinAmount = calculatePayout(impliedProbability, stake) - stake;
+        const payout = (stake + toWinAmount * (1 - txFee)).toFixed(2);
 
         const imageResponse = new ImageResponse((
             <div style={{display: 'flex', flexDirection:'row', height:'100%', width:'100%'}}>

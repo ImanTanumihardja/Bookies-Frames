@@ -50,7 +50,6 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   const impliedProbability = odds[pick]
   const orderBookieAddress = event.address;
 
-
   const now = new Date().getTime() / 1000;
   // Check if event has already passed
   if (event.startDate < now || result !== -1) {
@@ -92,6 +91,9 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     const acceptedToken = await new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider)
     const decimals = await acceptedToken.decimals();
     const symbol = await acceptedToken.symbol();
+
+    // Format orderbookie txfee
+    const txfee = parseFloat(orderBookieInfo.txfee) / 100;
       
     // Get percent of stake filled
     const oppositePick = 1 - pick;
@@ -110,7 +112,8 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
                                                                       [RequestProps.ODD]: impliedProbability,
                                                                       [RequestProps.OPTIONS]: options,
                                                                       [RequestProps.PERCENT_FILLED]: percentFilled,
-                                                                      [RequestProps.SYMBOL]: symbol}, true);
+                                                                      [RequestProps.SYMBOL]: symbol,
+                                                                      [RequestProps.TX_FEE]: txfee}, true);
     buttons = [
       {
         label: "Reject", 
