@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getFrameMessage, getRequestProps } from '@utils';
 import { RequestProps, STAKE_LIMIT } from '@utils/constants';
 import {ethers } from 'ethers';
-import {erc20ABI} from '@contract-abis/erc20.json';
-import { OrderBookieABI } from "@contract-abis/orderBookie.json";
+import {erc20ABI, orderBookieABI} from '@abis';
 
 export async function POST(req: NextRequest): Promise<Response> {
   // Verify the frame request
@@ -14,7 +13,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
-  const orderbookie = await new ethers.Contract(orderBookieAddress, OrderBookieABI, provider)
+  const orderbookie = await new ethers.Contract(orderBookieAddress, orderBookieABI, provider)
   const orderBookieInfo = await orderbookie.getBookieInfo()
 
   const acceptedToken = await new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider)

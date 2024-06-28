@@ -1,0 +1,826 @@
+{
+    "erc20ABI": [
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Approval",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "Transfer",
+          "type": "event"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "spender",
+              "type": "address"
+            }
+          ],
+          "name": "allowance",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "spender",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "approve",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            }
+          ],
+          "name": "balanceOf",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "decimals",
+          "outputs": [
+            {
+              "internalType": "uint8",
+              "name": "decimalPlaces",
+              "type": "uint8"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "symbol",
+          "outputs": [
+            {
+              "internalType": "string",
+              "name": "tokenSymbol",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "totalSupply",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "transfer",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "transferFrom",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+    ],
+    "orderBookieABI": [
+        {
+        "inputs": [
+            {
+            "internalType": "bytes32",
+            "name": "marketId",
+            "type": "bytes32"
+            },
+            {
+            "internalType": "uint256",
+            "name": "startDate",
+            "type": "uint256"
+            },
+            {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+            },
+            {
+            "internalType": "address",
+            "name": "settlementManagerAddress",
+            "type": "address"
+            },
+            {
+            "internalType": "address",
+            "name": "acceptedTokenAddress",
+            "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+        },
+        {
+        "anonymous": false,
+        "inputs": [],
+        "name": "Canceled",
+        "type": "event"
+        },
+        {
+        "anonymous": false,
+        "inputs": [
+            {
+            "indexed": true,
+            "internalType": "address",
+            "name": "bettor",
+            "type": "address"
+            },
+            {
+            "indexed": false,
+            "internalType": "int256",
+            "name": "pick",
+            "type": "int256"
+            },
+            {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "stake",
+            "type": "uint256"
+            },
+            {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "odd",
+            "type": "uint256"
+            },
+            {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "timeStamp",
+            "type": "uint256"
+            }
+        ],
+        "name": "PlacedBet",
+        "type": "event"
+        },
+        {
+        "anonymous": false,
+        "inputs": [
+            {
+            "indexed": false,
+            "internalType": "int256",
+            "name": "result",
+            "type": "int256"
+            }
+        ],
+        "name": "Settled",
+        "type": "event"
+        },
+        {
+        "anonymous": false,
+        "inputs": [],
+        "name": "Started",
+        "type": "event"
+        },
+        {
+        "inputs": [],
+        "name": "MAX_ODD",
+        "outputs": [
+            {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+        },
+        {
+        "inputs": [],
+        "name": "MIN_ODD",
+        "outputs": [
+            {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+        },
+        {
+        "inputs": [],
+        "name": "ODD_DECIMALS",
+        "outputs": [
+            {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+        },
+        {
+        "inputs": [],
+        "name": "TX_FEE",
+        "outputs": [
+            {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+        },
+        {
+        "inputs": [],
+        "name": "adminPayout",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+        },
+        {
+        "inputs": [
+            {
+            "internalType": "int256",
+            "name": "result",
+            "type": "int256"
+            }
+        ],
+        "name": "adminSettle",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+        },
+        {
+        "inputs": [],
+        "name": "adminWithdraw",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+        },
+        {
+        "inputs": [],
+        "name": "betMarket1Liquidity",
+        "outputs": [
+            {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+        },
+        {
+        "inputs": [],
+        "name": "betMarket2Liquidity",
+        "outputs": [
+            {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+        },
+        {
+        "inputs": [
+            {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+            }
+        ],
+        "name": "bettors",
+        "outputs": [
+            {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+        },
+        {
+        "inputs": [],
+        "name": "cancelBookie",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+        },
+        {
+        "inputs": [
+            {
+            "internalType": "uint256",
+            "name": "index",
+            "type": "uint256"
+            }
+        ],
+        "name": "collectUnfilled",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+        },
+        {
+        "inputs": [
+            {
+            "internalType": "address",
+            "name": "addr",
+            "type": "address"
+            }
+        ],
+        "name": "getBets",
+        "outputs": [
+            {
+            "components": [
+                {
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+                },
+                {
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
+                },
+                {
+                "internalType": "int256",
+                "name": "pick",
+                "type": "int256"
+                },
+                {
+                "internalType": "uint256",
+                "name": "odd",
+                "type": "uint256"
+                },
+                {
+                "internalType": "uint256",
+                "name": "stake",
+                "type": "uint256"
+                },
+                {
+                "internalType": "uint256",
+                "name": "stakeUsed",
+                "type": "uint256"
+                },
+                {
+                "internalType": "uint256",
+                "name": "toWin",
+                "type": "uint256"
+                },
+                {
+                "internalType": "uint256",
+                "name": "toWinFilled",
+                "type": "uint256"
+                },
+                {
+                "internalType": "bool",
+                "name": "hasCollectedPayout",
+                "type": "bool"
+                }
+            ],
+            "internalType": "struct Bet[]",
+            "name": "bet",
+            "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+        },
+        {
+        "inputs": [],
+        "name": "getBettors",
+        "outputs": [
+            {
+            "internalType": "address[]",
+            "name": "",
+            "type": "address[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+        },
+        {
+        "inputs": [],
+        "name": "getBookieInfo",
+        "outputs": [
+            {
+            "components": [
+                {
+                "internalType": "bytes32",
+                "name": "marketId",
+                "type": "bytes32"
+                },
+                {
+                "internalType": "int256",
+                "name": "result",
+                "type": "int256"
+                },
+                {
+                "internalType": "uint256",
+                "name": "startDate",
+                "type": "uint256"
+                },
+                {
+                "internalType": "bool",
+                "name": "isCanceled",
+                "type": "bool"
+                },
+                {
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+                },
+                {
+                "internalType": "address",
+                "name": "factoryAddress",
+                "type": "address"
+                },
+                {
+                "internalType": "address",
+                "name": "settlementManagerAddress",
+                "type": "address"
+                },
+                {
+                "internalType": "address",
+                "name": "acceptedTokenAddress",
+                "type": "address"
+                },
+                {
+                "internalType": "uint256",
+                "name": "txFee",
+                "type": "uint256"
+                }
+            ],
+            "internalType": "struct OrderBookieInfo",
+            "name": "",
+            "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+        },
+        {
+        "inputs": [],
+        "name": "getLiquiditySpread",
+        "outputs": [
+            {
+            "internalType": "uint256[2]",
+            "name": "liquidity",
+            "type": "uint256[2]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+        },
+        {
+        "inputs": [
+            {
+            "internalType": "int256",
+            "name": "pick",
+            "type": "int256"
+            },
+            {
+            "internalType": "uint256",
+            "name": "odd",
+            "type": "uint256"
+            }
+        ],
+        "name": "getOpenLiquidity",
+        "outputs": [
+            {
+            "internalType": "uint256",
+            "name": "liquidity",
+            "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+        },
+        {
+        "inputs": [
+            {
+            "internalType": "bytes32",
+            "name": "marketId",
+            "type": "bytes32"
+            },
+            {
+            "internalType": "int256",
+            "name": "result",
+            "type": "int256"
+            }
+        ],
+        "name": "marketSettled",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+        },
+        {
+        "inputs": [
+            {
+            "internalType": "int256",
+            "name": "pick",
+            "type": "int256"
+            },
+            {
+            "internalType": "uint256",
+            "name": "stake",
+            "type": "uint256"
+            },
+            {
+            "internalType": "uint256",
+            "name": "odd",
+            "type": "uint256"
+            }
+        ],
+        "name": "placeBet",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+        },
+        {
+        "inputs": [
+            {
+            "internalType": "address",
+            "name": "bettorAddr",
+            "type": "address"
+            },
+            {
+            "internalType": "int256",
+            "name": "pick",
+            "type": "int256"
+            },
+            {
+            "internalType": "uint256",
+            "name": "stake",
+            "type": "uint256"
+            },
+            {
+            "internalType": "uint256",
+            "name": "odd",
+            "type": "uint256"
+            }
+        ],
+        "name": "placeBetFor",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+        },
+        {
+        "inputs": [],
+        "name": "tokenDecimals",
+        "outputs": [
+            {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+        }
+    ],
+    "orderBookieFactoryABI": [
+        {
+        "inputs": [
+            {
+            "internalType": "address",
+            "name": "settlementManagerAddress",
+            "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+        },
+        {
+        "anonymous": false,
+        "inputs": [
+            {
+            "indexed": false,
+            "internalType": "address",
+            "name": "orderBookieAddress",
+            "type": "address"
+            }
+        ],
+        "name": "OrderBookieCreated",
+        "type": "event"
+        },
+        {
+        "inputs": [
+            {
+            "internalType": "bytes",
+            "name": "ancillaryData",
+            "type": "bytes"
+            },
+            {
+            "internalType": "uint256",
+            "name": "startDate",
+            "type": "uint256"
+            },
+            {
+            "internalType": "uint256",
+            "name": "proposerReward",
+            "type": "uint256"
+            },
+            {
+            "internalType": "uint256",
+            "name": "proposerBond",
+            "type": "uint256"
+            },
+            {
+            "internalType": "uint64",
+            "name": "livenessTime",
+            "type": "uint64"
+            },
+            {
+            "internalType": "address",
+            "name": "ooCurrency",
+            "type": "address"
+            },
+            {
+            "internalType": "address",
+            "name": "acceptedToken",
+            "type": "address"
+            },
+            {
+            "internalType": "bytes32",
+            "name": "priceIdentifier",
+            "type": "bytes32"
+            },
+            {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+            },
+            {
+            "internalType": "bool",
+            "name": "addAsCallback",
+            "type": "bool"
+            }
+        ],
+        "name": "createOrderBookie",
+        "outputs": [
+            {
+            "internalType": "bytes32",
+            "name": "marketId",
+            "type": "bytes32"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+        },
+        {
+        "inputs": [],
+        "name": "getOrderBookies",
+        "outputs": [
+            {
+            "internalType": "address[]",
+            "name": "",
+            "type": "address[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+        },
+        {
+        "inputs": [],
+        "name": "settlementManager",
+        "outputs": [
+            {
+            "internalType": "contract SettlementManager",
+            "name": "",
+            "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+        }
+    ]
+}

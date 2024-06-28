@@ -5,8 +5,7 @@ import { Accounts, DatabaseKeys, ODDS_DECIMALS, PICK_DECIMALS } from "@utils/con
 import { Market } from '@types';
 import { createClient  } from "@vercel/kv";
 import { ethers } from "ethers";
-import {OrderBookieABI} from '@contract-abis/orderBookie.json';
-import {erc20ABI} from '@contract-abis/erc20.json';
+import {orderBookieABI, erc20ABI} from '@abis';
 
 const kv = createClient({
   url: process.env['KV_REST_API_URL'] || '',
@@ -30,7 +29,7 @@ export default async function placeBet(bettorAddress:string, eventName:string, f
 
   const orderBookieAddress = eventData?.address.toString()
 
-  const orderBookie = new ethers.Contract(orderBookieAddress, OrderBookieABI, signer)
+  const orderBookie = new ethers.Contract(orderBookieAddress, orderBookieABI, signer)
   const orderBookieInfo = await orderBookie.getBookieInfo()
 
   // Get accpected token

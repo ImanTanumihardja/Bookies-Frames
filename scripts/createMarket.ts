@@ -6,8 +6,7 @@ dotenv.config({ path: ".env"})
 import { Market } from '@types';
 import {Accounts, DatabaseKeys, Outcomes} from '@utils/constants'
 import { ethers } from 'ethers';
-import  {OrderBookieFactoryABI}  from '@contract-abis/orderBookieFactory.json';
-import {OrderBookieABI}  from '@contract-abis/orderBookie.json';
+import  {orderBookieFactoryABI, orderBookieABI} from '@abis';
 import { ORDERBOOKIE_FACTORY_ADDRESS, USDC_ADDRESS } from '@addresses'
 import { Etherscan } from "@nomicfoundation/hardhat-verify/etherscan";
 import { sleep } from '@nomicfoundation/hardhat-verify/internal/utilities';
@@ -57,7 +56,7 @@ export default async function createMarket(marketId=``, startDate=0, odds=[0.5, 
     if (description && acceptedToken) {
         const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
         const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
-        const orderBookiefactory = new ethers.Contract(ORDERBOOKIE_FACTORY_ADDRESS, OrderBookieFactoryABI, signer);
+        const orderBookiefactory = new ethers.Contract(ORDERBOOKIE_FACTORY_ADDRESS, orderBookieFactoryABI, signer);
 
         console.log('Creating OrderBookie Contract...')
 
@@ -98,7 +97,7 @@ export default async function createMarket(marketId=``, startDate=0, odds=[0.5, 
         orderBookieAddress = market?.args[0]
 
         // Get orderbookie contract
-        const orderBookie = new ethers.Contract(orderBookieAddress, OrderBookieABI, signer)
+        const orderBookie = new ethers.Contract(orderBookieAddress, orderBookieABI, signer)
         const orderBookieInfo = await orderBookie.getBookieInfo()
 
         // Verify the contract on etherscan

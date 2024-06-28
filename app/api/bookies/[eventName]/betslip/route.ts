@@ -2,8 +2,7 @@ import { FrameButtonsType, getFrameHtml} from "frames.js";
 import { NextRequest, NextResponse } from 'next/server';
 import { generateUrl, getFrameMessage, calculatePayout, getRequestProps } from '@utils';
 import { FrameNames, RequestProps, Transactions, STAKE_LIMIT, PICK_DECIMALS, ODDS_DECIMALS } from '@utils/constants';
-import { OrderBookieABI } from '@contract-abis/orderBookie.json';
-import { erc20ABI } from '@contract-abis/erc20.json';
+import {orderBookieABI, erc20ABI} from '@abis';
 import { kv } from "@vercel/kv";
 import { Market } from "@types";
 import { ethers } from "ethers";
@@ -87,7 +86,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   {
     const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
-    const orderBookie = new ethers.Contract(orderBookieAddress, OrderBookieABI, provider)
+    const orderBookie = new ethers.Contract(orderBookieAddress, orderBookieABI, provider)
     const orderBookieInfo = await orderBookie.getBookieInfo()
 
     const acceptedToken = await new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider)

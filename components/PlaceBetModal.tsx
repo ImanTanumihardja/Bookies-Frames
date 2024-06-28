@@ -27,8 +27,7 @@ import { useActiveAccount } from "thirdweb/react";
 import { ethers6Adapter } from "thirdweb/adapters/ethers6";
 import { client, myChain, ODDS_DECIMALS, PICK_DECIMALS } from "@utils/constants";
 import { ethers } from "ethers";
-import { OrderBookieABI } from "@contract-abis/orderBookie.json";
-import { erc20ABI } from "@contract-abis/erc20.json";
+import { orderBookieABI, erc20ABI } from "@abis";
 
 export type PlaceBetModal = {
     defaultPick: number | null;
@@ -55,7 +54,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
     const placeBet = async (_:any, _formData:FormData) => {
         const signer = ethers6Adapter.signer.toEthers({ client: client, account: activeAccount, chain: myChain })
         
-        const orderBookie = new ethers.Contract(address, OrderBookieABI, signer)
+        const orderBookie = new ethers.Contract(address, orderBookieABI, signer)
         const orderBookieInfo = await orderBookie.getBookieInfo()
         
          // Get accpected token

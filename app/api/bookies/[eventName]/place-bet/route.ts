@@ -5,8 +5,7 @@ import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { Market } from '@types';
 import { kv } from '@vercel/kv';
 import { ethers } from 'ethers';
-import {OrderBookieABI} from '@contract-abis/orderBookie.json';
-import {erc20ABI} from '@contract-abis/erc20.json';
+import {orderBookieABI, erc20ABI} from '@abis';
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   const {fid} = await getFrameMessage(req);
@@ -28,7 +27,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   activeEvents = activeEvents.filter((e) => e !== String(eventName));
 
   // Check if result has been set
-  const orderBookie = new ethers.Contract(event.address, OrderBookieABI, provider)
+  const orderBookie = new ethers.Contract(event.address, orderBookieABI, provider)
   const orderBookieInfo = await orderBookie.getBookieInfo()
   const result = parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS))
 

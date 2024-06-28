@@ -9,8 +9,7 @@ import getMarket from "@scripts/getMarket";
 import { MarketData } from "@types";
 import InnerMarket from "@components/InnerMarket";
 import {ethers} from 'ethers';
-import {OrderBookieABI} from '@contract-abis/orderBookie.json';
-import {erc20ABI} from '@contract-abis/erc20.json';
+import {orderBookieABI, erc20ABI} from '@abis';
 import { kv } from "@vercel/kv";
 const axios = require('axios');
 
@@ -51,7 +50,7 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
 
     // Get orderbookie contract
     const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
-    const orderBookie = new ethers.Contract(marketData.address, OrderBookieABI, provider)
+    const orderBookie = new ethers.Contract(marketData.address, orderBookieABI, provider)
     const orderBookieInfo = await orderBookie.getBookieInfo()
 
     const acceptedToken = new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider);

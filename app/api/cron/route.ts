@@ -3,7 +3,7 @@ import { neynarClient } from "@utils";
 import {Accounts, BOOKIES_FID, DatabaseKeys, PICK_DECIMALS} from '@utils/constants'
 import { Market } from "../../types";
 import { ethers } from "ethers";
-import {OrderBookieABI} from '@contract-abis/orderBookie.json';
+import {orderBookieABI} from '@abis';
 import { payoutNotification } from "../../../scripts/notifications/payout_mention";
 import settleMarket from "@scripts/settleMarket";
 
@@ -32,7 +32,7 @@ export async function GET() {
     for (const marketName of bookiesMarkets) {
         const marketInfo: Market | null = await kv.hgetall(marketName);
         if (marketInfo) {
-            const orderBookie = new ethers.Contract(marketInfo.address, OrderBookieABI, provider)
+            const orderBookie = new ethers.Contract(marketInfo.address, orderBookieABI, provider)
             const orderBookieInfo = await orderBookie.getBookieInfo()
 
             if (parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS)) !== -1 && marketInfo.result === -1) {

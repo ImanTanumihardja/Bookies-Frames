@@ -5,8 +5,7 @@ import { Accounts, DatabaseKeys, PICK_DECIMALS } from "@utils/constants";
 import { Market, MarketData } from '@types';
 import { createClient  } from "@vercel/kv";
 import { ethers } from "ethers";
-import {OrderBookieABI} from '@contract-abis/orderBookie.json';
-import {erc20ABI} from '@contract-abis/erc20.json';
+import {orderBookieABI, erc20ABI} from '@abis';
 
 const kv = createClient({
   url: process.env['KV_REST_API_URL'] || '',
@@ -50,7 +49,7 @@ export default async function getMarket(marketId=""): Promise<MarketData> {
     const orderBookieAddress = marketData?.address || '';
     const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
-    const orderBookie = new ethers.Contract(orderBookieAddress, OrderBookieABI, provider)
+    const orderBookie = new ethers.Contract(orderBookieAddress, orderBookieABI, provider)
     orderBookieInfo = await orderBookie.getBookieInfo()
 
     // Get accpected token

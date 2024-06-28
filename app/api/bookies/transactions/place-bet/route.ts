@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getFrameMessage, getRequestProps } from '@utils';
 import { ODDS_DECIMALS, RequestProps, PICK_DECIMALS } from '@utils/constants';
 import {ethers} from 'ethers';
-import {OrderBookieABI} from '@contract-abis/orderBookie.json';
-import {erc20ABI} from '@contract-abis/erc20.json';
+import {orderBookieABI, erc20ABI} from '@abis';
 import { kv } from '@vercel/kv';
 
 export async function POST(req: NextRequest): Promise<Response> {
@@ -44,7 +43,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     await kv.hset(txReceipt.from, {"fid": fid.toString()})
   })
 
-  const orderbookie = await new ethers.Contract(orderBookieAddress, OrderBookieABI, provider)
+  const orderbookie = await new ethers.Contract(orderBookieAddress, orderBookieABI, provider)
   const orderBookieInfo = await orderbookie.getBookieInfo()
 
   const acceptedToken = await new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider)
@@ -66,7 +65,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       method: 'eth_sendTransaction',
       attribution: false,
       params: {
-        abi: OrderBookieABI,
+        abi: orderBookieABI,
         data: data,
         to: orderBookieAddress,
         value: ethers.parseEther('0').toString(),

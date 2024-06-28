@@ -5,7 +5,7 @@ import { Market } from '@types';
 import { generateUrl, getRequestProps, getFrameMessage } from '@utils';
 import { FrameNames, RequestProps, DatabaseKeys, Accounts, PICK_DECIMALS } from '@utils/constants';
 import {ethers} from 'ethers';
-import {OrderBookieABI} from '@contract-abis/orderBookie.json';
+import {orderBookieABI} from '@abis';
 
 export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
   // Verify the frame request
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   console.log('EVENT: ', eventName)
 
-  const orderBookie = new ethers.Contract(event.address, OrderBookieABI, provider)
+  const orderBookie = new ethers.Contract(event.address, orderBookieABI, provider)
   const orderBookieInfo = await orderBookie.getBookieInfo()
   const result = parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS))
 

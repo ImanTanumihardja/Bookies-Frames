@@ -2,12 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import { getRequestProps } from '@utils';
 import {ODDS_DECIMALS, PICK_DECIMALS, RequestProps } from '@utils/constants';
-import { OrderBookieABI } from '@contract-abis/orderBookie.json';
+import {orderBookieABI, erc20ABI} from '@abis';
 import { kv } from '@vercel/kv';
 import * as fs from "fs";
 import { join } from 'path';
 import {ethers} from 'ethers';
-import {erc20ABI} from '@contract-abis/erc20.json';
 
 // Fonts
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
@@ -22,7 +21,7 @@ export async function GET(req: NextRequest) {
 
         const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
-        const orderBookie = new ethers.Contract(orderBookieAddress, OrderBookieABI, provider)
+        const orderBookie = new ethers.Contract(orderBookieAddress, orderBookieABI, provider)
 
         // Get orderBookieInfo
         const orderBookieInfo = await orderBookie.getBookieInfo()

@@ -40,8 +40,8 @@
       "@addresses": [
         "app/json/addresses.json"
       ],
-      "@contract-abis/*": [
-        "app/contract-abis/*"
+      "@abis": [
+        "app/json/abis.json"
       ],
     },
     "plugins": [
