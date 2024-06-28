@@ -1,8 +1,7 @@
 const { NeynarAPIClient } = require("@neynar/nodejs-sdk");
 const ethers = require("ethers");
 const { createClient  } = require("@vercel/kv");
-const { OrderBookieABI } = require("@contract-abis/orderBookie.json");
-const { erc20ABI } = require("@contract-abis/erc20.json");
+const { orderBookieABI, erc20ABI } = require("@abis");
 
 const dotenv = require("dotenv");
 dotenv.config({ path: ".env"});
@@ -31,7 +30,7 @@ export async function payoutNotification(eventName:string, parentHash:string, tx
   const eventInfo = await kv.hgetall(`${eventName}`);
 
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
-  const orderbookie = new ethers.Contract(eventInfo.address, OrderBookieABI, provider);
+  const orderbookie = new ethers.Contract(eventInfo.address, orderBookieABI, provider);
 
   // Get orderbookie info
   const orderBookieInfo = await orderbookie.getBookieInfo();

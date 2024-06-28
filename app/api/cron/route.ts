@@ -1,10 +1,10 @@
 import { kv } from "@vercel/kv";
 import { neynarClient } from "@utils";
 import {Accounts, BOOKIES_FID, DatabaseKeys, PICK_DECIMALS} from '@utils/constants'
-import { Market } from "../../types";
+import { Market } from "@types";
 import { ethers } from "ethers";
 import {orderBookieABI} from '@abis';
-import { payoutNotification } from "../../../scripts/notifications/payout_mention";
+import { payoutNotification } from "@scripts/notifications/payout_mention";
 import settleMarket from "@scripts/settleMarket";
 
 export async function GET() {
