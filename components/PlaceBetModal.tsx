@@ -81,7 +81,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
 
     // const [pick, setPick] = useState(defaultPick);
     const [stake, setStake] = useState(0);
-    const [_, setOdd] = useState(defaultOdd !== null ? formatImpliedProbability(defaultOdd) : "+100");
+    const [_odd, setOdd] = useState(defaultOdd !== null ? formatImpliedProbability(defaultOdd) : "+100");
 
     useEffect(() => {
         
