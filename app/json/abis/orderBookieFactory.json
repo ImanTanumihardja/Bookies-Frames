@@ -82,7 +82,7 @@
       "outputs": [
         {
           "internalType": "bytes32",
-          "name": "eventID",
+          "name": "marketId",
           "type": "bytes32"
         }
       ],
@@ -115,8 +115,5 @@
       "stateMutability": "view",
       "type": "function"
     }
-  ]
-  
-  
-  
+  ]  
 }

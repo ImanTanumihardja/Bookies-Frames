@@ -2,9 +2,77 @@
    "OrderBookieABI":
    [
     {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "marketId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "startDate",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "settlementManagerAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "acceptedTokenAddress",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
       "anonymous": false,
       "inputs": [],
       "name": "Canceled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "bettor",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "pick",
+          "type": "int256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "stake",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "odd",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timeStamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "PlacedBet",
       "type": "event"
     },
     {
@@ -25,6 +93,130 @@
       "inputs": [],
       "name": "Started",
       "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "MAX_ODD",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "MIN_ODD",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ODD_DECIMALS",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "TX_FEE",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "adminPayout",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "int256",
+          "name": "result",
+          "type": "int256"
+        }
+      ],
+      "name": "adminSettle",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "adminWithdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "betMarket1Liquidity",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "betMarket2Liquidity",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "bettors",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "inputs": [],
@@ -64,6 +256,11 @@
               "type": "address"
             },
             {
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            },
+            {
               "internalType": "int256",
               "name": "pick",
               "type": "int256"
@@ -100,7 +297,7 @@
             }
           ],
           "internalType": "struct Bet[]",
-          "name": "",
+          "name": "bet",
           "type": "tuple[]"
         }
       ],
@@ -128,7 +325,7 @@
           "components": [
             {
               "internalType": "bytes32",
-              "name": "eventID",
+              "name": "marketId",
               "type": "bytes32"
             },
             {
@@ -165,10 +362,15 @@
               "internalType": "address",
               "name": "acceptedTokenAddress",
               "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "txFee",
+              "type": "uint256"
             }
           ],
           "internalType": "struct OrderBookieInfo",
-          "name": "orderBookieInfo",
+          "name": "",
           "type": "tuple"
         }
       ],
@@ -181,7 +383,7 @@
       "outputs": [
         {
           "internalType": "uint256[2]",
-          "name": "",
+          "name": "liquidity",
           "type": "uint256[2]"
         }
       ],
@@ -205,11 +407,29 @@
       "outputs": [
         {
           "internalType": "uint256",
-          "name": "",
+          "name": "liquidity",
           "type": "uint256"
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "marketId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "int256",
+          "name": "result",
+          "type": "int256"
+        }
+      ],
+      "name": "marketSettled",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -239,7 +459,7 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "payoutTo",
+          "name": "bettorAddr",
           "type": "address"
         },
         {
@@ -262,8 +482,19 @@
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "tokenDecimals",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     }
-   ]
-  
-  
+  ]  
 }
