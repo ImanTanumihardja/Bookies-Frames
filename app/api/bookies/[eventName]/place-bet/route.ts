@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { convertImpliedProbabilityToAmerican, generateUrl, getFrameMessage, getRequestProps } from '@utils';
+import { formatImpliedProbability, generateUrl, getFrameMessage, getRequestProps } from '@utils';
 import { Accounts, DatabaseKeys, FrameNames, PICK_DECIMALS, RequestProps, Transactions } from '@utils/constants';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { Market } from '@types';
@@ -116,10 +116,10 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
     buttons = event.options.map((option, index) => {
       if (event === null) throw new Error('Event not found');
-      const formatedOdd = convertImpliedProbabilityToAmerican(odds[index]);
+      const formattedOdd = formatImpliedProbability(odds[index]);
   
       return {
-        label: `${option} (${formatedOdd})`,
+        label: `${option} (${formattedOdd})`,
         action: 'tx',
         target: generateUrl(`api/bookies/transactions/${Transactions.APPROVE}`, {[RequestProps.ADDRESS]: event.address}, false),
       } as FrameButton

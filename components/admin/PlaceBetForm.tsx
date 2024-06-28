@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormState, useFormStatus } from "react-dom";
-import { placeBetAction } from "../../app/actions"
+import { placeBetForAction } from "../../app/actions"
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -16,7 +16,7 @@ function SubmitButton() {
 
 export function PlaceBetForm({marketId, options}: {marketId: string, options: string[]}) {
 
-  const [placeBetState, placeBetFormAction] = useFormState(placeBetAction, {message: ""});
+  const [placeBetState, placeBetFormAction] = useFormState(placeBetForAction, {message: ""});
 
   if (placeBetState.message !== "") 
   {

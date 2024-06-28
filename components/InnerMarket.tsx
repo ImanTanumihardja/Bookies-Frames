@@ -1,13 +1,15 @@
 "use client"
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 import { Container, Button, Table, TableContainer, Tr, Th, Tbody, Td, Thead, useDisclosure } from "@chakra-ui/react";
 import { UserType } from "@types";
 import PlaceBetModal from "./PlaceBetModal";
+import { formatImpliedProbability } from "@utils/client";
 
 export type MarketInnerType = {
     marketId: string;
     prompt: string;
     options: string[];
+    odds: number[];
     startDate: number;
     creator: UserType;
     outcome1Staked: number;
@@ -23,7 +25,7 @@ export type MarketInnerType = {
 export type PlacedBetTxnType = {
     bettor: UserType
     stake: number
-    odd: string
+    odd: number
     pick: number
     timeStamp: number
     txnHash: string
@@ -33,6 +35,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
     marketId = "",
     prompt = "",
     options = [],
+    odds = [],
     startDate = 0,
     creator = null,
     outcome1Staked = 0,
@@ -42,9 +45,15 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
     rules = "",
     umaTxn = "",
     placedBetTxns = [],
-    symbol = ""
+    symbol = "",
 }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const [placeBetModalProps, setPlaceBetModalProps] = useState({ pick: null, odd: 0.5 });
+
+    const handlePlaceBetClick = (pick=null, odd=0.5) => {
+        setPlaceBetModalProps({ pick, odd });
+        onOpen();
+      };
 
     const openInNewTab = (url: string) => {
         window.open(url, '_blank', 'noopener,noreferrer');
@@ -109,7 +118,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                     size="lg"
                     border='1px'
                     borderRadius='20px'
-                    onClick={onOpen}
+                    onClick={() => {handlePlaceBetClick()}}
                 >
                     Bet Now
                 </Button>
@@ -124,17 +133,27 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                     </div>
                     <div className="self-stretch flex flex-row items-center justify-center pb-3 box-border max-w-full text-37xl">
                         <div className="w-[486px] flex flex-row text-8xl font-semibold items-center justify-between gap-[35px] max-w-full">
-                            <h1 className="m-0 flex-1 relative font-inherit flex items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)] min-w-[117px]">
-                                {options[0]}
-                            </h1>
+                            <div className="flex flex-col">
+                                <h1 className="m-0 flex-1 relative font-inherit items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)] min-w-[117px]">
+                                    {options[0]}
+                                </h1>
+                                <h2 className="m-0 relative font-inherit text-xl items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)] min-w-[117px]">
+                                    {formatImpliedProbability(odds[0])}
+                                </h2>
+                            </div>
                             <div className="rounded-lg bg-gray-700 flex flex-row items-center justify-center py-2 px-3">
                                 <h3 className="m-0 flex-1 relative text-5xl font-inherit text-lightgray-200 mq450:text-lgi">
                                     OR
                                 </h3>
                             </div>
-                            <h1 className="m-0 flex-1 relative text-inherit font-inherit flex items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)] min-w-[111px]">
-                                {options[1]}
-                            </h1>
+                            <div className="flex flex-col">
+                                <h1 className="m-0 flex-1 relative text-inherit font-inherit flex items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)] min-w-[111px]">
+                                    {options[1]}
+                                </h1>
+                                <h2 className="m-0 relative font-inherit text-xl items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)] min-w-[117px]">
+                                    {formatImpliedProbability(odds[1])}
+                                </h2>
+                            </div>
                         </div>
                     </div>
                     <div className="self-stretch flex flex-col items-center justify-center gap-[15px] max-w-full text-xl text-lightgray-100">
@@ -150,6 +169,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                             size="md"
                             border='1px'
                             borderRadius='20px'
+                            onClick={() => {handlePlaceBetClick(0, odds[0])}}
                         >
                             Bet {options[0]}
                         </Button>
@@ -160,6 +180,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                             size="md"
                             border='1px'
                             borderRadius='20px'
+                            onClick={() => {handlePlaceBetClick(1, odds[1])}}
                         >
                             Bet {options[1]}
                         </Button>
@@ -248,6 +269,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                     let username = txn.bettor.username ? txn.bettor.username : txn.bettor.address;
                                     username = username.length > 10 ? username.slice(0, 10) + ". . ." : username;
 
+                                    const formattedOdd = formatImpliedProbability(txn.odd)
                                     
                                     return (
                                         <Tr key={index}>
@@ -260,13 +282,13 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                                         alt={`${process.env.host}/generic_pfp.png`}
                                                         src={txn.bettor.pfpUrl ? txn.bettor.pfpUrl : `${process.env.host}/generic_pfp.png`}
                                                     />
-                                                    {username} bet {txn.stake} ${symbol} on {options[txn.pick]} at {txn.odd}
+                                                    {username} bet {txn.stake} ${symbol} on {options[txn.pick]} at {formattedOdd}
                                                 </div>
                                             </Td>
                                             <Td>
                                                 <div className="flex flex-direction-row gap-2">
                                                     <Button>
-                                                        Bet Agaisnt
+                                                        Bet Against
                                                     </Button>
                                                     <Button>
                                                         Copy Bet
@@ -292,7 +314,14 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                     </Table>
                 </TableContainer>
             </div>
-            <PlaceBetModal address={address} prompt={prompt} options={options} isOpen={isOpen} onClose={onClose}/>
+            <PlaceBetModal defaultPick={placeBetModalProps.pick} 
+                defaultOdd={placeBetModalProps.odd} 
+                address={address} 
+                prompt={prompt} 
+                options={options} 
+                odds={odds} 
+                isOpen={isOpen} 
+                onClose={onClose}/>
         </Container>
         );
 }

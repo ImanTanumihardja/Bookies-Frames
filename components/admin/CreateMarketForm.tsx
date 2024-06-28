@@ -19,7 +19,7 @@ function SubmitButton() {
 
 export function CreateMarketForm() {
   const [state, formAction] = useFormState(createMarketAction, { message: "" });
-  const [host, setHost] = useState("bookies");
+  const [host, setHost] = useState(Accounts.ALEA);
 
   if (state.message !== "") {
     alert(state.message);
@@ -27,7 +27,7 @@ export function CreateMarketForm() {
   }
 
   const handleHostChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setHost(e.target.value);
+    setHost(e.target.value as Accounts);
   };
 
   return (
@@ -38,7 +38,7 @@ export function CreateMarketForm() {
         <input type="text" id="marketId" name="marketId" placeholder="lal-lac-ml" required />
         <br />
         <br />
-        <label htmlFor="startDate">Start Date (Unix) </label>
+        <label htmlFor="startDate">Start Date (Unix Seconds) </label>
         <input type="number" id="startDate" name="startDate" placeholder="1709777045" required />
         <br />
         <br />

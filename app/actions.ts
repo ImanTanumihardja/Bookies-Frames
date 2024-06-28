@@ -1,13 +1,16 @@
 'use server'
 
 import {z} from 'zod'
-import createMarket from '../scripts/createMarket'
-import settleMarket from '../scripts/settleMarket'
-import placeBet from '../scripts/placeBet'
-import getMarket from '../scripts/getMarket'
+import createMarket from '@scripts/createMarket'
+import settleMarket from '@scripts/settleMarket'
+import placeBet from '@scripts/placeBet'
+import getMarket from '@scripts/getMarket'
 import { revalidatePath } from 'next/cache'
-import { Accounts, DatabaseKeys } from '@utils/constants'
+import { Accounts, client, DatabaseKeys, myChain } from '@utils/constants'
 import { kv } from '@vercel/kv'
+import { useActiveAccount } from 'thirdweb/react'
+import { ethers6Adapter } from 'thirdweb/adapters/ethers6'
+import { Account } from 'thirdweb/wallets'
 
 export async function createMarketAction(
     _: any, 
@@ -137,7 +140,7 @@ export async function getAllMarketsAction() {
     }
 }
 
-export async function placeBetAction(
+export async function placeBetForAction(
     _: any, 
     formData: FormData
     ) {
@@ -166,4 +169,41 @@ export async function placeBetAction(
         console.error(e)
         return {message: `Failed to place bet: ${e}` }
     }
+}
+
+export async function placeBetAction(
+    state: any, 
+    formData: FormData
+    ) {
+
+    console.log(state)
+    // const signer = ethers6Adapter.signer.toEthers({ client: client, account: formData.get('account') as unknown as Account, chain: myChain })
+
+    // console.log(signer)
+        
+    // const schema = z.object({
+    //     bettor: z.string(),
+    //     marketId: z.string(),
+    //     fid: z.number().optional(),
+    //     stake: z.number(),
+    //     pick: z.number(),
+    // })
+
+    // const { bettor, marketId, fid, stake, pick } = schema.parse({
+    //     bettor: formData.get('bettor'),
+    //     marketId: formData.get('marketId'),
+    //     fid: parseInt(formData.get('fid') as string),
+    //     stake: parseFloat(formData.get('stake') as string),
+    //     pick: parseFloat(formData.get('pick') as string),
+    // })
+
+    // try {
+    //     await placeBet(bettor, marketId, fid, stake, pick)
+    //     revalidatePath('/')
+    //     return {message: `Placed bet for ${fid} on option ${pick + 1} with ${stake} stake`}
+    // }
+    // catch (e) {
+    //     console.error(e)
+    //     return {message: `Failed to place bet: ${e}` }
+    // }
 }

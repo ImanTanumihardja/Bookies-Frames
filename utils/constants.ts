@@ -1,5 +1,6 @@
 import { Bet, User } from "@types";
 import { ethers } from "ethers";
+import { createThirdwebClient } from "thirdweb";
 import { defineChain } from "thirdweb/chains";
 
 
@@ -120,6 +121,7 @@ export enum DatabaseKeys {
     MARKETS = 'markets',
     REFERRALS = "referrals",
     ADDRESSES = "addresses",
+    BETS = "BETS",
 }
 
 export const Outcomes = {
@@ -157,3 +159,7 @@ export const DEFAULT_BET: Bet = {
 }
 
 export const myChain = defineChain(8453)
+
+export const client = createThirdwebClient({
+    clientId: process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID
+})

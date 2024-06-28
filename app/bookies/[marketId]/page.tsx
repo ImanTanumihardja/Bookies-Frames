@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import {GET} from '../../api/bookies/[eventName]/route'
 import { NextRequest } from "next/server";
 import { Accounts, ODDS_DECIMALS, PICK_DECIMALS, RequestProps } from "@utils/constants";
-import { convertImpliedProbabilityToAmerican as formatImpliedProbability, generateUrl, neynarClient } from "@utils";
+import { generateUrl, neynarClient } from "@utils";
 import getMarket from "@scripts/getMarket";
 import { MarketData } from "@types";
 import InnerMarket from "@components/InnerMarket";
@@ -74,9 +74,10 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
     const placedBetTxns = await Promise.all(placedBetLogs.map(async (log) => {
         const parsedLog = orderBookie.interface.parseLog(log);
 
+        const bettor = parsedLog.args.bettor
         const stake = parseFloat(ethers.formatUnits(parsedLog.args.stake, decimals));
         const pick = parseFloat(ethers.formatUnits(parsedLog.args.pick, PICK_DECIMALS));
-        const odd = formatImpliedProbability(parseFloat(ethers.formatUnits(parsedLog.args.odd, ODDS_DECIMALS)));
+        const odd = parseFloat(ethers.formatUnits(parsedLog.args.odd, ODDS_DECIMALS));
 
         // Get tx from log
         const tx = await provider.getTransaction(log.transactionHash);
@@ -88,7 +89,7 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
 
         return {
             bettor: {
-                address: tx.from,
+                address: bettor,
                 fid: profile.fid,
                 username: profile.username,
                 pfpUrl: `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(profile.pfp_url)}`
@@ -109,8 +110,8 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
             pfpUrl: `https://wrpcd.net/cdn-cgi/image/anim=false,fit=contain,f=auto,w=168/https%3A%2F%2Fi.imgur.com%2FeeFeFVB.png`
         },
         stake: 100,
-        pick: 1,
-        odd: formatImpliedProbability(0.5),
+        pick: 0,
+        odd: marketData.odds[0],
         timeStamp: 1719337527,
         txnHash: "0xde3398f71cfafa2ed436c5a8c053c02e698ffb17baf902be08a75bece96f2462"
     })
@@ -120,6 +121,7 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
             marketId={marketId}
             prompt={marketData?.prompt} 
             options={marketData?.options}
+            odds={marketData.odds}
             startDate={marketData?.startDate}
             creator={{
                 address: "",

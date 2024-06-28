@@ -1,5 +1,5 @@
 "use client"
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import {
     Modal,
     ModalOverlay,
@@ -22,30 +22,69 @@ import React from "react";
 import { useFormState } from "react-dom";
 import PickBet from "./elements/PickBet";
 import PlaceBetButton from "./elements/PlaceBetButton";
+import { formatImpliedProbability } from "@utils/client";
+import { useActiveAccount } from "thirdweb/react";
+import { ethers6Adapter } from "thirdweb/adapters/ethers6";
+import { client, myChain, ODDS_DECIMALS, PICK_DECIMALS } from "@utils/constants";
+import { ethers } from "ethers";
+import { OrderBookieABI } from "@contract-abis/orderBookie.json";
+import { erc20ABI } from "@contract-abis/erc20.json";
 
 export type PlaceBetModal = {
+    defaultPick: number | null;
+    defaultOdd: number;
     address: string;
     prompt: string;
     options: string[];
+    odds: number[];
     isOpen: boolean;
     onClose: () => void;
   };
 
 const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
+    defaultPick = null,
+    defaultOdd = 0.5,
     address = "",
     prompt = "",
     options = [],
+    odds = [],
     isOpen = false,
     onClose = () => {}
 }) => {
 
-    const format = (val) => val + ` $DEGEN `
-    const parse = (val) => val.replace(/^\$/, '')
-    const [value, setValue] = React.useState('0')
+    const placeBet = async (_:any, formData:FormData) => {
+        const signer = ethers6Adapter.signer.toEthers({ client: client, account: activeAccount, chain: myChain })
+        
+        const orderBookie = new ethers.Contract(address, OrderBookieABI, signer)
+        const orderBookieInfo = await orderBookie.getBookieInfo()
+        
+         // Get accpected token
+        const acceptedToken = new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, signer)
+        const decimals = await acceptedToken.decimals()
 
-    const [_state, formAction] = useFormState((_: any, _formData: FormData) => {}, { message: "" });
+        // Approve orderbookie to spend accepted token
+        await (await acceptedToken.approve(orderBookie.getAddress(),  ethers.MaxUint256)).wait() //TODO: change to stake
 
-    console.log(address)
+        const parsedPick = ethers.parseUnits('0', PICK_DECIMALS)
+        const parsedStake = ethers.parseUnits('100', decimals)
+        const parsedOdd = ethers.parseUnits('0.5', ODDS_DECIMALS)
+      
+        // Place bet
+        const placeBetTransaction = await orderBookie.placeBet(parsedPick, parsedStake, parsedOdd)
+        await placeBetTransaction.wait()
+    }
+
+    const activeAccount = useActiveAccount();
+    const [state, formAction] = useFormState(placeBet, {});
+
+    const [pick, setPick] = useState(defaultPick);
+    const [stake, setStake] = useState(0);
+    const [odd, setOdd] = useState(defaultOdd !== null ? formatImpliedProbability(defaultOdd) : "+100");
+
+    useEffect(() => {
+        
+    }, [activeAccount]);
+
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} isCentered >
@@ -58,17 +97,17 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                     <VStack alignItems={"start"}>
                         <Heading fontSize={"lg"}>{prompt}</Heading>
                         <div className="w-full">
-                            <FormLabel color={"gray.400"}>Pick</FormLabel>
-                            <PickBet options={options}/>
+                            <FormLabel htmlFor="pick" color={"gray.400"}>Pick</FormLabel>
+                            <PickBet pick={defaultPick} options={options}/>
                         </div>
                         <div className="w-full">
-                            <FormLabel color={"gray.400"}>Stake</FormLabel>
+                            <FormLabel htmlFor="stake" color={"gray.400"}>Stake</FormLabel>
                             <NumberInput 
-                                onChange={(valueString) => setValue(parse(valueString))}
-                                value={format(value)}
                                 max={5000} 
                                 min={0} 
                                 w="100%"
+                                value={stake} 
+                                onChange={(value: string) => {setStake(parseFloat(value))}}
                             >
                                 <NumberInputField placeholder="0"/>
                                 <NumberInputStepper>
@@ -81,7 +120,12 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                     <PlaceBetButton/>
                     <HStack justifyContent="space-between" alignItems="end" w="100%" h="100%">
                         <FormLabel fontSize={"smaller"} color={"gray.400"}>Odds</FormLabel>
-                        <NumberInput size={"xs"} width={75} marginBottom={1}>
+                        <NumberInput 
+                            size={"xs"} 
+                            width={75} 
+                            marginBottom={1}
+                            value={defaultOdd} 
+                            onChange={(value: string) => {setOdd(value)}}>
                             <NumberInputField placeholder="+100"/>
                             <NumberInputStepper>
                                 <NumberIncrementStepper sx={{ fontSize: '0.5em'}} />
@@ -98,7 +142,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                     <HStack justifyContent="space-between" alignItems="center" w="100%" h="100%">
                         <FormLabel fontSize={"smaller"} color={"gray.400"}>Payout</FormLabel>
                         <Text fontSize={"smaller"} >
-                            1000 $DEGEN
+                            {stake} $DEGEN
                         </Text>
                     </HStack>
                 </form>

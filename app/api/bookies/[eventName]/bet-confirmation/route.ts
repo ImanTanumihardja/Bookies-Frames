@@ -37,6 +37,15 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       })
     })
 
+    // Add market to user's bet list
+    await kv.sadd(`${fid}:${DatabaseKeys.BETS}`, eventName).catch(async (error) => {
+      console.error('Error adding event to user:', error);
+      // Try again
+      await kv.sadd(`${fid}:${DatabaseKeys.BETS}`, eventName).catch(() => {
+        throw new Error('Error creating bet');
+      })
+    })
+
     // Add to referral leaderboard
     if (casterFID && casterFID !== fid) {
       await kv.zincrby(`${DatabaseKeys.REFERRALS}`, stake, casterFID).catch(async (error) => {

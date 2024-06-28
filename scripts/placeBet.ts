@@ -62,6 +62,13 @@ export default async function placeBet(bettorAddress:string, eventName:string, f
     await kv.sadd(`${fid.toString()}:addresses`, bettorAddress)
   })
 
+  // Add reverse search
+  await kv.hset(bettorAddress, {"fid": fid.toString()}).catch(async (e) => {
+    console.log('Error adding address to kv: ', e)
+    // Try again
+    await kv.hset(bettorAddress, {"fid": fid.toString()})
+  })
+
   // Add user to bettors list
   await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
     console.error('Error adding user to bettors list: ', error);
@@ -71,11 +78,11 @@ export default async function placeBet(bettorAddress:string, eventName:string, f
     })
   })
 
-  // Add bet to poll
-  await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(async (error) => {
-    console.error('Error adding user to poll:', error);
+  // Add market to user's bet list
+  await kv.sadd(`${fid}:${DatabaseKeys.BETS}`, eventName).catch(async (error) => {
+    console.error('Error adding event to user:', error);
     // Try again
-    await kv.hincrby(`${eventName}:${DatabaseKeys.POLL}`, `${pick}`, 1).catch(() => {
+    await kv.sadd(`${fid}:${DatabaseKeys.BETS}`, eventName).catch(() => {
       throw new Error('Error creating bet');
     })
   })
