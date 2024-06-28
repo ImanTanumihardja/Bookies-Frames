@@ -93,7 +93,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     const symbol = await acceptedToken.symbol();
 
     // Format orderbookie txfee
-    const txfee = parseFloat(orderBookieInfo.txfee) / 100;
+    const txfee = parseFloat(orderBookieInfo.txFee) / 100;
       
     // Get percent of stake filled
     const oppositePick = 1 - pick;

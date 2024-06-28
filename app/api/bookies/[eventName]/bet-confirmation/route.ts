@@ -83,6 +83,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   const orderBookie = new ethers.Contract(event.address, orderBookieABI, provider)
   const orderBookieInfo = await orderBookie.getBookieInfo()
   const result = parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS))
+  const txfee = parseFloat(orderBookieInfo.txFee) / 100;
 
   const now = new Date().getTime() / 1000;
 
@@ -114,7 +115,8 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
                                                                                                 [RequestProps.RESULT]: result, 
                                                                                                 [RequestProps.PROMPT]: event.prompt, 
                                                                                                 [RequestProps.TRANSACTION_HASH]: transactionHash, 
-                                                                                                [RequestProps.IS_MINED]: isMined}, true);
+                                                                                                [RequestProps.IS_MINED]: isMined,
+                                                                                                [RequestProps.TX_FEE]: txfee}, true);
 
   // Create buttons for frame
   let buttons : FrameButtonsType = [

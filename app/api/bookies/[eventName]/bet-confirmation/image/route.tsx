@@ -15,7 +15,23 @@ let fontData = fs.readFileSync(fontPath)
 export async function GET(req: NextRequest) {
     try {
         let text='' // Default empty React element
-        let {buttonIndex, fid, address: orderBookieAddress, options, result, prompt, transactionHash, isMined} = getRequestProps(req, [RequestProps.ADDRESS, RequestProps.BUTTON_INDEX, RequestProps.FID, RequestProps.OPTIONS, RequestProps.RESULT, RequestProps.PROMPT, RequestProps.TRANSACTION_HASH, RequestProps.IS_MINED]);
+        let {buttonIndex, 
+            fid, 
+            address: orderBookieAddress, 
+            options, 
+            result, 
+            prompt, 
+            transactionHash, 
+            isMined,
+            txFee} = getRequestProps(req, [RequestProps.ADDRESS, 
+                                            RequestProps.BUTTON_INDEX, 
+                                            RequestProps.FID, 
+                                            RequestProps.OPTIONS, 
+                                            RequestProps.RESULT, 
+                                            RequestProps.PROMPT, 
+                                            RequestProps.TRANSACTION_HASH, 
+                                            RequestProps.IS_MINED,
+                                            RequestProps.TX_FEE]);
 
         const addresses = (await kv.sscan(`${fid}:addresses`, 0))[1] || [];
 
@@ -50,10 +66,10 @@ export async function GET(req: NextRequest) {
                 if (result === -1) {
                     totalStaked += stake;
                     if (overallPick === pick) {
-                        totalPayout += toWin + stake;
+                        totalPayout += (1 - txFee) * toWin + stake;
                     }
                     else {
-                        totalPayout -= toWin + stake;
+                        totalPayout -= (1 - txFee) * toWin + stake;
                     }
                 }
                 else
@@ -61,10 +77,10 @@ export async function GET(req: NextRequest) {
                     totalStaked += stakeUsed;
                     if (result === pick) { // Calculate the total payout if bet pick is the same as the result
                         if (overallPick === pick) {
-                            totalPayout += toWinFilled + stakeUsed;
+                            totalPayout += (1 - txFee) * toWinFilled + stakeUsed;
                         }
                         else {
-                            totalPayout -= toWinFilled + stakeUsed;
+                            totalPayout -= (1 - txFee) * toWinFilled + stakeUsed;
                         }
                     }
                 }

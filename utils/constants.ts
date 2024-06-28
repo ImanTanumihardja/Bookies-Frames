@@ -123,7 +123,7 @@ export enum DatabaseKeys {
     MARKETS = 'markets',
     REFERRALS = "referrals",
     ADDRESSES = "addresses",
-    BETS = "BETS",
+    BETS = "bets",
 }
 
 export const Outcomes = {

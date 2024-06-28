@@ -47,7 +47,6 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
         creationTx = transactions.find(tx => tx.to === '');
     } 
 
-
     // Get orderbookie contract
     const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
     const orderBookie = new ethers.Contract(marketData.address, orderBookieABI, provider)
@@ -100,20 +99,6 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
             txnHash: log.transactionHash
         };
     }));
-
-    placedBetTxns.push({
-        bettor: {
-            address: "0x97C29651cC5C32b249AE17eF0612891d768C8466",
-            fid: 313859,
-            username: "emmaniii",
-            pfpUrl: `https://wrpcd.net/cdn-cgi/image/anim=false,fit=contain,f=auto,w=168/https%3A%2F%2Fi.imgur.com%2FeeFeFVB.png`
-        },
-        stake: 100,
-        pick: 0,
-        odd: marketData.odds[0],
-        timeStamp: 1719337527,
-        txnHash: "0xde3398f71cfafa2ed436c5a8c053c02e698ffb17baf902be08a75bece96f2462"
-    })
     
     return(
         <InnerMarket

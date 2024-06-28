@@ -65,7 +65,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
     const till = startDate - now;
     const hours = Math.ceil(((till) / (60 * 60)) * 10) / 10;
 
-    const spreadPercent = (outcome1Staked / totalStaked) * 100;
+    const spreadPercent = totalStaked !== 0 ? (outcome1Staked / totalStaked) * 100 : 50;
 
     return (
         <Container maxW="container.xl" p={3} marginTop={25} as="main" minH="70vh">
@@ -266,7 +266,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                         timeAgo = `${elapsedHours} hours ago`;
                                     }
 
-                                    let username = txn.bettor.username ? txn.bettor.username : txn.bettor.address;
+                                    let username = txn.bettor.username ? '@' + txn.bettor.username : txn.bettor.address;
                                     username = username.length > 10 ? username.slice(0, 10) + ". . ." : username;
 
                                     const formattedOdd = formatImpliedProbability(txn.odd)

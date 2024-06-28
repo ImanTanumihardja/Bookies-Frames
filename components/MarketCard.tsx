@@ -33,7 +33,7 @@ const MarketCard: FunctionComponent<MarketCardType> = ({
     const till = startDate - now;
     const hours = Math.ceil(((till) / (60 * 60)) * 10) / 10;
 
-    const spreadPercent = (outcome1Staked / totalStaked) * 100;
+    const spreadPercent = totalStaked !== 0 ? (outcome1Staked / totalStaked) * 100 : 50;
 
     return (
         <Box
@@ -93,11 +93,11 @@ const MarketCard: FunctionComponent<MarketCardType> = ({
                             </div>
                         </div>
                     </div>
-                    <div className="w-[584px] h-[5px] flex flex-row items-start justify-center pt-0 px-0 pb-1 box-border">
-                        <div className="h-px w-[585px] relative box-border z-[1] border-t-[1px] border-solid border-darkslategray-200" />
+                    <div className="w-full h-[5px] flex flex-row items-start justify-center pt-0 px-0 pb-1 box-border">
+                        <div className="h-px w-full relative box-border z-[1] border-t-[1px] border-solid border-darkslategray-200" />
                     </div>
-                    <div className="w-[583px] h-5 flex flex-row items-center justify-center gap-[187px] text-smi text-whitesmoke">
-                        <div className="w-[236px] h-4 flex flex-row items-center justify-center gap-[5px]">
+                    <div className="w-full h-5 flex flex-row items-center justify-between gap-[5px] text-smi text-whitesmoke">
+                        <div className="h-4 flex flex-row items-center justify-start gap-[5px]">
                             <div className="relative font-medium inline-block z-[1]">
                                 Bettors: {numBettors}
                             </div>
@@ -106,17 +106,15 @@ const MarketCard: FunctionComponent<MarketCardType> = ({
                                 Total: {Math.round(totalStaked).toLocaleString()} $DEGEN
                             </div>
                         </div>
-                        <div className="h-5 w-40 flex flex-row items-center justify-start gap-[5px] text-lightgray-200">
+                        <div className="h-5 w-50 flex flex-row items-center justify-center gap-[5px] text-lightgray-200">
                             <img
                                 className="w-7 relative rounded-[50%] object-cover z-[1]"
                                 loading="lazy"
                                 alt=""
                                 src={creator.pfpUrl ? creator.pfpUrl : `${process.env.host}/generic_pfp.png`}
                             />
-                            <div className="h-[18px] w-[134px] flex flex-col items-start justify-start pt-0.5 px-0 pb-0 box-border">
-                                <div className="w-[134px] h-4 relative font-medium inline-block z-[1]">
-                                    Created by @{creator.username}
-                                </div>
+                            <div className="font-medium inline-block whitespace-nowrap overflow-hidden text-ellipsis">
+                                Created by @{creator.username}
                             </div>
                         </div>
                     </div>
