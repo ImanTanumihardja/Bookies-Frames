@@ -52,7 +52,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
     onClose = () => {}
 }) => {
 
-    const placeBet = async (_:any, formData:FormData) => {
+    const placeBet = async (_:any, _formData:FormData) => {
         const signer = ethers6Adapter.signer.toEthers({ client: client, account: activeAccount, chain: myChain })
         
         const orderBookie = new ethers.Contract(address, OrderBookieABI, signer)
@@ -72,14 +72,16 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
         // Place bet
         const placeBetTransaction = await orderBookie.placeBet(parsedPick, parsedStake, parsedOdd)
         await placeBetTransaction.wait()
+
+        console.log(odds)
     }
 
     const activeAccount = useActiveAccount();
-    const [state, formAction] = useFormState(placeBet, {});
+    const [_, formAction] = useFormState(placeBet, {});
 
-    const [pick, setPick] = useState(defaultPick);
+    // const [pick, setPick] = useState(defaultPick);
     const [stake, setStake] = useState(0);
-    const [odd, setOdd] = useState(defaultOdd !== null ? formatImpliedProbability(defaultOdd) : "+100");
+    const [_, setOdd] = useState(defaultOdd !== null ? formatImpliedProbability(defaultOdd) : "+100");
 
     useEffect(() => {
         
