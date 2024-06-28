@@ -5,7 +5,7 @@ function PickBet({pick=null, options=[]}) {
     const { getRootProps, getRadioProps } = useRadioGroup({
         name: 'pick',
         defaultValue: pick !== null ? pick.toString() : null,
-        onChange: (value) => {}
+        onChange: (_value) => {}
       })
 
     const group = getRootProps()
