@@ -173,7 +173,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                     </VStack>
                     <PlaceBetButton/>
                     <HStack justifyContent="space-between" alignItems="end" w="100%" h="100%">
-                        <FormLabel requiredIndicator={false} htmlFor="odd" fontSize={"smaller"} color={"gray.400"}>Odd</FormLabel>
+                        <FormLabel requiredIndicator={false} htmlFor="odd" fontSize={"smaller"} color={"gray.400"}>Odds</FormLabel>
                         <NumberInput 
                             size={"xs"} 
                             maxWidth={100} 
