@@ -1,5 +1,16 @@
 "use client"
 import { FunctionComponent, useEffect, useState } from "react";
+import React from "react";
+import { useFormState } from "react-dom";
+import PickBet from "./elements/PickBet";
+import PlaceBetButton from "./elements/PlaceBetButton";
+import { calculatePayout, formatImpliedProbability, parseImpliedProbability } from "@utils/client";
+import { useActiveAccount } from "thirdweb/react";
+import { ethers6Adapter } from "thirdweb/adapters/ethers6";
+import { Accounts, client, DatabaseKeys, myChain, ODDS_DECIMALS, PICK_DECIMALS } from "@utils/constants";
+import { ethers } from "ethers";
+import { orderBookieABI, erc20ABI } from "@abis";
+import { saveBetData as storeBetData } from "../app/actions";
 import {
     Modal,
     ModalOverlay,
@@ -17,25 +28,24 @@ import {
     NumberIncrementStepper,
     NumberDecrementStepper,
     Text,
+    FormControl,
+    InputGroup,
+    InputLeftAddon,
+    useToast
   } from '@chakra-ui/react'
-import React from "react";
-import { useFormState } from "react-dom";
-import PickBet from "./elements/PickBet";
-import PlaceBetButton from "./elements/PlaceBetButton";
-import { formatImpliedProbability } from "@utils/client";
-import { useActiveAccount } from "thirdweb/react";
-import { ethers6Adapter } from "thirdweb/adapters/ethers6";
-import { client, myChain, ODDS_DECIMALS, PICK_DECIMALS } from "@utils/constants";
-import { ethers } from "ethers";
-import { orderBookieABI, erc20ABI } from "@abis";
+import { usePrivy } from "@privy-io/react-auth";
+import { set } from "zod";
 
 export type PlaceBetModal = {
     defaultPick: number | null;
     defaultOdd: number;
+    defaultStake: number;
+    marketId: string;
     address: string;
     prompt: string;
     options: string[];
     odds: number[];
+    symbol: string;
     isOpen: boolean;
     onClose: () => void;
   };
@@ -43,48 +53,86 @@ export type PlaceBetModal = {
 const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
     defaultPick = null,
     defaultOdd = 0.5,
+    defaultStake = 0,
+    marketId = "",
     address = "",
     prompt = "",
     options = [],
     odds = [],
+    symbol = '',
     isOpen = false,
     onClose = () => {}
 }) => {
 
-    const placeBet = async (_:any, _formData:FormData) => {
-        const signer = ethers6Adapter.signer.toEthers({ client: client, account: activeAccount, chain: myChain })
+    const placeBet = async (e) => {
+        try {
+            // const signer = ethers6Adapter.signer.toEthers({ client: client, account: activeAccount, chain: myChain })
+            
+            // const orderBookie = new ethers.Contract(address, orderBookieABI, signer)
+            // const orderBookieInfo = await orderBookie.getBookieInfo()
+            
+            //  // Get accpected token
+            // const acceptedToken = new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, signer)
+            // const decimals = await acceptedToken.decimals()
+
+            // const parsedPick = ethers.parseUnits(pick.toString(), PICK_DECIMALS)
+            // const parsedStake = ethers.parseUnits(stake.toString(), decimals)
+            // const parsedOdd = ethers.parseUnits(odd.toString(), ODDS_DECIMALS)
+
+            // // Approve orderbookie to spend accepted token
+            // await (await acceptedToken.approve(orderBookie.getAddress(),  parsedStake)).wait() //TODO: change to stake
         
-        const orderBookie = new ethers.Contract(address, orderBookieABI, signer)
-        const orderBookieInfo = await orderBookie.getBookieInfo()
-        
-         // Get accpected token
-        const acceptedToken = new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, signer)
-        const decimals = await acceptedToken.decimals()
+            // // Place bet
+            // const placeBetTransaction = await orderBookie.placeBet(parsedPick, parsedStake, parsedOdd)
+            // await placeBetTransaction.wait(1)
 
-        // Approve orderbookie to spend accepted token
-        await (await acceptedToken.approve(orderBookie.getAddress(),  ethers.MaxUint256)).wait() //TODO: change to stake
+            // Save bet information
+            if (privyAccount.authenticated && privyAccount?.user?.farcaster)
+            {
+                const fid = privyAccount.user.farcaster.fid
+                await storeBetData(fid, marketId, activeAccount.address)
+            }
 
-        const parsedPick = ethers.parseUnits('0', PICK_DECIMALS)
-        const parsedStake = ethers.parseUnits('100', decimals)
-        const parsedOdd = ethers.parseUnits('0.5', ODDS_DECIMALS)
-      
-        // Place bet
-        const placeBetTransaction = await orderBookie.placeBet(parsedPick, parsedStake, parsedOdd)
-        await placeBetTransaction.wait()
-
-        console.log(odds)
+            toast({
+                title: "Bet Placed",
+                description: "Your bet has been placed",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            })
+        } catch (e) {
+            toast({
+                title: "Failed to place bet",
+                description: e.message,
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            })
+        }
     }
 
     const activeAccount = useActiveAccount();
-    const [_, formAction] = useFormState(placeBet, {});
+    const privyAccount = usePrivy()
+    const toast = useToast();
 
-    // const [pick, setPick] = useState(defaultPick);
-    const [stake, setStake] = useState(0);
-    const [_odd, setOdd] = useState(defaultOdd !== null ? formatImpliedProbability(defaultOdd) : "+100");
+    // Form state
+    const [pick, setPick] = useState(defaultPick);
+    const [stake, setStake] = useState(defaultStake);
+    const [odd, setOdd] = useState(defaultOdd);
 
     useEffect(() => {
-        
-    }, [activeAccount]);
+        setPick(isOpen ? pick : null)
+
+        setOdd(pick === null ? defaultOdd : odds[pick])
+
+        if (isOpen === false)
+        {
+            setStake(0)
+        }
+
+        setStake(defaultStake)
+
+    }, [defaultOdd, isOpen, pick]);
 
 
     return (
@@ -94,58 +142,67 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
             <ModalHeader fontSize={"md"} color={"gray.400"}>Place Bet</ModalHeader>
             <ModalCloseButton />
             <ModalBody className="font-inter text-inter">
-                <form action={formAction}>
+                <form action={placeBet}>
+                    <FormControl isRequired>
                     <VStack alignItems={"start"}>
                         <Heading fontSize={"lg"}>{prompt}</Heading>
                         <div className="w-full">
-                            <FormLabel htmlFor="pick" color={"gray.400"}>Pick</FormLabel>
-                            <PickBet pick={defaultPick} options={options}/>
+                            <FormLabel requiredIndicator={false} htmlFor="pick" color={"gray.400"}>Pick</FormLabel>
+                            <PickBet pickHandler={setPick} defaultPick={defaultPick} options={options}/>
                         </div>
                         <div className="w-full">
-                            <FormLabel htmlFor="stake" color={"gray.400"}>Stake</FormLabel>
-                            <NumberInput 
-                                max={5000} 
-                                min={0} 
-                                w="100%"
-                                value={stake} 
-                                onChange={(value: string) => {setStake(parseFloat(value))}}
-                            >
-                                <NumberInputField placeholder="0"/>
-                                <NumberInputStepper>
-                                    <NumberIncrementStepper />
-                                    <NumberDecrementStepper />
-                                </NumberInputStepper>
-                            </NumberInput>
+                            <FormLabel requiredIndicator={false} htmlFor="stake" color={"gray.400"}>Stake</FormLabel>
+                            <InputGroup>
+                                <InputLeftAddon>${symbol}</InputLeftAddon>
+                                <NumberInput 
+                                    max={5000} 
+                                    min={0} 
+                                    w="100%"
+                                    value={stake} 
+                                    precision={2}
+                                    onChange={(value: string) => {setStake(parseFloat(value))}}
+                                >
+                                    <NumberInputField placeholder="0"/>
+                                    <NumberInputStepper>
+                                        <NumberIncrementStepper />
+                                        <NumberDecrementStepper />
+                                    </NumberInputStepper>
+                                </NumberInput>
+                            </InputGroup>
                         </div>
                     </VStack>
                     <PlaceBetButton/>
                     <HStack justifyContent="space-between" alignItems="end" w="100%" h="100%">
-                        <FormLabel fontSize={"smaller"} color={"gray.400"}>Odds</FormLabel>
+                        <FormLabel requiredIndicator={false} htmlFor="odd" fontSize={"smaller"} color={"gray.400"}>Odd</FormLabel>
                         <NumberInput 
                             size={"xs"} 
-                            width={75} 
+                            maxWidth={100} 
                             marginBottom={1}
-                            value={defaultOdd} 
-                            onChange={(value: string) => {setOdd(value)}}>
-                            <NumberInputField placeholder="+100"/>
+                            max={300} 
+                            min={-300}
+                            value={formatImpliedProbability(odd)}
+                            onChange={(value: string) => {setOdd(parseImpliedProbability(value))}}
+                        >
+                            <NumberInputField/>
                             <NumberInputStepper>
                                 <NumberIncrementStepper sx={{ fontSize: '0.5em'}} />
                                 <NumberDecrementStepper sx={{ fontSize: '0.5em' }} />
                             </NumberInputStepper>
                         </NumberInput>
                     </HStack>
-                    <HStack justifyContent="space-between" alignItems="center" w="100%" h="100%">
-                        <FormLabel fontSize={"smaller"} color={"gray.400"}>Filled</FormLabel>
+                    <HStack justifyContent="space-between" alignItems="center" w="100%" h="100%" paddingY={1}>
+                        <Text fontSize={"smaller"} color={"gray.400"}>Filled</Text>
                         <Text fontSize={"smaller"}>
-                            100%
+                            0%
                         </Text>
                     </HStack>
-                    <HStack justifyContent="space-between" alignItems="center" w="100%" h="100%">
-                        <FormLabel fontSize={"smaller"} color={"gray.400"}>Payout</FormLabel>
+                    <HStack justifyContent="space-between" alignItems="center" w="100%" h="100%" paddingY={1}>
+                        <Text fontSize={"smaller"} color={"gray.400"}>Payout</Text>
                         <Text fontSize={"smaller"} >
-                            {stake} $DEGEN
+                            {calculatePayout(odd, stake).toFixed(2)} ${symbol}
                         </Text>
                     </HStack>
+                    </FormControl>
                 </form>
             </ModalBody>
             </ModalContent>

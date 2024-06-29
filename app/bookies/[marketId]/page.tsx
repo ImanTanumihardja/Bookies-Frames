@@ -3,7 +3,7 @@ import { Frame, getFrame, getFrameFlattened } from "frames.js";
 import type { Metadata } from "next";
 import {GET} from '../../api/bookies/[eventName]/route'
 import { NextRequest } from "next/server";
-import { Accounts, ODDS_DECIMALS, PICK_DECIMALS, RequestProps } from "@utils/constants";
+import { Accounts, ALEA_FID, BOOKIES_FID, ODDS_DECIMALS, PICK_DECIMALS, RequestProps } from "@utils/constants";
 import { generateUrl, neynarClient } from "@utils";
 import getMarket from "@scripts/getMarket";
 import { MarketData } from "@types";
@@ -69,7 +69,7 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
         return parsedLog?.name === 'PlacedBet';
     }).reverse().slice(0, 10);
 
-    const placedBetTxns = await Promise.all(placedBetLogs.map(async (log) => {
+    let placedBetTxns = await Promise.all(placedBetLogs.map(async (log) => {
         const parsedLog = orderBookie.interface.parseLog(log);
 
         const bettor = parsedLog.args.bettor
@@ -77,28 +77,32 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
         const pick = parseFloat(ethers.formatUnits(parsedLog.args.pick, PICK_DECIMALS));
         const odd = parseFloat(ethers.formatUnits(parsedLog.args.odd, ODDS_DECIMALS));
 
-        // Get tx from log
-        const tx = await provider.getTransaction(log.transactionHash);
-
         // Get profile if possible
-        const fid = (await kv.hget(tx.from, "fid")) as number
-
-        const profile = (await neynarClient.fetchBulkUsers([fid])).users.map((profile:any) => profile)[0]
+        const fid = (await kv.hget(bettor, "fid")) as number
+        let profile;
+        let pfpUrl;
+        if (fid !== null) {
+            profile = (await neynarClient.fetchBulkUsers([fid])).users.map((profile:any) => profile)[0]
+            pfpUrl = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(profile.pfp_url)}`
+        }
 
         return {
             bettor: {
                 address: bettor,
-                fid: profile.fid,
-                username: profile.username,
-                pfpUrl: `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(profile.pfp_url)}`
+                fid: profile?.fid,
+                username: profile?.username,
+                pfpUrl: pfpUrl
             },
             stake: stake,
             pick: pick,
             odd: odd,
-            timeStamp: parsedLog.args.timestamp,
+            timestamp: parseInt(parsedLog.args.timeStamp),
             txnHash: log.transactionHash
         };
     }));
+
+    // Filter out alea and bookies bets
+    placedBetTxns = placedBetTxns.filter(txn => txn.bettor.fid !== ALEA_FID && txn.bettor.fid !== BOOKIES_FID);
     
     return(
         <InnerMarket

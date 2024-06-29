@@ -11,13 +11,13 @@ const ConnectFarcasterButton = () => {
     ?
     <Button size="lg">
       <HStack gap={2}>
-        <Image borderRadius={25} boxSize={9} src={user?.farcaster?.pfp}/>
+        <Image borderRadius={25} boxSize={9} src={user?.farcaster?.pfp ? user?.farcaster?.pfp : '/generic_pfp.png'}/>
         <Text>{user?.farcaster?.displayName}</Text>
       </HStack>
     </Button> 
     :
     <Button  onClick={login}> 
-      <Image src={`${process.env.HOST}/frame-209.svg`}/>
+      <Image src={`/frame-209.svg`}/>
       Connect Farcaster
     </Button>
   );

@@ -11,7 +11,7 @@ const Header = () => {
           <IconButton 
             size='lg' 
             variant='ghost' 
-            icon={<Image boxSize='40px' src={`${process.env.HOST || ''}/icon_transparent.png`} />} 
+            icon={<Image boxSize='40px' src={`/icon_transparent.png`} />} 
             aria-label='logo'
             onClick={() => window.location.href = '/'}
           />

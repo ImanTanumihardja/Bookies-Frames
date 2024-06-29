@@ -3,7 +3,9 @@ import { FunctionComponent, useState } from "react";
 import { Container, Button, Table, TableContainer, Tr, Th, Tbody, Td, Thead, useDisclosure } from "@chakra-ui/react";
 import { UserType } from "@types";
 import PlaceBetModal from "./PlaceBetModal";
-import { formatImpliedProbability } from "@utils/client";
+import { calculatePayout, formatImpliedProbability } from "@utils/client";
+import { useToast } from '@chakra-ui/react'
+import SpreadBar from "./elements/SpreadBar";
 
 export type MarketInnerType = {
     marketId: string;
@@ -27,7 +29,7 @@ export type PlacedBetTxnType = {
     stake: number
     odd: number
     pick: number
-    timeStamp: number
+    timestamp: number
     txnHash: string
 }
 
@@ -48,10 +50,32 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
     symbol = "",
 }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [placeBetModalProps, setPlaceBetModalProps] = useState({ pick: null, odd: 0.5 });
+    const [placeBetModalProps, setPlaceBetModalProps] = useState({ pick: null, odd: 0.5, stake: 0 });
+    const toast = useToast()
 
-    const handlePlaceBetClick = (pick=null, odd=0.5) => {
-        setPlaceBetModalProps({ pick, odd });
+    const handlePlaceBetClick = (pick=null, odd=0.5, stake=0) => {
+        // if (startDate < new Date().getTime() / 1000) {
+        //     if (!toast.isActive("market-closed")) {
+        //         toast({
+        //             id: "market-closed",
+        //             title: "Market Closed",
+        //             description: "This market has already closed.",
+        //             status: "error",
+        //             duration: 9000,
+        //             isClosable: true,
+        //         })
+        //     }
+        //     return;
+        // }
+
+        // Cap stake between 0 and 5000
+        stake = Math.min(5000, Math.max(0, stake));
+        stake = parseFloat(stake.toFixed(2));
+
+        // Cap odd between 0 and 1
+        odd = Math.min(1, Math.max(0, odd));
+
+        setPlaceBetModalProps({ pick, odd, stake });
         onOpen();
       };
 
@@ -90,7 +114,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                 className="w-7 relative rounded-[50%] object-cover z-[1]"
                                 loading="lazy"
                                 alt=""
-                                src={creator.pfpUrl}
+                                src={creator.pfpUrl ? creator.pfpUrl : `/generic_pfp.png`}
                             />
                             Created by @{creator.username}
                         </div>
@@ -188,17 +212,15 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                     </div>
                     </div>
                     <div className="self-stretch flex flex-col items-start justify-start gap-[20px] max-w-full text-left text-mini text-lightgray-100">
-                    <div className="w-full h-5 rounded-xl bg-whitesmoke flex flex-row items-start justify-start z-[1]">
-                        <div className="relative rounded-xl h-5 [background:linear-gradient(90deg,_#feae26,_#d44fc9_49.5%,_#7a65ec)]" style={{ width: `${spreadPercent}%` }} />
-                    </div>
-                    <div className="self-stretch flex flex-row items-start justify-between gap-[20px] mq450:flex-wrap">
-                        <div className="relative uppercase font-semibold z-[3]">
-                        {options[0]} - {Math.round(outcome1Staked).toLocaleString()} ${symbol}
+                        <SpreadBar spreadPercent={spreadPercent}/>
+                        <div className="self-stretch flex flex-row items-start justify-between gap-[20px] mq450:flex-wrap">
+                            <div className="relative uppercase font-semibold z-[3]">
+                            {options[0]} - {Math.round(outcome1Staked).toLocaleString()} ${symbol}
+                            </div>
+                            <div className="relative uppercase font-semibold text-right z-[3]">
+                            {options[1]} - {Math.round(outcome2Staked).toLocaleString()} ${symbol}
+                            </div>
                         </div>
-                        <div className="relative uppercase font-semibold text-right z-[3]">
-                        {options[1]} - {Math.round(outcome2Staked).toLocaleString()} ${symbol}
-                        </div>
-                    </div>
                     </div>
                 </div>
             </div>
@@ -253,7 +275,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                 placedBetTxns.map((txn, index) => {
                                     // Parse timestamp to be time ago
                                     const now = new Date().getTime() / 1000;
-                                    const elapsedSeconds = Math.ceil(now - txn.timeStamp);
+                                    const elapsedSeconds = Math.ceil(now - txn.timestamp);
                                 
                                     let timeAgo;
                                     if (elapsedSeconds < 60) {
@@ -267,7 +289,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                     }
 
                                     let username = txn.bettor.username ? '@' + txn.bettor.username : txn.bettor.address;
-                                    username = username.length > 10 ? username.slice(0, 10) + ". . ." : username;
+                                    username = username.length > 10 ? username.slice(0, 10) + " . . . " : username;
 
                                     const formattedOdd = formatImpliedProbability(txn.odd)
                                     
@@ -279,18 +301,31 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                                     <img
                                                         className="w-7 relative rounded-[50%] object-cover z-[1]"
                                                         loading="lazy"
-                                                        alt={`${process.env.host}/generic_pfp.png`}
-                                                        src={txn.bettor.pfpUrl ? txn.bettor.pfpUrl : `${process.env.host}/generic_pfp.png`}
+                                                        alt={`/generic_pfp.png`}
+                                                        src={txn.bettor.pfpUrl ? txn.bettor.pfpUrl : `/generic_pfp.png`}
                                                     />
                                                     {username} bet {txn.stake} ${symbol} on {options[txn.pick]} at {formattedOdd}
                                                 </div>
                                             </Td>
                                             <Td>
                                                 <div className="flex flex-direction-row gap-2">
-                                                    <Button>
+                                                    <Button 
+                                                        onClick={() => {
+                                                            const oppositePick = txn.pick === 0 ? 1 : 0;
+                                                            const oppositeOdd = odds[oppositePick];
+
+                                                            // Calculate the stake to match the opposite side
+                                                            const oppositeStake = calculatePayout(oppositeOdd, txn.stake) - txn.stake;
+                                                            handlePlaceBetClick(oppositePick, oppositeOdd, oppositeStake)
+                                                        }}
+                                                    >
                                                         Bet Against
                                                     </Button>
-                                                    <Button>
+                                                    <Button
+                                                        onClick={() => {
+                                                            handlePlaceBetClick(txn.pick, txn.odd, txn.stake)
+                                                        }}
+                                                    >
                                                         Copy Bet
                                                     </Button>
                                                 </div>
@@ -314,12 +349,16 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                     </Table>
                 </TableContainer>
             </div>
-            <PlaceBetModal defaultPick={placeBetModalProps.pick} 
+            <PlaceBetModal 
+                defaultPick={placeBetModalProps.pick} 
                 defaultOdd={placeBetModalProps.odd} 
+                defaultStake={placeBetModalProps.stake}
+                marketId={marketId}
                 address={address} 
                 prompt={prompt} 
                 options={options} 
                 odds={odds} 
+                symbol={symbol}
                 isOpen={isOpen} 
                 onClose={onClose}/>
         </Container>

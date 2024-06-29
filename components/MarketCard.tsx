@@ -2,6 +2,7 @@
 import { FunctionComponent } from "react";
 import { Box } from "@chakra-ui/react";
 import { UserType } from "@types";
+import SpreadBar from "./elements/SpreadBar";
 
 export type MarketCardType = {
     marketId: string;
@@ -68,9 +69,7 @@ const MarketCard: FunctionComponent<MarketCardType> = ({
             </div>
             <div className="w-[596px] h-[104px] flex flex-row items-start justify-end py-0 pr-2.5 pl-0 box-border text-mini text-lightgray-100">
                 <div className="h-[104px] w-[586px] flex flex-col items-end justify-start gap-[12px]">
-                    <div className="w-[584px] h-3 rounded-xl bg-whitesmoke flex flex-row items-start justify-start z-[1]">
-                        <div className="relative rounded-xl h-3 [background:linear-gradient(90deg,_#feae26,_#d44fc9_49.5%,_#7a65ec)]" style={{ width: `${spreadPercent}%` }} />
-                    </div>
+                    <SpreadBar spreadPercent={spreadPercent}/>
                     <div className="w-[586px] h-[30px] flex flex-row items-start justify-start gap-[176px]">
                         <div className="h-[30px] w-[220px] flex flex-col items-start justify-start pt-0.5 px-0 pb-0 box-border">
                             <div className="w-[220px] h-7 flex flex-row items-start justify-start gap-[10px]">
@@ -111,7 +110,7 @@ const MarketCard: FunctionComponent<MarketCardType> = ({
                                 className="w-7 relative rounded-[50%] object-cover z-[1]"
                                 loading="lazy"
                                 alt=""
-                                src={creator.pfpUrl ? creator.pfpUrl : `${process.env.host}/generic_pfp.png`}
+                                src={creator.pfpUrl ? creator.pfpUrl : `/generic_pfp.png`}
                             />
                             <div className="font-medium inline-block whitespace-nowrap overflow-hidden text-ellipsis">
                                 Created by @{creator.username}

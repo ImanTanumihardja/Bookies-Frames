@@ -4,6 +4,7 @@ import { Button } from "@chakra-ui/react"
 import { client, myChain } from "@utils/constants";
 import { useActiveAccount, ConnectButton  } from "thirdweb/react";
 import { createWallet, inAppWallet } from "thirdweb/wallets";
+import { useFormStatus } from 'react-dom'
 
 const wallets = [
     inAppWallet(),
@@ -15,6 +16,7 @@ const wallets = [
 function PlaceBetButton() {
 
     const account = useActiveAccount()
+    const { pending } = useFormStatus()
     
     return (
         account ?  
@@ -26,6 +28,7 @@ function PlaceBetButton() {
             borderRadius={15}
             bgGradient="linear(to-r, #feae26, #d44fc9 49.5%, #7a65ec)"
             color="white"
+            isLoading={pending}
             _hover={{
                 bgGradient: "linear(to-r, rgba(254, 174, 38, 0.8), rgba(212, 79, 201, 0.8) 49.5%, rgba(122, 101, 236, 0.8))",
                 color: "rgba(255, 255, 255, 0.8)",

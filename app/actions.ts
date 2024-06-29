@@ -56,15 +56,15 @@ export async function createMarketAction(
 }
 
 export async function settleMarketAction(
+    marketId: string,
     _: any, 
     formData: FormData
     ) {
         
     const schema = z.object({
-        marketId: z.string(),
         result: z.number(),
     })
-    const {marketId, result} = schema.parse({
+    const {result} = schema.parse({
         marketId: formData.get('marketId'),
         result: parseFloat(formData.get('result') as string),
     })
@@ -138,20 +138,19 @@ export async function getAllMarketsAction() {
 }
 
 export async function placeBetForAction(
+    marketId: string,
     _: any, 
     formData: FormData
     ) {
         
     const schema = z.object({
         bettor: z.string(),
-        marketId: z.string(),
         fid: z.number(),
         stake: z.number(),
         pick: z.number(),
     })
-    const { bettor, marketId, fid, stake, pick } = schema.parse({
+    const { bettor, fid, stake, pick } = schema.parse({
         bettor: formData.get('bettor'),
-        marketId: formData.get('marketId'),
         fid: parseInt(formData.get('fid') as string),
         stake: parseFloat(formData.get('stake') as string),
         pick: parseFloat(formData.get('pick') as string),
@@ -168,39 +167,36 @@ export async function placeBetForAction(
     }
 }
 
-// export async function placeBetAction(
-//     state: any, 
-//     _formData: FormData
-//     ) {
+export async function saveBetData(fid: number, marketId: string, address: string) {
+    // Add users connect address
+    await kv.sadd(`${fid.toString()}:addresses`, address).catch(async (e) => {
+        console.log('Error adding address to kv: ', e)
+        // Try again
+        await kv.sadd(`${fid.toString()}:addresses`, address)
+    })
 
-//     console.log(state)
-//     const signer = ethers6Adapter.signer.toEthers({ client: client, account: formData.get('account') as unknown as Account, chain: myChain })
+    // Add reverse search
+    await kv.hset(address, {"fid": fid.toString()}).catch(async (e) => {
+        console.log('Error adding address to kv: ', e)
+        // Try again
+        await kv.hset(address, {"fid": fid.toString()})
+    })
 
-//     console.log(signer)
-        
-//     const schema = z.object({
-//         bettor: z.string(),
-//         marketId: z.string(),
-//         fid: z.number().optional(),
-//         stake: z.number(),
-//         pick: z.number(),
-//     })
+    // Add user to bettors list
+    await kv.sadd(`${Accounts.BOOKIES}:${marketId}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
+        console.error('Error adding user to bettors list: ', error);
+        // Try again
+        await kv.sadd(`${Accounts.BOOKIES}:${marketId}:${DatabaseKeys.BETTORS}`, fid).catch(() => {
+        throw new Error('Error creating bet');
+        })
+    })
 
-//     const { bettor, marketId, fid, stake, pick } = schema.parse({
-//         bettor: formData.get('bettor'),
-//         marketId: formData.get('marketId'),
-//         fid: parseInt(formData.get('fid') as string),
-//         stake: parseFloat(formData.get('stake') as string),
-//         pick: parseFloat(formData.get('pick') as string),
-//     })
-
-//     try {
-//         await placeBet(bettor, marketId, fid, stake, pick)
-//         revalidatePath('/')
-//         return {message: `Placed bet for ${fid} on option ${pick + 1} with ${stake} stake`}
-//     }
-//     catch (e) {
-//         console.error(e)
-//         return {message: `Failed to place bet: ${e}` }
-//     }
-// }
+    // Add market to user's bet list
+    await kv.sadd(`${fid}:${DatabaseKeys.BETS}`, marketId).catch(async (error) => {
+        console.error('Error adding event to user:', error);
+        // Try again
+        await kv.sadd(`${fid}:${DatabaseKeys.BETS}`, marketId).catch(() => {
+        throw new Error('Error creating bet');
+        })
+    })
+}

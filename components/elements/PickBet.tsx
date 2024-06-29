@@ -1,11 +1,11 @@
 import { HStack, useRadioGroup } from "@chakra-ui/react"
 import RadioCard from "./RadioCard"
 
-function PickBet({pick=null, options=[]}) {
+function PickBet({defaultPick=null, options=[], pickHandler=(value) => {}}) {
     const { getRootProps, getRadioProps } = useRadioGroup({
         name: 'pick',
-        defaultValue: pick !== null ? pick.toString() : null,
-        onChange: (_value) => {}
+        defaultValue: defaultPick !== null ? defaultPick.toString() : null,
+        onChange: pickHandler
       })
 
     const group = getRootProps()

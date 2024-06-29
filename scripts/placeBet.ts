@@ -12,19 +12,19 @@ const kv = createClient({
   token: process.env['KV_REST_API_TOKEN'] || '',
 });
 
-export default async function placeBet(bettorAddress:string, eventName:string, fid:number, stake:number, pick:number) {
+export default async function placeBet(bettorAddress:string, marketId:string, fid:number, stake:number, pick:number) {
   // Get orderbookie info
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
   const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
 
   // Get event info from database
-  let eventData: Market | null = await kv.hgetall(`${eventName}`);
+  let eventData: Market | null = await kv.hgetall(`${marketId}`);
 
   if (eventData === null) {
-    throw new Error(`Event: ${eventName} does not exist`)
+    throw new Error(`Event: ${marketId} does not exist`)
   }
 
-  console.log(`Event: ${eventName}`);
+  console.log(`Event: ${marketId}`);
   console.log(eventData);
 
   const orderBookieAddress = eventData?.address.toString()
@@ -69,19 +69,19 @@ export default async function placeBet(bettorAddress:string, eventName:string, f
   })
 
   // Add user to bettors list
-  await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
+  await kv.sadd(`${Accounts.BOOKIES}:${marketId}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
     console.error('Error adding user to bettors list: ', error);
     // Try again
-    await kv.sadd(`${Accounts.BOOKIES}:${orderBookieInfo.eventName}:${DatabaseKeys.BETTORS}`, fid).catch(() => {
+    await kv.sadd(`${Accounts.BOOKIES}:${orderBookieInfo.marketId}:${DatabaseKeys.BETTORS}`, fid).catch(() => {
       throw new Error('Error creating bet');
     })
   })
 
   // Add market to user's bet list
-  await kv.sadd(`${fid}:${DatabaseKeys.BETS}`, eventName).catch(async (error) => {
+  await kv.sadd(`${fid}:${DatabaseKeys.BETS}`, marketId).catch(async (error) => {
     console.error('Error adding event to user:', error);
     // Try again
-    await kv.sadd(`${fid}:${DatabaseKeys.BETS}`, eventName).catch(() => {
+    await kv.sadd(`${fid}:${DatabaseKeys.BETS}`, marketId).catch(() => {
       throw new Error('Error creating bet');
     })
   })

@@ -8,19 +8,19 @@ const HomeHero: FunctionComponent = () => {
 
   return (
     <VStack w={'full'} rounded="lg" className="space-y-10 font-inter" alignItems='center' justifyItems='center'>
-      <Flex gap={5} flexDirection="row" className="text-center">
-        <div className="rounded-lg bg-gray-300 box-border flex flex-row items-start justify-start py-1.5 px-3 opacity-[0.9] text-goldenrod border-[1px] border-solid border-darkolivegreen">
-          Onchain
-        </div>
-        <div className="rounded-lg bg-gray-400 box-border flex flex-row items-start justify-start py-1.5 px-3 opacity-[0.9] text-dodgerblue border-[1px] border-solid border-dodgerblue relative inline-block">
-          Built on Base
-        </div>
-        <div className="rounded-lg bg-gray-400 box-border flex flex-row items-start justify-start py-1.5 px-3 opacity-[0.9] text-darkorchid border-[1px] border-solid border-mediumslateblue">
-          Bet Degen Tips
-        </div>
-        <div className="rounded-lg bg-gray-500 box-border flex flex-row items-start justify-start py-1.5 px-3 opacity-[0.9] text-lightseagreen border-[1px] border-solid border-darkslategray-100">
-          Permissionless Settlement
-        </div>
+      <Flex gap={5} flexDirection="row" className="text-center" display={["none", "none", "none", "none", "flex"]}>
+      <div className="rounded-lg bg-gray-300 box-border flex flex-row items-start justify-start py-1.5 px-3 opacity-[0.9] text-goldenrod border-[1px] border-solid border-darkolivegreen" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        Onchain
+      </div>
+      <div className="rounded-lg bg-gray-400 box-border flex flex-row items-start justify-start py-1.5 px-3 opacity-[0.9] text-dodgerblue border-[1px] border-solid border-dodgerblue relative inline-block" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        Built on Base
+      </div>
+      <div className="rounded-lg bg-gray-400 box-border flex flex-row items-start justify-start py-1.5 px-3 opacity-[0.9] text-darkorchid border-[1px] border-solid border-mediumslateblue" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        Bet Degen Tips
+      </div>
+      <div className="rounded-lg bg-gray-500 box-border flex flex-row items-start justify-start py-1.5 px-3 opacity-[0.9] text-lightseagreen border-[1px] border-solid border-darkslategray-100" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        Permissionless Settlement
+      </div>
       </Flex>
       <Flex direction="column" alignItems='center'>
         <img
