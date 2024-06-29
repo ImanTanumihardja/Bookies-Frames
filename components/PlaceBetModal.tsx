@@ -62,7 +62,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
     onClose = () => {}
 }) => {
 
-    const placeBet = async (e) => {
+    const placeBet = async (_) => {
         try {
             const signer = ethers6Adapter.signer.toEthers({ client: client, account: activeAccount, chain: myChain })
             
