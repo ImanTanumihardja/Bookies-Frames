@@ -1,13 +1,12 @@
 "use client"
 import { FunctionComponent, useEffect, useState } from "react";
 import React from "react";
-import { useFormState } from "react-dom";
 import PickBet from "./elements/PickBet";
 import PlaceBetButton from "./elements/PlaceBetButton";
 import { calculatePayout, formatImpliedProbability, parseImpliedProbability } from "@utils/client";
 import { useActiveAccount } from "thirdweb/react";
 import { ethers6Adapter } from "thirdweb/adapters/ethers6";
-import { Accounts, client, DatabaseKeys, myChain, ODDS_DECIMALS, PICK_DECIMALS } from "@utils/constants";
+import { client, myChain, ODDS_DECIMALS, PICK_DECIMALS } from "@utils/constants";
 import { ethers } from "ethers";
 import { orderBookieABI, erc20ABI } from "@abis";
 import { saveBetData as storeBetData } from "../app/actions";
@@ -34,7 +33,6 @@ import {
     useToast
   } from '@chakra-ui/react'
 import { usePrivy } from "@privy-io/react-auth";
-import { set } from "zod";
 
 export type PlaceBetModal = {
     defaultPick: number | null;
@@ -66,25 +64,25 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
 
     const placeBet = async (e) => {
         try {
-            // const signer = ethers6Adapter.signer.toEthers({ client: client, account: activeAccount, chain: myChain })
+            const signer = ethers6Adapter.signer.toEthers({ client: client, account: activeAccount, chain: myChain })
             
-            // const orderBookie = new ethers.Contract(address, orderBookieABI, signer)
-            // const orderBookieInfo = await orderBookie.getBookieInfo()
+            const orderBookie = new ethers.Contract(address, orderBookieABI, signer)
+            const orderBookieInfo = await orderBookie.getBookieInfo()
             
-            //  // Get accpected token
-            // const acceptedToken = new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, signer)
-            // const decimals = await acceptedToken.decimals()
+             // Get accpected token
+            const acceptedToken = new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, signer)
+            const decimals = await acceptedToken.decimals()
 
-            // const parsedPick = ethers.parseUnits(pick.toString(), PICK_DECIMALS)
-            // const parsedStake = ethers.parseUnits(stake.toString(), decimals)
-            // const parsedOdd = ethers.parseUnits(odd.toString(), ODDS_DECIMALS)
+            const parsedPick = ethers.parseUnits(pick.toString(), PICK_DECIMALS)
+            const parsedStake = ethers.parseUnits(stake.toString(), decimals)
+            const parsedOdd = ethers.parseUnits(odd.toString(), ODDS_DECIMALS)
 
-            // // Approve orderbookie to spend accepted token
-            // await (await acceptedToken.approve(orderBookie.getAddress(),  parsedStake)).wait() //TODO: change to stake
+            // Approve orderbookie to spend accepted token
+            await (await acceptedToken.approve(orderBookie.getAddress(),  parsedStake)).wait() //TODO: change to stake
         
-            // // Place bet
-            // const placeBetTransaction = await orderBookie.placeBet(parsedPick, parsedStake, parsedOdd)
-            // await placeBetTransaction.wait(1)
+            // Place bet
+            const placeBetTransaction = await orderBookie.placeBet(parsedPick, parsedStake, parsedOdd)
+            await placeBetTransaction.wait(1)
 
             // Save bet information
             if (privyAccount.authenticated && privyAccount?.user?.farcaster)
