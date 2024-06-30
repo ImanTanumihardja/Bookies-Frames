@@ -12,7 +12,7 @@ const ConnectFarcasterButton = () => {
         <Button 
             size="lg"
             onClick={() => {
-                window.location.href = `/${user.farcaster.fid}`;
+                window.location.href = `/profiles/${user.farcaster.fid}`;
             }}
         >
             <HStack gap={2}>

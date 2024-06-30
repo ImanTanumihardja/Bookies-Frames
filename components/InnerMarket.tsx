@@ -304,7 +304,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                                         gap={1} 
                                                         padding={2}
                                                         onClick={() => {
-                                                            openInNewTab(`http://${window.location.host}/${txn.bettor.fid}`)
+                                                            openInNewTab(`http://${window.location.host}/profiles/${txn.bettor.fid}`)
                                                         }}> 
                                                         <img
                                                             className="w-7 relative rounded-[50%] object-cover z-[1]"
