@@ -61,7 +61,7 @@ export default async function ProfilePage({ params: { fid } }: { params: { fid: 
     
                 const filledPercent = stakeUsed / stake
 
-                const payout = stake + (100 - txFee) * toWin
+                const payout = stake + (100 - txFee) * toWin / 100
 
                 if (pick === result) {
                     wins += 1
