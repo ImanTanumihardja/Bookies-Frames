@@ -95,16 +95,20 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                 title: "Bet Placed",
                 description: "Your bet has been placed",
                 status: "success",
-                duration: 9000,
+                duration: 4500,
                 isClosable: true,
+                position:"bottom-right"
             })
+
+            onClose();
         } catch (e) {
             toast({
                 title: "Failed to place bet",
                 description: e.message,
                 status: "error",
-                duration: 9000,
+                duration: 4500,
                 isClosable: true,
+                position:"bottom-right"
             })
         }
     }
@@ -131,7 +135,6 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
         setStake(defaultStake)
 
     }, [defaultOdd, isOpen, pick]);
-
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} isCentered >

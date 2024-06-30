@@ -91,6 +91,7 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
                 address: bettor,
                 fid: profile?.fid,
                 username: profile?.username,
+                displayName: profile?.display_name,
                 pfpUrl: pfpUrl
             },
             stake: stake,
@@ -114,6 +115,7 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
             creator={{
                 address: "",
                 username: creatorProfile?.username,
+                displayName: creatorProfile?.display_name,
                 pfpUrl: creatorPFPUrl,
                 fid: creatorProfile?.fid}}
             outcome1Staked={marketData?.orderBookieInfo.totalStakedOutcome1}

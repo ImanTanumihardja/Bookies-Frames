@@ -8,6 +8,7 @@ import getMarket from '@scripts/getMarket'
 import { revalidatePath } from 'next/cache'
 import { Accounts, DatabaseKeys } from '@utils/constants'
 import { kv } from '@vercel/kv'
+import { ethers } from 'ethers'
 
 export async function createMarketAction(
     _: any, 
@@ -110,7 +111,6 @@ export async function getMarketAction(
 export async function getAllMarketsAction() {
     try {
         // Get events from database
-    
         let result = await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.MARKETS}`, 0);
         let cursor = result[0];
         let marketIds:string[] = result[1] as string[];
@@ -168,6 +168,8 @@ export async function placeBetForAction(
 }
 
 export async function saveBetData(fid: number, marketId: string, address: string) {
+    address = ethers.getAddress(address)
+
     // Add users connect address
     await kv.sadd(`${fid.toString()}:addresses`, address).catch(async (e) => {
         console.log('Error adding address to kv: ', e)

@@ -36,6 +36,7 @@ export default async function MarketsPage() {
                             startDate={event?.startDate}
                             creator={{
                                 username: profile?.username,
+                                displayName: profile?.display_name,
                                 pfpUrl: pfpUrl,
                                 address: '',
                                 fid: 0

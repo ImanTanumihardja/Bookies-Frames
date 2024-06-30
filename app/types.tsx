@@ -25,6 +25,7 @@ export type UserType ={
     address: string
     fid: number
     username: string
+    displayName: string
     pfpUrl: string
 }
 

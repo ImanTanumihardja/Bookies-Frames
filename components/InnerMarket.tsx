@@ -61,8 +61,9 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                     title: "Market Closed",
                     description: "This market has already closed.",
                     status: "error",
-                    duration: 9000,
+                    duration: 4500,
                     isClosable: true,
+                    position:"bottom-right"
                 })
             }
             return;
@@ -81,7 +82,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
 
     const openInNewTab = (url: string) => {
         window.open(url, '_blank', 'noopener,noreferrer');
-      };
+    };
 
     const now = new Date().getTime() / 1000;
 
@@ -250,7 +251,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                 <div className="flex flex-row items-start justify-end py-0 px-[9px] box-border max-w-full">
                     <Button
                         onClick={() => {
-                            openInNewTab(`https://oracle.uma.xyz/settled?chainName=Base&transactionHash=${umaTxn}&eventIndex=101`)
+                            openInNewTab(`https://oracle.uma.xyz/propose?chainName=Base&transactionHash=${umaTxn}&eventIndex=101`)
                         }}>
                         Propose Resolution
                     </Button>
@@ -289,7 +290,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                     }
 
                                     let username = txn.bettor.username ? '@' + txn.bettor.username : txn.bettor.address;
-                                    username = username.length > 10 ? username.slice(0, 10) + " . . . " : username;
+                                    username = username.length > 10 ? username.slice(0, 10) + ". . . " : username;
 
                                     const formattedOdd = formatImpliedProbability(txn.odd)
                                     
@@ -297,14 +298,23 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                         <Tr key={index}>
                                             <Td>{timeAgo}</Td>
                                             <Td className="font-bold"> 
-                                                <div className="flex items-center gap-1">
-                                                    <img
-                                                        className="w-7 relative rounded-[50%] object-cover z-[1]"
-                                                        loading="lazy"
-                                                        alt={`/generic_pfp.png`}
-                                                        src={txn.bettor.pfpUrl ? txn.bettor.pfpUrl : `/generic_pfp.png`}
-                                                    />
-                                                    {username} bet {txn.stake} ${symbol} on {options[txn.pick]} at {formattedOdd}
+                                                <div className="flex items-center">
+                                                    <Button 
+                                                        variant='ghost' 
+                                                        gap={1} 
+                                                        padding={2}
+                                                        onClick={() => {
+                                                            openInNewTab(`http://${window.location.host}/${txn.bettor.fid}`)
+                                                        }}> 
+                                                        <img
+                                                            className="w-7 relative rounded-[50%] object-cover z-[1]"
+                                                            loading="lazy"
+                                                            alt={`/generic_pfp.png`}
+                                                            src={txn.bettor.pfpUrl ? txn.bettor.pfpUrl : `/generic_pfp.png`}
+                                                        />
+                                                        {username} 
+                                                    </Button>
+                                                    bet {txn.stake} ${symbol} on {options[txn.pick]} at {formattedOdd}
                                                 </div>
                                             </Td>
                                             <Td>

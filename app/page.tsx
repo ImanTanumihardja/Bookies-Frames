@@ -35,6 +35,7 @@ export default async function HomePage() {
                         startDate={market?.startDate}
                         creator={{
                             username: profile?.username,
+                            displayName: profile?.display_name,
                             pfpUrl: pfpUrl,
                             address: '',
                             fid: 0
