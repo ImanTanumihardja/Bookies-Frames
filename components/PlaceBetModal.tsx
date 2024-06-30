@@ -73,6 +73,8 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
             const acceptedToken = new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, signer)
             const decimals = await acceptedToken.decimals()
 
+            console.log(pick, stake, odd)
+
             const parsedPick = ethers.parseUnits(pick.toString(), PICK_DECIMALS)
             const parsedStake = ethers.parseUnits(stake.toString(), decimals)
             const parsedOdd = ethers.parseUnits(odd.toString(), ODDS_DECIMALS)
@@ -123,7 +125,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
     const [odd, setOdd] = useState(defaultOdd);
 
     useEffect(() => {
-        setPick(isOpen ? pick : null)
+        setPick(isOpen ? pick !== null ? pick: defaultPick : null)
 
         setOdd(pick === null ? defaultOdd : odds[pick])
 

@@ -2,6 +2,7 @@
 import { FunctionComponent } from "react";
 import { Container, Table, TableContainer, Tr, Th, Tbody, Td, Thead, HStack, IconButton, Button } from "@chakra-ui/react";
 import { UserType } from "@types";
+import {usePrivy} from '@privy-io/react-auth';
 
 export type ProfileType = {
     user: UserType,
@@ -35,24 +36,33 @@ const Profile: FunctionComponent<ProfileType> = ({
         window.open(url, '_blank', 'noopener,noreferrer');
     };
 
+    const {ready, authenticated, logout, user: privyUser} = usePrivy();
+
     return (
         <Container maxW="container.xl" p={3} marginTop={25} as="main" minH="70vh">
-            <HStack paddingBottom={5}>
-                <IconButton
-                    variant="none"
-                    icon={<img className="rounded-[50%] w-[100px]" src={`https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(user.pfpUrl)}`} />}
-                    onClick={() => {
-                        openInNewTab(`https://warpcast.com/${user.username}`);
-                    }} 
-                    aria-label={""}/>
-                <div className="flex flex-col items-start justify-start gap-[12px] text-6xl">
-                    <h2 className="m-0 relative text-inherit font-bold font-inherit inline-block z-[2]">
-                    {user.displayName}
-                    </h2>
-                    <div className="relative text-mid font-inter text-lightgray-300 inline-block">
-                    FID #{user.fid}
+            <HStack paddingBottom={5} justify={"space-between"}>
+                <HStack>
+                    <IconButton
+                        variant="none"
+                        icon={<img className="rounded-[50%] w-[100px]" src={`https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(user.pfpUrl)}`} />}
+                        onClick={() => {
+                            openInNewTab(`https://warpcast.com/${user.username}`);
+                        }} 
+                        aria-label={""}/>
+                    <div className="flex flex-col items-start justify-start gap-[12px] text-6xl">
+                        <h2 className="m-0 relative text-inherit font-bold font-inherit inline-block z-[2]">
+                        {user.displayName}
+                        </h2>
+                        <div className="relative text-mid font-inter text-lightgray-300 inline-block">
+                        FID #{user.fid}
+                        </div>
                     </div>
-                </div>
+                </HStack>
+                {ready && authenticated && privyUser?.farcaster?.fid == user.fid &&
+                <Button onClick={logout}>
+                    Disconnect
+                </Button>
+                }
             </HStack>
             <HStack gap={5} paddingY={5} borderBottom={"1px solid gray"} className="font-inter text-mid">
                 <div className="flex flex-row items-start justify-start min-w-[32px] gap-2">
