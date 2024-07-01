@@ -7,8 +7,10 @@ import { getAllMarketsAction } from "app/actions";
 
 export default async function MarketsPage() {
     // Get all events data
-    const markets: Record<string, MarketData> = await getAllMarketsAction();
-    const marketIds: string[] = Object.keys(markets)
+    const allMarkets: Record<string, MarketData> = await getAllMarketsAction();
+
+    const marketIds: string[] = Object.keys(allMarkets).reverse().slice(0, 10)
+    const markets = Object.values(allMarkets).reverse().slice(0, 10)
 
     return(
         <VStack w={'full'} rounded="lg" className="space-y-10 font-inter" alignItems='center' justifyItems='center'> 
