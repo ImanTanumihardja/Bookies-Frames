@@ -91,9 +91,9 @@ export default async function ProfilePage({ params: { fid } }: { params: { fid: 
     return (
         <Profile
             user={{
-                username: profile.username,
-                displayName: profile.display_name,
-                pfpUrl: profile.pfp_url,
+                username: profile?.username,
+                displayName: profile?.display_name,
+                pfpUrl: profile?.pfp_url,
                 address: addresses[0],
                 fid: fid,
             }}

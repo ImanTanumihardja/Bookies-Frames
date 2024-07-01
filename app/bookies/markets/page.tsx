@@ -10,13 +10,6 @@ export default async function MarketsPage() {
     const markets: Record<string, MarketData> = await getAllMarketsAction();
     const marketIds: string[] = Object.keys(markets)
 
-     // Get creators profile 
-     const creators = Object.values(markets).map((event:any) => event.creator)
-     let profiles = []
-     if (creators.length != 0){
-        profiles = (await neynarClient.fetchBulkUsers(creators)).users.map((profile:any) => profile)
-    }
-
     return(
         <VStack w={'full'} rounded="lg" className="space-y-10 font-inter" alignItems='center' justifyItems='center'> 
             <div className="font-semibold font-inherit text-56xl text-white flex items-baseline">
@@ -24,16 +17,16 @@ export default async function MarketsPage() {
                 <h1> &nbsp; Markets</h1>
             </div>
             <VStack gap={5}>
-                {Object.values(markets).map(async(event:any, index) => {
+                {Object.values(markets).map(async(market:any, index) => {
                     // Get creator user data from neynar
-                    const profile = profiles[index]
+                    const profile = (await neynarClient.fetchBulkUsers([market.creator])).users.map((profile:any) => profile)[0]
                     const pfpUrl  = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(profile.pfp_url)}` 
                     return <MarketCard 
                             marketId={marketIds[index]}
                             key={index} 
-                            prompt={event?.prompt} 
-                            options={event?.options}
-                            startDate={event?.startDate}
+                            prompt={market?.prompt} 
+                            options={market?.options}
+                            startDate={market?.startDate}
                             creator={{
                                 username: profile?.username,
                                 displayName: profile?.display_name,
@@ -41,10 +34,10 @@ export default async function MarketsPage() {
                                 address: '',
                                 fid: 0
                             }}
-                            outcome1Staked={event?.orderBookieInfo.totalStakedOutcome1}
-                            outcome2Staked={event?.orderBookieInfo.totalStakedOutcome2}
-                            totalStaked={event?.orderBookieInfo.totalStakedOutcome1 + event?.orderBookieInfo.totalStakedOutcome2}
-                            numBettors={event.orderBookieInfo.bettors.length}/>
+                            outcome1Staked={market?.orderBookieInfo.totalStakedOutcome1}
+                            outcome2Staked={market?.orderBookieInfo.totalStakedOutcome2}
+                            totalStaked={market?.orderBookieInfo.totalStakedOutcome1 + market?.orderBookieInfo.totalStakedOutcome2}
+                            numBettors={market.orderBookieInfo.bettors.length}/>
                 })}
             </VStack>
         </VStack>

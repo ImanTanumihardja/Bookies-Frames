@@ -12,21 +12,14 @@ export default async function HomePage() {
     const marketIds: string[] = Object.keys(allMarkets).reverse().slice(0, 5)
     const markets = Object.values(allMarkets).reverse().slice(0, 5)
 
-     // Get creators profile 
-     const creators = markets.map((event:any) => event.creator)
-     let profiles = []
-     if (creators.length != 0){
-        profiles = (await neynarClient.fetchBulkUsers(creators)).users.map((profile:any) => profile)
-     }
-
     return (
       <Container maxW="container.md" p={3} marginTop={25} as="main" minH="70vh">
           <HomeHero/>
           <VStack w={'full'} rounded="lg" className="space-y-10 font-inter pt-10" alignItems='center' justifyItems='center'>
             {markets.map(async(market:any, index) => {
               // Get creator user data from neynar
-              const profile = profiles[index]
-              const pfpUrl  = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(profile.pfp_url)}` 
+              const profile = (await neynarClient.fetchBulkUsers([market.creator])).users.map((profile:any) => profile)[0]
+              const pfpUrl  = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(profile?.pfp_url)}` 
               return <MarketCard 
                         marketId={marketIds[index]}
                         key={index} 
