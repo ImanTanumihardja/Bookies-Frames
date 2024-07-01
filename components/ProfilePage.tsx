@@ -2,7 +2,6 @@
 import { FunctionComponent } from "react";
 import { Container, Table, TableContainer, Tr, Th, Tbody, Td, Thead, HStack, IconButton, Button } from "@chakra-ui/react";
 import { UserType } from "@types";
-import {usePrivy} from '@privy-io/react-auth';
 
 export type ProfileType = {
     user: UserType,
