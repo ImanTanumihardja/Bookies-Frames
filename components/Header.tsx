@@ -4,6 +4,11 @@ import { Button, Container, Flex, HStack, Heading, IconButton, Image } from '@ch
 import ConnectFarcasterButton from './elements/ConnectFarcasterButton';
 
 const Header = () => {
+
+  const openInNewTab = (url) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
   return (
     <Container maxW="screen" p={6} className="font-body">
       <Flex align="center" justify="space-between">
@@ -19,7 +24,7 @@ const Header = () => {
         <Flex flex="1" justify="center">
           <HStack spacing={4}>
             <Button fontSize='xl' variant="ghost" onClick={() => window.location.href = '/bookies/markets'}>Markets</Button>
-            <Button fontSize='xl' variant="ghost">FAQ</Button>
+            <Button fontSize='xl' variant="ghost" onClick={() => {openInNewTab('https://bookies.gitbook.io/bookies')}}>FAQ</Button>
           </HStack>
         </Flex>
         <Flex flex="1" justify="flex-end">
