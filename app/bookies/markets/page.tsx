@@ -22,7 +22,7 @@ export default async function MarketsPage() {
                 {Object.values(markets).map(async(market:any, index) => {
                     // Get creator user data from neynar
                     const profile = (await neynarClient.fetchBulkUsers([market.creator])).users.map((profile:any) => profile)[0]
-                    const pfpUrl  = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(profile.pfp_url)}` 
+                    const pfpUrl  = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168,h_168/${encodeURI(profile.pfp_url)}` 
                     return <MarketCard 
                             marketId={marketIds[index]}
                             key={index} 

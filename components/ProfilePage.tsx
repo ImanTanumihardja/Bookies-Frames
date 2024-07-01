@@ -40,7 +40,7 @@ const Profile: FunctionComponent<ProfileType> = ({
             <HStack paddingBottom={5} gap={2}>
                 <IconButton
                     variant="none"
-                    icon={<img className="rounded-[50%] w-[100px]" src={`https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(user.pfpUrl)}`} />}
+                    icon={<img className="rounded-[50%] w-[100px]" src={`https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168,h_168/${encodeURI(user.pfpUrl)}`} />}
                     onClick={() => {
                         openInNewTab(`https://warpcast.com/${user.username}`);
                     }} 

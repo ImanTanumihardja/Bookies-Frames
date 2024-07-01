@@ -83,7 +83,7 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
         let pfpUrl;
         if (fid !== null) {
             profile = (await neynarClient.fetchBulkUsers([fid])).users.map((profile:any) => profile)[0]
-            pfpUrl = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(profile.pfp_url)}`
+            pfpUrl = `https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168,h_168/${encodeURI(profile.pfp_url)}`
         }
 
         return {
