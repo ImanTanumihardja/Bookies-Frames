@@ -6,9 +6,11 @@ import settleMarket from '@scripts/settleMarket'
 import placeBet from '@scripts/placeBet'
 import getMarket from '@scripts/getMarket'
 import { revalidatePath } from 'next/cache'
-import { Accounts, DatabaseKeys } from '@utils/constants'
+import { Accounts, DatabaseKeys, ODDS_DECIMALS, PICK_DECIMALS } from '@utils/constants'
 import { kv } from '@vercel/kv'
 import { ethers } from 'ethers'
+import {orderBookieABI, erc20ABI} from '@abis'
+import { calculatePayout } from '@utils'
 
 export async function createMarketAction(
     _: any, 
@@ -167,7 +169,7 @@ export async function placeBetForAction(
     }
 }
 
-export async function saveBetData(fid: number, marketId: string, address: string) {
+export async function storeBetData(fid: number, marketId: string, address: string) {
     address = ethers.getAddress(address)
 
     // Add users connect address
@@ -201,4 +203,34 @@ export async function saveBetData(fid: number, marketId: string, address: string
         throw new Error('Error creating bet');
         })
     })
+}
+
+export async function getPercentFilled(pick:number, stake: number, odd: number, orderBookieAddress: string) {
+    if (!pick || stake <= 0  || !orderBookieAddress) {
+        throw new Error('Invalid parameters')
+    }
+
+    // Check if odds are between 0 and 1
+    if (odd < 0 || odd > 1) {
+        throw new Error('Odds must be between 0 and 1')
+    }
+
+    const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
+
+    const orderBookie = new ethers.Contract(orderBookieAddress, orderBookieABI, provider)
+    const orderBookieInfo = await orderBookie.getBookieInfo()
+
+    const acceptedToken = await new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, provider)
+    const decimals = await acceptedToken.decimals();
+    
+    // Get percent of stake filled
+    const oppositePick = 1 - pick;
+    const oppositeOdd = 1 - odd;
+    const openLiquidty = await orderBookie.getOpenLiquidity(ethers.parseUnits(oppositePick.toString(), PICK_DECIMALS), ethers.parseUnits(oppositeOdd.toFixed(4), ODDS_DECIMALS));
+
+    const toWinAmount = calculatePayout(odd, stake) - stake;
+    const toWinFilledAmount = Math.min(parseFloat(ethers.formatUnits(openLiquidty, decimals)), toWinAmount);
+    
+    const filled = Math.floor((toWinFilledAmount / toWinAmount) * 100)
+    return filled
 }

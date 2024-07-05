@@ -3,13 +3,14 @@ import { FunctionComponent, useEffect, useState } from "react";
 import React from "react";
 import PickBet from "./elements/PickBet";
 import PlaceBetButton from "./elements/PlaceBetButton";
-import { calculatePayout, formatImpliedProbability, parseImpliedProbability } from "@utils/client";
+import { calculatePayout, formatOdd, parseOdd } from "@utils/client";
 import { useActiveAccount } from "thirdweb/react";
 import { ethers6Adapter } from "thirdweb/adapters/ethers6";
 import { client, myChain, ODDS_DECIMALS, PICK_DECIMALS } from "@utils/constants";
 import { ethers } from "ethers";
 import { orderBookieABI, erc20ABI } from "@abis";
-import { saveBetData as storeBetData } from "../app/actions";
+import { storeBetData, getPercentFilled } from "../app/actions";
+import { usePrivy } from "@privy-io/react-auth";
 import {
     Modal,
     ModalOverlay,
@@ -30,9 +31,9 @@ import {
     FormControl,
     InputGroup,
     InputLeftAddon,
-    useToast
+    useToast,
+    Spinner 
   } from '@chakra-ui/react'
-import { usePrivy } from "@privy-io/react-auth";
 
 export type PlaceBetModal = {
     defaultPick: number | null;
@@ -73,10 +74,8 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
             const acceptedToken = new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, signer)
             const decimals = await acceptedToken.decimals()
 
-            console.log(pick, stake, odd)
-
             const parsedPick = ethers.parseUnits(pick.toString(), PICK_DECIMALS)
-            const parsedStake = ethers.parseUnits(stake.toString(), decimals)
+            const parsedStake = ethers.parseUnits(stake, decimals)
             const parsedOdd = ethers.parseUnits(odd.toString(), ODDS_DECIMALS)
 
             // Approve orderbookie to spend accepted token
@@ -115,28 +114,48 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
         }
     }
 
+    const fetchData = async () => {
+        try {
+            const parsedStake = parseFloat(stake)
+            if (pick && parsedStake > 0 && odd < 1 && odd > 0 && address) {
+                // Set is loading
+                setFilled(null)
+                const percentFilled = await getPercentFilled(pick, parsedStake, odd, address)
+                setFilled(percentFilled)
+            }
+        }
+        catch(e){
+            console.error(e)
+        }
+    }
+
     const activeAccount = useActiveAccount();
     const privyAccount = usePrivy()
     const toast = useToast();
 
+
     // Form state
     const [pick, setPick] = useState(defaultPick);
-    const [stake, setStake] = useState(defaultStake);
+    const [stake, setStake] = useState(defaultStake.toFixed(2)); // String
     const [odd, setOdd] = useState(defaultOdd);
+    const [filled, setFilled] = useState(0);
 
     useEffect(() => {
-        setPick(isOpen ? pick !== null ? pick: defaultPick : null)
-
-        setOdd(pick === null ? defaultOdd : odds[pick])
-
-        if (isOpen === false)
-        {
-            setStake(0)
+        if (isOpen === false) {
+            setStake((0).toString())
+            setOdd(0.5)
+            setPick(null)
         }
+        else {  
+            setPick(pick !== null ? pick : defaultPick)
+            setOdd(pick === null ? defaultOdd : odds[pick])
+            setStake(parseFloat(stake) === 0 ? defaultStake.toFixed(2) : stake)
+        }
+    }, [isOpen, pick]);
 
-        setStake(defaultStake)
-
-    }, [defaultOdd, isOpen, pick]);
+    useEffect(() => {
+        fetchData()
+    }, [pick, stake, odd])
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} isCentered >
@@ -161,9 +180,9 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                                     max={5000} 
                                     min={0} 
                                     w="100%"
+                                    precision={5}
                                     value={stake} 
-                                    precision={2}
-                                    onChange={(value: string) => {setStake(parseFloat(value))}}
+                                    onChange={(value: string) => {setStake(value)}}
                                 >
                                     <NumberInputField placeholder="0"/>
                                     <NumberInputStepper>
@@ -183,10 +202,10 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                             marginBottom={1}
                             max={300} 
                             min={-300}
-                            value={formatImpliedProbability(odd)}
-                            onChange={(value: string) => {setOdd(parseImpliedProbability(value))}}
+                            value={formatOdd(odd)}
+                            onChange={(value: string) => {setOdd(parseOdd(value))}}
                         >
-                            <NumberInputField/>
+                            <NumberInputField readOnly/>
                             <NumberInputStepper>
                                 <NumberIncrementStepper sx={{ fontSize: '0.5em'}} />
                                 <NumberDecrementStepper sx={{ fontSize: '0.5em' }} />
@@ -195,14 +214,18 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                     </HStack>
                     <HStack justifyContent="space-between" alignItems="center" w="100%" h="100%" paddingY={1}>
                         <Text fontSize={"smaller"} color={"gray.400"}>Filled</Text>
+                        {filled === null ?
+                        <Spinner size={"sm"}/>
+                        :
                         <Text fontSize={"smaller"}>
-                            0%
+                            {filled}%
                         </Text>
+                        }
                     </HStack>
                     <HStack justifyContent="space-between" alignItems="center" w="100%" h="100%" paddingY={1}>
                         <Text fontSize={"smaller"} color={"gray.400"}>Payout</Text>
                         <Text fontSize={"smaller"} >
-                            {calculatePayout(odd, stake).toFixed(2)} ${symbol}
+                            {calculatePayout(odd, parseFloat(stake)).toFixed(2)} ${symbol}
                         </Text>
                     </HStack>
                     </FormControl>

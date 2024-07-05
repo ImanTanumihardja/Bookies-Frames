@@ -5,7 +5,7 @@ import { Button, HStack, Image, Menu, MenuButton, MenuItem, MenuList,Text } from
 import {usePrivy} from '@privy-io/react-auth';
 
 const ConnectFarcasterButton = () => {
-    const {ready, authenticated, login, user, logout} = usePrivy();
+    const {ready, authenticated, user, login, logout} = usePrivy();
 
     return (
         ready && authenticated && user.farcaster

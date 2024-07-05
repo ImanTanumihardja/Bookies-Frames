@@ -3,7 +3,7 @@ import { FunctionComponent, useState } from "react";
 import { Container, Button, Table, TableContainer, Tr, Th, Tbody, Td, Thead, useDisclosure } from "@chakra-ui/react";
 import { UserType } from "@types";
 import PlaceBetModal from "./PlaceBetModal";
-import { calculatePayout, formatImpliedProbability } from "@utils/client";
+import { calculatePayout, formatOdd } from "@utils/client";
 import { useToast } from '@chakra-ui/react'
 import SpreadBar from "./elements/SpreadBar";
 
@@ -54,20 +54,20 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
     const toast = useToast()
 
     const handlePlaceBetClick = (pick=null, odd=0.5, stake=0) => {
-        if (startDate < new Date().getTime() / 1000) {
-            if (!toast.isActive("market-closed")) {
-                toast({
-                    id: "market-closed",
-                    title: "Market Closed",
-                    description: "This market has already closed.",
-                    status: "error",
-                    duration: 4500,
-                    isClosable: true,
-                    position:"bottom-right"
-                })
-            }
-            return;
-        }
+        // if (startDate < new Date().getTime() / 1000) {
+        //     if (!toast.isActive("market-closed")) {
+        //         toast({
+        //             id: "market-closed",
+        //             title: "Market Closed",
+        //             description: "This market has already closed.",
+        //             status: "error",
+        //             duration: 4500,
+        //             isClosable: true,
+        //             position:"bottom-right"
+        //         })
+        //     }
+        //     return;
+        // }
 
         // Cap stake between 0 and 5000
         stake = Math.min(5000, Math.max(0, stake));
@@ -163,7 +163,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                     {options[0]}
                                 </h1>
                                 <h2 className="m-0 relative font-inherit text-xl items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)] min-w-[117px]">
-                                    {formatImpliedProbability(odds[0])}
+                                    {formatOdd(odds[0])}
                                 </h2>
                             </div>
                             <div className="rounded-lg bg-gray-700 flex flex-row items-center justify-center py-2 px-3">
@@ -176,7 +176,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                     {options[1]}
                                 </h1>
                                 <h2 className="m-0 relative font-inherit text-xl items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)] min-w-[117px]">
-                                    {formatImpliedProbability(odds[1])}
+                                    {formatOdd(odds[1])}
                                 </h2>
                             </div>
                         </div>
@@ -292,7 +292,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                     let username = txn.bettor.username ? '@' + txn.bettor.username : txn.bettor.address;
                                     username = username.length > 10 ? username.slice(0, 10) + ". . . " : username;
 
-                                    const formattedOdd = formatImpliedProbability(txn.odd)
+                                    const formattedOdd = formatOdd(txn.odd)
                                     
                                     return (
                                         <Tr key={index}>

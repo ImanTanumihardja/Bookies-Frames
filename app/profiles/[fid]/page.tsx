@@ -1,5 +1,5 @@
 import { Market } from "@types";
-import { DatabaseKeys, formatImpliedProbability, neynarClient, ODDS_DECIMALS, PICK_DECIMALS } from "@utils";
+import { DatabaseKeys, formatOdd, neynarClient, ODDS_DECIMALS, PICK_DECIMALS } from "@utils";
 import { kv } from "@vercel/kv";
 import { ethers } from "ethers";
 import {orderBookieABI, erc20ABI} from '@abis';
@@ -76,7 +76,7 @@ export default async function ProfilePage({ params: { fid } }: { params: { fid: 
                     token: symbol,
                     stake: stake,
                     pick: marketData.options[pick],
-                    odd: formatImpliedProbability(odd),
+                    odd: formatOdd(odd),
                     payout: payout.toFixed(2),
                     filled: filledPercent * 100,
                     timestamp: parseInt(bet.timestamp)

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import { getRequestProps, calculatePayout, formatImpliedProbability } from '@utils';
+import { getRequestProps, calculatePayout, formatOdd } from '@utils';
 import { RequestProps } from '@utils/constants';
 import * as fs from "fs";
 import { join } from 'path';
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
                                         RequestProps.PROMPT,
                                         RequestProps.OPTIONS]);
         
-        const formattedOdd = formatImpliedProbability(impliedProbability)
+        const formattedOdd = formatOdd(impliedProbability)
         const payout = Math.ceil(calculatePayout(impliedProbability, stake))
 
         let pollData = [];

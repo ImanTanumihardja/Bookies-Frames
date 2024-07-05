@@ -1,4 +1,4 @@
-export function formatImpliedProbability(impliedProbability: number):string {
+export function formatOdd(impliedProbability: number):string {
     if (impliedProbability <= 0 || impliedProbability >= 1) {
       throw new Error('Implied probability must be between 0 and 1 (exclusive).');
     }
@@ -17,7 +17,7 @@ export function formatImpliedProbability(impliedProbability: number):string {
     return (impliedProbability > 0.5 ? '-' : '+') + americanOdds.toString();
 }
 
-export function parseImpliedProbability(odd: string):number {
+export function parseOdd(odd: string):number {
     let impliedProbability;
 
     if (odd[0] === '-') {

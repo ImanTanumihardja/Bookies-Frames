@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
-import { getRequestProps, formatImpliedProbability, calculatePayout } from '@utils';
+import { getRequestProps, formatOdd, calculatePayout } from '@utils';
 import { RequestProps } from '@utils/constants';
 import * as fs from "fs";
 import { join } from 'path';
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
                                         RequestProps.SYMBOL,
                                         RequestProps.TX_FEE]);
         
-        const formattedOdd = formatImpliedProbability(impliedProbability)
+        const formattedOdd = formatOdd(impliedProbability)
 
         // Round payout to 2 decimal places
         const toWinAmount = calculatePayout(impliedProbability, stake) - stake;
