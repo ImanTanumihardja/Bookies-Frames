@@ -41,7 +41,7 @@
         "app/json/addresses.json"
       ],
       "@abis": [
-        "app/abis/index.tsx.ts"
+        "app/abis/index.ts"
       ],
     },
     "plugins": [
