@@ -180,7 +180,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                                     max={5000} 
                                     min={0} 
                                     w="100%"
-                                    precision={5}
+                                    precision={2}
                                     value={stake} 
                                     onChange={(value: string) => {setStake(value)}}
                                 >

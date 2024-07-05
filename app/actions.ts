@@ -130,9 +130,16 @@ export async function getAllMarketsAction() {
             markets[marketId] = marketData
         }
 
+        // Sort based on timeStamp
+        const sortedMarketIds = marketIds.sort((a, b) => markets[a].startDate - markets[b].startDate)
+        const sortedMarkets = {}
+        for (const marketId of sortedMarketIds) {
+            sortedMarkets[marketId] = markets[marketId]
+        }
+
         revalidatePath('/')
 
-        return markets
+        return sortedMarkets
     }
     catch (e) {
         console.error(e)

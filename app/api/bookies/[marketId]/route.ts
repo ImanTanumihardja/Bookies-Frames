@@ -10,7 +10,6 @@ export async function POST(req: NextRequest, { params: { marketId: marketId } }:
 }
 
 export async function GET(req: NextRequest, { params: {  marketId } }: { params: { marketId: string } }): Promise<Response> {
-  console.log('Event Name: ', marketId)
   const event : Market | null = await kv.hgetall(marketId)
   if (event === null) throw new Error('Event not found');
 

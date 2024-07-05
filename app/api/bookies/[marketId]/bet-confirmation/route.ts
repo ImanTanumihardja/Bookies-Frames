@@ -7,7 +7,7 @@ import { FrameNames, RequestProps, DatabaseKeys, Accounts, PICK_DECIMALS } from 
 import {ethers} from 'ethers';
 import {orderBookieABI} from '@abis';
 
-export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
+export async function POST(req: NextRequest, { params: { marketId } }: { params: { marketId: string } }): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req);
 
@@ -29,19 +29,19 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     txReceipt = await provider.getTransactionReceipt(transactionId);
     
     // Add to bettors list
-    await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
+    await kv.sadd(`${Accounts.BOOKIES}:${marketId}:${DatabaseKeys.BETTORS}`, fid).catch(async (error) => {
       console.error('Error adding user to bettors list:', error);
       // Try again
-      await kv.sadd(`${Accounts.BOOKIES}:${eventName}:${DatabaseKeys.BETTORS}`, fid).catch(() => {
+      await kv.sadd(`${Accounts.BOOKIES}:${marketId}:${DatabaseKeys.BETTORS}`, fid).catch(() => {
         throw new Error('Error creating bet');
       })
     })
 
     // Add market to user's bet list
-    await kv.sadd(`${fid}:${DatabaseKeys.BETS}`, eventName).catch(async (error) => {
+    await kv.sadd(`${fid}:${DatabaseKeys.BETS}`, marketId).catch(async (error) => {
       console.error('Error adding event to user:', error);
       // Try again
-      await kv.sadd(`${fid}:${DatabaseKeys.BETS}`, eventName).catch(() => {
+      await kv.sadd(`${fid}:${DatabaseKeys.BETS}`, marketId).catch(() => {
         throw new Error('Error creating bet');
       })
     })
@@ -65,20 +65,19 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   // Wait for both user to be found and event to be found
   let event : Market | null = null;
 
-  await Promise.all([, kv.hgetall(eventName)]).then( (res) => {
+  await Promise.all([, kv.hgetall(marketId)]).then( (res) => {
     event = res[1] as Market || null;
   });
 
   event = event as unknown as Market || null;
 
   if (event === null) throw new Error('Event not found');
-
   
   // Get all bookies events and filter out this eventName
   let activeEvents = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.MARKETS}`, 0, {count: 150}))[1] as string[];
-  activeEvents = activeEvents.filter((e) => e !== String(eventName));
+  activeEvents = activeEvents.filter((e) => e !== String(marketId));
 
-  console.log('EVENT: ', eventName)
+  console.log('EVENT: ', marketId)
 
   const orderBookie = new ethers.Contract(event.address, orderBookieABI, provider)
   const orderBookieInfo = await orderBookie.getBookieInfo()
@@ -107,7 +106,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     console.log('REJECTED BET')
   }
 
-  const imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, 
+  const imageUrl = generateUrl(`api/bookies/${marketId}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, 
                                                                                                 [RequestProps.BUTTON_INDEX]: button, 
                                                                                                 [RequestProps.FID]: fid, 
                                                                                                 [RequestProps.ADDRESS]: event.address, 
@@ -128,7 +127,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     {
       label: 'Refresh', 
       action:'post', 
-      target: generateUrl(`/api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.TRANSACTION_HASH]: !isMined ? transactionHash : ""}, false)
+      target: generateUrl(`api/bookies/${marketId}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: marketId, [RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.TRANSACTION_HASH]: !isMined ? transactionHash : ""}, false)
     },
   ];
 
@@ -136,7 +135,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     buttons.push({
       label: 'Bet on Another Event', 
       action:'post', 
-      target: generateUrl(`/api/bookies/${activeEvents[Math.floor(Math.random() * activeEvents.length)]}`, {}, false)
+      target: generateUrl(`api/bookies/${activeEvents[Math.floor(Math.random() * activeEvents.length)]}`, {}, false)
     })
   }
   
@@ -145,7 +144,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       version: "vNext",
       image: imageUrl,
       buttons: buttons,
-      postUrl: `${process.env['HOST']}/api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`,
+      postUrl: `${process.env['HOST']}/api/bookies/${marketId}/${FrameNames.BET_CONFIRMATION}`,
     }),
   );
 }

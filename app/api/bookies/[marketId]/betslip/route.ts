@@ -7,7 +7,7 @@ import { kv } from "@vercel/kv";
 import { Market } from "@types";
 import { ethers } from "ethers";
 
-export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
+export async function POST(req: NextRequest, { params: { marketId } }: { params: { marketId: string } }): Promise<Response> {
   // Verify the frame request
   const message = await getFrameMessage(req, false);
 
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   // Wait for both user to be found and event to be found
   let event : Market | null = null;
 
-  await Promise.all([kv.hgetall(eventName)]).then( (res) => {
+  await Promise.all([kv.hgetall(marketId)]).then( (res) => {
     event = res[0] as Market || null;
   });
 
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
   // Check if event has already passed
   if (event.startDate < now || result !== -1) {
     pick = -1;
-    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.PICK]: -1, 
+    imageUrl = generateUrl(`api/bookies/${marketId}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.PICK]: -1, 
                                                                                             [RequestProps.BUTTON_INDEX]: 0, 
                                                                                             [RequestProps.FID]: fid,  
                                                                                             [RequestProps.OPTIONS]: event.options, 
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       {
         label: 'Refresh', 
         action:'post', 
-        target: generateUrl(`/api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, 
+        target: generateUrl(`/api/bookies/${marketId}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: marketId, 
                                                                                         [RequestProps.STAKE]: 0,
                                                                                         [RequestProps.PICK]: 0,
                                                                                         [RequestProps.TRANSACTION_HASH]: ""}, false)
@@ -107,7 +107,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
     const options = event.options;
 
-    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}/image`, {[RequestProps.PICK]: pick, 
+    imageUrl = generateUrl(`api/bookies/${marketId}/${FrameNames.BETSLIP}/image`, {[RequestProps.PICK]: pick, 
                                                                       [RequestProps.STAKE]: stake, 
                                                                       [RequestProps.ODD]: impliedProbability,
                                                                       [RequestProps.OPTIONS]: options,
@@ -131,7 +131,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
     getFrameHtml({
       version: "vNext",
       image: imageUrl,
-      postUrl: generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.TRANSACTION_HASH]: ""}, false),
+      postUrl: generateUrl(`api/bookies/${marketId}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.STAKE]: stake, [RequestProps.PICK]: pick, [RequestProps.TRANSACTION_HASH]: ""}, false),
       buttons: buttons as FrameButtonsType 
     }),
   );

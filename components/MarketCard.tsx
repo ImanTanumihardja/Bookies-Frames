@@ -70,26 +70,22 @@ const MarketCard: FunctionComponent<MarketCardType> = ({
             <div className="w-[596px] h-[104px] flex flex-row items-start justify-end py-0 pr-2.5 pl-0 box-border text-mini text-lightgray-100">
                 <div className="h-[104px] w-[586px] flex flex-col items-end justify-start gap-[12px]">
                     <SpreadBar spreadPercent={spreadPercent}/>
-                    <div className="w-[586px] h-[30px] flex flex-row items-start justify-start gap-[176px]">
-                        <div className="h-[30px] w-[220px] flex flex-col items-start justify-start pt-0.5 px-0 pb-0 box-border">
+                    <div className="w-full flex flex-row items-start justify-between">
+                        {/* <div className="h-[30px] w-[220px] flex flex-col items-start justify-start pt-0.5 px-0 pb-0 box-border">
                             <div className="w-[220px] h-7 flex flex-row items-start justify-start gap-[10px]">
-                                <div className="h-[23px] w-[182px] flex flex-col items-start justify-start pt-[5px] px-0 pb-0 box-border">
+                                <div className="h-[23px] w-[182px] flex flex-col items-start justify-start pt-[5px] px-0 pb-0 box-border"> */}
                                     <div className="w-[182px] h-[18px] relative uppercase inline-block z-[1]">
                                         <b>{options[0]}</b>
                                         <span className="font-semibold">{` | `}</span>
                                         <span className="font-medium">{Math.round(outcome1Staked).toLocaleString()} $DEGEN</span>
                                     </div>
-                                </div>
+                                {/* </div>
                             </div>
-                        </div>
-                        <div className="h-7 w-[190px] flex flex-row items-start justify-end gap-[7px] text-right">
-                            <div className="h-6 w-[155px] flex flex-col items-start justify-start pt-[5px] px-0 pb-0 box-border">
-                                <div className="w-[155px] h-[19px] relative uppercase inline-block z-[1]">
-                                <span className="font-medium">{Math.round(outcome2Staked).toLocaleString()} $DEGEN</span>
-                                <span className="font-semibold">{` | `}</span>
-                                <b>{options[1]}</b>
-                                </div>
-                            </div>
+                        </div> */}
+                        <div className="flex flex-row items-start justify-end text-right relative uppercase inline-block z-[1] gap-[7px]">
+                            <span className="font-medium">{Math.round(outcome2Staked).toLocaleString()} $DEGEN</span>
+                            <span className="font-semibold">{` | `}</span>
+                            <b>{options[1]}</b>
                         </div>
                     </div>
                     <div className="w-full h-[5px] flex flex-row items-start justify-center pt-0 px-0 pb-1 box-border">

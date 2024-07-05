@@ -7,13 +7,13 @@ import { kv } from '@vercel/kv';
 import { ethers } from 'ethers';
 import {orderBookieABI, erc20ABI} from '@abis';
 
-export async function POST(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }): Promise<Response> {
+export async function POST(req: NextRequest, { params: { marketId } }: { params: { marketId: string } }): Promise<Response> {
   const {fid} = await getFrameMessage(req);
   
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
   let event : Market | null = null;
-  await Promise.all([kv.hgetall(eventName)]).then( (res) => {
+  await Promise.all([kv.hgetall(marketId)]).then( (res) => {
     event = res[0] as Market || null;
   });
 
@@ -24,7 +24,8 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
 
   // Get all bookies events and filter out this eventName
   let activeEvents = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.MARKETS}`, 0, {count: 150}))[1] as string[];
-  activeEvents = activeEvents.filter((e) => e !== String(eventName));
+  activeEvents = activeEvents.filter((e) => e !== String(marketId));
+  console.log('Active Events: ', activeEvents)
 
   // Check if result has been set
   const orderBookie = new ethers.Contract(event.address, orderBookieABI, provider)
@@ -79,7 +80,7 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
         {
           label: 'Refresh', 
           action:'post', 
-          target: generateUrl(`/api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: eventName, 
+          target: generateUrl(`api/bookies/${marketId}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: marketId, 
                                                                                            [RequestProps.STAKE]: 0,
                                                                                            [RequestProps.PICK]: 0,
                                                                                            [RequestProps.TRANSACTION_HASH]: ""}, false)
@@ -90,13 +91,13 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
       buttons.push({
         label: 'Bet on Another Event', 
         action:'post', 
-        target: generateUrl(`/api/bookies/${activeEvents[Math.floor(Math.random() * activeEvents.length)]}`, {}, false)
+        target: generateUrl(`api/bookies/${activeEvents[Math.floor(Math.random() * activeEvents.length)]}`, {}, false)
       })
     }
     
     postUrl = "" // Collect payout page
 
-    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.PICK]: -1, 
+    imageUrl = generateUrl(`api/bookies/${marketId}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.PICK]: -1, 
                                                                                             [RequestProps.BUTTON_INDEX]: 0, 
                                                                                             [RequestProps.FID]: fid,  
                                                                                             [RequestProps.OPTIONS]: event.options, 
@@ -123,8 +124,8 @@ export async function POST(req: NextRequest, { params: { eventName } }: { params
         target: generateUrl(`api/bookies/transactions/${Transactions.APPROVE}`, {[RequestProps.ADDRESS]: event.address}, false),
       } as FrameButton
     })
-    postUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.BETSLIP}`, {[RequestProps.ODDS]: odds}, false),
-    imageUrl = generateUrl(`api/bookies/${eventName}/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, 
+    postUrl = generateUrl(`api/bookies/${marketId}/${FrameNames.BETSLIP}`, {[RequestProps.ODDS]: odds}, false),
+    imageUrl = generateUrl(`api/bookies/${marketId}/${FrameNames.PLACE_BET}/image`, {[RequestProps.PROMPT]: event.prompt, 
                                                                                       [RequestProps.BALANCE]: balance !== null ? balance : "", 
                                                                                       [RequestProps.POLL]: liquiditySpread, 
                                                                                       [RequestProps.OPTIONS]: event.options, 

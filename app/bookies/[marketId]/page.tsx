@@ -1,7 +1,7 @@
 // Page that returns a frame
 import { Frame, getFrame, getFrameFlattened } from "frames.js";
 import type { Metadata } from "next";
-import {GET} from '../../api/bookies/[eventName]/route'
+import {GET} from '../../api/bookies/[marketId]/route'
 import { NextRequest } from "next/server";
 import { Accounts, ALEA_FID, BOOKIES_FID, ODDS_DECIMALS, PICK_DECIMALS, RequestProps } from "@utils/constants";
 import { generateUrl, neynarClient } from "@utils";

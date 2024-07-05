@@ -11,7 +11,7 @@ import FrameBase from '@components/frames/BookiesFrameBase';
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
 let fontData = fs.readFileSync(fontPath)
 
-export async function GET(req: NextRequest, { params: { eventName } }: { params: { eventName: string } }) {
+export async function GET(req: NextRequest, { params: { marketId } }: { params: { marketId: string } }) {
     try {
         const {time: startDate} = getRequestProps(req, [RequestProps.TIME]);
 
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest, { params: { eventName } }: { params:
         imageUrl = getCldImageUrl({
             width: 960,
             height: 600,
-            src: eventName
+            src: marketId
         });
     
     
