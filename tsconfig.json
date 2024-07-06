@@ -38,7 +38,7 @@
         "components/*"
       ],
       "@addresses": [
-        "app/json/addresses.json"
+        "addresses.ts"
       ],
       "@abis": [
         "abis/index.ts"
