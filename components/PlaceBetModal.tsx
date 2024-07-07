@@ -8,7 +8,9 @@ import { ODDS_DECIMALS, PICK_DECIMALS, myChain } from "@utils/constants";
 import { ethers } from "ethers";
 import { orderBookieABI, erc20ABI } from "@abis";
 import { storeBetData, getPercentFilled } from "../app/actions";
+import { useShield3Context } from '@shield3/react-sdk';
 import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { Address } from "@shield3/react-sdk/dist/types";
 import {
     Modal,
     ModalOverlay,
@@ -79,27 +81,40 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
             const parsedStake = ethers.parseUnits(stake, accpetedTokens[0].decimals)
             const parsedOdd = ethers.parseUnits(odd.toString(), ODDS_DECIMALS)
 
-            console.log(accpetedTokens[0].address)
-
             // Approve orderbookie to spend accepted token
             const iERC20 = new ethers.Interface(erc20ABI)
             let data = iERC20.encodeFunctionData('approve', [address, parsedStake])
-            await walletProvider.request({
-            method: 'eth_sendTransaction',
-            params: [{
-                    to: accpetedTokens[0].address,
-                    data: data,
-                }],
-            });
-        
-            // Place bet
-            data = iOrderBookie.encodeFunctionData('placeBet', [parsedPick, parsedStake, parsedOdd])
+            const approveTx = {
+                to: accpetedTokens[0].address,
+                data: data,
+                chainId: myChain,
+            }
+            
+            // Simulate approve
+            if (((await shield3Client.getPolicyResults(approveTx, wallet.address as Address)).decision) !== 'Allow') {
+                throw new Error('Shield3 blocked transaction')
+            }
+
             await walletProvider.request({
                 method: 'eth_sendTransaction',
-                params: [{
-                        to: address,
-                        data: data,
-                    }],
+                params: [approveTx],
+            });
+
+            // Place bet
+            data = iOrderBookie.encodeFunctionData('placeBet', [parsedPick, parsedStake, parsedOdd])
+            const placeBetTx = {
+                to: address,
+                data: data,
+                chainId: myChain,
+            }
+
+            // Simulate approve
+            if ((await shield3Client.getPolicyResults(placeBetTx, wallet.address as Address)).decision !== 'Allow') {
+                throw new Error('Shield3 blocked transaction')
+            }
+            await walletProvider.request({
+                method: 'eth_sendTransaction',
+                params: [placeBetTx],
             });
 
             // Save bet information
@@ -118,7 +133,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                 position:"bottom-right"
             })
 
-            // onClose();
+            onClose();
         } catch (e) {
             toast({
                 title: "Failed to place bet",
@@ -149,6 +164,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
     const { wallets } = useWallets()
     const { authenticated, user } = usePrivy()
     const toast = useToast();
+    const { shield3Client } = useShield3Context();
 
     // Form state
     const [pick, setPick] = useState(defaultPick);

@@ -30,14 +30,15 @@ function PlaceBetButton() {
             </Button> 
             <Button
                 borderTopRadius={0}
-                w="75%"
-                h={35}
+                w="85%"
+                h={25}
                 marginBottom={15}
                 onClick={connectWallet}
                 overflow="hidden"
                 textOverflow="ellipsis"
                 whiteSpace="nowrap"
-                paddingX={10}
+                paddingX={20}
+                borderBottomRadius={20}
                 >
                 <Box
                     as="span"
@@ -46,6 +47,7 @@ function PlaceBetButton() {
                     overflow="hidden"
                     textOverflow="ellipsis"
                     whiteSpace="nowrap"
+                    fontSize={12}
                 >
                     {wallets[0].address}
                 </Box>

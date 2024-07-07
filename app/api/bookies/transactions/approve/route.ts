@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFrameMessage, getRequestProps } from '@utils';
-import { RequestProps, STAKE_LIMIT } from '@utils/constants';
+import { myChain, RequestProps, STAKE_LIMIT } from '@utils/constants';
 import {ethers } from 'ethers';
 import {erc20ABI, orderBookieABI} from '@abis';
 
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   const data = acceptedToken.interface.encodeFunctionData('approve', [orderBookieAddress, ethers.parseUnits(stake.toString(), decimals)])
 
   const txData = {
-      chainId: `eip155:8453`,
+      chainId: myChain,
       method: 'eth_sendTransaction',
       attribution: false,
       params: {
