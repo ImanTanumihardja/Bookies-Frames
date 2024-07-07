@@ -31,7 +31,7 @@ const ConnectFarcasterButton = () => {
         </Menu>
         :
         <Button  onClick={login}> 
-        <Image src={`/frame-209.svg`}/>
+            <Image src={`/frame-209.svg`}/>
             Connect Farcaster
         </Button>
     );

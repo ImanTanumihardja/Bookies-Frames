@@ -4,13 +4,11 @@ import React from "react";
 import PickBet from "./elements/PickBet";
 import PlaceBetButton from "./elements/PlaceBetButton";
 import { calculatePayout, formatOdd, parseOdd } from "@utils/client";
-import { useActiveAccount } from "thirdweb/react";
-import { ethers6Adapter } from "thirdweb/adapters/ethers6";
-import { client, myChain, ODDS_DECIMALS, PICK_DECIMALS } from "@utils/constants";
+import { ODDS_DECIMALS, PICK_DECIMALS, myChain } from "@utils/constants";
 import { ethers } from "ethers";
 import { orderBookieABI, erc20ABI } from "@abis";
 import { storeBetData, getPercentFilled } from "../app/actions";
-import { usePrivy } from "@privy-io/react-auth";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import {
     Modal,
     ModalOverlay,
@@ -44,10 +42,16 @@ export type PlaceBetModal = {
     prompt: string;
     options: string[];
     odds: number[];
-    symbol: string;
+    accpetedTokens: AccpetedToken[];
     isOpen: boolean;
     onClose: () => void;
   };
+
+  export type AccpetedToken = {
+    symbol: string
+    decimals: number
+    address: string
+  }
 
 const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
     defaultPick = null,
@@ -58,38 +62,51 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
     prompt = "",
     options = [],
     odds = [],
-    symbol = '',
+    accpetedTokens = [],
     isOpen = false,
     onClose = () => {}
 }) => {
 
     const placeBet = async (_) => {
         try {
-            const signer = ethers6Adapter.signer.toEthers({ client: client, account: activeAccount, chain: myChain })
+            const wallet = wallets[0]
+            await wallet.switchChain(myChain)
+            const walletProvider = await wallet.getEthereumProvider();
             
-            const orderBookie = new ethers.Contract(address, orderBookieABI, signer)
-            const orderBookieInfo = await orderBookie.getBookieInfo()
-            
-             // Get accpected token
-            const acceptedToken = new ethers.Contract(orderBookieInfo.acceptedTokenAddress, erc20ABI, signer)
-            const decimals = await acceptedToken.decimals()
+            const iOrderBookie = new ethers.Interface(orderBookieABI)
 
             const parsedPick = ethers.parseUnits(pick.toString(), PICK_DECIMALS)
-            const parsedStake = ethers.parseUnits(stake, decimals)
+            const parsedStake = ethers.parseUnits(stake, accpetedTokens[0].decimals)
             const parsedOdd = ethers.parseUnits(odd.toString(), ODDS_DECIMALS)
 
+            console.log(accpetedTokens[0].address)
+
             // Approve orderbookie to spend accepted token
-            await (await acceptedToken.approve(orderBookie.getAddress(),  parsedStake)).wait() //TODO: change to stake
+            const iERC20 = new ethers.Interface(erc20ABI)
+            let data = iERC20.encodeFunctionData('approve', [address, parsedStake])
+            await walletProvider.request({
+            method: 'eth_sendTransaction',
+            params: [{
+                    to: accpetedTokens[0].address,
+                    data: data,
+                }],
+            });
         
             // Place bet
-            const placeBetTransaction = await orderBookie.placeBet(parsedPick, parsedStake, parsedOdd)
-            await placeBetTransaction.wait(1)
+            data = iOrderBookie.encodeFunctionData('placeBet', [parsedPick, parsedStake, parsedOdd])
+            await walletProvider.request({
+                method: 'eth_sendTransaction',
+                params: [{
+                        to: address,
+                        data: data,
+                    }],
+            });
 
             // Save bet information
-            if (privyAccount.authenticated && privyAccount?.user?.farcaster)
+            if (authenticated && user?.farcaster)
             {
-                const fid = privyAccount.user.farcaster.fid
-                await storeBetData(fid, marketId, activeAccount.address)
+                const fid = user.farcaster.fid
+                await storeBetData(fid, marketId, wallet.address)
             }
 
             toast({
@@ -101,7 +118,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                 position:"bottom-right"
             })
 
-            onClose();
+            // onClose();
         } catch (e) {
             toast({
                 title: "Failed to place bet",
@@ -129,10 +146,9 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
         }
     }
 
-    const activeAccount = useActiveAccount();
-    const privyAccount = usePrivy()
+    const { wallets } = useWallets()
+    const { authenticated, user } = usePrivy()
     const toast = useToast();
-
 
     // Form state
     const [pick, setPick] = useState(defaultPick);
@@ -175,7 +191,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                         <div className="w-full">
                             <FormLabel requiredIndicator={false} htmlFor="stake" color={"gray.400"}>Stake</FormLabel>
                             <InputGroup>
-                                <InputLeftAddon>${symbol}</InputLeftAddon>
+                                <InputLeftAddon>${accpetedTokens[0].symbol}</InputLeftAddon>
                                 <NumberInput 
                                     max={5000} 
                                     min={0} 
@@ -225,7 +241,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                     <HStack justifyContent="space-between" alignItems="center" w="100%" h="100%" paddingY={1}>
                         <Text fontSize={"smaller"} color={"gray.400"}>Payout</Text>
                         <Text fontSize={"smaller"} >
-                            {calculatePayout(odd, parseFloat(stake)).toFixed(2)} ${symbol}
+                            {calculatePayout(odd, parseFloat(stake)).toFixed(2)} ${accpetedTokens[0].symbol}
                         </Text>
                     </HStack>
                     </FormControl>

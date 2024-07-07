@@ -2,7 +2,7 @@
 import { FunctionComponent, useState } from "react";
 import { Container, Button, Table, TableContainer, Tr, Th, Tbody, Td, Thead, useDisclosure } from "@chakra-ui/react";
 import { UserType } from "@types";
-import PlaceBetModal from "./PlaceBetModal";
+import PlaceBetModal, { AccpetedToken } from "./PlaceBetModal";
 import { calculatePayout, formatOdd } from "@utils/client";
 import { useToast } from '@chakra-ui/react'
 import SpreadBar from "./elements/SpreadBar";
@@ -21,7 +21,7 @@ export type MarketInnerType = {
     rules: string;
     umaTxn: string;
     placedBetTxns: PlacedBetTxnType[];
-    symbol: string;
+    accpetedTokens: AccpetedToken[];
   };
 
 export type PlacedBetTxnType = {
@@ -47,27 +47,27 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
     rules = "",
     umaTxn = "",
     placedBetTxns = [],
-    symbol = "",
+    accpetedTokens = [],
 }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [placeBetModalProps, setPlaceBetModalProps] = useState({ pick: null, odd: 0.5, stake: 0 });
     const toast = useToast()
 
     const handlePlaceBetClick = (pick=null, odd=0.5, stake=0) => {
-        if (startDate < new Date().getTime() / 1000) {
-            if (!toast.isActive("market-closed")) {
-                toast({
-                    id: "market-closed",
-                    title: "Market Closed",
-                    description: "This market has already closed.",
-                    status: "error",
-                    duration: 4500,
-                    isClosable: true,
-                    position:"bottom-right"
-                })
-            }
-            return;
-        }
+        // if (startDate < new Date().getTime() / 1000) {
+        //     if (!toast.isActive("market-closed")) {
+        //         toast({
+        //             id: "market-closed",
+        //             title: "Market Closed",
+        //             description: "This market has already closed.",
+        //             status: "error",
+        //             duration: 4500,
+        //             isClosable: true,
+        //             position:"bottom-right"
+        //         })
+        //     }
+        //     return;
+        // }
 
         // Cap stake between 0 and 5000
         stake = Math.min(5000, Math.max(0, stake));
@@ -216,10 +216,10 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                         <SpreadBar spreadPercent={spreadPercent}/>
                         <div className="self-stretch flex flex-row items-start justify-between gap-[20px] mq450:flex-wrap">
                             <div className="relative uppercase font-semibold z-[3]">
-                            {options[0]} - {Math.round(outcome1Staked).toLocaleString()} ${symbol}
+                            {options[0]} - {Math.round(outcome1Staked).toLocaleString()} ${accpetedTokens[0].symbol}
                             </div>
                             <div className="relative uppercase font-semibold text-right z-[3]">
-                            {options[1]} - {Math.round(outcome2Staked).toLocaleString()} ${symbol}
+                            {options[1]} - {Math.round(outcome2Staked).toLocaleString()} ${accpetedTokens[0].symbol}
                             </div>
                         </div>
                     </div>
@@ -314,7 +314,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                                         />
                                                         {username} 
                                                     </Button>
-                                                    bet {txn.stake} ${symbol} on {options[txn.pick]} at {formattedOdd}
+                                                    bet {txn.stake} ${accpetedTokens[0].symbol} on {options[txn.pick]} at {formattedOdd}
                                                 </div>
                                             </Td>
                                             <Td>
@@ -368,7 +368,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                 prompt={prompt} 
                 options={options} 
                 odds={odds} 
-                symbol={symbol}
+                accpetedTokens={accpetedTokens}
                 isOpen={isOpen} 
                 onClose={onClose}/>
         </Container>
