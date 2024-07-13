@@ -11,7 +11,7 @@ import { kv } from '@vercel/kv'
 import { ethers, AbiCoder } from 'ethers'
 import {orderBookieABI, erc20ABI, patchworkABI} from '@abis'
 import { calculatePayout } from '@utils'
-import { BOOKIES_ADDRESS, PATCHWORK_ADDRESS } from "@addresses";
+import { PATCHWORK_ADDRESS } from "@addresses";
 
 export async function createMarketAction(
     _: any, 
