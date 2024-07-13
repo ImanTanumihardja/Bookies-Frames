@@ -4,7 +4,6 @@ import {base} from 'viem/chains'
 import {PrivyProvider} from '@privy-io/react-auth';
 import initShield3PrivyConfig from "@0xshield3/privy"
 import { Shield3Provider } from '@shield3/react-sdk';
-import { myChain } from '@utils/constants';
 
 export default function Providers({children}: {children: React.ReactNode}) {
   const privyConfig = initShield3PrivyConfig(
