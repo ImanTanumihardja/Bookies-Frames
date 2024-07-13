@@ -126,7 +126,7 @@ const Profile: FunctionComponent<ProfileType> = ({
                                     <Td>{bet.odd}</Td>
                                     <Td className="font-bold" color={bet.winLoss !== "---" ? bet.winLoss === "W" ? `rgb(0, 255, 0)` : `rgb(255, 0, 0)` : 'white'}>{bet.winLoss}</Td>
                                     <Td>{bet.payout} ${bet.token}</Td>
-                                    <Td isNumeric color={`rgb(${255 - bet.filled * 2.55}, ${bet.filled * 2.55}, 0)`}>{bet.filled}%</Td>
+                                    <Td isNumeric color={`rgb(${255 - bet.filled * 2.55}, ${bet.filled * 2.55}, 0)`}>{Math.round(bet.filled)}%</Td>
                                     <Td fontSize={'small'} color={"gray"}>{timeAgo}</Td>
                                 </Tr>
                             );
