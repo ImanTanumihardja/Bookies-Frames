@@ -36,7 +36,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   const data = acceptedToken.interface.encodeFunctionData('approve', [orderBookieAddress, ethers.parseUnits(stake.toString(), decimals)])
 
   const txData = {
-      chainId: myChain,
+      chainId: `eip155:8453`,
       method: 'eth_sendTransaction',
       attribution: false,
       params: {
