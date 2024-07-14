@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFrameMessage, getRequestProps } from '@utils';
-import { myChain, RequestProps, STAKE_LIMIT } from '@utils/constants';
+import { RequestProps, STAKE_LIMIT } from '@utils/constants';
 import {ethers } from 'ethers';
 import {erc20ABI, orderBookieABI} from '@abis';
 
