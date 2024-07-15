@@ -21,7 +21,7 @@ const ConnectFarcasterButton = () => {
                     <Text>{user?.farcaster?.displayName}</Text>
                 </HStack>
             </MenuButton>
-            <MenuList>
+            <MenuList border={"none"}>
                 <MenuItem 
                 onClick={() => {
                     window.location.href = `/profiles/${user.farcaster.fid}`;

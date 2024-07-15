@@ -8,7 +8,7 @@ const HomeHero: FunctionComponent = () => {
 
   return (
     <VStack w={'full'} rounded="lg" className="space-y-10 font-inter" alignItems='center' justifyItems='center'>
-      <Flex gap={5} flexDirection="row" className="text-center" display={["none", "none", "none", "none", "flex"]}>
+      <Flex gap={5} flexDirection="row" className="text-center" display={["none", "none", "flex", "flex", "flex"]}>
       <div className="rounded-lg bg-gray-300 box-border flex flex-row items-start justify-start py-1.5 px-3 opacity-[0.9] text-goldenrod border-[1px] border-solid border-darkolivegreen" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
         Onchain
       </div>
@@ -28,7 +28,7 @@ const HomeHero: FunctionComponent = () => {
           alt=""
           src="/Full_logo.png"
         />
-        <div className="font-semibold font-inherit text-56xl text-white flex items-baseline">
+        <div className="font-semibold font-inherit sm:text-56xl text-8xl text-white flex items-baseline">
           <h1 className="inline-block flex-shrink-0"> Bet to</h1>
           <ReactTyped 
             className="text-inherit font-semibold font-inherit pl-3 text-transparent !bg-clip-text [background:linear-gradient(90deg,_#feae26,_#d44fc9_49.5%,_#7a65ec)] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent] inline-block shrink-0 z-[1]" 
@@ -38,13 +38,13 @@ const HomeHero: FunctionComponent = () => {
             loop 
             />
         </div>
-        <p className="m-0 lg:w-4/5 mx-auto text-center text-gray-900 inline-block">
+        <p className="p-5 mx-auto text-center text-gray-900 inline-block">
             Bookies is the world’s first transparent, non-custodial sports
             betting exchange centered around the ethos of democratizing the
             sports betting experience
         </p>
       </Flex>
-      <HStack width="full" justify="space-between">
+      <HStack width="full" justify="space-between" display={["none", "none", "flex", "flex", "flex"]}>
         <div className="flex flex-row"> 
           <h2 className="uppercase font-semibold inline-block pr-5">POPULAR</h2>
           <div className="h-[26px] w-[67px] rounded-lg bg-white box-border flex flex-row items-center justify-center py-1 gap-[4px] opacity-[0.8] text-center text-gray-700 border-[1px] border-solid border-whitesmoke">
@@ -58,12 +58,14 @@ const HomeHero: FunctionComponent = () => {
         </div>  
         <Button 
           variant="ghost"
+          textAlign={"left"}
+          justifyItems={"left"}
           onClick={() => {
             window.location.href = "bookies/markets";
           }}>
             View all 
             <img
-              className="h-7 w-7 relative overflow-hidden shrink-0"
+              className="h-7 w-7 relative overflow-hidden"
               loading="lazy"
               alt=""
               src="/ionchevronforwardsharp.svg"

@@ -112,6 +112,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
             if ((await shield3Client.getPolicyResults(placeBetTx, wallet.address as Address)).decision !== 'Allow') {
                 throw new Error('Shield3 blocked transaction')
             }
+            
             await walletProvider.request({
                 method: 'eth_sendTransaction',
                 params: [placeBetTx],
@@ -130,7 +131,6 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                 status: "success",
                 duration: 4500,
                 isClosable: true,
-                position:"bottom-right"
             })
 
             onClose();
@@ -141,7 +141,6 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                 status: "error",
                 duration: 4500,
                 isClosable: true,
-                position:"bottom-right"
             })
         }
     }

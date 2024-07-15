@@ -8,53 +8,47 @@ const Footer = () => {
   };
 
   return (
-      <Container className='font-body' maxW="screen" justifyContent="center" p={'50px'}>
-          <Flex align="center" justify="center">
+      <Container className='text-mini font-body' maxW="screen" justifyContent="center" p={'50px'}>
               <VStack className='m-10'>
-                <HStack>
+                <HStack fontSize={["small", "large"]}>
                   <Button 
                     variant="link" 
                     className="whitespace-pre-wrap" 
+                    fontSize={"inherit"}
                     onClick={() => {openInNewTab('https://warpcast.com/bookies')}}
                   >
-                    {`Warpcast`}
+                    Warpcast
                   </Button>
                   <span className="text-gray-100">|</span>
                   <Button 
                     variant="link" 
                     className="whitespace-pre-wrap" 
+                    fontSize={"inherit"}
                     onClick={() => {openInNewTab('https://discord.gg/D4RTcMBWVC')}}
                   >
-                    {`Discord`}
+                    Discord
                   </Button>
                   <span className="text-gray-100">|</span>
                   <Button 
                     variant="link" 
                     className="whitespace-pre-wrap" 
+                    fontSize={"inherit"}
                     onClick={() => {openInNewTab('https://bookies.gitbook.io/bookies')}}
                   >
-                    {`Whitepaper`}
+                    Whitepaper
                   </Button>
                   <span className="text-gray-100">|</span>
                   <Button 
                     variant="link" 
                     className="whitespace-pre-wrap" 
+                    fontSize={"inherit"}
                     onClick={() => {openInNewTab(`${process.env.HOST || ''}/terms`)}}
                   >
-                    {`Terms of Use`}
-                  </Button>
-                  <span className="text-gray-100">|</span>
-                  <Button 
-                    variant="link" 
-                    className="whitespace-pre-wrap" 
-                    onClick={() => {openInNewTab('https://warpcast.com/bookies')}}
-                  >
-                    {`Privacy Policy`}
+                    Terms of Use
                   </Button>
                 </HStack>
                 <Text className='font-inter text-inter'>©2024 Bookies Labs</Text>
               </VStack>
-          </Flex>
         </Container>
   );
 };

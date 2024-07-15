@@ -13,7 +13,7 @@ export default async function HomePage() {
     const markets = Object.values(allMarkets).reverse().slice(0, 5)
 
     return (
-      <Container maxW="container.md" p={3} marginTop={25} as="main" minH="70vh">
+      <Container maxW="container.md" p={3} as="main" minH="70vh">
           <HomeHero/>
           <VStack w={'full'} rounded="lg" className="space-y-10 font-inter pt-10" alignItems='center' justifyItems='center'>
             {markets.map(async(market:any, index) => {

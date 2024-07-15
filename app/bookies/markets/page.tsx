@@ -1,4 +1,4 @@
-import { VStack } from "@chakra-ui/react";
+import { VStack, Container } from "@chakra-ui/react";
 import MarketCard from "@components/MarketCard";
 import { MarketData } from "@types";
 import { neynarClient } from "@utils";
@@ -13,11 +13,16 @@ export default async function MarketsPage() {
     const markets = Object.values(allMarkets).reverse().slice(0, 10)
 
     return(
-        <VStack w={'full'} rounded="lg" className="space-y-10 font-inter" alignItems='center' justifyItems='center'> 
-            <div className="font-semibold font-inherit text-56xl text-white flex items-baseline">
-                <h1 className="inline-block flex-shrink-0 text-transparent !bg-clip-text [background:linear-gradient(90deg,_#feae26,_#d44fc9_49.5%,_#7a65ec)] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent]"> Bookies </h1> 
-                <h1> &nbsp; Markets</h1>
-            </div>
+        <Container maxW="container.md" paddingX={3} as="main" minH="70vh" alignItems='center' justifyItems='center'> 
+            <h1 className="font-semibold font-inherit sm:text-56xl text-8xl text-white text-center flex flex-wrap justify-center items-center mb-5">
+                <span className="inline-block flex-shrink-0 text-transparent !bg-clip-text [background:linear-gradient(90deg,_#feae26,_#d44fc9_49.5%,_#7a65ec)] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent]">
+                    Bookies
+                </span>
+                &nbsp;
+                <span className="inline-block flex-shrink-0">
+                    Markets
+                </span>
+            </h1>
             <VStack gap={5}>
                 {Object.values(markets).map(async(market:any, index) => {
                     // Get creator user data from neynar
@@ -42,7 +47,7 @@ export default async function MarketsPage() {
                             numBettors={market.orderBookieInfo.bettors.length}/>
                 })}
             </VStack>
-        </VStack>
+        </Container>
     );
 }
 
