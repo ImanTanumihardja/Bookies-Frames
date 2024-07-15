@@ -1,6 +1,6 @@
 "use client"
 
-import { Container, Flex, HStack, VStack, Button, Text } from '@chakra-ui/react';
+import { Container, HStack, VStack, Button, Text } from '@chakra-ui/react';
 
 const Footer = () => {
   const openInNewTab = (url: string) => {
