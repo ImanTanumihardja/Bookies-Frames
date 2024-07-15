@@ -1,6 +1,6 @@
 "use client"
 
-import { Box, Button, Container, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerOverlay, Flex, HStack, Heading, IconButton, Image, VStack, useDisclosure } from '@chakra-ui/react';
+import { Button, Container, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerOverlay, Flex, HStack, Heading, IconButton, Image, VStack, useDisclosure } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import ConnectFarcasterButton from './elements/ConnectFarcasterButton';
 
