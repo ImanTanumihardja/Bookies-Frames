@@ -3,7 +3,7 @@ import { FunctionComponent } from "react";
 import { Box, HStack, Text } from "@chakra-ui/react";
 import { UserType } from "@types";
 import SpreadBar from "./elements/SpreadBar";
-import { formatCompactNumber } from "@utils";
+import { formatCompactNumber } from "@utils/client";
 
 export type MarketCardType = {
     marketId: string;
