@@ -125,7 +125,7 @@ export default async function MarketPage({ params: { marketId } }: { params: { m
             rules={marketData.rules}
             umaTxn={creationTx.hash}
             placedBetTxns={placedBetTxns}
-            accpetedTokens={[{symbol:symbol, decimals:decimals, address: orderBookieInfo.acceptedTokenAddress}]}/>
+            acceptedTokens={[{symbol:symbol, decimals:decimals, address: orderBookieInfo.acceptedTokenAddress}]}/>
     );
 }
 

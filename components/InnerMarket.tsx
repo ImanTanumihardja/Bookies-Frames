@@ -2,7 +2,7 @@
 import { FunctionComponent, useState } from "react";
 import { Container, Button, Table, TableContainer, Tr, Th, Tbody, Td, Thead, useDisclosure, HStack } from "@chakra-ui/react";
 import { UserType } from "@types";
-import PlaceBetModal, { AccpetedToken } from "./PlaceBetModal";
+import PlaceBetModal, { AcceptedToken as AcceptedToken } from "./PlaceBetModal";
 import { calculatePayout, formatCompactNumber, formatOdd } from "@utils/client";
 import { useToast } from '@chakra-ui/react'
 import SpreadBar from "./elements/SpreadBar";
@@ -21,7 +21,7 @@ export type MarketInnerType = {
     rules: string;
     umaTxn: string;
     placedBetTxns: PlacedBetTxnType[];
-    accpetedTokens: AccpetedToken[];
+    acceptedTokens: AcceptedToken[];
   };
 
 export type PlacedBetTxnType = {
@@ -47,7 +47,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
     rules = "",
     umaTxn = "",
     placedBetTxns = [],
-    accpetedTokens = [],
+    acceptedTokens = [],
 }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [placeBetModalProps, setPlaceBetModalProps] = useState({ pick: null, odd: 0.5, stake: 0 });
@@ -152,7 +152,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                     </h2>
                     <div className="self-stretch flex flex-row md:text-8xl text-7xl font-semibold items-center justify-between max-w-full">
                         <div className="flex-1 flex flex-col items-center">
-                            <h1 className="m-0 relative font-inherit items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)]">
+                            <h1 className="m-0 relative font-inherit items-center text-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)]">
                             {options[0]}
                             </h1>
                             <h2 className="m-0 relative font-inherit md:text-xl text-mini items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)]">
@@ -165,7 +165,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                             </h3>
                         </div>
                         <div className="flex-1 flex flex-col items-center">
-                            <h1 className="m-0 relative text-inherit font-inherit flex items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)]">
+                            <h1 className="m-0 relative text-inherit font-inherit flex items-center text-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)]">
                             {options[1]}
                             </h1>
                             <h2 className="m-0 relative font-inherit md:text-xl text-mini items-center justify-center [text-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)]">
@@ -204,10 +204,10 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                         <SpreadBar spreadPercent={spreadPercent}/>
                         <div className="self-stretch flex flex-row items-start justify-between gap-[20px] mq450:flex-wrap">
                             <div className="relative uppercase font-semibold z-[3]">
-                            {formatCompactNumber(outcome1Staked)} ${accpetedTokens[0].symbol}
+                            {formatCompactNumber(outcome1Staked)} ${acceptedTokens[0].symbol}
                             </div>
                             <div className="relative uppercase font-semibold text-right z-[3]">
-                            {formatCompactNumber(outcome2Staked)} ${accpetedTokens[0].symbol}
+                            {formatCompactNumber(outcome2Staked)} ${acceptedTokens[0].symbol}
                             </div>
                         </div>
                     </div>
@@ -277,7 +277,6 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                     }
 
                                     let username = txn.bettor.username ? '@' + txn.bettor.username : txn.bettor.address;
-                                    username = username.length > 10 ? username.slice(0, 10) + ". . . " : username;
 
                                     const formattedOdd = formatOdd(txn.odd)
                                     
@@ -285,24 +284,30 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                         <Tr key={index}>
                                             <Td>{timeAgo}</Td>
                                             <Td className="font-bold"> 
-                                                <div className="flex items-center">
-                                                    <Button 
-                                                        variant='ghost' 
-                                                        gap={1} 
-                                                        padding={2}
-                                                        onClick={() => {
-                                                            openInNewTab(`http://${window.location.host}/profiles/${txn.bettor.fid}`)
-                                                        }}> 
-                                                        <img
-                                                            className="w-7 relative rounded-[50%] object-cover z-[1]"
-                                                            loading="lazy"
-                                                            alt={`/generic_pfp.png`}
-                                                            src={txn.bettor.pfpUrl ? txn.bettor.pfpUrl : `/generic_pfp.png`}
-                                                        />
-                                                        {username} 
-                                                    </Button>
-                                                    bet {txn.stake} ${accpetedTokens[0].symbol} on {options[txn.pick]} at {formattedOdd}
-                                                </div>
+                                            <div className="flex items-center justify-start flex-nowrap overflow-x-auto space-x-2">
+                                                <Button 
+                                                    variant='ghost' 
+                                                    gap={1} 
+                                                    padding={2}
+                                                    className="flex items-center space-x-2"
+                                                    onClick={() => {
+                                                    openInNewTab(`http://${window.location.host}/profiles/${txn.bettor.fid}`);
+                                                    }}
+                                                > 
+                                                    <img
+                                                    className="w-7 h-7 rounded-full object-cover"
+                                                    loading="lazy"
+                                                    alt="Profile picture"
+                                                    src={txn.bettor.pfpUrl ? txn.bettor.pfpUrl : `/generic_pfp.png`}
+                                                    />
+                                                    <span className="truncate">
+                                                    {username}
+                                                    </span>
+                                                </Button>
+                                                <span className="flex items-center">
+                                                    bet {txn.stake} {acceptedTokens[0].symbol} on {options[txn.pick]} at {formattedOdd}
+                                                </span>
+                                            </div>
                                             </Td>
                                             <Td>
                                                 <div className="flex flex-direction-row gap-2">
@@ -355,7 +360,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                 prompt={prompt} 
                 options={options} 
                 odds={odds} 
-                accpetedTokens={accpetedTokens}
+                acceptedTokens={acceptedTokens}
                 isOpen={isOpen} 
                 onClose={onClose}/>
         </Container>

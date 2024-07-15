@@ -44,12 +44,12 @@ export type PlaceBetModal = {
     prompt: string;
     options: string[];
     odds: number[];
-    accpetedTokens: AccpetedToken[];
+    acceptedTokens: AcceptedToken[];
     isOpen: boolean;
     onClose: () => void;
   };
 
-  export type AccpetedToken = {
+  export type AcceptedToken = {
     symbol: string
     decimals: number
     address: string
@@ -64,7 +64,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
     prompt = "",
     options = [],
     odds = [],
-    accpetedTokens = [],
+    acceptedTokens = [],
     isOpen = false,
     onClose = () => {}
 }) => {
@@ -78,14 +78,14 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
             const iOrderBookie = new ethers.Interface(orderBookieABI)
 
             const parsedPick = ethers.parseUnits(pick.toString(), PICK_DECIMALS)
-            const parsedStake = ethers.parseUnits(stake, accpetedTokens[0].decimals)
+            const parsedStake = ethers.parseUnits(stake, acceptedTokens[0].decimals)
             const parsedOdd = ethers.parseUnits(odd.toString(), ODDS_DECIMALS)
 
             // Approve orderbookie to spend accepted token
             const iERC20 = new ethers.Interface(erc20ABI)
             let data = iERC20.encodeFunctionData('approve', [address, parsedStake])
             const approveTx = {
-                to: accpetedTokens[0].address,
+                to: acceptedTokens[0].address,
                 data: data,
                 chainId: myChain,
             }
@@ -206,7 +206,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                         <div className="w-full">
                             <FormLabel requiredIndicator={false} htmlFor="stake" color={"gray.400"}>Stake</FormLabel>
                             <InputGroup>
-                                <InputLeftAddon>${accpetedTokens[0].symbol}</InputLeftAddon>
+                                <InputLeftAddon>${acceptedTokens[0].symbol}</InputLeftAddon>
                                 <NumberInput 
                                     max={5000} 
                                     min={0} 
@@ -256,7 +256,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                     <HStack justifyContent="space-between" alignItems="center" w="100%" h="100%" paddingY={1}>
                         <Text fontSize={"smaller"} color={"gray.400"}>Payout</Text>
                         <Text fontSize={"smaller"} >
-                            {calculatePayout(odd, parseFloat(stake)).toFixed(2)} ${accpetedTokens[0].symbol}
+                            {calculatePayout(odd, parseFloat(stake)).toFixed(2)} ${acceptedTokens[0].symbol}
                         </Text>
                     </HStack>
                     </FormControl>
