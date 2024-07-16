@@ -108,16 +108,14 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                         />
                         <div className="relative font-medium">Market ID {marketId}</div>
                     </Button>
-                    <div className="text-left text-smi text-lightgray-200">
-                        <div className="flex flex-row items-center justify-center font-medium gap-1">
-                            <img
-                                className="w-7 relative rounded-[50%] object-cover z-[1]"
-                                loading="lazy"
-                                alt=""
-                                src={creator.pfpUrl ? creator.pfpUrl : `/generic_pfp.png`}
-                            />
-                            Created by @{creator.username}
-                        </div>
+                    <div className="flex flex-row items-center justify-center font-medium gap-1 pl-3 text-left text-smi text-lightgray-200">
+                        <img
+                            className="w-7 relative rounded-[50%] object-cover z-[1]"
+                            loading="lazy"
+                            alt=""
+                            src={creator.pfpUrl ? creator.pfpUrl : `/generic_pfp.png`}
+                        />
+                        Created by @{creator.username}
                     </div>
                 </div>
                 <div className="flex flex-row items-center justify-center gap-[24px] max-w-full">
