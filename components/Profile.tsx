@@ -2,11 +2,13 @@
 import { FunctionComponent } from "react";
 import { Container, Table, TableContainer, Tr, Th, Tbody, Td, Thead, HStack, IconButton, Button } from "@chakra-ui/react";
 import { UserType } from "@types";
+import { formatTimeAgo } from "@utils/client";
 
 export type ProfileType = {
     user: UserType,
     wins : number,
     losses : number,
+    profitAndLoss: number,
     bets : BetType[]
   };
 
@@ -27,6 +29,7 @@ const Profile: FunctionComponent<ProfileType> = ({
     user=null,
     wins=0,
     losses=0,
+    profitAndLoss,
     bets=[]
 }) => {
 
@@ -34,6 +37,8 @@ const Profile: FunctionComponent<ProfileType> = ({
         console.log(url)
         window.open(url, '_blank', 'noopener,noreferrer');
     };
+
+    const token = bets.length > 0 ? bets[bets.length - 1].token : "DEGEN";
 
     return (
         <Container maxW="container.xl" p={3} marginTop={25} as="main" minH="70vh">
@@ -79,6 +84,14 @@ const Profile: FunctionComponent<ProfileType> = ({
                     Loses
                     </div>
                 </div>
+                <div className="flex flex-row items-start justify-start min-w-[32px] gap-2">
+                    <h1 className={`relative font-extrabold inline-block`}>
+                        {profitAndLoss > 0 && "+"}{profitAndLoss.toFixed(2)} ${token}
+                    </h1>
+                    <div className="relative text-lightgray-300 inline-block">
+                    P/L
+                    </div>
+                </div>
             </HStack>
             <div className="font-bold font-inherit text-5xl mt-7">
                 BETS
@@ -87,7 +100,7 @@ const Profile: FunctionComponent<ProfileType> = ({
                 <Table variant="unstyled" size="md">
                     <Thead borderBottom={"1px solid gray"}>
                         <Tr color={"gray"} fontSize={"md"}>
-                            <Th >Market</Th>
+                            <Th  >Market</Th>
                             <Th >Pick</Th>
                             <Th >Stake</Th>
                             <Th >Odds</Th>
@@ -99,18 +112,7 @@ const Profile: FunctionComponent<ProfileType> = ({
                     </Thead>
                     <Tbody className="font-inter">
                         {bets.map((bet, index) => {
-                            const now = new Date().getTime() / 1000;
-                            const elapsedSeconds = Math.ceil(now - bet.timestamp);
-                            let timeAgo;
-                            if (elapsedSeconds < 60) {
-                                timeAgo = `${elapsedSeconds} seconds ago`;
-                            } else if (elapsedSeconds < 3600) {
-                                const elapsedMinutes = Math.floor(elapsedSeconds / 60);
-                                timeAgo = `${elapsedMinutes} minutes ago`;
-                            } else {
-                                const elapsedHours = Math.floor(elapsedSeconds / 3600);
-                                timeAgo = `${elapsedHours} hours ago`;
-                            }
+                            const timeAgo = formatTimeAgo(bet.timestamp);
 
                             return (
                                 <Tr key={index}>
@@ -126,7 +128,7 @@ const Profile: FunctionComponent<ProfileType> = ({
                                     <Td>{bet.odd}</Td>
                                     <Td className="font-bold" color={bet.winLoss !== "---" ? bet.winLoss === "W" ? `rgb(0, 255, 0)` : `rgb(255, 0, 0)` : 'white'}>{bet.winLoss}</Td>
                                     <Td>{bet.payout} ${bet.token}</Td>
-                                    <Td isNumeric color={`rgb(${255 - bet.filled * 2.55}, ${bet.filled * 2.55}, 0)`}>{Math.round(bet.filled)}%</Td>
+                                    <Td isNumeric>{Math.round(bet.filled)}%</Td>
                                     <Td fontSize={'small'} color={"gray"}>{timeAgo}</Td>
                                 </Tr>
                             );

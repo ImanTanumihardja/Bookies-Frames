@@ -50,4 +50,25 @@ export function formatCompactNumber(number) {
     } else if (number >= 1_000_000_000_000 && number < 1_000_000_000_000_000) {
       return (number / 1_000_000_000_000).toFixed(1) + "T";
     }
-  }
+}
+
+export function formatTimeAgo(timestamp: number): string{
+    const now = new Date().getTime() / 1000;
+    const elapsedSeconds = Math.ceil(now - timestamp);
+    let timeAgo;
+    if (elapsedSeconds < 60) {
+        timeAgo = `${elapsedSeconds} seconds ago`;
+    } else if (elapsedSeconds < 3600) {
+        const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+        timeAgo = `${elapsedMinutes} minutes ago`;
+    } else if (elapsedSeconds < 86400) {
+        const elapsedHours = Math.floor(elapsedSeconds / 3600);
+        timeAgo = `${elapsedHours} hours ago`;
+    }
+    else {
+        const elapsedDays = Math.floor(elapsedSeconds / 86400);
+        timeAgo = `${elapsedDays} days ago`;
+    }
+
+    return timeAgo;
+}

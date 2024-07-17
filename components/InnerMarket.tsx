@@ -3,7 +3,7 @@ import { FunctionComponent, useState } from "react";
 import { Container, Button, Table, TableContainer, Tr, Th, Tbody, Td, Thead, useDisclosure, HStack } from "@chakra-ui/react";
 import { UserType } from "@types";
 import PlaceBetModal, { AcceptedToken as AcceptedToken } from "./PlaceBetModal";
-import { calculatePayout, formatCompactNumber, formatOdd } from "@utils/client";
+import { calculatePayout, formatCompactNumber, formatOdd, formatTimeAgo } from "@utils/client";
 import { useToast } from '@chakra-ui/react'
 import SpreadBar from "./elements/SpreadBar";
 
@@ -92,7 +92,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
     const spreadPercent = totalStaked !== 0 ? (outcome1Staked / totalStaked) * 100 : 50;
 
     return (
-        <Container maxW="container.xl" px={3} marginTop={25} as="main" minH="70vh">
+        <Container maxW="container.xl" px={5} marginTop={25} as="main" minH="70vh">
             <HStack className="items-start justify-between max-w-full gap-20px pb-5">
                 <div className="self-stretch flex flex-row items-center justify-center gap-[20px]">
                     <Button 
@@ -108,7 +108,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                         />
                         <div className="relative font-medium">Market ID {marketId}</div>
                     </Button>
-                    <div className="flex flex-row items-center justify-center font-medium gap-1 pl-3 text-left text-smi text-lightgray-200">
+                    <div className="flex flex-row items-center justify-center font-medium gap-1 text-left text-smi text-lightgray-200">
                         <img
                             className="w-7 relative rounded-[50%] object-cover z-[1]"
                             loading="lazy"
@@ -259,20 +259,7 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                         <Tbody className="font-inter">
                             {
                                 placedBetTxns.map((txn, index) => {
-                                    // Parse timestamp to be time ago
-                                    const now = new Date().getTime() / 1000;
-                                    const elapsedSeconds = Math.ceil(now - txn.timestamp);
-                                
-                                    let timeAgo;
-                                    if (elapsedSeconds < 60) {
-                                        timeAgo = `${elapsedSeconds} seconds ago`;
-                                    } else if (elapsedSeconds < 3600) {
-                                        const elapsedMinutes = Math.floor(elapsedSeconds / 60);
-                                        timeAgo = `${elapsedMinutes} minutes ago`;
-                                    } else {
-                                        const elapsedHours = Math.floor(elapsedSeconds / 3600);
-                                        timeAgo = `${elapsedHours} hours ago`;
-                                    }
+                                    const timeAgo = formatTimeAgo(txn.timestamp)
 
                                     let username = txn.bettor.username ? '@' + txn.bettor.username : txn.bettor.address;
 
@@ -282,12 +269,12 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
                                         <Tr key={index}>
                                             <Td>{timeAgo}</Td>
                                             <Td className="font-bold"> 
-                                            <div className="flex items-center justify-start flex-nowrap overflow-x-auto space-x-2">
+                                            <div className="flex items-center justify-start flex-nowrap overflow-x-auto space-x-1">
                                                 <Button 
                                                     variant='ghost' 
                                                     gap={1} 
                                                     padding={2}
-                                                    className="flex items-center space-x-2"
+                                                    className="flex items-center space-x-1"
                                                     onClick={() => {
                                                     openInNewTab(`http://${window.location.host}/profiles/${txn.bettor.fid}`);
                                                     }}

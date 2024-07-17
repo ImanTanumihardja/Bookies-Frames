@@ -49,6 +49,7 @@ export enum RequestProps {
     PERCENT_FILLED = 'percentFilled',
     SYMBOL = 'symbol',
     TX_FEE = 'txFee',
+    PNL = 'profitAndLoss',
   }
 
   export const RequestPropsTypes = {
@@ -92,6 +93,7 @@ export enum RequestProps {
     [RequestProps.PERCENT_FILLED]: 0.0,
     [RequestProps.SYMBOL]: "",
     [RequestProps.TX_FEE]: 0.0,
+    [RequestProps.PNL]: 0.0,
 }
 
 export enum FrameNames {

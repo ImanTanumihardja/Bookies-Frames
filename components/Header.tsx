@@ -13,7 +13,7 @@ const Header = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Container maxW="screen" p={6} pb={0} marginBottom={0} className="font-body">
+    <Container maxW="screen" p={5} pb={0} marginBottom={0} className="font-body">
       <Flex align="center" justify="space-between" display={["none", "none", "flex", "flex", "flex"]}>
         <Heading flex="1">
           <IconButton 

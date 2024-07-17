@@ -13,7 +13,7 @@ export default async function MarketsPage() {
     const markets = Object.values(allMarkets).reverse().slice(0, 10)
 
     return(
-        <Container maxW="container.md" paddingX={3} as="main" minH="70vh" alignItems='center' justifyItems='center'> 
+        <Container maxW="container.md" paddingX={5} as="main" minH="70vh" alignItems='center' justifyItems='center'> 
             <h1 className="font-semibold font-inherit sm:text-56xl text-8xl text-white text-center flex flex-wrap justify-center items-center my-5">
                 <span className="inline-block flex-shrink-0 text-transparent !bg-clip-text [background:linear-gradient(90deg,_#feae26,_#d44fc9_49.5%,_#7a65ec)] [-webkit-background-clip:text] [-webkit-text-fill-color:transparent]">
                     Bookies
