@@ -9,7 +9,7 @@ import { getRequestProps, RequestProps } from '@utils';
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
 let fontData = fs.readFileSync(fontPath)
 
-export async function GET(req: NextRequest, { params: { fid } }: { params: { fid: number } }) {
+export async function GET(req: NextRequest, ) {
     try {
         let {username, avatarUrl, wins, losses, numBets, profitAndLoss} = getRequestProps(req, [RequestProps.USERNAME, 
                                                                                     RequestProps.AVATAR_URL, 
@@ -47,12 +47,10 @@ export async function GET(req: NextRequest, { params: { fid } }: { params: { fid
                                 <h2 style={{color: 'white', fontSize: 30, margin:2}}> LOSSES </h2>
                                 <h2 style={{color: 'white', fontSize: 30, margin:0}}> {losses} </h2>
                             </div>
-                        </div>
-                        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                            <h1 style={{color: 'white', fontSize: 30, paddingRight:5}}>
-                                P/L:
-                            </h1>
-                            <h1 style={{color: 'white',fontSize: profitAndLoss.toFixed(2).length > 10 ? 25 : 30, margin:0, padding:0}}>{profitAndLoss.toFixed(2)} $DEGEN</h1>
+                            <div style={{display: 'flex', flexDirection:"column", justifyContent: 'center', alignItems: 'center', padding:15}}>
+                                <h2 style={{color: 'white', fontSize: 30, margin:2}}> P/L </h2>
+                                <h2 style={{color: 'white', fontSize: 30, margin:0}}> {profitAndLoss}% </h2>
+                            </div>
                         </div>
                     </div>
 

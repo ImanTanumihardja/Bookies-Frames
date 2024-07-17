@@ -38,6 +38,7 @@ export async function generateMetadata({ params: { fid } }: { params: { fid: num
     let losses = 0;
     let numBets = 0;
     let profitAndLoss = 0;
+    let totalStaked = 0;
 
     for (const marketId of betMarkets) {
         const marketData: Market= await kv.hgetall(marketId)
@@ -60,6 +61,8 @@ export async function generateMetadata({ params: { fid } }: { params: { fid: num
                     const toWinFilled = parseFloat(ethers.formatUnits(bet.toWinFilled, decimals))
                     const pick = parseInt(ethers.formatUnits(bet.pick, PICK_DECIMALS))
 
+                    totalStaked += stakeUsed
+
                     if (pick === result) {
                         wins += 1
                         profitAndLoss += toWinFilled
@@ -76,7 +79,9 @@ export async function generateMetadata({ params: { fid } }: { params: { fid: num
         }
     }
 
-    const imageUrl:string = generateUrl(`profiles/${fid}/image`, {[RequestProps.USERNAME]: profile?.username, [RequestProps.AVATAR_URL]: profile.pfp_url, [RequestProps.WINS]: wins, [RequestProps.LOSSES]: losses, [RequestProps.NUM_BETS]: numBets, [RequestProps.PNL]: profitAndLoss}, true)
+    const profitAndLossPercent = totalStaked > 0 ? Math.round((profitAndLoss / totalStaked) * 100) : 0
+
+    const imageUrl:string = generateUrl(`profiles/${fid}/image`, {[RequestProps.USERNAME]: profile?.username, [RequestProps.AVATAR_URL]: profile.pfp_url, [RequestProps.WINS]: wins, [RequestProps.LOSSES]: losses, [RequestProps.NUM_BETS]: numBets, [RequestProps.PNL]: profitAndLossPercent}, true)
     
     const frame : Frame = {
       version: "vNext",
@@ -129,6 +134,7 @@ export default async function ProfilePage({ params: { fid } }: { params: { fid: 
     let wins = 0;
     let losses = 0;
     let profitAndLoss = 0;
+    let totalStaked = 0;
 
     let bets = []
     for (const marketId of betMarkets) {
@@ -147,8 +153,8 @@ export default async function ProfilePage({ params: { fid } }: { params: { fid: 
 
         for (const address of addresses){
             await orderBookie.getBets(address).then(
-                (bets) => {
-                    for (const bet of bets) {
+                (marketBets) => {
+                    for (const bet of marketBets) {
                         const stake = parseFloat(ethers.formatUnits(bet.stake, decimals))
                         const stakeUsed = parseFloat(ethers.formatUnits(bet.stakeUsed, decimals))
                         const toWin = parseFloat(ethers.formatUnits(bet.toWin, decimals))
@@ -159,6 +165,8 @@ export default async function ProfilePage({ params: { fid } }: { params: { fid: 
                         const filledPercent = stakeUsed / stake
         
                         const payout = stake + (100 - txFee) * toWin / 100
+
+                        totalStaked += stakeUsed
         
                         if (pick === result) {
                             wins += 1
@@ -184,10 +192,12 @@ export default async function ProfilePage({ params: { fid } }: { params: { fid: 
                 }
             ).catch
             (error => {
-                console.log(error)
+                console.error(error)
             })
         }
     }
+
+    const profitAndLossPercent = totalStaked > 0 ? Math.round((profitAndLoss / totalStaked) * 100) : 0
 
     // Sorts bets on timestamp
     bets.sort((a, b) => b.timestamp - a.timestamp)
@@ -203,7 +213,7 @@ export default async function ProfilePage({ params: { fid } }: { params: { fid: 
             }}
             wins={wins}
             losses={losses}
-            profitAndLoss={profitAndLoss}
+            profitAndLoss={profitAndLossPercent}
             bets={bets}
         />
 

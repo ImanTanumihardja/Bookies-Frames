@@ -38,8 +38,6 @@ const Profile: FunctionComponent<ProfileType> = ({
         window.open(url, '_blank', 'noopener,noreferrer');
     };
 
-    const token = bets.length > 0 ? bets[bets.length - 1].token : "DEGEN";
-
     return (
         <Container maxW="container.xl" p={3} marginTop={25} as="main" minH="70vh">
             <HStack paddingBottom={5} gap={2}>
@@ -86,7 +84,7 @@ const Profile: FunctionComponent<ProfileType> = ({
                 </div>
                 <div className="flex flex-row items-start justify-start min-w-[32px] gap-2">
                     <h1 className={`relative font-extrabold inline-block`}>
-                        {profitAndLoss > 0 && "+"}{profitAndLoss.toFixed(2)} ${token}
+                        {profitAndLoss}%
                     </h1>
                     <div className="relative text-lightgray-300 inline-block">
                     P/L
