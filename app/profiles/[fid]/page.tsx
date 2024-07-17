@@ -131,6 +131,9 @@ export default async function ProfilePage({ params: { fid } }: { params: { fid: 
         betMarkets = betMarkets.concat(result[1] as string[]);
     }
 
+    // Get orderbookie contract
+    const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
+
     let wins = 0;
     let losses = 0;
     let profitAndLoss = 0;
@@ -139,9 +142,6 @@ export default async function ProfilePage({ params: { fid } }: { params: { fid: 
     let bets = []
     for (const marketId of betMarkets) {
         const marketData: Market= await kv.hgetall(marketId)
-
-        // Get orderbookie contract
-        const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
         const orderBookie = new ethers.Contract(marketData.address, orderBookieABI, provider)
         const orderBookieInfo = await orderBookie.getBookieInfo()
 

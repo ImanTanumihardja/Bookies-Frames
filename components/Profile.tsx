@@ -39,24 +39,42 @@ const Profile: FunctionComponent<ProfileType> = ({
     };
 
     return (
-        <Container maxW="container.xl" p={3} marginTop={25} as="main" minH="70vh">
-            <HStack paddingBottom={5} gap={2}>
-                <IconButton
-                    variant="none"
-                    icon={<img className="rounded-[50%] w-[100px]" src={`https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168,h_168/${encodeURI(user.pfpUrl)}`} />}
-                    onClick={() => {
-                        openInNewTab(`https://warpcast.com/${user.username}`);
-                    }} 
-                    aria-label={""}/>
-                <div className="flex flex-col items-start justify-start gap-[12px] text-6xl">
-                    <h2 className="m-0 relative text-inherit font-bold font-inherit inline-block z-[2]">
-                    {user.displayName}
-                    </h2>
-                    <div className="relative text-mid font-inter text-lightgray-300 inline-block">
-                    FID #{user.fid}
+        <Container maxW="container.xl" p={5} marginTop={25} as="main" minH="70vh">
+            <HStack justify={"space-between"} align={'flex-start'}>
+                <HStack paddingBottom={5} gap={2}>
+                    <IconButton
+                        variant="none"
+                        icon={<img className="rounded-[50%] max-w-[100px]" src={`https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168,h_168/${encodeURI(user.pfpUrl)}`} />}
+                        onClick={() => {
+                            openInNewTab(`https://warpcast.com/${user.username}`);
+                        }} 
+                        aria-label={""}/>
+                    <div className="flex flex-col items-start justify-start gap-[12px] text-6xl">
+                        <h2 className="m-0 relative md:text-inherit text-xl font-bold font-inherit inline-block z-[2] truncate max-w-[150px]">
+                            {user.displayName}
+                        </h2>
+                        <div className="relative md:text-mid text-mini font-inter text-lightgray-300 inline-block">
+                            FID #{user.fid}
+                        </div>
                     </div>
-                </div>
+                </HStack>
+                <Button
+                    variant="outline"
+                    border='1px'
+                    borderRadius='20px'
+                    size={['sm', 'md']}
+                    onClick={() => {
+                        openInNewTab(`https://warpcast.com/~/compose?text=%20&embeds[]=${window.location.href}`)
+                    }}>
+                    Warpcast
+                    <img
+                        className="ml-1 relative overflow-hidden shrink-0 z-[1]"
+                        alt=""
+                        src="/iconoiropennewwindow.svg"
+                    />
+                </Button>
             </HStack>
+            
             <HStack gap={5} paddingY={5} borderBottom={"1px solid gray"} className="font-inter text-mid">
                 <div className="flex flex-row items-start justify-start min-w-[32px] gap-2">
                     <div className="relative font-extrabold inline-block">
@@ -96,9 +114,9 @@ const Profile: FunctionComponent<ProfileType> = ({
             </div>
             <TableContainer marginTop="10px">
                 <Table variant="unstyled" size="md">
-                    <Thead borderBottom={"1px solid gray"}>
+                    <Thead>
                         <Tr color={"gray"} fontSize={"md"}>
-                            <Th  >Market</Th>
+                            <Th >Market</Th>
                             <Th >Pick</Th>
                             <Th >Stake</Th>
                             <Th >Odds</Th>
