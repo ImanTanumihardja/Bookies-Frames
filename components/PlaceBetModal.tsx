@@ -122,7 +122,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
             if (authenticated && user?.farcaster)
             {
                 const fid = user.farcaster.fid
-                await storeBetData(fid, marketId, wallet.address, parsedPick, parsedStake, parsedOdd)
+                await storeBetData(fid, marketId, wallet.address)
             }
 
             toast({

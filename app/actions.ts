@@ -8,10 +8,9 @@ import getMarket from '@scripts/getMarket'
 import { revalidatePath } from 'next/cache'
 import { Accounts, DatabaseKeys, ODDS_DECIMALS, PICK_DECIMALS } from '@utils/constants'
 import { kv } from '@vercel/kv'
-import { ethers, AbiCoder } from 'ethers'
-import {orderBookieABI, erc20ABI, patchworkABI} from '@abis'
+import { ethers } from 'ethers'
+import {orderBookieABI, erc20ABI} from '@abis'
 import { calculatePayout } from '@utils'
-import { PATCHWORK_ADDRESS } from "@addresses";
 
 export async function createMarketAction(
     _: any, 
@@ -177,7 +176,7 @@ export async function placeBetForAction(
     }
 }
 
-export async function storeBetData(fid: number, marketId: string, address: string, _stake: BigInt, _pick: BigInt, _odd: BigInt) {
+export async function storeBetData(fid: number, marketId: string, address: string) {
     address = ethers.getAddress(address)
 
     // Add users connect address
@@ -211,29 +210,6 @@ export async function storeBetData(fid: number, marketId: string, address: strin
         throw new Error('Error creating bet');
         })
     })
-
-    // // Save Patchwork
-    // const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
-    // const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
-
-    // const patchwork = new ethers.Contract(PATCHWORK_ADDRESS, patchworkABI, signer)
-
-    // // Store Metadata
-    // const metadata = {
-    //     marketId: marketId,
-    //     pick: pick,
-    //     odd: odd,
-    //     stake: stake,
-    //     timestamp: ethers.parseUnits(Math.floor(Date.now() / 1000).toString(), 10)
-    // }
-
-    // // Abi encode the metadata
-    // const encodedMetadata = new AbiCoder().encode(
-    //     ['string', 'int256', 'uint256', 'uint256', 'uint256'],
-    //     [metadata.marketId, metadata.pick, metadata.odd, metadata.stake, metadata.timestamp]
-    // )
-
-    // await (await patchwork.mint(address, encodedMetadata)).wait()
 }
 
 export async function getPercentFilled(pick:number, stake: number, odd: number, orderBookieAddress: string) {
