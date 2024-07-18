@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { kv } from "@vercel/kv";
 import { Market } from '@types';
 import { generateUrl, getRequestProps, getFrameMessage } from '@utils';
-import { FrameNames, RequestProps, DatabaseKeys, Accounts, PICK_DECIMALS } from '@utils/constants';
+import { FrameNames, RequestProps, DatabaseKeys, Accounts } from '@utils/constants';
 import {ethers} from 'ethers';
 import {orderBookieABI} from '@abis';
 

@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ImageResponse } from 'next/og';
 import { getRequestProps } from '@utils';
-import {ODDS_DECIMALS, PICK_DECIMALS, RequestProps } from '@utils/constants';
-import {orderBookieABI, erc20ABI} from '@abis';
-import { kv } from '@vercel/kv';
+import { RequestProps } from '@utils/constants';
 import * as fs from "fs";
 import { join } from 'path';
-import {ethers} from 'ethers';
 
 // Fonts
 const fontPath = join(process.cwd(), 'PlusJakartaSans-Bold.ttf')
