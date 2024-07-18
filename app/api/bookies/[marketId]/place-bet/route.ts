@@ -68,44 +68,7 @@ export async function POST(req: NextRequest, { params: { marketId } }: { params:
 
   const now = new Date().getTime() / 1000;
   if (now > Number(orderBookieInfo.startDate) || result !== -1) { // Event has already passed and 
-    inputText = undefined
-
-    buttons =
-      [
-        { 
-          label: "/bookies!", 
-          action: 'link', 
-          target: 'https://warpcast.com/~/channel/bookies'
-        },
-        {
-          label: 'Refresh', 
-          action:'post', 
-          target: generateUrl(`api/bookies/${marketId}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: marketId, 
-                                                                                           [RequestProps.STAKE]: 0,
-                                                                                           [RequestProps.PICK]: 0,
-                                                                                           [RequestProps.TRANSACTION_HASH]: ""}, false)
-        },
-      ]
-
-    if (activeEvents.length > 0) {
-      buttons.push({
-        label: 'Bet on Another Event', 
-        action:'post', 
-        target: generateUrl(`api/bookies/${activeEvents[Math.floor(Math.random() * activeEvents.length)]}`, {}, false)
-      })
-    }
-    
-    postUrl = "" // Collect payout page
-
-    imageUrl = generateUrl(`api/bookies/${marketId}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.PICK]: -1, 
-                                                                                            [RequestProps.BUTTON_INDEX]: 0, 
-                                                                                            [RequestProps.FID]: fid,  
-                                                                                            [RequestProps.OPTIONS]: event.options, 
-                                                                                            [RequestProps.ADDRESS]: event.address,
-                                                                                            [RequestProps.RESULT]: result,
-                                                                                            [RequestProps.PROMPT]: event.prompt,
-                                                                                            [RequestProps.TRANSACTION_HASH]: "",
-                                                                                            [RequestProps.IS_MINED]: false}, true);                                                          
+    return new Response(JSON.stringify({ message: 'Market Closed' }), { status: 400, headers: { 'content-type': 'application/json' } });                                                   
   }
   else 
   {

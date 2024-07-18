@@ -44,11 +44,6 @@ export async function GET(req: NextRequest, { params: {  marketId } }: { params:
         label: 'Place Bet',
         action: 'post',
       },
-      {
-        label: 'Your Bets',
-        action: 'post',
-        target: generateUrl(`api/bookies/${marketId}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.STAKE]: 0, [RequestProps.PICK]: 0, [RequestProps.TRANSACTION_HASH]: ""}, false)
-      }
     ],
     image: imageUrl,
     postUrl: generateUrl(`api/bookies/${marketId}/${FrameNames.PLACE_BET}`, {[RequestProps.ODDS]: odds}, false),

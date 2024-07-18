@@ -177,7 +177,7 @@ export async function placeBetForAction(
     }
 }
 
-export async function storeBetData(fid: number, marketId: string, address: string, stake: BigInt, pick: BigInt, odd: BigInt) {
+export async function storeBetData(fid: number, marketId: string, address: string, _stake: BigInt, _pick: BigInt, _odd: BigInt) {
     address = ethers.getAddress(address)
 
     // Add users connect address
@@ -212,28 +212,28 @@ export async function storeBetData(fid: number, marketId: string, address: strin
         })
     })
 
-    // Save Patchwork
-    const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
-    const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
+    // // Save Patchwork
+    // const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
+    // const signer = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
 
-    const patchwork = new ethers.Contract(PATCHWORK_ADDRESS, patchworkABI, signer)
+    // const patchwork = new ethers.Contract(PATCHWORK_ADDRESS, patchworkABI, signer)
 
-    // Store Metadata
-    const metadata = {
-        marketId: marketId,
-        pick: pick,
-        odd: odd,
-        stake: stake,
-        timestamp: ethers.parseUnits(Math.floor(Date.now() / 1000).toString(), 10)
-    }
+    // // Store Metadata
+    // const metadata = {
+    //     marketId: marketId,
+    //     pick: pick,
+    //     odd: odd,
+    //     stake: stake,
+    //     timestamp: ethers.parseUnits(Math.floor(Date.now() / 1000).toString(), 10)
+    // }
 
-    // Abi encode the metadata
-    const encodedMetadata = new AbiCoder().encode(
-        ['string', 'int256', 'uint256', 'uint256', 'uint256'],
-        [metadata.marketId, metadata.pick, metadata.odd, metadata.stake, metadata.timestamp]
-    )
+    // // Abi encode the metadata
+    // const encodedMetadata = new AbiCoder().encode(
+    //     ['string', 'int256', 'uint256', 'uint256', 'uint256'],
+    //     [metadata.marketId, metadata.pick, metadata.odd, metadata.stake, metadata.timestamp]
+    // )
 
-    await (await patchwork.mint(address, encodedMetadata)).wait()
+    // await (await patchwork.mint(address, encodedMetadata)).wait()
 }
 
 export async function getPercentFilled(pick:number, stake: number, odd: number, orderBookieAddress: string) {

@@ -81,15 +81,12 @@ export async function POST(req: NextRequest, { params: { marketId } }: { params:
 
   const orderBookie = new ethers.Contract(event.address, orderBookieABI, provider)
   const orderBookieInfo = await orderBookie.getBookieInfo()
-  const result = parseFloat(ethers.formatUnits(orderBookieInfo.result, PICK_DECIMALS))
-  const txfee = parseFloat(orderBookieInfo.txFee) / 100;
 
   const now = new Date().getTime() / 1000;
 
   // Check if past startdate and event has not been settled
-  if (now >= Number(orderBookieInfo?.startDate) || result !== -1) {
-    pick = -1
-    console.log('EVENT CLOSED')
+  if (now >= Number(orderBookieInfo?.startDate)) {
+    return new Response(JSON.stringify({ message: 'Market Closed' }), { status: 400, headers: { 'content-type': 'application/json' } }); 
   }
   else if (button !== 1 && transactionHash) { // Need to check bet not rejected
     if (txReceipt){
@@ -106,16 +103,10 @@ export async function POST(req: NextRequest, { params: { marketId } }: { params:
     console.log('REJECTED BET')
   }
 
-  const imageUrl = generateUrl(`api/bookies/${marketId}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.STAKE]: stake, 
-                                                                                                [RequestProps.BUTTON_INDEX]: button, 
-                                                                                                [RequestProps.FID]: fid, 
-                                                                                                [RequestProps.ADDRESS]: event.address, 
-                                                                                                [RequestProps.OPTIONS]: event.options, 
-                                                                                                [RequestProps.RESULT]: result, 
+  const imageUrl = generateUrl(`api/bookies/${marketId}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.BUTTON_INDEX]: button, 
                                                                                                 [RequestProps.PROMPT]: event.prompt, 
                                                                                                 [RequestProps.TRANSACTION_HASH]: transactionHash, 
-                                                                                                [RequestProps.IS_MINED]: isMined,
-                                                                                                [RequestProps.TX_FEE]: txfee}, true);
+                                                                                                [RequestProps.IS_MINED]: isMined}, true);
 
   // Create buttons for frame
   let buttons : FrameButtonsType = [
