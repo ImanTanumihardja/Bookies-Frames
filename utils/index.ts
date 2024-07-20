@@ -15,7 +15,7 @@ export function getRequestProps(req: NextRequest, params: RequestProps[]): Recor
     for (const key of params) {;
         if (!req.nextUrl.searchParams.has(key)) {
             // Throw error if required param is missing
-            throw new Error(`Missing required param: ${key}`)
+            returnParams[key] = null
         }
 
         const value = decodeURIComponent(req.nextUrl.searchParams.get(key) || "")

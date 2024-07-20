@@ -109,6 +109,7 @@ export enum FrameNames {
     INFO = 'info',
     PLACE_BET = 'place-bet',
     EVENT = 'event',
+    SHARE_BET = 'share-bet',
 }
 
 export enum Transactions {

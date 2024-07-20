@@ -9,7 +9,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   const message = await getFrameMessage(req);
 
   const {input, connectedAddress} = message
-  const {address: orderBookieAddress } = getRequestProps(req, [RequestProps.ADDRESS]);
+  let {address: orderBookieAddress, stake } = getRequestProps(req, [RequestProps.ADDRESS, RequestProps.STAKE]);
 
   const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
 
@@ -20,7 +20,12 @@ export async function POST(req: NextRequest): Promise<Response> {
   const decimals = await acceptedToken.decimals();
 
   // Check if input is valid amount
-  const stake = parseFloat(input);
+  if (!stake) {
+    if (input){
+      stake = parseFloat(input);
+    }
+  }
+
   if (!stake || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake) || stake > Number.MAX_SAFE_INTEGER || stake < 0) {
     return new Response(JSON.stringify({ message: 'Invalid stake amount' }), { status: 400, headers: { 'content-type': 'application/json' } });
   }

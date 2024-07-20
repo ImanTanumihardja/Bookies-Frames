@@ -44,13 +44,16 @@ const Profile: FunctionComponent<ProfileType> = ({
                 <HStack paddingBottom={5} gap={2}>
                     <IconButton
                         variant="none"
-                        icon={<img className="rounded-[50%] max-w-[100px]" src={`https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168,h_168/${encodeURI(user.pfpUrl)}`} />}
+                        icon={<img
+                            className="rounded-[50%] max-w-[100px]"
+                            src={`https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168,h_168/${encodeURI(user.pfpUrl)}`}
+                        />}
                         onClick={() => {
                             openInNewTab(`https://warpcast.com/${user.username}`);
                         }} 
                         aria-label={""}/>
                     <div className="flex flex-col items-start justify-start gap-[12px] text-6xl">
-                        <h2 className="m-0 relative md:text-inherit text-xl font-bold font-inherit inline-block z-[2] truncate max-w-[150px]">
+                        <h2 className="m-0 relative md:text-inherit text-xl font-bold font-inherit inline-block z-[2] truncate max-w-25%]">
                             {user.displayName}
                         </h2>
                         <div className="relative md:text-mid text-mini font-inter text-lightgray-300 inline-block">

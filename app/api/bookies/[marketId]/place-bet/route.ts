@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { formatOdd, generateUrl, getFrameMessage, getRequestProps } from '@utils';
-import { Accounts, DatabaseKeys, FrameNames, PICK_DECIMALS, RequestProps, Transactions } from '@utils/constants';
+import { DatabaseKeys, FrameNames, PICK_DECIMALS, RequestProps, Transactions } from '@utils/constants';
 import { Frame, FrameButton, FrameButtonsType, getFrameHtml} from "frames.js";
 import { Market } from '@types';
 import { kv } from '@vercel/kv';
@@ -21,11 +21,6 @@ export async function POST(req: NextRequest, { params: { marketId } }: { params:
 
   // Get info for bet
   if (event === null) throw new Error('Event not found');
-
-  // Get all bookies events and filter out this eventName
-  let activeEvents = (await kv.sscan(`${Accounts.BOOKIES}:${DatabaseKeys.MARKETS}`, 0, {count: 150}))[1] as string[];
-  activeEvents = activeEvents.filter((e) => e !== String(marketId));
-  console.log('Active Events: ', activeEvents)
 
   // Check if result has been set
   const orderBookie = new ethers.Contract(event.address, orderBookieABI, provider)

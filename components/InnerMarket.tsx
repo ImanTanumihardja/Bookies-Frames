@@ -54,19 +54,19 @@ const InnerMarket: FunctionComponent<MarketInnerType> = ({
     const toast = useToast()
 
     const handlePlaceBetClick = (pick=null, odd=0.5, stake=0) => {
-        if (startDate < new Date().getTime() / 1000) {
-            if (!toast.isActive("market-closed")) {
-                toast({
-                    id: "market-closed",
-                    title: "Market Closed",
-                    description: "This market has already closed.",
-                    status: "error",
-                    duration: 4500,
-                    isClosable: true,
-                })
-            }
-            return;
-        }
+        // if (startDate < new Date().getTime() / 1000) {
+        //     if (!toast.isActive("market-closed")) {
+        //         toast({
+        //             id: "market-closed",
+        //             title: "Market Closed",
+        //             description: "This market has already closed.",
+        //             status: "error",
+        //             duration: 4500,
+        //             isClosable: true,
+        //         })
+        //     }
+        //     return;
+        // }
 
         // Cap stake between 0 and 5000
         stake = Math.min(5000, Math.max(0, stake));
