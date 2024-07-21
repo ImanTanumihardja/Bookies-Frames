@@ -15,7 +15,20 @@ export async function POST(req: NextRequest, { params: { marketId } }: { params:
   
   console.log('FID: ', fid.toString())
 
-  let stake = parseFloat(input);
+  let { stake, odds, pick} = getRequestProps(req, [RequestProps.STAKE, RequestProps.ODDS, RequestProps.PICK]);
+
+  // Check if input is valid amount
+  if (!stake) {
+    if (input){
+      stake = parseFloat(input);
+    }
+  }
+
+  if (!pick) {
+    if (button){
+      pick = button - 1;
+    }
+  }
 
   // Check if stake is not float
   if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake) || stake > STAKE_LIMIT) {
@@ -41,11 +54,7 @@ export async function POST(req: NextRequest, { params: { marketId } }: { params:
     console.log('Event has already been settled');
   }
 
-  // Get odds
-  const {odds} = getRequestProps(req, [RequestProps.ODDS]);
-
   let imageUrl = ''
-  let pick = button - 1;
   let buttons;
   const impliedProbability = odds[pick]
   const orderBookieAddress = event.address;
@@ -53,33 +62,7 @@ export async function POST(req: NextRequest, { params: { marketId } }: { params:
   const now = new Date().getTime() / 1000;
   // Check if event has already passed
   if (event.startDate < now || result !== -1) {
-    pick = -1;
-    imageUrl = generateUrl(`api/bookies/${marketId}/${FrameNames.BET_CONFIRMATION}/image`, {[RequestProps.PICK]: -1, 
-                                                                                            [RequestProps.BUTTON_INDEX]: 0, 
-                                                                                            [RequestProps.FID]: fid,  
-                                                                                            [RequestProps.OPTIONS]: event.options, 
-                                                                                            [RequestProps.ADDRESS]: event.address,
-                                                                                            [RequestProps.RESULT]: result,
-                                                                                            [RequestProps.PROMPT]: event.prompt,
-                                                                                            [RequestProps.TRANSACTION_HASH]: "",
-                                                                                            [RequestProps.IS_MINED]: false}, true);
-
-    buttons =
-    [
-      { 
-        label: "/bookies!", 
-        action: 'link', 
-        target: 'https://warpcast.com/~/channel/bookies'
-      },
-      {
-        label: 'Refresh', 
-        action:'post', 
-        target: generateUrl(`/api/bookies/${marketId}/${FrameNames.BET_CONFIRMATION}`, {[RequestProps.EVENT_NAME]: marketId, 
-                                                                                        [RequestProps.STAKE]: 0,
-                                                                                        [RequestProps.PICK]: 0,
-                                                                                        [RequestProps.TRANSACTION_HASH]: ""}, false)
-      },
-    ]
+    return new Response(JSON.stringify({ message: 'Market already closed' }), { status: 400, headers: { 'content-type': 'application/json' } });
   }
   else
   {
