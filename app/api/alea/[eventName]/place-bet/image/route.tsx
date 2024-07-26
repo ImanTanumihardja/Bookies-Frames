@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
                         background: 'linear-gradient(to right, #68b876, #457e8b, #0000b4)',
                         justifyContent: 'center',
                 }}>
-                    <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
+                    <img src={`${process.env['NEXT_PUBLIC_HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize:25, position: 'absolute', top: 0, left:20}}> {`(${date.toLocaleDateString()})`} </h1>
                     <h1 style={{color: 'white', fontSize:50, justifyContent:'center', alignItems:'center', textAlign:'center', padding:25}}> {prompt} </h1>
                 </div>

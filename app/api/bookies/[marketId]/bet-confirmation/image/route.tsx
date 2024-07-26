@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
                         background: 'linear-gradient(to right, orange, #aa3855, purple)',
                         justifyContent: 'center',
                 }}>
-                    <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
+                    <img src={`${process.env['NEXT_PUBLIC_HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <div style={{display: 'flex', flexDirection:'column', height:'100%', width:'100%', justifyContent: 'center', alignItems: 'center'}}>
                         <h1 style={{color: 'white', 
                                     fontSize: text.length > 50 ? 30 : text.length > 40 ? 35 : 45, 

@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
                         <img
                             style={{ width: 65, maxHeight: 65, marginRight: 15, borderRadius: 50 }}
                             src={pfpURL}
-                            alt={`${process.env['HOST']}/generic_pfp.png`}
+                            alt={`${process.env['NEXT_PUBLIC_HOST']}/generic_pfp.png`}
                         />
                             {shortUsername} {rank !== -1 ? `(#${rank + 1})` : ''}
                         </h1>

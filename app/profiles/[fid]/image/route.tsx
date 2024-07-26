@@ -24,13 +24,13 @@ export async function GET(req: NextRequest, ) {
         }   
 
         let imageResponse = new ImageResponse(
-            <FrameBase>
+            <FrameBase logoW={75} logoH={75}>
                 <div style={{width:'100%', height:'100%', display:'flex', flexDirection:'column', justifyContent:'center', alignItems: 'center'}}>
                     <h1 style={{position:"absolute", top:10, left: 30, color:"white"}}>Bookies Stats</h1>
                     <img
                         style={{ width: 200, maxHeight: 200, borderRadius: 100 }}
                         src={avatarUrl}
-                        alt={`${process.env['HOST']}/generic_pfp.png`}
+                        alt={`${process.env['NEXT_PUBLIC_HOST']}/generic_pfp.png`}
                     />
                     <h1 style={{color: 'white', fontSize: 45, alignItems:'center', marginTop:0}}>@{username}</h1>
                     <div style={{minWidth:'75%', display: 'flex', flexDirection:'column', justifyContent: 'center', alignItems: 'center', borderWidth:3, borderColor:"white"}}>
@@ -53,7 +53,6 @@ export async function GET(req: NextRequest, ) {
                             </div>
                         </div>
                     </div>
-
                 </div>
             </FrameBase>
             ,

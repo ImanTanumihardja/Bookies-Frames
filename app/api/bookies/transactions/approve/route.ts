@@ -34,6 +34,12 @@ export async function POST(req: NextRequest): Promise<Response> {
     return new Response(JSON.stringify({ message: `Stake amount exceeds ${STAKE_LIMIT} limit` }), { status: 400, headers: { 'content-type': 'application/json' } });
   }
 
+  // Check if past start date
+  const now = new Date().getTime() / 1000;
+  if (parseFloat(orderBookieInfo.startDate) < now) {
+    return new Response(JSON.stringify({ message: 'Market already closed' }), { status: 400, headers: { 'content-type': 'application/json' } });
+  }
+
   console.log("Connected Address: " + connectedAddress)
 
   console.log('Approve: ', stake)

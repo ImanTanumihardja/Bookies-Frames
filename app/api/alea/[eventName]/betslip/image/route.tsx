@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
                         background: 'linear-gradient(to right, #68b876, #457e8b, #0000b4)',
                         justifyContent: 'center',
                 }}>
-                    <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
+                    <img src={`${process.env['NEXT_PUBLIC_HOST']}/icon_transparent.png`} style={{ width: 70, height: 70, position: 'absolute', bottom:5, left:5}}/>
                     <h1 style={{color: 'white', fontSize:55, position:'absolute', top:-10, left:20 }}>Betslip</h1>
                     <div style={{display: 'flex', width:'75%', height:'60%', flexDirection: 'column', alignSelf:'center', alignItems:'flex-start', justifyItems:"flex-start", flexWrap: 'wrap', padding:10}}> 
                         <h1 style={{color: 'white', fontSize:40, margin:10, marginRight:50, textDecoration:'underline'}}> Pick:</h1>
@@ -58,8 +58,8 @@ export async function GET(req: NextRequest) {
                         <h1 style={{color: 'white', fontSize:40, margin:10, marginRight:50, textDecoration:'underline'}}> Payout:</h1>
 
                         <h1 style={{color: 'white', fontSize:40, margin:10}}>{options[pick]}</h1>
-                        <h1 style={{color: 'white', fontSize:40, margin:10}}>{stake} <img style={{width: 35, height: 35, marginTop: 10, marginLeft:10, marginRight:10}} src={`${process.env['HOST']}/dice.png`}/></h1>
-                        <h1 style={{color: 'white', fontSize:40, margin:10}}>{payout}<img style={{width: 35, height: 35, marginTop: 10, marginLeft:10, marginRight:10}}src={`${process.env['HOST']}/dice.png`}/></h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:10}}>{stake} <img style={{width: 35, height: 35, marginTop: 10, marginLeft:10, marginRight:10}} src={`${process.env['NEXT_PUBLIC_HOST']}/dice.png`}/></h1>
+                        <h1 style={{color: 'white', fontSize:40, margin:10}}>{payout}<img style={{width: 35, height: 35, marginTop: 10, marginLeft:10, marginRight:10}}src={`${process.env['NEXT_PUBLIC_HOST']}/dice.png`}/></h1>
                     </div>
                     <h1 style={{position:'absolute', color: 'white', fontSize:25, margin:10, bottom:10, right: 10}}> Odds: {formattedOdd}</h1>
                 </div>

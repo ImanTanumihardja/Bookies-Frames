@@ -15,20 +15,33 @@ export async function POST(req: NextRequest, { params: { marketId } }: { params:
   
   console.log('FID: ', fid.toString())
 
-  let { stake, odds, pick} = getRequestProps(req, [RequestProps.STAKE, RequestProps.ODDS, RequestProps.PICK]);
+  let {odds, pick: sharePick, stake: shareStake  } = getRequestProps(req, [RequestProps.ODDS, RequestProps.PICK, RequestProps.STAKE]);
 
-  // Check if input is valid amount
-  if (!stake) {
-    if (input){
-      stake = parseFloat(input);
+  let pick;
+  let stake;
+
+  if (sharePick && shareStake) { // Coming from share bet
+    if (button === 1) {
+      // Bet Against
+      pick = 1 - sharePick
+      const oppositeOdd = odds[pick];
+
+      // Calculate the stake to match the opposite side
+      stake = calculatePayout(oppositeOdd, shareStake) - shareStake;
+    }
+    else {
+      // Copy Bet
+      pick = sharePick
+      stake = shareStake
     }
   }
-
-  if (!pick) {
-    if (button){
-      pick = button - 1;
-    }
+  else { // Coming from place bet
+    pick = button - 1;
+    stake = parseFloat(input);
   }
+
+
+  console.log('Stake: ', stake)
 
   // Check if stake is not float
   if (!stake || stake < 0 || Number.isNaN(stake) || typeof stake !== 'number' || !Number.isFinite(stake) || stake > STAKE_LIMIT) {
@@ -50,9 +63,6 @@ export async function POST(req: NextRequest, { params: { marketId } }: { params:
 
   // Check if result has been set
   const result = parseInt(event.result.toString())
-  if (result !== -1) {
-    console.log('Event has already been settled');
-  }
 
   let imageUrl = ''
   let buttons;
@@ -67,7 +77,6 @@ export async function POST(req: NextRequest, { params: { marketId } }: { params:
   else
   {
     const provider = new ethers.JsonRpcProvider(process.env.BASE_PROVIDER_URL);
-
     const orderBookie = new ethers.Contract(orderBookieAddress, orderBookieABI, provider)
     const orderBookieInfo = await orderBookie.getBookieInfo()
 

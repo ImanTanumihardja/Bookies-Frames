@@ -11,7 +11,6 @@ import { storeBetData, getPercentFilled } from "../app/actions";
 import { useShield3Context } from '@shield3/react-sdk';
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { Address } from "@shield3/react-sdk/dist/types";
-import { Fireworks } from 'fireworks-js'
 import {
     Modal,
     ModalOverlay,
@@ -74,67 +73,67 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
 
     const placeBet = async (_) => {
         try {
-            // const wallet = wallets[0]
-            // await wallet.switchChain(myChain)
-            // const walletProvider = await wallet.getEthereumProvider();
+            const wallet = wallets[0]
+            await wallet.switchChain(myChain)
+            const walletProvider = await wallet.getEthereumProvider();
             
-            // const iOrderBookie = new ethers.Interface(orderBookieABI)
+            const iOrderBookie = new ethers.Interface(orderBookieABI)
 
-            // const parsedPick = ethers.parseUnits(pick.toString(), PICK_DECIMALS)
-            // const parsedStake = ethers.parseUnits(stake, acceptedTokens[0].decimals)
-            // const parsedOdd = ethers.parseUnits(odd.toString(), ODDS_DECIMALS)
+            const parsedPick = ethers.parseUnits(pick.toString(), PICK_DECIMALS)
+            const parsedStake = ethers.parseUnits(stake, acceptedTokens[0].decimals)
+            const parsedOdd = ethers.parseUnits(odd.toString(), ODDS_DECIMALS)
 
-            // // Approve orderbookie to spend accepted token
-            // const iERC20 = new ethers.Interface(erc20ABI)
-            // let data = iERC20.encodeFunctionData('approve', [address, parsedStake])
-            // const approveTx = {
-            //     to: acceptedTokens[0].address,
-            //     data: data,
-            //     chainId: myChain,
-            // }
+            // Approve orderbookie to spend accepted token
+            const iERC20 = new ethers.Interface(erc20ABI)
+            let data = iERC20.encodeFunctionData('approve', [address, parsedStake])
+            const approveTx = {
+                to: acceptedTokens[0].address,
+                data: data,
+                chainId: myChain,
+            }
             
-            // // Simulate approve
-            // if (((await shield3Client.getPolicyResults(approveTx, wallet.address as Address)).decision) !== 'Allow') {
-            //     throw new Error('Shield3 blocked transaction')
-            // }
+            // Simulate approve
+            if (((await shield3Client.getPolicyResults(approveTx, wallet.address as Address)).decision) !== 'Allow') {
+                throw new Error('Shield3 blocked transaction')
+            }
 
-            // await walletProvider.request({
-            //     method: 'eth_sendTransaction',
-            //     params: [approveTx],
-            // });
+            await walletProvider.request({
+                method: 'eth_sendTransaction',
+                params: [approveTx],
+            });
 
-            // // Place bet
-            // data = iOrderBookie.encodeFunctionData('placeBet', [parsedPick, parsedStake, parsedOdd])
-            // const placeBetTx = {
-            //     to: address,
-            //     data: data,
-            //     chainId: myChain,
-            // }
+            // Place bet
+            data = iOrderBookie.encodeFunctionData('placeBet', [parsedPick, parsedStake, parsedOdd])
+            const placeBetTx = {
+                to: address,
+                data: data,
+                chainId: myChain,
+            }
 
-            // // Simulate approve
-            // if ((await shield3Client.getPolicyResults(placeBetTx, wallet.address as Address)).decision !== 'Allow') {
-            //     throw new Error('Shield3 blocked transaction')
-            // }
+            // Simulate approve
+            if ((await shield3Client.getPolicyResults(placeBetTx, wallet.address as Address)).decision !== 'Allow') {
+                throw new Error('Shield3 blocked transaction')
+            }
             
-            // await walletProvider.request({
-            //     method: 'eth_sendTransaction',
-            //     params: [placeBetTx],
-            // });
+            await walletProvider.request({
+                method: 'eth_sendTransaction',
+                params: [placeBetTx],
+            });
 
-            // // Save bet information
-            // if (authenticated && user?.farcaster)
-            // {
-            //     const fid = user.farcaster.fid
-            //     await storeBetData(fid, marketId, wallet.address)
-            // }
+            // Save bet information
+            if (authenticated && user?.farcaster)
+            {
+                const fid = user.farcaster.fid
+                await storeBetData(fid, marketId, wallet.address)
+            }
 
-            // toast({
-            //     title: "Bet Placed",
-            //     description: "Your bet has been placed",
-            //     status: "success",
-            //     duration: 4500,
-            //     isClosable: true,
-            // })
+            toast({
+                title: "Bet Placed",
+                description: "Your bet has been placed",
+                status: "success",
+                duration: 4500,
+                isClosable: true,
+            })
 
             onClose();
             onOpenConfirmation();
@@ -149,7 +148,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
         }
     }
 
-    const fetchData = async () => {
+    const fetchPercentFilled = async () => {
         try {
             const parsedStake = parseFloat(stake)
             if (pick && parsedStake > 0 && odd < 1 && odd > 0 && address) {
@@ -181,7 +180,7 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
     };
 
     useEffect(() => {
-        if (isOpen === false) {
+        if (isOpen === false && confirmationIsOpen === false) {
             setStake((0).toString())
             setOdd(0.5)
             setPick(null)
@@ -191,10 +190,10 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
             setOdd(pick === null ? defaultOdd : odds[pick])
             setStake(parseFloat(stake) === 0 ? defaultStake.toFixed(2) : stake)
         }
-    }, [isOpen, pick]);
+    }, [isOpen, pick, confirmationIsOpen]);
 
     useEffect(() => {
-        fetchData()
+        fetchPercentFilled()
     }, [pick, stake, odd])
 
     return (
@@ -302,7 +301,8 @@ const PlaceBetModal: FunctionComponent<PlaceBetModal> = ({
                         <Text fontSize={"large"} color={"white"}> Your bet has been placed!</Text>
                         <Button m={2} onClick={
                             () => {
-                                openInNewTab(`https://warpcast.com/~/compose?text=%20&embeds[]=${window.location.href}`)
+                                const embeddedUrl = `${process.env['NEXT_PUBLIC_HOST']}/api/bookies/${marketId}/share-bet/?pick=${pick}&odds=${odds}&stake=${parseFloat(stake)}&symbol=${acceptedTokens[0].symbol}&fid=${user?.farcaster?.fid}`
+                                openInNewTab(`https://warpcast.com/~/compose?text=%20&embeds[]=${embeddedUrl}`)
                             }
                         }>
                             Share

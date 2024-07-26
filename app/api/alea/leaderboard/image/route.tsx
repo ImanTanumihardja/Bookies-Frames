@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
                                 profile && 
                                 <h3 key={index} style={{color: 'white', fontSize: 35, marginBottom:0}}> 
                                     {`${offset + index + 1}.` }
-                                    <img style={{ width: 40, maxHeight: 40, marginLeft: 15, marginRight: 10, borderRadius: 50, top:5 }} src={`https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(profiles[index].pfp_url)}`} alt={`${process.env['HOST']}/generic_pfp.png`} /> 
+                                    <img style={{ width: 40, maxHeight: 40, marginLeft: 15, marginRight: 10, borderRadius: 50, top:5 }} src={`https://res.cloudinary.com/merkle-manufactory/image/fetch/c_fill,f_jpg,w_168/${encodeURI(profiles[index].pfp_url)}`} alt={`${process.env['NEXT_PUBLIC_HOST']}/generic_pfp.png`} /> 
                                     {`${shortUsername}: ${Math.round(scores[index])}`}
                                 </h3>
                             )

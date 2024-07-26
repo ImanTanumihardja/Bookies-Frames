@@ -9,7 +9,7 @@ import { Accounts } from "@utils/constants";
 // Export Next.js metadata
 export async function generateMetadata({ params: { eventName } }: { params: { eventName: string } }): Promise<Metadata> {
     // Get the frame html from the GET function
-    const url = new URL(`/api/${Accounts.ALEA}/${eventName}`, process.env.HOST)
+    const url = new URL(`/api/${Accounts.ALEA}/${eventName}`, process.env.NEXT_PUBLIC_HOST)
     const req : NextRequest = new NextRequest(url);
     const response = await GET(req, {params: {eventName}});
     const htmlString = await response.text();

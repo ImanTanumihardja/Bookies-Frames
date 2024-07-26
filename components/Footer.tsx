@@ -42,7 +42,7 @@ const Footer = () => {
                     variant="link" 
                     className="whitespace-pre-wrap" 
                     fontSize={"inherit"}
-                    onClick={() => {openInNewTab(`${process.env.HOST || ''}/terms`)}}
+                    onClick={() => {openInNewTab(`${process.env.NEXT_PUBLIC_HOST || ''}/terms`)}}
                   >
                     Terms of Use
                   </Button>

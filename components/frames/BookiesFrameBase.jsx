@@ -1,4 +1,6 @@
-const FrameBase = ({ children }) => {
+
+
+const FrameBase = ({ children, logoW=50, logoH=50 }) => {
     return (
         <div style={{
             display: 'flex',
@@ -8,7 +10,7 @@ const FrameBase = ({ children }) => {
             background: 'linear-gradient(to right, orange, #aa3855, purple)',
             justifyContent: 'center'
         }}>
-            <img src={`${process.env['HOST']}/icon_transparent.png`} style={{ width: 50, height: 50, position: 'absolute', bottom:10, left:10}}/>
+            <img src={`${process.env['NEXT_PUBLIC_HOST']}/icon_transparent.png`} style={{ width: logoW, height: logoH, position: 'absolute', bottom:20, left:20}}/>
             {/* Render the children components or content */}
             {children}
         </div>

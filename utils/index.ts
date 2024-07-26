@@ -59,7 +59,7 @@ export function notFollowingResponse(returnUrl:string) {
     return new NextResponse(
         getFrameHtml({
           version: "vNext",
-          image: `${process.env['HOST']}/thumbnails/not-following.gif`,
+          image: `${process.env['NEXT_PUBLIC_HOST']}/thumbnails/not-following.gif`,
           buttons: [
             {
               label:'Refresh', 
@@ -78,9 +78,9 @@ export function notFollowingResponse(returnUrl:string) {
 }
 
 export function generateUrl(extension: string, props: Record<string, any>, addTimestamp: boolean = false): string {
-    let url = `${process.env['HOST']}/${extension}`;
+    let url = `${process.env['NEXT_PUBLIC_HOST']}/${extension}`;
 
-    if (addTimestamp || process.env['HOST']?.includes('localhost') || process.env['HOST']?.includes('staging')) {
+    if (addTimestamp || process.env['NEXT_PUBLIC_HOST']?.includes('localhost') || process.env['NEXT_PUBLIC_HOST']?.includes('staging')) {
         url += `?timestamp=${new Date().getTime()}`
     }
     else {
