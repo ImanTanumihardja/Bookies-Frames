@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
         let imageResponse =  new ImageResponse(
             <FrameBase logoW={75} logoH={75}>
                 <div style={{width:'100%', height:'100%', display:'flex', flexDirection:'column', justifyContent:'center', alignItems: 'center'}}>
-                    <h1 style={{position:"absolute", fontSize:25, top:10, left: 30, color:"white"}}> {prompt}</h1>
+                    <h1 style={{position:"absolute", fontSize:25, top:10, left: 30, right: 50, color:"white"}}> {prompt}</h1>
                     <img
                         style={{ maxWidth: 200, maxHeight: 200, borderRadius: 100 }}
                         src={profile.pfp_url}
